@@ -1,0 +1,53 @@
+=== Real MySQL integration tests: exit 0 ===
+-------------------------------------------------------------------------------
+Test set: cn.zhiyan.M0IntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.496 s -- in cn.zhiyan.M0IntegrationTest
+
+=== npm ci: exit 0 ===
+
+added 50 packages, and audited 51 packages in 3s
+
+7 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+=== Frontend build: exit 0 ===
+
+> zhiyan-ai-frontend@0.0.1 build
+> vue-tsc -b && vite build
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 622 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                           0.41 kB │ gzip:   0.32 kB
+dist/assets/index-ByIiwJD7.css            7.42 kB │ gzip:   2.37 kB
+dist/assets/index-DYgUm3jZ.js           100.69 kB │ gzip:  40.25 kB
+dist/assets/StatisticsPage-CC5I-kO3.js  494.68 kB │ gzip: 169.32 kB
+✓ built in 3.79s
+
+=== Restart / wrong DB smoke: exit 0 ===
+{
+  "health": "PASS",
+  "httpWriteRead": "PASS",
+  "actualBackendRestartPersistence": "PASS",
+  "invalidDbStartupRejected": "PASS",
+  "recordId": 1,
+  "totalCount": 1,
+  "invalidDbExitCode": 1
+}
+
+=== Isolated MySQL 3307 startup + query + shutdown: exit 0 ===
+mysql: [Warning] Using a password on the command line interface can be insecure.
+MySQL listening on 127.0.0.1:3307. Root credential: .local/mysql-root-password.txt (local only). Set DB_PORT=3307 in .env.
+VERSION()
+8.0.46
+
+=== Actual Spring Boot Maven startup (still running) ===
+2026-10-23T22:46:06.207+08:00  INFO 15492 --- [zhiyan-ai] [           main] org.flywaydb.core.FlywayExecutor         : Database: jdbc:mysql://127.0.0.1:3306/zhiyan_ai?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&sslMode=DISABLED&connectTimeout=3000&socketTimeout=5000 (MySQL 8.0)
+2026-10-23T22:46:06.281+08:00  INFO 15492 --- [zhiyan-ai] [           main] o.f.core.internal.command.DbMigrate      : Schema `zhiyan_ai` is up to date. No migration necessary.
+2026-10-23T22:46:07.013+08:00  INFO 15492 --- [zhiyan-ai] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2026-10-23T22:46:07.036+08:00  INFO 15492 --- [zhiyan-ai] [           main] cn.zhiyan.ZhiyanApplication              : Started ZhiyanApplication in 2.916 seconds (process running for 3.151)

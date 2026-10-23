@@ -1,0 +1,14 @@
+
+> zhiyan-ai-frontend@0.0.1 build
+> vue-tsc -b && vite build
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 622 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                           0.46 kB │ gzip:   0.32 kB
+dist/assets/index-ByIiwJD7.css            7.42 kB │ gzip:   2.37 kB
+dist/assets/index-BTm9pVdL.js           100.70 kB │ gzip:  40.26 kB
+dist/assets/StatisticsPage-ampdSHcR.js  494.69 kB │ gzip: 169.33 kB
+✓ built in 3.12s

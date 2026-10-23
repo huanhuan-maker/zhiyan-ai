@@ -1,0 +1,22 @@
+{
+  "title": "大学生图书馆使用情况调查（虚构样例）",
+  "goal": "了解大学生较少使用图书馆的主要原因，并发现原计划可能忽略的相关因素",
+  "plannedDimensions": ["环境", "座位", "开放时间", "距离"],
+  "settings": {
+    "maxFollowUpsPerOpenQuestion": 1,
+    "maxFollowUpsPerSurvey": 3,
+    "allowSkip": true,
+    "aiDisclosure": "部分开放回答可能由 AI 提出一条自愿回答的补充问题。"
+  },
+  "questions": [
+    {"id":"q1", "type":"single_choice", "text":"你平均每周去图书馆几次？", "options":["0 次","1–2 次","3–4 次","5 次及以上"]},
+    {"id":"q2", "type":"scale", "text":"你对图书馆的总体满意度如何？", "min":1,"max":5},
+    {"id":"q3", "type":"open_text", "text":"哪些因素影响你去图书馆的意愿？", "followUpEnabled":true}
+  ],
+  "syntheticResponses": [
+    {"session":"demo-001","answers":{"q1":"0 次","q2":3,"q3":"朋友都不去，我一个人也不太想去"},"potentialFollowUp":"能说说朋友的选择怎样影响你去图书馆的决定吗？","theme":"同伴影响","origin":"SPONTANEOUS"},
+    {"session":"demo-002","answers":{"q1":"1–2 次","q2":2,"q3":"晚上总是太吵"},"potentialFollowUp":"能描述一个你觉得吵的具体情况吗？","theme":"环境","origin":"SPONTANEOUS"},
+    {"session":"demo-003","answers":{"q1":"0 次","q2":3,"q3":"感觉不方便"},"potentialFollowUp":"你提到不方便，能举一个具体的例子吗？","theme":null,"origin":"UNRESOLVED"},
+    {"session":"demo-004","answers":{"q1":"1–2 次","q2":4,"q3":"图书馆座位不够，周末经常找不到座位"},"potentialFollowUp":null,"theme":"座位","origin":"SPONTANEOUS"}
+  ]
+}

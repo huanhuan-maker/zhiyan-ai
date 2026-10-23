@@ -1,0 +1,4 @@
+mysql: [Warning] Using a password on the command line interface can be insecure.
+MySQL listening on 127.0.0.1:3307. Root credential: .local/mysql-root-password.txt (local only). Set DB_PORT=3307 in .env.
+VERSION()
+8.0.46

@@ -1,0 +1,9 @@
+{
+  "health": "PASS",
+  "httpWriteRead": "PASS",
+  "actualBackendRestartPersistence": "PASS",
+  "invalidDbStartupRejected": "PASS",
+  "recordId": 1,
+  "totalCount": 1,
+  "invalidDbExitCode": 1
+}
