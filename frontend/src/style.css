@@ -660,6 +660,23 @@ summary { cursor: pointer; font-weight: 600; }
 .version-badge { margin: 4px 8px 4px 0; }
 .version-row { margin-top: 12px; }
 .version-row .secondary { margin-top: 0; }
+.lan-panel { border: 1px dashed #a9c8b4; border-radius: 8px; background: #f8faf5; padding: 14px 16px; margin: 16px 0; }
+.lan-panel h3 { margin: 0 0 6px; }
+.lan-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.lan-form input { flex: 1; min-width: 240px; }
+.lan-detected .text-button { margin: 0 8px 0 2px; }
+.qr-card { display: flex; gap: 20px; border-top: 1px solid #e1e8de; padding: 18px 0 6px; flex-wrap: wrap; }
+.qr-side { flex: 0 0 auto; }
+.qr-canvas { border: 8px solid #ffffff; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,.18); display: block; max-width: 100%; height: auto; }
+.qr-missing { width: 208px; max-width: 100%; padding: 16px; border: 1px dashed #d5a44a; background: #fdf8ee; border-radius: 8px; color: #7a5a17; font-size: 13px; }
+.qr-info { flex: 1; min-width: 260px; }
+.qr-info h3 { margin: 0 0 10px; }
+.qr-info .actions { margin: 12px 0; flex-wrap: wrap; }
+.qr-preview-line { overflow-wrap: anywhere; font-size: 13px; }
+@media (max-width: 560px) {
+  .qr-card { gap: 14px; }
+  .qr-side { margin: 0 auto; }
+}
 .preview-panel > h2 { margin-top: 24px; }
 .preview-question { border-top: 1px solid #e1e8de; padding-top: 22px; margin-top: 26px; }
 .preserve-text { white-space: pre-wrap; overflow-wrap: anywhere; }

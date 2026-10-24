@@ -16,7 +16,7 @@ export interface Survey {
 export type AnswerValue = string | string[] | number | null;
 export interface PublicSurvey { versionId: number; versionNumber: number; survey: Draft; aiMode?: string }
 export interface Session extends PublicSurvey {
-  answers: Record<string, AnswerValue>; status: string; aiConsent: boolean;
+  answers: Record<string, AnswerValue>; status: string; aiConsent: boolean; collecting?: boolean;
 }
 export interface ResultOption extends Option { numerator: number; denominator: number; percentage: number }
 export interface QuestionResult {
@@ -43,7 +43,7 @@ export function newQuestion(type: QuestionType): Question {
 export function newDraft(): Draft {
   return { title: "", description: "", privacyNotice: "本调查仅用于匿名调研分析。请勿填写姓名、联系方式或其他敏感个人信息。你可以自行选择是否参与；开放题原文将供发起者查看。", questions: [newQuestion("SINGLE")], perQuestionFollowupLimit: 1, totalFollowupLimit: 3 };
 }
-export interface ShareLink { versionId: number; versionNumber: number; url: string }
+export interface ShareLink { versionId: number; versionNumber: number; url: string; publicPath?: string }
 const shareKey = (id: number) => `zhiyan:shares:${id}`;
 export function getShares(id: number): ShareLink[] {
   try {

@@ -30,6 +30,7 @@ public class SurveyService {
         try { return json.readTree(value); } catch(JsonProcessingException ex) { throw new IllegalStateException(ex); }
     }
     public Survey lockSurvey(long id) { return surveys.selectOne(Wrappers.<Survey>lambdaQuery().eq(Survey::getId,id).last("FOR UPDATE")); }
+    public Survey surveyRow(long id) { var row=surveys.selectById(id); if(row==null) throw missing(); return row; }
     static BusinessException missing() { return new BusinessException(404,"NOT_FOUND","资源不存在或无权访问"); }
     public Survey owned(long id,String username,boolean lock) {
         var query=Wrappers.<Survey>lambdaQuery().eq(Survey::getId,id).eq(Survey::getOwnerId,accounts.userId(username));

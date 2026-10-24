@@ -200,4 +200,54 @@ class M1PublicationLifecycleTest {
         call(get("/api/public/surveys/"+p.token),404);
         call(get("/api/public/surveys/"+rotated.get("publicToken").asText()),200);
     }
+
+    @Test void restoreSurvivesTokenRotationAndStillCompletesExactlyOnce() throws Exception {
+        var p=published(); String session=start(p.token);
+        call(post("/api/public/sessions/"+session+"/answers").with(csrf()).contentType("application/json").content("{\"questionId\":\"open\",\"value\":\"轮换前保存\"}"),200);
+        rotate(p,SurveyService.hash(SurveyService.hash(p.token)),200);
+
+        call(get("/api/public/surveys/"+p.token),404);
+        call(post("/api/public/surveys/"+p.token+"/sessions").with(csrf()).contentType("application/json").content("{\"consent\":true}"),404);
+        var restored=call(get("/api/public/sessions/"+session),200);
+        assertThat(restored.get("status").asText()).isEqualTo("IN_PROGRESS");
+        assertThat(restored.get("collecting").asBoolean()).isTrue();
+        assertThat(restored.at("/answers/open").asText()).isEqualTo("轮换前保存");
+        assertThat(restored.get("versionId").asLong()).isEqualTo(p.version);
+        assertThat(restored.fieldNames()).toIterable()
+                .containsExactlyInAnyOrder("status","versionId","versionNumber","survey","answers","aiConsent","collecting");
+
+        call(post("/api/public/sessions/"+session+"/answers").with(csrf()).contentType("application/json").content("{\"questionId\":\"scale\",\"value\":4}"),200);
+        complete(session,"{\"single\":\"yes\",\"scale\":4}",200);
+        assertThat(call(get("/api/public/sessions/"+session),200).get("status").asText()).isEqualTo("SUBMITTED");
+        complete(session,"{\"single\":\"no\",\"scale\":1}",200);
+        assertThat(results(p,p.version).get("completedCount").asInt()).isEqualTo(1);
+    }
+
+    @Test void restoreAfterCloseIsReadOnlyAndCannotBypassSubmissionBlock() throws Exception {
+        var p=published(); String session=start(p.token);
+        call(post("/api/public/sessions/"+session+"/answers").with(csrf()).contentType("application/json").content("{\"questionId\":\"open\",\"value\":\"关闭前保存\"}"),200);
+        call(post("/api/surveys/"+p.id+"/close").session(p.owner).with(csrf()),200);
+
+        var restored=call(get("/api/public/sessions/"+session),200);
+        assertThat(restored.get("collecting").asBoolean()).isFalse();
+        assertThat(restored.at("/answers/open").asText()).isEqualTo("关闭前保存");
+        call(post("/api/public/sessions/"+session+"/answers").with(csrf()).contentType("application/json").content("{\"questionId\":\"scale\",\"value\":3}"),410);
+        assertThat(complete(session,"{\"single\":\"yes\",\"scale\":3}",410).get("code").asText()).isEqualTo("SURVEY_CLOSED");
+        assertThat(results(p,p.version).get("completedCount").asInt()).isZero();
+        assertThat(call(get("/api/public/sessions/"+session),200).get("status").asText()).isEqualTo("IN_PROGRESS");
+
+        var next=editDraftAndPublishNext(p,"关闭后再发布");
+        long v2=next.get("versionId").asLong();
+        assertThat(call(get("/api/public/sessions/"+session),200).get("collecting").asBoolean()).isFalse();
+        assertThat(complete(session,"{\"single\":\"yes\",\"scale\":3}",410).get("code").asText()).isEqualTo("VERSION_CLOSED");
+        complete(start(next.get("publicToken").asText()),"{\"single\":\"yes\",\"scale\":3}",200);
+        assertThat(results(p,v2).get("completedCount").asInt()).isEqualTo(1);
+    }
+
+    @Test void lanAddressesRequireLoginAndNeverExposeLoopback() throws Exception {
+        call(get("/api/system/lan-addresses"),401);
+        var body=call(get("/api/system/lan-addresses").session(owner()),200);
+        assertThat(body.get("addresses").isArray()).isTrue();
+        body.get("addresses").forEach(a->assertThat(a.asText()).matches("\\d{1,3}(\\.\\d{1,3}){3}").doesNotStartWith("127."));
+    }
 }

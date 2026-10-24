@@ -26,6 +26,7 @@
 | POST | `/api/surveys/{id}/close` | 关闭调查，全部版本的公开入口停止接受填写/提交 |
 | POST | `/api/surveys/{id}/versions/{versionId}/rotate-token` | `{expectedShareRevision}` → versionId/versionNumber/publicToken/publicPath/versionStatus/surveyStatus/shareRevision；旧链接立即失效，过期前置条件返回409 |
 | GET | `/api/surveys/{id}/results?versionId=...` | 仅此调查的指定版本已提交样本统计 |
+| GET | `/api/system/lan-addresses` | 会话；返回本机非环回 IPv4 列表 `{addresses:[...]}`，仅供发起者配置局域网分享地址，无状态、只读 |
 
 Draft 示例见 `fixtures/m1_survey.json`。字段：title、description、privacyNotice、questions、perQuestionFollowupLimit、totalFollowupLimit。后两者只是未来 M3 配置预留，M1 不会扣减或触发追问。
 
@@ -43,7 +44,7 @@ Question：稳定 id，type=SINGLE/MULTIPLE/SCALE/OPEN，text、required、allow
 |---|---|---|
 | GET | `/api/public/surveys/{publicToken}` | 冻结 survey + versionId/number；调查关闭返回 410 SURVEY_CLOSED，版本停止收集返回 410 VERSION_CLOSED |
 | POST | `/api/public/surveys/{publicToken}/sessions` | `{consent:true,aiConsent:false}` → 201，sessionToken/versionId/expiresAt |
-| GET | `/api/public/sessions/{sessionToken}` | 只读该 token 的 status、survey、answers、version、aiConsent，用于刷新恢复 |
+| GET | `/api/public/sessions/{sessionToken}` | 只读该 token 的 status、survey、answers、version、aiConsent、collecting（调查与版本是否仍接受填写），用于刷新恢复；与公开分享 token 无关，分享链接轮换/关闭后仍可恢复只读视图 |
 | POST | `/api/public/sessions/{sessionToken}/answers` | `{questionId,value}`，覆盖保存当前会话该题；必填约束在最终提交校验 |
 | POST | `/api/public/sessions/{sessionToken}/complete` | `{answers:{题id:JSON值}}`，与已保存值合并后完整校验、事务提交 |
 

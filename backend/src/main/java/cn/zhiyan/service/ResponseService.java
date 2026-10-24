@@ -44,9 +44,11 @@ public class ResponseService {
     }
     public Object restore(String token) {
         var row=session(token,false); var v=survey.version(row.getSurveyId(),row.getVersionId());
+        // Read-only view; `collecting` tells the restored page whether save/submit are still accepted.
+        boolean collecting="OPEN".equals(survey.surveyRow(row.getSurveyId()).getStatus()) && "OPEN".equals(v.getStatus());
         Map<String,JsonNode> values=new LinkedHashMap<>();
         for(var a:answers.selectList(Wrappers.<Answer>lambdaQuery().eq(Answer::getSessionId,row.getId()))) values.put(a.getQuestionId(),node(a.getValueJson()));
-        return Map.of("status",row.getStatus(),"versionId",v.getId(),"versionNumber",v.getVersionNumber(),"survey",survey.decode(v.getSnapshotJson()),"answers",values,"aiConsent",row.getAiConsent());
+        return Map.of("status",row.getStatus(),"versionId",v.getId(),"versionNumber",v.getVersionNumber(),"survey",survey.decode(v.getSnapshotJson()),"answers",values,"aiConsent",row.getAiConsent(),"collecting",collecting);
     }
     public JsonNode node(String text) { return survey.decodeNode(text); }
     public boolean missing(JsonNode value) { return value==null || value.isNull() || value.isTextual() && value.asText().isBlank() || value.isArray() && value.isEmpty(); }

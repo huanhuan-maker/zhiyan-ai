@@ -66,11 +66,13 @@ npm.cmd ci
 npm.cmd run dev
 ```
 
+需要手机扫二维码填写时改用局域网模式（同端口，额外监听局域网网卡）：`npm.cmd run dev:lan`，配置步骤见 [局域网二维码分享指南](docs/LAN_SHARING_GUIDE.md)。
+
 Java 已在 PATH 且 JAVA_HOME 正确时可以省略 `-JavaHome`；路径可换成自己的安装目录。
 
 前端：<http://127.0.0.1:5173>，后端健康：<http://127.0.0.1:8080/actuator/health>。
 
-页面：`/` 我的调查、`/login` 登录/注册/会话、`/surveys/new` 手工建卷、`/surveys/{id}/edit` 编辑/预览/发布/关闭、`/surveys/{id}/results` 指定版本统计、`/public/{token}` 公开答题。发布会生成独立随机链接，请自行保存；匿名填写不要求发起者登录。点击“保存进度”后同标签刷新可从数据库恢复，最终提交后计入回收统计。
+页面：`/` 我的调查、`/login` 登录/注册/会话、`/surveys/new` 手工建卷、`/surveys/{id}/edit` 编辑/预览/发布/关闭、`/surveys/{id}/results` 指定版本统计、`/public/{token}` 公开答题。发布会生成独立随机链接，请自行保存；编辑页”分享已发布版本”面板可配置电脑局域网 IPv4 并生成手机可扫的本地二维码（详见 [局域网指南](docs/LAN_SHARING_GUIDE.md)）。匿名填写不要求发起者登录。点击”保存进度”后同标签刷新可从数据库恢复，最终提交后计入回收统计。
 
 M1 支持单选、多选、量表、开放题；发布核心题冻结，之后编辑草稿不改变旧版。ECharts 读取真实后端人数，后端给出版本、有效分母、缺失、比例与均值。`/public` 无完整链接时显示说明；`/statistics` 保留明确标记的 M0 联通诊断，不冒充调查统计。
 
@@ -98,7 +100,7 @@ npm.cmd ci
 npm.cmd run build
 ```
 
-JUnit 报告：`backend/target/surefire-reports/`。最新34项通过（0失败/错误/跳过），包含M0回归9项、M1集成16项、发布生命周期与链接轮换5项、真实并发3项、限流单元测试1项。集成测试用真实MySQL8，MockMvc只是HTTP测试入口；覆盖账户/所有权/版本冻结/恢复/幂等/分母/关闭/过期/输入及并发回归，测试数据回滚或清理。Windows PowerShell5.1和PowerShell7均已真实执行脚本。
+JUnit 报告：`backend/target/surefire-reports/`。最新42项通过（0失败/错误/跳过），包含M0回归9项、M1集成16项、发布生命周期与会话恢复11项（含轮换后恢复/关闭只读/LAN地址端点）、迁移1项、真实并发4项、限流单元测试1项。前端另有 vitest 单元测试14项（`npm.cmd run test:unit`：局域网链接构造、二维码编码与显示一致、无效地址拒绝、轮换后二维码更新）。集成测试用真实MySQL8，MockMvc只是HTTP测试入口；覆盖账户/所有权/版本冻结/恢复/幂等/分母/关闭/过期/输入及并发回归，测试数据回滚或清理。Windows PowerShell5.1和PowerShell7均已真实执行脚本。
 
 自动启动/重启并检查持久化（先关闭占用 8080 的后端，根目录执行）：
 
