@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "non-owner cannot update a persisted owner answer",
+    "authenticated private create requires form ownership",
+    "delete with another form key is rejected; original answer remains unchanged",
+    "password protected public submission is enforced by server, including direct requests",
+    "published then stopped core cannot be edited, deleted, appended, batch modified or unlocked through generic update"
+  ],
+  "passed": 5,
+  "failed": 0
+}

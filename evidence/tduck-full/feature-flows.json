@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "27 question schemas render in native editor; rich title survives save and reload",
+    "27 question preview loads without page errors (external SMS/upload/map providers not invoked)",
+    "non-admin is redirected from administration",
+    "recycle restore uses the backend formKey and restores the real form",
+    "answer edit validates and retains both value and choice label after reload"
+  ],
+  "errors": [],
+  "formKey": "2cYwDqAc"
+}

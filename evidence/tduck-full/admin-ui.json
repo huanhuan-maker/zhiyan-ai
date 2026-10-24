@@ -1,0 +1,75 @@
+{
+  "checks": [
+    {
+      "route": "/home",
+      "visible": true,
+      "errorCount": 0
+    },
+    {
+      "route": "/manage/user",
+      "visible": true,
+      "errorCount": 0
+    },
+    {
+      "route": "/manage/system",
+      "visible": true,
+      "errorCount": 0
+    },
+    {
+      "configTab": "系统配置",
+      "errorCount": 0
+    },
+    {
+      "configTab": "文件存储",
+      "errorCount": 0
+    },
+    {
+      "configTab": "邮件配置",
+      "errorCount": 0
+    },
+    {
+      "configTab": "短信配置",
+      "errorCount": 0
+    },
+    {
+      "configTab": "微信公众号",
+      "errorCount": 0
+    },
+    {
+      "configTab": "AI 配置",
+      "errorCount": 0
+    },
+    {
+      "route": "/project/template",
+      "visible": true,
+      "errorCount": 0
+    },
+    {
+      "route": "/project/template/category",
+      "visible": true,
+      "errorCount": 0
+    },
+    {
+      "route": "/project/theme/index",
+      "visible": true,
+      "errorCount": 0
+    },
+    {
+      "route": "/project/theme/category",
+      "visible": true,
+      "errorCount": 0
+    },
+    {
+      "route": "/project/recycle",
+      "visible": true,
+      "errorCount": 0
+    },
+    {
+      "route": "/home/member",
+      "visible": true,
+      "errorCount": 0
+    }
+  ],
+  "errors": [],
+  "failed": []
+}

@@ -1,0 +1,33 @@
+{
+  "checks": [
+    "17 local input types populated using real browser controls and verified against persisted raw answers",
+    "pagination retains page one answers when page two is submitted",
+    "four display types render without becoming answer fields"
+  ],
+  "types": [
+    "INPUT",
+    "NUMBER",
+    "TEXTAREA",
+    "DATE",
+    "RATE",
+    "SORT",
+    "SLIDER",
+    "SELECT",
+    "CASCADER",
+    "RADIO",
+    "CHECKBOX",
+    "PAGINATION",
+    "IMAGE_SELECT",
+    "PROVINCE_CITY",
+    "SUB_FORM",
+    "MATRIX_INPUT",
+    "MATRIX_SELECT",
+    "MATRIX_SCALE",
+    "DIVIDER",
+    "IMAGE",
+    "IMAGE_CAROUSEL",
+    "DESC_TEXT"
+  ],
+  "errors": [],
+  "formKey": "arVzlmfV"
+}

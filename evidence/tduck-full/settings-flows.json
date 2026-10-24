@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "conditional visibility configured through Vue 3 UI and saved to real backend",
+    "custom completion text survives settings save and page reload",
+    "theme submit button text saves through the UI",
+    "conditional question shows only for matching choice; enabled draft restores after reload",
+    "real submission applies completion text and removes the temporary draft",
+    "stopped published form remains frozen in the designer"
+  ],
+  "errors": [],
+  "formKey": "omcvhAav"
+}

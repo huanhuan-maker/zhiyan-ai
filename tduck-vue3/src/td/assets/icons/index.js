@@ -1,0 +1,2 @@
+const symbols=Object.entries(import.meta.glob('./svg/*.svg',{eager:true,query:'?raw',import:'default'})).map(([file,svg])=>svg.replace(/<svg\b[^>]*>/,m=>`<symbol id="icon-${file.split('/').pop().replace('.svg','')}" ${m.match(/viewBox="[^"]+"/)?.[0]||''}>`).replace('</svg>','</symbol>')).join('')
+const sprite=document.createElementNS('http://www.w3.org/2000/svg','svg');sprite.style.display='none';sprite.innerHTML=symbols;document.body.append(sprite)

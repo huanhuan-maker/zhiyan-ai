@@ -4,7 +4,7 @@ export default defineConfig({
   plugins: [vue()],
   test: {
     environment: "jsdom",
-    include: ["tests/unit/**/*.test.ts"],
+    include: ["tests/unit/**/*.test.ts", "tests/unit/**/*.test.js"],
     clearMocks: true,
   },
 });

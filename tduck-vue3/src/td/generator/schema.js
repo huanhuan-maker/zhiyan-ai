@@ -1,0 +1,11 @@
+import {allComponents} from './config'
+export const clone=value=>JSON.parse(JSON.stringify(value))
+export const definitions=Object.fromEntries(allComponents.flatMap(g=>g.list).map(x=>[x.typeId,x]))
+export function createField(type){const item=clone(definitions[type]);item.config.formId=type.toLowerCase()+Date.now()+Math.floor(Math.random()*1000);item.vModel=item.config.formId;return item}
+export function formItemConvertData(item,formKey){const c=item.config;return {type:item.typeId,formItemId:c.formId,label:c.label,defaultValue:typeof c.defaultValue==='object'?JSON.stringify(c.defaultValue):c.defaultValue,required:c.required,placeholder:item.placeholder||'',regList:c.regList||[],showLabel:c.showLabel,span:c.span||24,displayType:c.displayType,hideType:c.hideType,scheme:item,formKey}}
+export function dbDataConvertForItemJson(data){const item=clone(typeof data.scheme==='string'?JSON.parse(data.scheme):data.scheme||definitions[data.type]);item.config={...item.config,formId:data.formItemId,label:data.label,required:data.required,showLabel:data.showLabel,span:data.span||24,regList:data.regList||[]};let value=data.defaultValue;if(data.type!=='INPUT'&&typeof value==='string'){try{value=JSON.parse(value)}catch{}}item.config.defaultValue=value;Object.assign(item,{typeId:data.type,dId:data.id,sort:data.sort,formItemId:data.formItemId,vModel:data.formItemId,placeholder:data.placeholder});return item}
+export function visibleFields(fields,model,rules=[]){
+ const hidden=new Set(rules.flatMap(r=>(r.triggerList||[]).filter(t=>!t.type||t.type==='show').map(t=>t.formItemId)))
+ for(const r of rules){const checks=(r.conditionList||[]).map(c=>{const v=model[c.formItemId],o=c.optionValue;const eq=Array.isArray(v)?v.some(x=>String(x)===String(o)):v!=null&&String(v)===String(o);return ({eq:()=>eq,ne:()=>!eq,gt:()=>Number(v)>Number(o),ge:()=>Number(v)>=Number(o),lt:()=>Number(v)<Number(o),le:()=>Number(v)<=Number(o)})[c.expression]?.()||false});const pass=checks.length&&((r.conditionList?.[1]?.relation==='OR')?checks.some(Boolean):checks.every(Boolean));if(pass)for(const t of r.triggerList||[])t.type==='hide'?hidden.add(t.formItemId):hidden.delete(t.formItemId)}
+ return fields.filter(f=>!hidden.has(f.config.formId)&&!f.config.hideType)
+}

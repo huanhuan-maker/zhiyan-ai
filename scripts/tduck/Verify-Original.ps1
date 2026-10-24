@@ -47,6 +47,6 @@ foreach($table in $tables) {
 }
 $sameJar = (Get-FileHash (Join-Path $manifest.sourceBackend 'tduck-api\target\tduck-api.jar')).Hash -eq $manifest.deployedJarSha256
 $report = @{ checkedAt = (Get-Date -Format o); sourceFilesChecked = $checked; sourceDifferences = $differences; originalDatabaseDataUnchanged = $sameData; changedDataTables = $changedTables; nonAccountDataUnchanged = @($changedTables | Where-Object { $_ -notin @('ac_user','ac_user_token') }).Count -eq 0; originalJarUnchanged = $sameJar; backupDatabaseSha256 = $manifest.databaseSha256; deployedJarSha256 = $manifest.deployedJarSha256 }
-$report | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $projectRoot 'evidence\tduck-vue3\original-integrity.json') -Encoding UTF8
+$report | ConvertTo-Json -Depth 5 | Set-Content (Join-Path $projectRoot 'evidence\tduck-full\original-integrity.json') -Encoding UTF8
 $report | ConvertTo-Json -Depth 5
 if($differences.Count -or !$sameData -or !$sameJar) { throw 'Original source or database changed since backup; inspect the integrity report.' }

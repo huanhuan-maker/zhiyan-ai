@@ -1,3 +1,5 @@
+> 历史记录：本文描述此前仅登录/列表的阶段原型。当前迁移实现、端口及验收范围请见 [FULL_MIGRATION.md](FULL_MIGRATION.md)。
+
 # TDuck Vue 3 第一阶段 API 对照
 
 检查日期：2026-10-24（Asia/Shanghai）。以本地源码和本地部署二进制、真实 HTTP 返回为依据，不根据在线文档猜测接口。

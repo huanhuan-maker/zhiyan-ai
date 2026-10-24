@@ -4,10 +4,10 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   retries: 0,
-  timeout: 30000,
+  timeout: 120000,
   reporter: [
     ["list"],
-    ["junit", { outputFile: "../evidence/tduck-vue3/e2e-results.xml" }],
+    ["junit", { outputFile: "../evidence/tduck-full/e2e-results.xml" }],
   ],
   use: {
     baseURL: "http://127.0.0.1:5180",

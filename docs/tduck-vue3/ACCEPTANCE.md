@@ -1,3 +1,5 @@
+> 历史记录：本文描述此前仅登录/列表的阶段原型。当前迁移实现、端口及验收范围请见 [FULL_MIGRATION.md](FULL_MIGRATION.md)。
+
 # 第一阶段人工验收
 
 使用独立开发库和新前端，不对 8999 的原部署做试验。启动见 `tduck-vue3/README.md`。验收数据明确标为 acceptance fixture，不是真实受访者信息。

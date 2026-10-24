@@ -1,0 +1,9 @@
+{
+  "checks": [
+    "downloaded a valid XLSX import template through migrated UI",
+    "XLSX import through UI persists the synthetic text and choice label",
+    "server CSV export contains the imported answer and human choice label",
+    "migrated table export dialog downloads the real server export"
+  ],
+  "errors": []
+}

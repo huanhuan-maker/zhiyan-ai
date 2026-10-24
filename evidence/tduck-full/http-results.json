@@ -1,0 +1,94 @@
+{
+  "passed": 15,
+  "note": "Synthetic fixtures; no tokens, credentials or respondent data included.",
+  "checks": [
+    {
+      "name": "Anonymous request is rejected",
+      "passed": true
+    },
+    {
+      "name": "Real login and current-user query",
+      "passed": true
+    },
+    {
+      "name": "Root list persists including additional migration acceptance forms",
+      "passed": true
+    },
+    {
+      "name": "Persisted form kY1yEMPY",
+      "passed": true
+    },
+    {
+      "name": "Persisted question kY1yEMPY",
+      "passed": true
+    },
+    {
+      "name": "Persisted form 0jJx2D1Q",
+      "passed": true
+    },
+    {
+      "name": "Persisted question 0jJx2D1Q",
+      "passed": true
+    },
+    {
+      "name": "Persisted form sfLA5Lrc",
+      "passed": true
+    },
+    {
+      "name": "Persisted question sfLA5Lrc",
+      "passed": true
+    },
+    {
+      "name": "Backend count for status 1 includes the original fixture",
+      "passed": true
+    },
+    {
+      "name": "Backend count for status 2 includes the original fixture",
+      "passed": true
+    },
+    {
+      "name": "Backend count for status 3 includes the original fixture",
+      "passed": true
+    },
+    {
+      "name": "Real backend pagination",
+      "passed": true
+    },
+    {
+      "name": "Cross-account access is rejected by backend",
+      "passed": true
+    },
+    {
+      "name": "Invalid token rejected by backend",
+      "passed": true
+    }
+  ],
+  "failed": 0,
+  "runAt": "2026-10-24T17:57:43.9386407+08:00",
+  "upstreamTypeRoundTrip": [
+    {
+      "key": "kY1yEMPY",
+      "returnedType": 2,
+      "returnedTypeDesc": "流程表单",
+      "createRequestType": 1
+    },
+    {
+      "key": "0jJx2D1Q",
+      "returnedType": 2,
+      "returnedTypeDesc": "流程表单",
+      "createRequestType": 1
+    },
+    {
+      "key": "sfLA5Lrc",
+      "returnedType": 2,
+      "returnedTypeDesc": "流程表单",
+      "createRequestType": 1
+    }
+  ],
+  "backend": "http://127.0.0.1:8997",
+  "statusCountsFromBackend": [
+    11,
+    8,
+    5
+  ]
+}

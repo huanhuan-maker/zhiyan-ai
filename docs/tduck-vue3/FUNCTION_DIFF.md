@@ -1,3 +1,5 @@
+> 历史记录：本文描述此前仅登录/列表的阶段原型。当前迁移实现、端口及验收范围请见 [FULL_MIGRATION.md](FULL_MIGRATION.md)。
+
 # 原 Vue 2 与新 Vue 3 功能差异
 
 | 功能 | 原 TDuck Vue 2 | 新 Vue 3 第一阶段 |

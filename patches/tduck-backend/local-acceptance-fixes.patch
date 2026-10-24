@@ -1,0 +1,162 @@
+--- a/tduck-common/src/main/java/com/tduck/cloud/common/util/AddressUtils.java
++++ b/tduck-common/src/main/java/com/tduck/cloud/common/util/AddressUtils.java
+@@ -44,6 +44,7 @@
+     public static final String UNKNOWN = "XX XX";
+ 
+     public static String getRealAddressByIP(String ip) {
++        if (StrUtil.isBlank(ip)) return UNKNOWN;
+         String address = UNKNOWN;
+         // 内网不查询
+         if (internalIp(ip)) {
+--- a/tduck-form/src/main/java/com/tduck/cloud/form/util/FormDataImportUtils.java
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/util/FormDataImportUtils.java
+@@ -14,6 +14,7 @@
+ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+ import com.google.common.collect.Maps;
+ import com.tduck.cloud.common.util.SecurityUtils;
++import com.tduck.cloud.common.util.ServletUtils;
+ import com.tduck.cloud.form.entity.UserFormDataEntity;
+ import com.tduck.cloud.form.entity.UserFormItemEntity;
+ import com.tduck.cloud.form.entity.enums.FormItemTypeEnum;
+@@ -189,6 +190,7 @@
+             // 导入Excel时设置提交用户为当前登录用户
+             entity.setCreateBy(String.valueOf(SecurityUtils.getUserId()));
+             entity.setFormKey(formKey);
++            entity.setSubmitRequestIp(ServletUtils.getRequest().getRemoteAddr());
+             entity.setOriginalData(row);
+             userFormDataService.saveFormResult(entity);
+         });
+--- a/tduck-form/src/main/java/com/tduck/cloud/form/service/impl/UserFormDataServiceImpl.java
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/service/impl/UserFormDataServiceImpl.java
+@@ -183,6 +183,13 @@
+ 
+     @Override
+     public Boolean deleteByIds(List<String> dataIdList, String formKey) {
++        FormAuthUtils.hasPermission(formKey);
++        List<UserFormDataEntity> records = this.listByIds(dataIdList);
++        for (UserFormDataEntity record : records) {
++            if (!formKey.equals(record.getFormKey())) {
++                throw new com.tduck.cloud.common.exception.BaseException("答卷不属于当前问卷");
++            }
++        }
+         baseMapper.deleteBatchIds(dataIdList);
+         formDataUtils.asyncDeleteEsDocument(dataIdList, formKey);
+         FormWebHookUtils.pushFormDataDeleteWebHook(dataIdList, formKey);
+@@ -192,6 +199,13 @@
+     @Override
+     public Boolean updateFormResult(UserFormDataEntity entity) {
+         UserFormDataEntity dataEntity = this.getById(entity.getId());
++        if (dataEntity == null) {
++            throw new com.tduck.cloud.common.exception.BaseException("答卷不存在");
++        }
++        FormAuthUtils.hasPermission(dataEntity.getFormKey());
++        if (!dataEntity.getFormKey().equals(entity.getFormKey())) {
++            throw new com.tduck.cloud.common.exception.BaseException("答卷不属于当前问卷");
++        }
+         dataEntity.setOriginalData(entity.getOriginalData());
+         dataEntity.setUpdateBy(entity.getUpdateBy());
+         boolean update = this.updateById(dataEntity);
+--- a/tduck-form/src/main/java/com/tduck/cloud/form/util/FormAuthUtils.java
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/util/FormAuthUtils.java
+@@ -22,6 +22,14 @@
+     /**
+      * 是否拥有表单的权限
+      */
++    public void hasEditablePermission(String formKey) {
++        hasPermission(formKey);
++        UserFormEntity form = SpringContextUtils.getBean(UserFormService.class).getByKey(formKey);
++        if (form == null || form.getStatus() != com.tduck.cloud.form.entity.enums.FormStatusEnum.CREATE) {
++            throw new BaseException("已发布核心题目已冻结，请复制为新问卷后修改");
++        }
++    }
++
+     public void hasPermission(String formKey) {
+         // 是否是超级管理员
+         if (SecurityUtils.isAdmin(SecurityUtils.getUserId())) {
+@@ -30,7 +38,7 @@
+         UserFormService userFormService = SpringContextUtils.getBean(UserFormService.class);
+         UserFormEntity userFormEntity = userFormService.getByKey(formKey);
+         if(ObjectUtil.isNull(userFormEntity)){
+-            return;
++            throw new BaseException("问卷不存在");
+         }
+         // 是否是所有者
+         if (!userFormEntity.getUserId().equals(SecurityUtils.getUserId())) {
+--- a/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/UserFormController.java
++++ b/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/UserFormController.java
+@@ -252,6 +252,8 @@
+         UserFormEntity oldForm = formService.getByKey(form.getFormKey());
+         if (ObjectUtil.isNotNull(oldForm) && userId.equals(oldForm.getUserId())) {
+             form.setId(oldForm.getId());
++            form.setStatus(oldForm.getStatus());
++            form.setUserId(oldForm.getUserId());
+             formService.updateById(form);
+         }
+         return Result.success();
+@@ -307,7 +309,7 @@
+     @PostMapping("/user/form/item/create")
+     public Result createFormItem(@RequestBody UserFormItemEntity entity) {
+         ValidatorUtils.validateEntity(entity, AddGroup.class);
+-        FormAuthUtils.hasPermission(entity.getFormKey());
++        FormAuthUtils.hasEditablePermission(entity.getFormKey());
+         if (ObjectUtil.isNull(entity.getDisplayType())) {
+             entity.setDisplayType(false);
+         }
+@@ -327,7 +329,7 @@
+     @PostMapping("/user/form/item/batch/create")
+     public Result batchCreateFormItem(@RequestBody List<UserFormItemEntity> itemEntityList) {
+         if (null != itemEntityList && !itemEntityList.isEmpty()) {
+-            FormAuthUtils.hasPermission(itemEntityList.get(0).getFormKey());
++            itemEntityList.forEach(item -> FormAuthUtils.hasEditablePermission(item.getFormKey()));
+         }
+         //排序下标计算
+         itemEntityList.forEach(item -> item.setSort(sortUtils.getInitialSortPosition(item.getFormKey())));
+@@ -343,7 +345,7 @@
+      */
+     @PostMapping("/user/form/item/update")
+     public Result updateFormItem(@RequestBody UserFormItemEntity request) {
+-        FormAuthUtils.hasPermission(request.getFormKey());
++        FormAuthUtils.hasEditablePermission(request.getFormKey());
+         ValidatorUtils.validateEntity(request, UpdateGroup.class);
+         request.setSpecialType(formItemService.isSpecialTypeItem(request));
+         boolean update = formItemService.update(request, Wrappers.<UserFormItemEntity>lambdaQuery()
+@@ -357,7 +359,7 @@
+      */
+     @PostMapping("/user/form/item/delete")
+     public Result deleteFormItem(@RequestBody UserFormItemEntity request) {
+-        FormAuthUtils.hasPermission(request.getFormKey());
++        FormAuthUtils.hasEditablePermission(request.getFormKey());
+         boolean delete = formItemService.remove(Wrappers.<UserFormItemEntity>lambdaQuery().eq(UserFormItemEntity::getFormKey, request.getFormKey()).eq(UserFormItemEntity::getFormItemId, request.getFormItemId()));
+         return Result.success(delete);
+     }
+@@ -370,7 +372,7 @@
+     @PostMapping("/user/form/item/sort")
+     public Result sortFormItem(@RequestBody SortFormItemRequest request) {
+         ValidatorUtils.validateEntity(request);
+-        FormAuthUtils.hasPermission(request.getFormKey());
++        FormAuthUtils.hasEditablePermission(request.getFormKey());
+         if (ObjectUtil.isNull(request.getAfterPosition()) && ObjectUtil.isNull(request.getBeforePosition())) {
+             return Result.success();
+         }
+--- a/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/UserFormResultController.java
++++ b/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/UserFormResultController.java
+@@ -134,6 +134,7 @@
+      */
+     @PostMapping("/create")
+     public Result createFormResult(@RequestBody UserFormDataEntity entity, HttpServletRequest request) {
++        FormAuthUtils.hasPermission(entity.getFormKey());
+         ValidatorUtils.validateEntity(entity);
+         entity.setSubmitRequestIp(HttpUtils.getIpAddr(request));
+         // 如果已经登陆了也记录用户信息 try catch 避免抛出异常
+@@ -154,6 +155,11 @@
+     public Result<Map<String, Object>> createPublicFormResult(@RequestBody UserFormDataEntity entity, HttpServletRequest request) {
+         ValidatorUtils.validateEntity(entity);
+         entity.setSubmitRequestIp(HttpUtils.getIpAddr(request));
++        FormSettingSchemaStruct settings = userFormSettingService.getFormSettingSchema(entity.getFormKey());
++        if (settings != null && settings.isPasswordWriteStatus()
++                && !StrUtil.equals(settings.getWritePassword(), request.getHeader("X-Form-Password"))) {
++            return Result.failed("请输入正确的填写密码");
++        }
+         Result<Boolean> userFormSettingStatus = userFormSettingService.getUserFormWriteSettingStatus(entity.getFormKey(), entity.getSubmitRequestIp(), entity.getWxOpenId(), CommonConstants.ConstantNumber.ONE);
+         if (StrUtil.isNotBlank(userFormSettingStatus.getMsg())) {
+             return Result.failed(userFormSettingStatus.getMsg());

@@ -1,0 +1,10 @@
+{
+  "checks": [
+    "/project/template/category: create, edit and reload persisted category",
+    "/project/theme/category: create, edit and reload persisted category",
+    "synthetic theme category deleted",
+    "template snapshot renders; using template creates a new editable form with all 27 fields",
+    "synthetic template deleted without modifying its source or cloned form"
+  ],
+  "errors": []
+}

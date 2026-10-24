@@ -1,9 +1,11 @@
 import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
+import vueJsx from '@vitejs/plugin-vue-jsx';
+import {fileURLToPath, URL as NodeURL} from 'node:url';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
-  const target = env.TDUCK_BACKEND_URL || "http://127.0.0.1:8998";
+  const target = env.TDUCK_BACKEND_URL || "http://127.0.0.1:8997";
   const backend = new URL(target);
   if (
     !["http:", "https:"].includes(backend.protocol) ||
@@ -21,7 +23,9 @@ export default defineConfig(({ mode }) => {
     },
   };
   return {
-    plugins: [vue()],
+    plugins: [vue(),vueJsx({include:/formatTableColumn\.js$/})],
+    resolve:{alias:{'@':fileURLToPath(new NodeURL('./src/td',import.meta.url))},extensions:['.mjs','.js','.ts','.jsx','.tsx','.json','.vue']},
+    define:{'process.env.VUE_APP_API_ROOT':JSON.stringify('/tduck-api'),'process.env.VUE_APP_TITLE':JSON.stringify('TDuck'),'process.env.VUE_APP_MAP_KEY':JSON.stringify(env.VITE_TDUCK_AMAP_KEY||''),'process.env.VUE_APP_SECURITY_JSCODE':JSON.stringify(env.VITE_TDUCK_AMAP_SECURITY_JSCODE||''),'process.env.VUE_APP_WX':JSON.stringify(env.VITE_TDUCK_ENABLE_WX==='ON'?'ON':'OFF'),'process.env.VUE_APP_BASE_API':JSON.stringify('/tduck-api')},
     server: { proxy },
     preview: { proxy },
     build: { chunkSizeWarningLimit: 1000 },

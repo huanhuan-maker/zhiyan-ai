@@ -3,7 +3,7 @@ $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $devRoot = Join-Path $projectRoot '.local\tduck-dev'
 $manifest = Get-Content (Join-Path $devRoot 'manifest.json') -Raw | ConvertFrom-Json
-if ($manifest.database -notmatch '^tduck_vue3_[a-z0-9_]+$' -or $manifest.backend -ne 'http://127.0.0.1:8998') { throw 'Fixture may only target the isolated dev database.' }
+if ($manifest.database -notmatch '^tduck_vue3_[a-z0-9_]+$' -or $manifest.backend -notin @('http://127.0.0.1:8998','http://127.0.0.1:8997')) { throw 'Fixture may only target the isolated dev database.' }
 $config = Get-Content (Join-Path $devRoot 'application-local.yml') -Raw
 function Read-Yaml([string]$Name) {
     $value = [regex]::Match($config, '(?m)^    ' + $Name + ": '(.*?)'\s*$").Groups[1].Value
