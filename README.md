@@ -2,6 +2,8 @@
 
 当前交付为 **M0 工程联通 + M1 固定问卷闭环**，按用户授权完成后停止，等待人工验收。固定技术栈：Vue 3 + TypeScript + Vite + ECharts、Spring Boot + MyBatis-Plus、MySQL 8.x。AI 尚未开发或调用。M1 构建、真实数据库自动测试及 HTTP 闭环通过，完整浏览器流程仍待人工验证，见验收报告。
 
+交给其他 Agent 验收或续开发，请先读 [Agent 交接文档](docs/AGENT_HANDOFF.md)，文末提供可复制的接手指令。
+
 ## Windows 安装要求
 
 Windows 10/11、PowerShell 5.1/7、JDK 17+、Node 22.12+（或 20.19+）、MySQL 8.x。无需全局 Maven 或 Docker。首次安装依赖需要网络。
