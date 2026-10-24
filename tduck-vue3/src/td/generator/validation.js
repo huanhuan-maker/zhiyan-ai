@@ -17,15 +17,15 @@ export async function validateFields(fields,model){
  }
  return errors
 }
-export function decorateAnswers(fields,model){
+export function decorateAnswers(fields,model,resolvedOptions={}){
  const result={}
  const find=(options,value)=>{for(const op of options||[]){if(String(op.value)===String(value))return op.label;const child=find(op.children,value);if(child!==undefined)return child}}
- for(const field of fields){if(field.config.displayType||field.typeId==='PAGINATION')continue;const id=field.config.formId,value=model[id];result[id]=value;if(['RADIO','CHECKBOX','SELECT','CASCADER','IMAGE_SELECT'].includes(field.typeId)){const label=v=>find(field.config.options,v)||'';result[id+'label']=Array.isArray(value)?value.map(label):label(value)}if(field.typeId==='SUB_FORM')result[id]=(value||[]).map(row=>decorateAnswers(field.childList||[],row))}
+ for(const field of fields){if(field.config.displayType||field.typeId==='PAGINATION')continue;const id=field.config.formId,value=model[id];result[id]=value;if(['RADIO','CHECKBOX','SELECT','CASCADER','IMAGE_SELECT'].includes(field.typeId)){const label=v=>find(resolvedOptions[id]||field.config.options,v)??'';result[id+'label']=Array.isArray(value)?value.map(label):label(value)}if(field.typeId==='SUB_FORM')result[id]=(value||[]).map(row=>decorateAnswers(field.childList||[],row,resolvedOptions))}
  for(const field of fields){
   const id=field.config.formId,value=model[id]
   if(['RADIO','CHECKBOX'].includes(field.typeId)&&(value===0||Array.isArray(value)&&value.includes(0))){
    const other=model[id+'other']||'';result[id+'other']=other
-   const label=v=>Number(v)===0?other:find(field.config.options,v)||''
+   const label=v=>Number(v)===0?other:find(resolvedOptions[id]||field.config.options,v)??''
    result[id+'label']=Array.isArray(value)?value.map(label):label(value)
   }
  }

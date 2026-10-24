@@ -10,6 +10,10 @@
    <template v-if="item.config.optionsType===1"><el-form-item v-for="(label,key) in dynamicLabels" :key="key" :label="label"><el-input v-model="item.config.dynamicOptions[key]"/></el-form-item></template>
    <el-form-item v-else label="选项设置"><div v-for="(op,i) in item.config.options" :key="i" class="field-option-editor"><el-input v-model="op.label" placeholder="选项文字"/><el-input v-if="['IMAGE_SELECT','IMAGE_CAROUSEL'].includes(item.typeId)" v-model="op.image" placeholder="图片地址"/><el-input v-if="'value' in op" v-model="op.value" placeholder="选项值"/><el-button :disabled="i===0" @click="move(item.config.options,i,-1)">↑</el-button><el-button @click="item.config.options.splice(i,1);changed()">删除</el-button></div><el-button @click="addOption">添加选项</el-button><el-button v-if="['RADIO','CHECKBOX'].includes(item.typeId)" @click="addOther">添加“其他”选项</el-button></el-form-item>
   </template>
+  <template v-if="item.typeId==='CHECKBOX'">
+   <el-form-item label="多选互斥"><el-switch v-model="item.config.withExclusiveChoice"/></el-form-item>
+   <el-form-item v-if="item.config.withExclusiveChoice" label="互斥选项"><el-select v-model="item.config.exclusiveChoiceApiCodes" multiple placeholder="请选择互斥选项"><el-option v-for="op in choiceOptions" :key="op.value" :value="op.value" :label="plain(op.label)"/></el-select></el-form-item>
+  </template>
   <template v-if="item.table">
    <el-form-item label="矩阵行"><div v-for="(row,i) in item.table.rows" :key="row.id" class="field-option-editor"><el-input v-model="row.label"/><el-button @click="item.table.rows.splice(i,1);changed()">删除</el-button></div><el-button @click="addMatrix('rows')">添加行</el-button></el-form-item>
    <el-form-item v-if="item.table.columns" label="矩阵列"><div v-for="(col,i) in item.table.columns" :key="col.id" class="field-option-editor"><el-input v-model="col.label"/><el-button @click="item.table.columns.splice(i,1);changed()">删除</el-button></div><el-button @click="addMatrix('columns')">添加列</el-button></el-form-item>
@@ -26,11 +30,13 @@
  </el-form>
 </template>
 <script setup>
-import {computed,ref} from 'vue'
+import {computed,ref,inject} from 'vue'
 import FormTinymce from '@/components/tinymce/index.vue'
 import {createField,definitions} from './schema'
 const props=defineProps({item:{type:Object,required:true},disabled:Boolean}),emit=defineEmits(['change'])
 const changed=()=>emit('change'),plain=v=>String(v||'').replace(/<[^>]*>/g,'')
+const resolvedOptions=inject('tdResolvedOptions',{})
+const choiceOptions=computed(()=>resolvedOptions[props.item.config.formId]||props.item.config.options||[])
 const childType=ref('INPUT'),childTypes=Object.values(definitions).filter(x=>['INPUT','TEXTAREA','NUMBER','DATE','RADIO','CHECKBOX','SELECT','RATE'].includes(x.typeId))
 const labels={min:'最小值',max:'最大值',step:'步长',precision:'小数位数',minlength:'最小长度',maxlength:'最大长度',multiple:'多选',filterable:'可搜索',clearable:'可清空',disabled:'禁用',readonly:'只读',notRepeat:'不允许重复',limit:'最多文件数',accept:'允许文件类型',src:'图片地址',fit:'图片适应方式',alt:'图片说明',content:'内容',color:'颜色',separator:'分隔符','allow-half':'允许半分','show-text':'显示辅助文字','show-score':'显示分数','show-word-limit':'显示字数','show-all-levels':'显示完整路径',inline:'横向排列',border:'选项边框',otherRequired:'“其他”内容必填',showVoteResult:'显示投票结果',buttonText:'按钮文字',fileSize:'文件大小（MB）',requireDetailAddr:'填写详细地址',height:'图片高度',longAndLat:'显示经纬度',defaultNowTime:'默认当前时间'}
 const dynamicLabels={url:'选项接口地址',dataPath:'数据路径',valueField:'值字段',labelField:'文字字段',childrenField:'子级字段'}

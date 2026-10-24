@@ -5,10 +5,11 @@ import {execFileSync} from 'node:child_process'
 import {createRequire} from 'node:module'
 const require=createRequire(path.resolve('tduck-vue3/package.json')),{chromium}=require('@playwright/test')
 const ps=path.resolve('scripts/tduck/Admin-Acceptance.ps1'),checks=[],errors=[]
+const powershell=path.join(process.env.SystemRoot||'C:\\Windows','System32','WindowsPowerShell','v1.0','powershell.exe')
 let browser,token
 async function api(url,data){const r=await fetch('http://127.0.0.1:8997'+url,{method:data===undefined?'GET':'POST',headers:{'Content-Type':'application/json',token},...(data===undefined?{}:{body:JSON.stringify(data)})});const v=await r.json();assert.equal(v.code,200,url+': '+v.msg);return v.data}
 try{
- execFileSync('pwsh.exe',['-NoProfile','-File',ps],{stdio:'pipe'})
+ execFileSync(powershell,['-NoProfile','-File',ps],{stdio:'pipe'})
  const f=JSON.parse(fs.readFileSync('.local/tduck-dev/admin-acceptance.json','utf8').replace(/^\uFEFF/,''))
  const user=await api('/login/account',{account:f.account,password:f.password});assert.equal(user.admin,true);token=user.token
  browser=await chromium.launch({channel:'msedge',headless:true});const page=await browser.newPage({viewport:{width:1440,height:1000}})
@@ -50,6 +51,6 @@ try{
  fs.writeFileSync('evidence/tduck-full/admin-flows.json',JSON.stringify({checks,errors},null,2));console.log(JSON.stringify({checks,errors},null,2))
 }catch(e){console.log(JSON.stringify({failure:e.message,checks,errors}));process.exitCode=1}finally{
  await browser?.close()
- execFileSync('pwsh.exe',['-NoProfile','-File',ps,'-Restore'],{stdio:'pipe'})
+ execFileSync(powershell,['-NoProfile','-File',ps,'-Restore'],{stdio:'pipe'})
  console.log('Isolated administrator profile restored in finally.')
 }

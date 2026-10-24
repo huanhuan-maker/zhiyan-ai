@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "exclusive checkbox setting is configured through designer UI and persisted",
+    "explicit synthetic remote fixture retries after HTTP failure, resolves nested paths and cascader children, and stores correct labels in real backend",
+    "exclusive choice replaces ordinary selections; selecting an ordinary option clears exclusive choice",
+    "field disabled property prevents editing while retaining its stored default",
+    "owner answer editor stores current remote labels without modifying the published question schema"
+  ],
+  "errors": [],
+  "remoteSource": "Explicit synthetic Playwright fixture; questionnaire and answers use real isolated backend",
+  "formKey": "lTFVWPck"
+}

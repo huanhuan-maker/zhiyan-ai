@@ -4,7 +4,7 @@ import {promisify} from 'node:util'
 import {resolve} from 'node:path'
 import {writeFileSync} from 'node:fs'
 const exec=promisify(execFile)
-for(const script of ['smoke-full','feature-flows','settings-flows','admin-flows','data-roundtrip','backend-security','question-roundtrip']){
+for(const script of ['smoke-full','feature-flows','settings-flows','admin-flows','data-roundtrip','backend-security','question-roundtrip','choice-flows']){
  test(script+' real backend workflow',async()=>{
   const {stdout}=await exec(process.execPath,[`scripts/tduck/${script}.mjs`],{cwd:resolve('..'),timeout:110000,maxBuffer:1024*1024})
   writeFileSync(resolve(`../evidence/tduck-full/${script}.log`),stdout)

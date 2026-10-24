@@ -73,11 +73,9 @@
 
 <script>
 import { GenerateForm } from '@/generator'
-import { decorateAnswers } from '@/generator/validation'
 import '@/generator/style.css'
 import ViewData from './ViewData'
 import { deleteFormDataRequest, updateFormDataRequest } from '@/api/project/data'
-import { jsonSimpleClone } from '@/utils'
 import { getSettingRequest } from '@/api/project/setting'
 import { removeHtmlTag } from '@/utils'
 
@@ -200,16 +198,6 @@ export default {
     },
     async handleUpdate() {
       if (!await this.$refs.generateForm.validate()) return
-      let formModel = jsonSimpleClone(this.$refs.generateForm.formModel)
-      // 表单中字段名规则为字段类型时间戳 移除不符合规则的数据 不然会有其他的比如提交时间等数据
-      let tempFormModel = {}
-      // 保留formModel中包含数字的属性
-      for (let key in formModel) {
-        let bool = /.*\d+.*/g.test(key)
-        if (bool) {
-          tempFormModel[key] = formModel[key]
-        }
-      }
       updateFormDataRequest({
         id: this.formModel.id,
         completeTime: null,
@@ -219,7 +207,7 @@ export default {
         submitUa: null,
         wxUserInfo: null,
         wxOpenId: '',
-        originalData: decorateAnswers(this.formConf.fields, tempFormModel)
+        originalData: this.$refs.generateForm.getAnswers()
       }).then((res) => {
         this.msgSuccess('修改成功')
         this.dialogVisible = false

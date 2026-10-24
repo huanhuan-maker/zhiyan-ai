@@ -17,7 +17,7 @@
   </el-form>
 </template>
 <script setup>
-import {ref,reactive,computed,watch,nextTick} from 'vue'
+import {ref,reactive,computed,watch,nextTick,provide} from 'vue'
 import DOMPurify from 'dompurify'
 import QuestionField from './QuestionField.vue'
 import {clone,visibleFields} from './schema'
@@ -25,6 +25,8 @@ import {validateFields,decorateAnswers} from './validation'
 const props=defineProps({formConf:{type:Object,default:()=>({fields:[]})},pageFormModel:{type:Object,default:()=>({})}})
 const emit=defineEmits(['submit','change'])
 const form=ref(),page=ref(0),submitting=ref(false),formModel=reactive({}),fieldErrors=reactive({})
+const resolvedOptions=reactive({})
+provide('tdResolvedOptions',resolvedOptions)
 const safe=value=>DOMPurify.sanitize(String(value||''))
 watch(()=>props.formConf.fields,fields=>{
   for(const f of fields||[]){
@@ -60,8 +62,9 @@ async function submit(){
   if(submitting.value)return
   if(!await check(visible.value))return
   submitting.value=true
-  emit('submit',{formModel:decorateAnswers(visible.value,formModel),formId:props.formConf.formId,formKey:props.formConf.formKey,done:()=>{submitting.value=false}})
+  emit('submit',{formModel:getAnswers(),formId:props.formConf.formId,formKey:props.formConf.formKey,done:()=>{submitting.value=false}})
 }
 function reset(){form.value.resetFields();page.value=0}
-defineExpose({formModel,submit,reset,validate:()=>check(visible.value)})
+const getAnswers=()=>decorateAnswers(visible.value,formModel,resolvedOptions)
+defineExpose({formModel,submit,reset,getAnswers,validate:()=>check(visible.value)})
 </script>

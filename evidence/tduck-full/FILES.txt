@@ -14,9 +14,12 @@ D:\LcProject\evidence\tduck-full\07-all-types-editor.png
 D:\LcProject\evidence\tduck-full\08-all-types-preview.png
 D:\LcProject\evidence\tduck-full\09-imported-data.png
 D:\LcProject\evidence\tduck-full\10-local-question-types.png
+D:\LcProject\evidence\tduck-full\11-advanced-choices.png
 D:\LcProject\evidence\tduck-full\admin-flows.json
 D:\LcProject\evidence\tduck-full\admin-ui.json
+D:\LcProject\evidence\tduck-full\ADVANCED_CHOICES.md
 D:\LcProject\evidence\tduck-full\backend-security.json
+D:\LcProject\evidence\tduck-full\choice-flows.json
 D:\LcProject\evidence\tduck-full\data-roundtrip.json
 D:\LcProject\evidence\tduck-full\e2e-results.xml
 D:\LcProject\evidence\tduck-full\feature-flows.json
@@ -40,6 +43,7 @@ D:\LcProject\scripts\tduck\admin-ui.mjs
 D:\LcProject\scripts\tduck\backend-security.mjs
 D:\LcProject\scripts\tduck\Build-FullBackend.ps1
 D:\LcProject\scripts\tduck\check-templates.mjs
+D:\LcProject\scripts\tduck\choice-flows.mjs
 D:\LcProject\scripts\tduck\data-roundtrip.mjs
 D:\LcProject\scripts\tduck\feature-flows.mjs
 D:\LcProject\scripts\tduck\import-fixture.py
@@ -279,6 +283,7 @@ D:\LcProject\tduck-vue3\src\td\generator\FieldSettings.vue
 D:\LcProject\tduck-vue3\src\td\generator\FormDesign.vue
 D:\LcProject\tduck-vue3\src\td\generator\GenerateForm.vue
 D:\LcProject\tduck-vue3\src\td\generator\index.js
+D:\LcProject\tduck-vue3\src\td\generator\options.js
 D:\LcProject\tduck-vue3\src\td\generator\QuestionField.vue
 D:\LcProject\tduck-vue3\src\td\generator\schema.js
 D:\LcProject\tduck-vue3\src\td\generator\style.css
