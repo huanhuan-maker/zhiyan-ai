@@ -1,5 +1,7 @@
 # TDuck Vue 3 本地迁移版
 
+当前新建题型已按用户要求收敛为单选、多选、量表、开放题，右侧复杂属性默认折叠；旧问卷题型继续兼容。见 [简化编辑器记录](../evidence/tduck-full/SIMPLE_EDITOR.md)。
+
 当前验收入口：[http://localhost:5180/home](http://localhost:5180/home)。UI 和业务页面来自 `D:\tduck-front`，前端已改为 Vue 3、Vite、Router 4、Pinia、Element Plus 和 Apache ECharts。当前入口是 `src/td/main.js`；此前有限功能的 TypeScript 原型及测试作为历史代码保留。
 
 后端复用 `D:\tduck-survey-form-master` 的 Spring Boot / MyBatis-Plus / MySQL 业务。当前 5180 代理修复版隔离后端 **8997**，使用 **tduck_vue3_dev**；原版 **8890/8999** 和第一轮隔离后端 8998 均保留。原库后续操作不会自动同步到开发库。

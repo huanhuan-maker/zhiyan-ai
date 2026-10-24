@@ -34,6 +34,7 @@ try{
  await page.goto('http://127.0.0.1:5180/project/form/editor?key='+key)
  await page.locator('.question-card').nth(2).click()
  const settings=page.locator('.designer-config')
+ await settings.getByText('更多设置',{exact:true}).click()
  await settings.locator('.el-form-item').filter({hasText:'多选互斥'}).locator('.el-switch').click()
  await settings.locator('.el-form-item').filter({hasText:'互斥选项'}).locator('.el-select').click()
  await page.getByRole('option',{name:'以上都不是',exact:true}).click()

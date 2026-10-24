@@ -1,7 +1,4 @@
 {
-  "runAt": "2026-10-24T18:14:35.6486304+08:00",
-  "failed": 0,
-  "backend": "http://127.0.0.1:8997",
   "checks": [
     {
       "passed": true,
@@ -17,27 +14,27 @@
     },
     {
       "passed": true,
-      "name": "Persisted form kY1yEMPY"
+      "name": "Persisted form DQ49i3c3"
     },
     {
       "passed": true,
-      "name": "Persisted question kY1yEMPY"
+      "name": "Persisted question DQ49i3c3"
     },
     {
       "passed": true,
-      "name": "Persisted form 0jJx2D1Q"
+      "name": "Persisted form Sxpo6kc1"
     },
     {
       "passed": true,
-      "name": "Persisted question 0jJx2D1Q"
+      "name": "Persisted question Sxpo6kc1"
     },
     {
       "passed": true,
-      "name": "Persisted form sfLA5Lrc"
+      "name": "Persisted form vMqxEp4L"
     },
     {
       "passed": true,
-      "name": "Persisted question sfLA5Lrc"
+      "name": "Persisted question vMqxEp4L"
     },
     {
       "passed": true,
@@ -64,31 +61,34 @@
       "name": "Invalid token rejected by backend"
     }
   ],
-  "note": "Synthetic fixtures; no tokens, credentials or respondent data included.",
+  "failed": 0,
+  "backend": "http://127.0.0.1:8997",
+  "runAt": "2026-10-24T19:43:37.2657429+08:00",
   "passed": 15,
   "upstreamTypeRoundTrip": [
     {
+      "key": "DQ49i3c3",
       "returnedTypeDesc": "流程表单",
-      "key": "kY1yEMPY",
       "returnedType": 2,
       "createRequestType": 1
     },
     {
+      "key": "Sxpo6kc1",
       "returnedTypeDesc": "流程表单",
-      "key": "0jJx2D1Q",
       "returnedType": 2,
       "createRequestType": 1
     },
     {
+      "key": "vMqxEp4L",
       "returnedTypeDesc": "流程表单",
-      "key": "sfLA5Lrc",
       "returnedType": 2,
       "createRequestType": 1
     }
   ],
   "statusCountsFromBackend": [
-    20,
-    19,
-    12
-  ]
+    3,
+    5,
+    3
+  ],
+  "note": "Synthetic fixtures; no tokens, credentials or respondent data included."
 }

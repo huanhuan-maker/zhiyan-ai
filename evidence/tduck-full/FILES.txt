@@ -15,6 +15,7 @@ D:\LcProject\evidence\tduck-full\08-all-types-preview.png
 D:\LcProject\evidence\tduck-full\09-imported-data.png
 D:\LcProject\evidence\tduck-full\10-local-question-types.png
 D:\LcProject\evidence\tduck-full\11-advanced-choices.png
+D:\LcProject\evidence\tduck-full\12-simple-editor.png
 D:\LcProject\evidence\tduck-full\admin-flows.json
 D:\LcProject\evidence\tduck-full\admin-ui.json
 D:\LcProject\evidence\tduck-full\ADVANCED_CHOICES.md
@@ -35,6 +36,7 @@ D:\LcProject\evidence\tduck-full\route-setting.png
 D:\LcProject\evidence\tduck-full\route-statistics.png
 D:\LcProject\evidence\tduck-full\route-theme.png
 D:\LcProject\evidence\tduck-full\settings-flows.json
+D:\LcProject\evidence\tduck-full\SIMPLE_EDITOR.md
 D:\LcProject\patches\tduck-backend\LICENSE
 D:\LcProject\patches\tduck-backend\local-acceptance-fixes.patch
 D:\LcProject\scripts\tduck\Admin-Acceptance.ps1
@@ -286,6 +288,7 @@ D:\LcProject\tduck-vue3\src\td\generator\index.js
 D:\LcProject\tduck-vue3\src\td\generator\options.js
 D:\LcProject\tduck-vue3\src\td\generator\QuestionField.vue
 D:\LcProject\tduck-vue3\src\td\generator\schema.js
+D:\LcProject\tduck-vue3\src\td\generator\SimpleFieldSettings.vue
 D:\LcProject\tduck-vue3\src\td\generator\style.css
 D:\LcProject\tduck-vue3\src\td\generator\validation.js
 D:\LcProject\tduck-vue3\src\td\main.js

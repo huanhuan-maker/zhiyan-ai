@@ -24,8 +24,7 @@ try{
  }
  await page.goto(`${base}/project/form/editor?key=${key}`)
  await page.locator('.question-card').nth(26).waitFor()
- await page.locator('.designer-config .tox-edit-area iframe').waitFor()
- const body=page.frameLocator('.designer-config .tox-edit-area iframe').locator('body')
+ const body=page.locator('.designer-config > div > .el-form textarea').first()
  await body.fill('Synthetic title persisted');await body.press('Space');await body.press('Backspace')
  await page.getByText('有未保存修改',{exact:true}).waitFor()
  await page.getByRole('button',{name:'保存',exact:true}).click();await page.getByText('已保存',{exact:true}).first().waitFor()
@@ -51,7 +50,7 @@ try{
  await page.getByText('Synthetic Vue 3 response',{exact:true}).click()
  const dialog=page.getByRole('dialog')
  await dialog.getByRole('button',{name:/修\s*改/}).click()
- await dialog.locator('.native-form input').first().fill('Synthetic edited response')
+ await dialog.locator('.native-form textarea').first().fill('Synthetic edited response')
  await dialog.locator('.el-radio').nth(1).click()
  await dialog.getByRole('button',{name:/确\s*定/}).click()
  await page.getByText('修改成功',{exact:true}).waitFor()
