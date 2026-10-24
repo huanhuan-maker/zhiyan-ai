@@ -1,0 +1,65 @@
+# M1 ç‹¬ç«‹éªŒæ”¶ SQL å¯¹è´¦ï¼ˆ2026-10-24ï¼Œåªè¯»ï¼Œæ— å¯†ç /å“ˆå¸Œ/tokenï¼‰
+# æ‰§è¡Œ: db/verify-m1.sql + AI åŒæ„æ ‡è®°å¤æŸ¥ï¼ˆåº“ zhiyan_aiï¼‰
+
+mysql_version	database_name
+8.0.46	zhiyan_ai
+version	description	success
+1	system checks	1
+2	survey core	1
+3	case sensitive question ids	1
+id	status	revision	draft_title
+1	OPEN	2	Ê³ÌÃÂúÒâ¶È ¡¤ M1 ºÏ³ÉÑéÊÕ / draft updated
+2	OPEN	2	Ê³ÌÃÂúÒâ¶È ¡¤ M1 ºÏ³ÉÑéÊÕ / draft updated
+3	CLOSED	2	Ê³ÌÃÂúÒâ¶ÈÑéÊÕ£¨²İ¸å¶ş°æ£¬Î´·¢²¼ÄÚÈİ£©
+4	OPEN	2	Ê³ÌÃÂúÒâ¶È ¡¤ M1 ºÏ³ÉÑéÊÕ / draft updated
+id	survey_id	version_number	published_title
+1	1	1	Ê³ÌÃÂúÒâ¶È ¡¤ M1 ºÏ³ÉÑéÊÕ
+2	2	1	Ê³ÌÃÂúÒâ¶È ¡¤ M1 ºÏ³ÉÑéÊÕ
+3	3	1	Ê³ÌÃÂúÒâ¶ÈÑéÊÕ
+4	3	2	Ê³ÌÃÂúÒâ¶ÈÑéÊÕ£¨²İ¸å¶ş°æ£¬Î´·¢²¼ÄÚÈİ£©
+5	4	1	Ê³ÌÃÂúÒâ¶È ¡¤ M1 ºÏ³ÉÑéÊÕ
+version_id	status	session_count
+1	SUBMITTED	2
+2	SUBMITTED	2
+3	SUBMITTED	2
+5	SUBMITTED	2
+version_id	question_id	stored_answer_rows
+1	factors	2
+1	satisfaction	2
+1	score	2
+1	suggestion	2
+2	factors	2
+2	satisfaction	2
+2	score	2
+2	suggestion	2
+3	q_514f4451-463f-4fd8-89d3-0a480f5d2aa6	2
+3	q_532f1226-a66e-4460-9148-7911cefbb5de	2
+3	q_6bcfd6c5-1635-4e39-adb8-cc88f7d02b51	2
+3	q_8a1c89b8-fad6-47d9-b15f-5da9fc18b85b	2
+5	factors	2
+5	satisfaction	2
+5	score	2
+5	suggestion	2
+version_id	single_choice	numerator
+1	yes	1
+1	no	1
+2	yes	1
+2	no	1
+5	yes	1
+5	no	1
+version_id	scale_average
+1	3.000000
+2	3.000000
+5	3.000000
+
+-- AI åŒæ„æ ‡è®°å¤æŸ¥ï¼ˆæœ¬éªŒæ”¶æµè§ˆå™¨æµç¨‹ï¼šå—è®¿è€…Aæ‹’ç»/å—è®¿è€…BåŒæ„ï¼Œè°ƒæŸ¥3ç‰ˆæœ¬3ï¼‰
+SELECT version_id, ai_consent, status, COUNT(*) AS n FROM response_sessions GROUP BY version_id, ai_consent, status ORDER BY version_id;
+version_id	ai_consent	status	n
+1	0	SUBMITTED	1
+1	1	SUBMITTED	1
+2	0	SUBMITTED	1
+2	1	SUBMITTED	1
+3	0	SUBMITTED	1
+3	1	SUBMITTED	1
+5	0	SUBMITTED	1
+5	1	SUBMITTED	1
