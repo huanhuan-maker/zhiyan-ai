@@ -20,5 +20,6 @@ public class SurveyController {
     public record Publish(int revision) { }
     @PostMapping("/{id}/publish") public Object publish(@PathVariable long id,@RequestBody Publish body,Principal p) { return service.publish(id,body.revision(),p.getName()); }
     @PostMapping("/{id}/close") public Object close(@PathVariable long id,Principal p) { return service.close(id,p.getName()); }
+    @PostMapping("/{id}/versions/{versionId}/rotate-token") public Object rotateToken(@PathVariable long id,@PathVariable long versionId,Principal p) { return service.rotateToken(id,versionId,p.getName()); }
     @GetMapping("/{id}/results") public Object results(@PathVariable long id,@RequestParam long versionId,Principal p) { return results.results(id,versionId,p.getName()); }
 }

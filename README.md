@@ -98,7 +98,7 @@ npm.cmd ci
 npm.cmd run build
 ```
 
-JUnit 报告：`backend/target/surefire-reports/`。最新28项通过（0失败/错误/跳过），包含M0回归9项、M1集成16项、真实并发2项、限流单元测试1项。集成测试用真实MySQL8，MockMvc只是HTTP测试入口；覆盖账户/所有权/版本冻结/恢复/幂等/分母/关闭/过期/输入及并发回归，测试数据回滚或清理。Windows PowerShell5.1和PowerShell7均已真实执行脚本。
+JUnit 报告：`backend/target/surefire-reports/`。最新34项通过（0失败/错误/跳过），包含M0回归9项、M1集成16项、发布生命周期与链接轮换5项、真实并发3项、限流单元测试1项。集成测试用真实MySQL8，MockMvc只是HTTP测试入口；覆盖账户/所有权/版本冻结/恢复/幂等/分母/关闭/过期/输入及并发回归，测试数据回滚或清理。Windows PowerShell5.1和PowerShell7均已真实执行脚本。
 
 自动启动/重启并检查持久化（先关闭占用 8080 的后端，根目录执行）：
 
@@ -126,7 +126,7 @@ POST 诊断 JSON：`{"message":"M0 联通验证"}`，1–200 字；参数错误 
 
 Spring Security 使用 HttpOnly、SameSite=Strict cookie、30 分钟空闲会话、会话固定攻击保护；CSRF 保持启用。M1账户及BCrypt密码哈希存在MySQL，管理登录会话重启后需重新登录；调查/版本/匿名填写会话/答案/诊断记录均在真实MySQL中保留。每个发起者只管理自己的调查，所有权校验在服务端执行。
 
-完整 M1 API 契约见 [M1_API.md](docs/M1_API.md)。POST鉴权接口100次/分钟、公开写入300次/分钟，按本地连接IP限流。当前为本地部署，HTTPS/Secure cookie/数据库TLS及分布式限流尚未作生产验证。匿名token只在标签页sessionStorage中保留，清理后无法找回原填写；分享token只在发布时返回一次。没有真实AI或Mock AI。
+完整 M1 API 契约见 [M1_API.md](docs/M1_API.md)。POST鉴权接口100次/分钟、公开写入300次/分钟，按本地连接IP限流。当前为本地部署，HTTPS/Secure cookie/数据库TLS及分布式限流尚未作生产验证。匿名token只在标签页sessionStorage中保留，清理后无法找回原填写；分享token在发布时返回一次，丢失后发起者可在编辑页对指定版本安全轮换（旧链接立即失效）。没有真实AI或Mock AI。
 
 ## 常见问题
 

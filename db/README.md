@@ -7,6 +7,7 @@ The single source of truth is `backend/src/main/resources/db/migration/`. Flyway
 - V1: `system_checks` for M0 real Mapper connectivity.
 - V2: `users`, `surveys`, `survey_versions`, `response_sessions`, `answers`, `audit_events` for M1. Stable question/option IDs live in draft/published JSON. Answers link to anonymous sessions, sessions link to a frozen version, surveys link to an owner. Passwords are BCrypt; public/session capability tokens are stored only as SHA-256 digests.
 - V3: `answers.question_id` uses ASCII binary collation so case-sensitive IDs stay distinct.
+- V4: `survey_versions.status` (OPEN/CLOSED) adds a per-version collection lifecycle. Versions of surveys already CLOSED at migration time are backfilled to CLOSED, so republishing later only reopens collection for the new version; token rotation only rewrites `token_hash`.
 
 Bootstrap account configuration creates a database user only when absent; changing `.env` does not reset an existing password. Existing local databases have already been provisioned; do not overwrite `.env` or initialize MySQL's existing data directory.
 

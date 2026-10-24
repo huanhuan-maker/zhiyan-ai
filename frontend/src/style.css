@@ -658,6 +658,8 @@ summary { cursor: pointer; font-weight: 600; }
 .share-row label { flex: 1; min-width: 0; margin-bottom: 0; }
 .share-row .secondary, .share-row .text-link { margin-top: 25px; white-space: nowrap; }
 .version-badge { margin: 4px 8px 4px 0; }
+.version-row { margin-top: 12px; }
+.version-row .secondary { margin-top: 0; }
 .preview-panel > h2 { margin-top: 24px; }
 .preview-question { border-top: 1px solid #e1e8de; padding-top: 22px; margin-top: 26px; }
 .preserve-text { white-space: pre-wrap; overflow-wrap: anywhere; }

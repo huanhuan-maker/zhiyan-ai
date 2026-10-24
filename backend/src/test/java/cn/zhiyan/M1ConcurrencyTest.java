@@ -216,6 +216,51 @@ class M1ConcurrencyTest {
         }
     }
 
+    @Test
+    void concurrentTokenRotationLeavesExactlyOneLiveLinkWithoutBreakingInFlightSessions() throws Exception {
+        Fixture fixture = fixture();
+        Complete input = completeInput();
+        var ready = new CountDownLatch(2);
+        var rotateTogether = new CountDownLatch(1);
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        List<Future<String>> rotations = new ArrayList<>();
+        try {
+            for (int worker = 0; worker < 2; worker++) {
+                rotations.add(executor.submit(() -> transaction().execute(status -> {
+                    ready.countDown();
+                    await(rotateTogether);
+                    return (String) surveys.rotateToken(fixture.surveyId(), fixture.versionId(), fixture.owner())
+                            .get("publicToken");
+                })));
+            }
+            await(ready);
+            rotateTogether.countDown();
+            String first = rotations.get(0).get(15, TimeUnit.SECONDS);
+            String second = rotations.get(1).get(15, TimeUnit.SECONDS);
+            assertThat(first).isNotEqualTo(second);
+
+            // Serialized by the survey row lock: the last committed rotation is the only live link.
+            List<String> live = new ArrayList<>();
+            for (String token : List.of(first, second)) {
+                try { surveys.publicVersion(token); live.add(token); }
+                catch (BusinessException ex) { assertThat(ex.getStatus()).isEqualTo(404); }
+            }
+            assertThat(live).as("exactly one rotated link stays live").hasSize(1);
+            assertThat(jdbc.queryForObject("SELECT token_hash FROM survey_versions WHERE id = ?", String.class,
+                    fixture.versionId())).isEqualTo(SurveyService.hash(live.get(0)));
+        } finally {
+            rotateTogether.countDown();
+            stop(executor);
+        }
+
+        // Rotation only invalidates share links; an in-flight respondent session still completes.
+        transaction().executeWithoutResult(status ->
+                assertThat(json.valueToTree(responses.complete(fixture.sessionToken(), input)).path("status").asText())
+                        .isEqualTo("SUBMITTED"));
+        assertThat(json.valueToTree(results.results(fixture.surveyId(), fixture.versionId(), fixture.owner()))
+                .path("completedCount").asInt()).isEqualTo(1);
+    }
+
     @AfterEach
     void removeOnlyThisTestsCommittedFixturesInForeignKeyOrder() {
         for (Long ownerId : fixtureOwnerIds) {

@@ -83,6 +83,21 @@ async function closeSurvey() {
   busy.value=true; error.value="";notice.value="";
   try{await mutate(`/api/surveys/${surveyId.value}/close`);status.value="CLOSED";notice.value="调查已关闭，历史答卷仍可查看。";}catch(e){error.value=(e as Error).message;}finally{busy.value=false;}
 }
+async function rotate(v: Version) {
+  if(!window.confirm(`为版本 ${v.versionNumber} 生成新的分享链接：旧链接立即失效，已在填写中的会话不受影响。若该版本或调查已停止收集，新链接同样不能填写。确认轮换？`)) return;
+  busy.value=true; error.value=""; notice.value="";
+  try {
+    const result = await mutate<{versionId:number;versionNumber:number;publicPath:string;versionStatus:string;surveyStatus:string}>(
+      `/api/surveys/${surveyId.value}/versions/${v.id}/rotate-token`);
+    const link = {versionId:result.versionId,versionNumber:result.versionNumber,url:new URL(result.publicPath,window.location.origin).href};
+    rememberShare(surveyId.value!,link);
+    shares.value=[link,...shares.value.filter(s=>s.versionId!==link.versionId)];
+    versions.value=versions.value.map(x=>x.id===v.id?{...x,status:result.versionStatus}:x);
+    const collecting = result.surveyStatus==="OPEN" && result.versionStatus==="OPEN";
+    notice.value=`版本 ${result.versionNumber} 的分享链接已轮换，旧链接已失效。${collecting?"请复制保存新的分享链接。":"注意：该版本当前不接收填写，新链接仅作留存。"}`
+      + (result.surveyStatus==="CLOSED"?"调查已关闭；如需继续收集，请修改草稿后发布新版本。":"");
+  }catch(e){error.value=(e as Error).message;}finally{busy.value=false;}
+}
 async function copy(url:string) {
   try {await navigator.clipboard.writeText(url);notice.value="分享链接已复制。";}catch {notice.value="自动复制不可用，请选中文本框中的完整链接手动复制。";}
 }
@@ -98,7 +113,7 @@ function reloadDraft() { if(!changed.value || window.confirm('重新读取会覆
   <template v-else-if="!route.params.id || surveyId">
     <div class="editor-toolbar card"><div><span class="badge">{{ statusNames[status] }}</span> <span class="muted">修订 {{ revision }} · {{ changed ? '尚未保存' : '已保存' }}</span></div><div class="actions"><button class="secondary" :disabled="busy" @click="preview=!preview">{{ preview ? '返回编辑' : '预览问卷' }}</button><button class="button" :disabled="busy" @click="save">{{ busy ? '处理中…' : '保存草稿' }}</button><button class="button" :disabled="busy" @click="publish">保存并发布</button></div></div>
     <section v-if="shares.length" class="card share-panel"><h2>分享已发布版本</h2><p class="muted">分享链接只在发布时返回。此处显示本浏览器保存的链接；请另外保存以免清理浏览器后丢失。管理登录凭证不会保存在此。</p><div v-for="link in shares" :key="link.versionId" class="share-row"><label>版本 {{ link.versionNumber }}<input :value="link.url" readonly aria-label="完整公开分享链接" @focus="($event.target as HTMLInputElement).select()" /></label><button type="button" class="secondary" @click="copy(link.url)">复制链接</button><a :href="link.url" target="_blank" rel="noopener" class="text-link">打开答题 ↗</a></div></section>
-    <section v-if="versions.length" class="card"><div class="section-heading"><h2>发布记录</h2><div class="actions"><RouterLink :to="`/surveys/${surveyId}/results`" class="text-link">查看版本统计 →</RouterLink><button v-if="status==='OPEN'" class="secondary danger" :disabled="busy" @click="closeSurvey">关闭调查</button></div></div><p class="muted">共 {{ versions.length }} 个冻结版本。{{ !shares.length ? '当前浏览器没有保留历史公开链接；服务器只保存链接摘要，不能再次读取原链接。' : '' }}</p><span v-for="v in versions" :key="v.id" class="badge version-badge">V{{v.versionNumber}} · {{v.publishedAt?.replace('T',' ')}}</span></section>
+    <section v-if="versions.length" class="card"><div class="section-heading"><h2>发布记录</h2><div class="actions"><RouterLink :to="`/surveys/${surveyId}/results`" class="text-link">查看版本统计 →</RouterLink><button v-if="status==='OPEN'" class="secondary danger" :disabled="busy" @click="closeSurvey">关闭调查</button></div></div><p class="muted">共 {{ versions.length }} 个冻结版本。{{ !shares.length ? '当前浏览器没有保留历史公开链接；服务器只保存链接摘要，不能再次读取原链接，但可安全轮换生成新链接。' : '' }}</p><div v-for="v in versions" :key="v.id" class="share-row version-row"><span class="badge version-badge">V{{v.versionNumber}} · {{v.publishedAt?.replace('T',' ')}} · {{ v.status==='OPEN' ? (status==='OPEN'?'收集中':'已停止') : '已停止' }}</span><button type="button" class="secondary" :disabled="busy" @click="rotate(v)">重新生成分享链接</button></div></section>
     <section v-if="preview" class="card preview-panel"><span class="pill">草稿预览 · 不保存答案、不计入回收</span><h2>{{draft.title || '未命名调查'}}</h2><p class="preserve-text">{{draft.description}}</p><div class="notice preserve-text">{{draft.privacyNotice}}</div><div v-for="(q,index) in draft.questions" :key="q.id" class="preview-question"><h3>{{index+1}}. {{q.text || '未填写题干'}} <span v-if="q.required" class="required">*</span></h3><QuestionInput :question="q" v-model="previewAnswers[q.id]" /></div></section>
     <form v-else class="editor-form" @submit.prevent="save">
       <fieldset :disabled="busy" class="editor-fieldset">

@@ -18,7 +18,7 @@ public class ResponseService {
         if(!input.consent()) throw new BusinessException(400,"CONSENT_REQUIRED","同意数据用途说明后才能参与");
         var v=survey.publicVersion(publicToken);
         Survey s=survey.lockSurvey(v.getSurveyId());
-        SurveyService.ensureOpen(s); String token=SurveyService.randomToken(); var row=new ResponseSession();
+        SurveyService.ensureOpen(s); SurveyService.ensureVersionOpen(survey.lockVersion(s.getId(),v.getId())); String token=SurveyService.randomToken(); var row=new ResponseSession();
         row.setSurveyId(s.getId()); row.setVersionId(v.getId()); row.setTokenHash(SurveyService.hash(token)); row.setAiConsent(input.aiConsent());
         row.setStatus("IN_PROGRESS"); row.setExpiresAt(LocalDateTime.now().plusDays(7)); sessions.insert(row);
         return Map.of("sessionToken",token,"versionId",v.getId(),"expiresAt",row.getExpiresAt());
@@ -32,7 +32,10 @@ public class ResponseService {
             Survey currentSurvey=survey.lockSurvey(row.getSurveyId());
             row=sessions.selectOne(Wrappers.<ResponseSession>lambdaQuery().eq(ResponseSession::getId,row.getId()).last("FOR UPDATE"));
             // A current locking read must govern closure, not an earlier repeatable-read snapshot.
-            if(!"SUBMITTED".equals(row.getStatus())) SurveyService.ensureOpen(currentSurvey);
+            if(!"SUBMITTED".equals(row.getStatus())) {
+                SurveyService.ensureOpen(currentSurvey);
+                SurveyService.ensureVersionOpen(survey.lockVersion(row.getSurveyId(),row.getVersionId()));
+            }
         }
         if(row.getExpiresAt().isBefore(LocalDateTime.now())) throw new BusinessException(410,"SESSION_EXPIRED","填写会话已过期，请重新开始");
         return row;
