@@ -12,6 +12,10 @@ const router = createRouter({
     { path: "/", component: WorkspacePage },
     { path: "/login", component: LoginPage },
     { path: "/public", component: PublicPage },
+    { path: "/public/:token", component: PublicPage },
+    { path: "/surveys/new", component: () => import("./pages/SurveyEditorPage.vue") },
+    { path: "/surveys/:id/edit", component: () => import("./pages/SurveyEditorPage.vue") },
+    { path: "/surveys/:id/results", component: () => import("./pages/ResultsPage.vue") },
     {
       path: "/statistics",
       component: () => import("./pages/StatisticsPage.vue"),

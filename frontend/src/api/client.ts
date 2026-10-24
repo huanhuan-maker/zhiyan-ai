@@ -26,7 +26,7 @@ export async function request<T>(
       throw new Error(
         body?.message ??
           (response.status === 401
-            ? "请先登录后进行数据库诊断"
+            ? "请先登录后访问调研工作空间"
             : `请求失败 (${response.status})`),
       );
     }
@@ -44,6 +44,16 @@ export async function request<T>(
 async function csrfHeaders() {
   csrf = await request("/api/auth/csrf");
   return { [csrf!.headerName]: csrf!.token };
+}
+export async function mutate<T>(path: string, body?: unknown, method = "POST"): Promise<T> {
+  return request<T>(path, {
+    method,
+    headers: { ...(await csrfHeaders()), "Content-Type": "application/json" },
+    ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+  });
+}
+export async function register(username: string, password: string) {
+  await mutate("/api/auth/register", { username, password });
 }
 export async function login(username: string, password: string) {
   await request("/api/auth/login", {

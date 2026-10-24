@@ -1,0 +1,54 @@
+M1 actual verification outputs; Asia/Shanghai; 2026-10-24
+Command: powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/Start-Backend.ps1 -JavaHome D:\jdk\jdk17 -Test
+PowerShell: 5.1.26100.9711
+-------------------------------------------------------------------------------
+Test set: cn.zhiyan.M0IntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.965 s -- in cn.zhiyan.M0IntegrationTest
+-------------------------------------------------------------------------------
+Test set: cn.zhiyan.M1ConcurrencyTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.365 s -- in cn.zhiyan.M1ConcurrencyTest
+-------------------------------------------------------------------------------
+Test set: cn.zhiyan.M1IntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.915 s -- in cn.zhiyan.M1IntegrationTest
+-------------------------------------------------------------------------------
+Test set: cn.zhiyan.RequestRateFilterTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.004 s -- in cn.zhiyan.RequestRateFilterTest
+[INFO] Tests run: 28, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+[INFO] Total time:  16.023 s
+[INFO] Finished at: 2026-10-24T10:51:48+08:00
+Command: npm.cmd run build (frontend); exit code 0
+
+> zhiyan-ai-frontend@0.0.1 build
+> vue-tsc -b && vite build
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 632 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                  0.46 kB │ gzip:   0.32 kB
+dist/assets/index-BwqGf4O5.css                  12.23 kB │ gzip:   3.46 kB
+dist/assets/StatisticsPage-DQk_dX17.js           4.19 kB │ gzip:   2.31 kB
+dist/assets/ResultsPage-CYRnibkO.js              6.17 kB │ gzip:   3.18 kB
+dist/assets/SurveyEditorPage-CfcKCpdu.js        14.17 kB │ gzip:   5.58 kB
+dist/assets/index-BCsaEuTC.js                  116.72 kB │ gzip:  45.80 kB
+dist/assets/installCanvasRenderer-WKbLso7m.js  490.50 kB │ gzip: 167.10 kB
+✓ built in 4.54s
+Command: npm.cmd audit --json; exit code 0; vulnerability counts
+{
+  "info": 0,
+  "low": 0,
+  "moderate": 0,
+  "high": 0,
+  "critical": 0,
+  "total": 0
+}
+Regression BEFORE fix: targeted test exit nonzero; expected400/actual200
+java.lang.AssertionError: Response status expected:<400> but was:<200>
+[ERROR]   M1IntegrationTest.emptyArrayIsOnlyValidForMultipleChoice:139->call:42 Response status expected:<400> but was:<200>
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0

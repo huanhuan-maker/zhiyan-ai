@@ -1,0 +1,14 @@
+{
+  "realHttp": "PASS",
+  "saveRestore": "PASS",
+  "submitted": 2,
+  "singleYes": 1,
+  "singleNo": 1,
+  "percentageEach": 50,
+  "scaleAverage": 3,
+  "duplicateSubmit": "PASS",
+  "publishedSnapshotFrozen": "PASS",
+  "actualRestartPersistence": "PASS",
+  "surveyId": 2,
+  "versionId": 2
+}

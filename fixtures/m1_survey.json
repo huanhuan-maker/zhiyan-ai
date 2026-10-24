@@ -1,0 +1,13 @@
+{
+  "title": "食堂满意度 · M1 合成验收",
+  "description": "仅用于工程验收的合成调查，不代表真实人群意见。",
+  "privacyNotice": "本调查仅保存匿名回答，用于知研 AI 工程验收。请勿填写姓名、联系方式等隐私。当前 M1 不调用 AI，无论是否勾选后续 AI 意愿都不会将文本发送到模型。",
+  "perQuestionFollowupLimit": 1,
+  "totalFollowupLimit": 3,
+  "questions": [
+    {"id":"satisfaction","type":"SINGLE","text":"你对食堂的整体满意度如何？","required":true,"allowFollowup":false,"options":[{"id":"yes","label":"满意"},{"id":"neutral","label":"一般"},{"id":"no","label":"不满意"}]},
+    {"id":"factors","type":"MULTIPLE","text":"你关注哪些方面？","required":false,"allowFollowup":false,"options":[{"id":"price","label":"价格"},{"id":"taste","label":"口味"},{"id":"queue","label":"排队"}]},
+    {"id":"score","type":"SCALE","text":"请给食堂打分（1–5 分）","required":true,"allowFollowup":false,"options":[],"min":1,"max":5},
+    {"id":"suggestion","type":"OPEN","text":"你认为哪里可以改善？","required":false,"allowFollowup":true,"options":[]}
+  ]
+}

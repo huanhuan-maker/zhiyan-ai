@@ -1,6 +1,6 @@
 # 知研 AI
 
-当前交付仅为 **M0：工程搭建与环境联通**，等待人工验收。固定技术栈：Vue 3 + ECharts、Spring Boot + MyBatis-Plus、MySQL 8.x。问卷业务和 AI 尚未开发。
+当前交付为 **M0 工程联通 + M1 固定问卷闭环**，按用户授权完成后停止，等待人工验收。固定技术栈：Vue 3 + TypeScript + Vite + ECharts、Spring Boot + MyBatis-Plus、MySQL 8.x。AI 尚未开发或调用。M1 构建、真实数据库自动测试及 HTTP 闭环通过，完整浏览器流程仍待人工验证，见验收报告。
 
 ## Windows 安装要求
 
@@ -31,7 +31,7 @@ notepad .env
 
 默认地址 `127.0.0.1:3306`，开发库 `zhiyan_ai`、测试库 `zhiyan_ai_test`，专用账户 `zhiyan`。可在 `.env` 修改 host/port；DB_PASSWORD、APP_ADMIN_PASSWORD 留空时脚本自动生成并写入 `.env`。脚本只创建两个库并授权专用账户，不删除数据、不改变 root 或已有账户的密码。若同名账户密码不匹配，换一个独立 DB_USER 后重试。**本次已完成初始化，无需重做。**
 
-发起者网页登录账户位于 `.env` 的 APP_ADMIN_USER / APP_ADMIN_PASSWORD。`.env` 已被 Git 忽略，禁止上传密码、密钥或备份。
+发起者初始网页登录账户位于 `.env` 的 APP_ADMIN_USER / APP_ADMIN_PASSWORD。M1 仅在该用户名尚不存在时创建数据库用户，以后修改环境密码不会重置既有账户密码；也可以在网页登录页注册新账户。`.env` 已被 Git 忽略，禁止上传密码、密钥或备份。
 
 ## 没有 MySQL 服务时：隔离本地实例（同样无需 Docker）
 
@@ -68,7 +68,9 @@ Java 已在 PATH 且 JAVA_HOME 正确时可以省略 `-JavaHome`；路径可换�
 
 前端：<http://127.0.0.1:5173>，后端健康：<http://127.0.0.1:8080/actuator/health>。
 
-页面：`/` 工作台、`/login` 登录/会话、`/public` 公开答题真实空状态、`/statistics` 数据库诊断。登录后进入“统计与联通”，写入诊断消息、刷新、重启后端，再读同一记录。图表来自真实诊断记录总数，醒目标记“开发环境联通演示”，不冒充调查结果。
+页面：`/` 我的调查、`/login` 登录/注册/会话、`/surveys/new` 手工建卷、`/surveys/{id}/edit` 编辑/预览/发布/关闭、`/surveys/{id}/results` 指定版本统计、`/public/{token}` 公开答题。发布会生成独立随机链接，请自行保存；匿名填写不要求发起者登录。点击“保存进度”后同标签刷新可从数据库恢复，最终提交后计入回收统计。
+
+M1 支持单选、多选、量表、开放题；发布核心题冻结，之后编辑草稿不改变旧版。ECharts 读取真实后端人数，后端给出版本、有效分母、缺失、比例与均值。`/public` 无完整链接时显示说明；`/statistics` 保留明确标记的 M0 联通诊断，不冒充调查统计。
 
 后端仅绑定 127.0.0.1；Vite 同源代理 `/api`、`/actuator` 至 8080。若修改 SERVER_PORT，须同步修改 `frontend/vite.config.ts` 的代理地址。前后端均按 Ctrl+C 停止，MySQL 独立运行。
 
@@ -94,15 +96,17 @@ npm.cmd ci
 npm.cmd run build
 ```
 
-JUnit 报告：`backend/target/surefire-reports/`。覆盖真实 MySQL 8/Mapper 中文读写、HTTP→数据库、计数、登录/退出、未登录访问、CSRF、错误密码、非法输入、SQL 字符串字面存储。测试数据事务回滚。
+JUnit 报告：`backend/target/surefire-reports/`。最新28项通过（0失败/错误/跳过），包含M0回归9项、M1集成16项、真实并发2项、限流单元测试1项。集成测试用真实MySQL8，MockMvc只是HTTP测试入口；覆盖账户/所有权/版本冻结/恢复/幂等/分母/关闭/过期/输入及并发回归，测试数据回滚或清理。Windows PowerShell5.1和PowerShell7均已真实执行脚本。
 
 自动启动/重启并检查持久化（先关闭占用 8080 的后端，根目录执行）：
 
 ```powershell
 .\scripts\Verify-M0.ps1 -JavaHome 'D:\jdk\jdk17'
+# M1：创建四题型合成调查、两独立HTTP会话，核对2份/50%/均值3并真实重启
+.\scripts\Verify-M1.ps1 -JavaHome 'D:\jdk\jdk17'
 ```
 
-脚本打包并启动真实 Java 服务，经 HTTP 插入记录，停止并重启后再读取同一 ID；另以错误数据库端口验证启动失败。测试诊断记录有意保留供复核。日志位于 `.local/`。
+脚本打包并启动真实 Java 服务，再停止并重启验证持久化。M0 另以错误数据库端口验证启动失败。M1 每次保留新建的合成调查和两份答卷供复核，最新ID在 `evidence/m1-smoke.json`；公开链接保存在忽略的 `.local/m1-demo.json` 的 publicPath。该本地文件也含匿名能力凭证，请勿提交或公开。日志位于 `.local/`。
 
 ## M0 API 与安全边界
 
@@ -118,20 +122,20 @@ JUnit 报告：`backend/target/surefire-reports/`。覆盖真实 MySQL 8/Mapper 
 
 POST 诊断 JSON：`{"message":"M0 联通验证"}`，1–200 字；参数错误 400，未登录 401，CSRF/权限失败 403，数据库读写不可用 503。Vue 文本插值不会执行诊断消息中的 HTML。
 
-Spring Security 使用 HttpOnly、SameSite=Strict cookie、30 分钟空闲会话、会话固定攻击保护；CSRF 保持启用。环境配置账户启动时 BCrypt 哈希，M0 账户与会话在内存，重启须重新登录；**诊断记录存在真实 MySQL，不随重启消失**。只供单个本地发起者使用，不收集隐私。
+Spring Security 使用 HttpOnly、SameSite=Strict cookie、30 分钟空闲会话、会话固定攻击保护；CSRF 保持启用。M1账户及BCrypt密码哈希存在MySQL，管理登录会话重启后需重新登录；调查/版本/匿名填写会话/答案/诊断记录均在真实MySQL中保留。每个发起者只管理自己的调查，所有权校验在服务端执行。
 
-M1 待人工授权补齐账户入库、注册、调查所有权、公开会话权限及登录限流。M0 不作为公网部署版本；HTTPS/Secure cookie/数据库 TLS 不在此次本地环境部署。没有真实 AI 或 Mock AI。
+完整 M1 API 契约见 [M1_API.md](docs/M1_API.md)。POST鉴权接口100次/分钟、公开写入300次/分钟，按本地连接IP限流。当前为本地部署，HTTPS/Secure cookie/数据库TLS及分布式限流尚未作生产验证。匿名token只在标签页sessionStorage中保留，清理后无法找回原填写；分享token只在发布时返回一次。没有真实AI或Mock AI。
 
 ## 常见问题
 
 - `Access denied`：核对本地配置、账号授权；不改用临时数据库。
-- `Unknown database`：执行数据库初始化；表由 Flyway V1 自动创建，勿手动重复执行迁移。
+- `Unknown database`：执行数据库初始化；表由 Flyway V1–V3 自动创建/迁移，勿手动重复执行或修改已应用迁移。
 - 错误数据库配置：启动时 Flyway 会报连接失败，运行时接口返回 503 / 健康非 UP，不生成假数据。
 - 401：先登录；403：重新取 CSRF，前端已自动处理，勿关闭 CSRF。
 - 找不到 Java：设置 JDK 的 JAVA_HOME 或传 `-JavaHome`。
 - Maven Wrapper 使用阿里云中央镜像下载 Maven；依赖按 Maven settings/中央仓库解析。首次下载较慢，不需改变版本或全局设置。
 - npm 网络故障：可临时 `npm.cmd ci --registry=https://registry.npmmirror.com`，不要移除 lockfile。
 
-数据库迁移与备份说明：[db/README.md](db/README.md)。实际结果、截图、Git 提交与缺陷：[evidence/M0.md](evidence/M0.md)。原始材料说明保留于 `docs/DELIVERY_PACKAGE_README.md`。
+数据库迁移与备份说明：[db/README.md](db/README.md)。验收报告：[M0](evidence/M0.md)、[M1](evidence/M1.md)。M0有历史真实截图；M1完整浏览器端到端/窄屏/截图尚未完成，工具安全策略拦截后未绕过，不以自动测试代替人工UI验收。六库源码调研：[OPEN_SOURCE_RESEARCH.md](docs/OPEN_SOURCE_RESEARCH.md)，未复制集成上游代码。原始材料说明保留于 `docs/DELIVERY_PACKAGE_README.md`。
 
-**完成 M0 后停止；只有用户明确通过 M0 验收并授权，才开始 M1。**
+**当前停止于 M0/M1 人工验收节点。只有用户确认验收并授权后才进入 M2；M2–M6 未开始。**
