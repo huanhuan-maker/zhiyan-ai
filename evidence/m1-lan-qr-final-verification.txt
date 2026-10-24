@@ -1,0 +1,22 @@
+M1 LAN QR 最终交付测试证据 2026-10-24 14:13 分支 fix/m1-lan-qr-sharing 提交 efd7b17
+
+== 后端 mvnw clean test (真实 MySQL zhiyan_ai_test, JDK17) ==
+[INFO] Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.152 s -- in cn.zhiyan.M0IntegrationTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.872 s -- in cn.zhiyan.M1ConcurrencyTest
+[INFO] Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.138 s -- in cn.zhiyan.M1IntegrationTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.841 s -- in cn.zhiyan.M1LifecycleMigrationTest
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.022 s -- in cn.zhiyan.M1PublicationLifecycleTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.002 s -- in cn.zhiyan.RequestRateFilterTest
+[INFO] Tests run: 42, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+
+== 前端 vitest (jsdom) ==
+ [32m✓[39m src/api/sharing.spec.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m src/components/ShareQrCard.spec.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 71[2mms[22m[39m
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m14 passed[39m[22m[90m (14)[39m
+
+== 前端 vue-tsc + vite build ==
+[2mdist/[22m[36massets/index-DxPXoPGN.js                  [39m[1m[2m117.91 kB[22m[1m[22m[2m │ gzip:  46.25 kB[22m
+[2mdist/[22m[36massets/installCanvasRenderer-WKbLso7m.js  [39m[1m[2m490.50 kB[22m[1m[22m[2m │ gzip: 167.10 kB[22m
+[32m✓ built in 4.01s[39m

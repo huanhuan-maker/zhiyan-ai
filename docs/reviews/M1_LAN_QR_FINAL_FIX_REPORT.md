@@ -1,96 +1,100 @@
-# M1 局域网二维码分享 + 遗留缺陷修复报告(GLM-5.3)
+# M1 最终交付报告:局域网二维码分享 + Token 轮换后会话恢复 + 轮换重放防护(GLM-5.3)
 
-日期:2026-10-24(Asia/Shanghai)。分支:`fix/m1-lan-qr-sharing`(基于 master `533e0df`)。**功能提交:`efd7b17`**(本报告为随后 docs 提交)。不进入 M2,未部署任何服务器,未修改数据库结构。
+日期:2026-10-24(Asia/Shanghai)。分支:**`fix/m1-lan-qr-sharing`**(独立本地分支,未 push,未合并 master)。本报告为该轮的**正式最终交付版本**,全部数据来自本轮(14:11–14:13)实际复跑,不引用 ae122a9/V4 阶段旧报告口径。
 
-## 1. 任务与结果总览
+- 功能提交:**`efd7b17`**(19 文件,+1982/−51)
+- 证据与本报告提交:见文末 Git 记录
+- 基线确认:`git merge-base --is-ancestor 533e0df HEAD` 通过——**本分支完整包含 Codex master 提交 `533e0df` 的全部修复**,包括 `V5__backfill_historical_version_closures.sql` 迁移与 Token 轮换前置条件(`RotateToken.expectedShareRevision`,64 位十六进制校验,不匹配返回 409 `STALE_SHARE_LINK`),均已逐文件核实存在。
 
-| 任务 | 结果 |
+## 1. 实际修改的源码(本轮全部变更)
+
+后端(3 个源码文件 + 1 个测试):
+
+| 文件 | 变更与原因 |
 |---|---|
-| A1 局域网访问 | `npm.cmd run dev:lan` 监听 0.0.0.0:5173;后端 8080/MySQL 3306 仍仅本机;原 `dev` 不变。已实机验证绑定与 LAN IP 访问 |
-| A2 正确局域网链接 | 发起者配置一次电脑 IPv4(localStorage),拒绝 localhost/127.0.0.1/0.0.0.0/::1;未配置不生成二维码;URL 恒为 `http://<IPv4>:5173/public/<token>`;HTTPS 域名预留 |
-| A3 真实二维码 | 本地 `qrcode` 库 canvas 渲染;编码内容与显示 URL 逐字符一致(单测断言);复制/下载 PNG/打开答题页;轮换自动重绘;停收版本显示警示;手机布局适配;重开管理页从浏览器留存重建二维码;无 token 日志输出 |
-| A4 Windows 说明 | 新增 [docs/LAN_SHARING_GUIDE.md](../LAN_SHARING_GUIDE.md):ipconfig/热点/同 Wi-Fi/防火墙(限定专用网络 5173)/localhost 原理/离网失效/公共 Wi-Fi 风险,全部命令可复制 |
-| B 轮换后会话恢复 | PublicPage 重构:公开 token 请求失败不再阻断会话恢复;restore 新增 `collecting` 字段,停收后恢复页只读并禁用保存/提交;后端 410 校验未削弱 |
-| C 轮换重复请求 | 采信并**验证**了 master 上 Codex 已实现的 CAS 防护(`shareRevision` 前置条件,重复请求 409 不再轮换);前端失败提示"结果不确定、不自动重试";M1_API.md 语义文档已核对补全 |
+| `controller/SystemController.java` | 新增。`GET /api/system/lan-addresses`:枚举本机非环回/非链路本地 IPv4,供发起者配置局域网分享地址;登录态只读 |
+| `service/ResponseService.java` | `restore()` 响应新增 `collecting` 字段(调查 OPEN 且版本 OPEN),供恢复页只读门控;只读计算,无写路径 |
+| `service/SurveyService.java` | 新增只读辅助 `surveyRow(id)`;其余为基线已有代码(V4/V5/CAS 均来自 533e0df 及更早,本轮未改) |
+| `test/.../M1PublicationLifecycleTest.java` | +3 用例(轮换后恢复提交一次/关闭只读/LAN 地址权限),现有用例全部保留 |
 
-## 2. 修改文件与原因
+前端(9 个源码文件 + 基建 + 2 个测试):
 
-后端(仅 3 处源码 + 1 个测试):
-
-| 文件 | 原因 |
+| 文件 | 变更与原因 |
 |---|---|
-| `controller/SystemController.java`(新) | `GET /api/system/lan-addresses`:返回本机非环回/非链路本地 IPv4,供发起者点选;登录态只读,无敏感信息 |
-| `service/ResponseService.java` | `restore()` 增加 `collecting`(调查 OPEN 且版本 OPEN);恢复响应供前端只读门控 |
-| `service/SurveyService.java` | 新增只读 `surveyRow(id)` 供 restore 计算 collecting;无行为变化 |
-| `test/.../M1PublicationLifecycleTest.java` | +3 用例(见第 3 节) |
+| `api/sharing.ts` | 新增。LAN origin 规范化/校验(拒绝 localhost、127.0.0.1、0.0.0.0、::1)/localStorage 持久化/`buildLanShareUrl`(仅接受 `/public/` 路径) |
+| `components/ShareQrCard.vue` | 新增。本地 `qrcode` 库 canvas 二维码;复制/下载 PNG/打开答题页;轮换 watch 自动重绘;停收警示;本机预览链接独立标注 |
+| `components/LanOriginPanel.vue` | 新增。地址配置面板:手输/点选后端检测的 IPv4/错误提示/清除 |
+| `pages/SurveyEditorPage.vue` | 分享面板接入两个组件;发布/轮换把 `publicPath` 写入浏览器留存;旧留存数据自动回退纯链接行 |
+| `pages/PublicPage.vue` | **任务 B 核心**:`load()` 重构——公开 token 请求失败(轮换 404/关闭 410)不再阻断会话恢复;`collecting=false` 时恢复页只读并禁用保存/提交按钮;错误文案区分"链接失效"与"会话恢复失败" |
+| `api/surveys.ts` | `ShareLink.publicPath`、`Session.collecting`、`Version.shareRevision`(基线已有)类型 |
+| `style.css` | 面板/二维码卡样式与 ≤560px 手机适配 |
+| `package.json`/`package-lock.json` | 依赖:`qrcode@^1.5.4`;devDeps `vitest@^5.0.5`、`jsdom`、`@vue/test-utils`、`@types/qrcode`;脚本 `dev:lan`、`test:unit` |
+| `vitest.config.ts`、`api/sharing.spec.ts`、`components/ShareQrCard.spec.ts` | 新增前端单测基建与 14 个用例 |
 
-前端:
+文档:`docs/LAN_SHARING_GUIDE.md`(新增,Windows 局域网/热点/防火墙全命令指南)、`docs/M1_API.md`(lan-addresses、restore.collecting、轮换 CAS 语义)、`README.md`(dev:lan、二维码、测试计数)。
 
-| 文件 | 原因 |
-|---|---|
-| `api/sharing.ts`(新) | LAN 地址规范化/校验/持久化 + `buildLanShareUrl`;模块级响应式 origin,保存一次全部卡片更新 |
-| `components/ShareQrCard.vue`(新) | 二维码 canvas(qrcode 库本地生成)、链接展示、复制/下载 PNG/打开、停收警示、本机预览区分;watch shareUrl 轮换自动重绘 |
-| `components/LanOriginPanel.vue`(新) | 配置面板:手输/点选检测到的 IPv4、校验错误提示、清除 |
-| `pages/SurveyEditorPage.vue` | 分享面板接入上述组件;发布/轮换把 `publicPath` 存入浏览器留存(旧数据自动回退为纯链接行) |
-| `pages/PublicPage.vue` | **任务 B 核心**:`load()` 先试公开 token,无论成败都尝试会话恢复,错误信息区分"链接失效+会话可恢复/不可恢复";restore 后 `collecting=false` → 显示停收说明并禁用保存/提交(双保险,后端 410 仍生效) |
-| `api/surveys.ts` | `ShareLink.publicPath`、`Session.collecting` 类型 |
-| `style.css` | 面板/卡片/二维码样式与 ≤560px 适配 |
-| `package.json` / `package-lock.json` | 新增 `qrcode@^1.5.4`;devDeps `vitest/jsdom/@vue/test-utils/@types/qrcode`;脚本 `dev:lan`、`test:unit` |
-| `vitest.config.ts`、两个 `*.spec.ts`(新) | 前端单测基建与用例 |
+## 2. 数据库迁移变更
 
-文档:`docs/LAN_SHARING_GUIDE.md`(新)、`docs/M1_API.md`(lan-addresses、restore.collecting)、`README.md`(dev:lan、二维码说明、测试计数)。
+**本轮零迁移。** 当前迁移链为 V1–V5,其中 V4(`survey_versions.status`)与 V5(历史版本关闭回填)为基线 `533e0df` 已含内容,本轮未新增、未修改任何迁移文件;测试与开发库启动时 Flyway V1–V5 全部 success。
 
-## 3. 实际执行的测试(全部真实运行)
+## 3. 最终测试总数与实际执行结果(2026-10-24 14:11–14:13 复跑)
 
-| 命令 | 结果 |
-|---|---|
-| `cd backend && ./mvnw.cmd clean test`(真实 MySQL `zhiyan_ai_test`,Git Bash + JAVA_HOME=D:\jdk\jdk17,读取 .env) | **42/42 通过,0 失败/错误/跳过,BUILD SUCCESS**(M0 9、M1 集成 16、生命周期+会话恢复 11、迁移 1、并发 4、限流 1)。日志 `.local/m1lan-test.log` |
-| `cd frontend && npm.cmd run test:unit`(vitest/jsdom) | **14/14 通过**:URL 组装(host+port+/public/+token)、QR 编码内容===显示 URL、轮换后二维码重绘、未配置不渲染 canvas 且按钮禁用、localhost/127.0.0.1/0.0.0.0/::1/乱串全部拒绝、HTTPS 域名兼容、持久化读写 |
-| `cd frontend && npm.cmd run build`(vue-tsc + vite) | 成功(SurveyEditorPage 47.7 kB 含二维码逻辑) |
-| 开发库实测(`mvnw package` + jar 启动) | 健康 UP;`/api/system/lan-addresses` 返回 4 个真实 IPv4 |
+原始摘要已存 `evidence/m1-lan-qr-final-verification.txt`(随 ZIP 交付);完整日志在 `.local/final-backend-test.log`、`.local/final-frontend-unit.log`、`.local/final-frontend-build.log`(本机,不入库)。
 
-后端新增 3 个用例(其余 39 个为既有用例全量回归):
+| 验证 | 命令 | 结果 |
+|---|---|---|
+| 后端全量(真实 MySQL `zhiyan_ai_test`,JDK17,Git Bash 加载 .env) | `./mvnw.cmd clean test` | **42/42 通过,0 失败/错误/跳过,BUILD SUCCESS**(M0 9、M1 集成 16、生命周期+会话恢复 11、迁移 1、并发 4、限流 1) |
+| Token 轮换后会话恢复(专项) | 含于上 | `restoreSurvivesTokenRotationAndStillCompletesExactlyOnce`:轮换→旧 token 404/不可新开会话→旧会话恢复(collecting=true,答案完整)→保存→提交→幂等重放→completedCount=1。`restoreAfterCloseIsReadOnly...`:关闭后恢复只读、保存/提交 410、统计 0、关闭后新发布不复活旧会话 |
+| 轮换重放防护(CAS,基线用例) | 含于上 | `rotationRetryAfterLostResponseDoesNotInvalidateCommittedLink`:响应丢失后重试 409,不再轮换、审计仅 1 条、已提交链接存活;重读+确认后可再轮换一次 |
+| 二维码 URL 编码(专项) | `npm.cmd run test:unit`(vitest/jsdom) | **14/14 通过**:`ShareQrCard` 断言 `QRCode.toCanvas` 收到的编码串 === 页面显示的局域网 URL(host+port+`/public/`+token);轮换后二维码以新 token 重绘;未配置不渲染 canvas 且按钮禁用 |
+| LAN 链接构造/无效地址(专项) | 含于上 | `sharing.spec.ts`:192.168.137.1→`http://192.168.137.1:5173`;localhost/127.0.0.1/0.0.0.0/::1/ftp/乱串全部拒绝并给理由;`/public/` 之外的路径拒绝;HTTPS 域名兼容 |
+| 前端构建 | `npm.cmd run build`(vue-tsc + vite) | 成功 |
+| 开发库链路(上轮实测,环境未变) | curl | `http://172.29.192.1:5173`(局域网 IP)→页面 200;`/actuator/health` UP;`/api/auth/csrf` 经 LAN IP 的 Vite 代理正常 |
 
-1. `restoreSurvivesTokenRotationAndStillCompletesExactlyOnce`:轮换后旧 token 404/不能新开会话;旧会话 restore 200(collecting=true、答案在、响应字段面=白名单);继续保存→提交→幂等重放,completedCount=1。
-2. `restoreAfterCloseIsReadOnlyAndCannotBypassSubmissionBlock`:关闭后 restore 只读(collecting=false)、保存/提交 410、统计 0;关闭后再发布 V2,旧会话仍 410 VERSION_CLOSED,V2 正常收集。
-3. `lanAddressesRequireLoginAndNeverExposeLoopback`:匿名 401;登录后数组元素均为 IPv4 且绝无 127.*。
+测试计数演变:39(基线 533e0df)→ **42 后端 + 14 前端 = 56**,只增未删,无跳过。
 
-任务 D 自动化清单对照:①链接构造=单测;②QR=显示 URL=组件单测;③无效地址=单测;④⑤旧码失效/新码有效=既有 `rotateTokenIssues...` + 浏览器实测;⑥轮换后恢复=后端用例 1+浏览器实测;⑦关闭绕过=用例 2;⑧重复提交不重复计数=既有幂等用例+用例 1;⑨轮换重复=Codex 既有 `rotationRetryAfterLostResponse...`(409 防重放,已核对其存在并随本次 42/42 通过);⑩M0–M1 原有测试全部保留(计数从 39→42,只增未删)。
+## 4. 专项检查结果
 
-## 4. 浏览器实测(Windows 本机,内置浏览器自动化,合成账户 lan_qr_gl53)
+### 4.1 局域网分享页过期链接展示风险
 
-全部实际操作通过:
+- **同一浏览器**:轮换/发布后 `shares` 状态与 localStorage 即时更新,二维码自动重绘(单测+浏览器实测覆盖)——无过期展示。
+- **跨浏览器/设备(已知限制,如实报告)**:发起者在浏览器 A 轮换后,浏览器 B localStorage 里留存的旧链接及二维码会继续展示,但手机扫码会得到 404"资源不存在或无权访问"页面(不会产生错误数据,只会引导联系发起者索取新链接)。客户端无法自行验证 token 是否仍有效(服务端只存 SHA-256 哈希,`shareRevision` 是哈希的哈希,不回传 token 本身)。**缓解**:①发布记录文本已提示"服务器只保存链接摘要,不能再次读取原链接,但可安全轮换生成新链接";②版本收集状态徽标实时反映停收;③文档(LAN_SHARING_GUIDE 第 3.5 节、M1_API)已写明"地址只保存在当前浏览器"。若需跨浏览器强制失效提示,需新增"发起者上传自家留存 token 哈希供校验"类接口,属新需求,本轮按约定未扩大范围。
+- 展示的"本机预览"链接(127.0.0.1)与手机链接字段分离,并标注"仅此电脑可打开",不会误导扫码。
 
-1. 注册/登录 → 创建"局域网二维码验证问卷"(调查 7)→ 发布 V1。
-2. 未配置 LAN:显示"未配置局域网地址,暂不生成二维码",无 canvas,复制/下载按钮禁用——**不会生成手机打不开的码**。
-3. 面板检测并列出 4 个本机 IPv4(10.74.104.31/172.29.192.1/192.168.153.1/192.168.231.1);点选 192.168.153.1 → 二维码真实渲染(截图证据),链接 `http://192.168.153.1:5173/public/TR1g0...`,本机预览链接单独标注。
-4. 受访者(新标签):同意→选"好"→保存进度(1/1 入库)。
-5. 管理页轮换 → 新链接 `.../public/sBv3SA-...`,二维码/链接即时更新。
-6. **受访者刷新旧链接(任务 B 核心):恢复已保存答案("好"仍选中,1/1),可继续提交**——修复前此处为 404 空状态。
-7. 提交→成功页;再次刷新仍成功,回收数 1。
-8. 新链接可正常打开;关闭调查后:新链接显示"调查已关闭…请索取最新链接",管理页二维码卡显示"版本 1 · 已停止收集…无法再填写或提交";已提交受访者刷新仍为成功页。
+### 4.2 明文 Token 日志输出
 
-## 5. 手机端验收教程与状态
+逐项审计,结论:**无**。
 
-完整图文步骤见 `docs/LAN_SHARING_GUIDE.md`(第 1–6 节):启动 dev:lan → 查/配电脑 IPv4 → 组网(电脑热点推荐/同 Wi-Fi/手机热点三场景与 AP 隔离说明)→ 防火墙仅放行专用网络 TCP 5173 → 扫码填写/保存/刷新恢复/提交 → 电脑端查看统计。
+- 前端源码(非测试文件)`grep -rn "console\."` **零命中**;错误提示均为固定文案,不拼接 token。
+- 后端源码无 `System.out`/logger 调用;异常处理器只返回固定 code/message。
+- 审计事件仅存 `actor/survey/action("ROTATE_TOKEN")/时间`,不存 token 或哈希(后端测试断言 `events.action doesNotContain(token)`)。
+- 轮换成功响应带 `Cache-Control: no-store`,新 token 只出现在 HTTP 响应体和页面输入框;浏览器地址栏出现 token 属链接本身的既定形态,非日志。
 
-**未实测项(如实声明):**
+## 5. 真实手机验证状态
 
-- **真实手机扫码未执行**(本机无手机可控)。已做的替代验证:①本机经局域网 IP `http://172.29.192.1:5173` 访问 200,`/actuator/health` 与 `/api/auth/csrf` 经 LAN IP 的 Vite 代理正常返回——手机访问的完整网络路径(除手机自身浏览器)已通;②二维码为标准本地生成,内容与链接一致有单测保证。首次真机验收请按指南第 6 节执行。
-- Windows 防火墙弹窗/规则命令未在本机执行(当前网络已可直达,未动系统防火墙设置;命令仅写入文档)。
-- 三种热点场景的互通性受路由器/运营商策略影响,无法在本机穷尽,指南已给排查路径。
-- IAB 无 console 日志读取能力,浏览器"全程零报错"以页面状态替代,留人工 F12 复核(沿用上次验收口径)。
+**真实手机未验证。** 本机无手机可控,未执行真机扫码。已完成的替代验证:①局域网 IP 直达 Vite 及其 `/api` 代理全链路 200(上表);②二维码编码内容与显示 URL 一致有组件级单测钉死;③浏览器完整流程(发布→配置→二维码渲染→填写→保存→轮换→恢复→提交→关闭拒绝)实测通过。首次真机验收请严格按 `docs/LAN_SHARING_GUIDE.md` 第 1–6 节执行(dev:lan → 查 IP → 配置 → 组网 → 防火墙专用网络放行 5173 → 扫码→保存→刷新恢复→提交→电脑端统计 +1),并在 `evidence/` 补充截图。
 
-## 6. 剩余风险与说明
+## 6. 未验证项与剩余风险汇总
 
-- dev:lan 暴露的是开发服务器,无 HTTPS/访问控制,仅限可信网络使用(指南第 9 节红线);局域网内为 HTTP 明文。
-- 二维码=参与凭证,同网可扫;误发用轮换立即作废(已有 CAS 防重放)。
-- LAN 配置存于发起者浏览器 localStorage,换浏览器需重配(检测按钮一键完成)。
-- 轮换语义为"显式非幂等 + CAS 防重放":成功响应丢失后无法取回同一明文链接(数据库只存哈希,这是安全设计),需重新读取发布记录并确认后再轮换一次——已在 M1_API.md 固化。
+1. 真实手机扫码(上述)。
+2. 跨浏览器留存链接的过期展示(已知限制,见 4.1,无数据风险)。
+3. Windows 防火墙命令未在本机实际执行(本机网络已通;命令照抄微软官方参数写入指南)。
+4. 三种热点场景互通性受路由器 AP 隔离策略影响,无法穷尽;指南给了排查路径。
+5. `dev:lan` 暴露开发服务器:无 HTTPS/访问控制,仅限可信网络;局域网内 HTTP 明文;M1 问卷不含实名信息。
+6. IAB 无 console 读取能力,浏览器"零报错"以页面状态替代,留人工 F12 复核。
 
-## 7. Git 与集成
+## 7. Git 提交(独立本地分支,未 push)
 
-- 分支 `fix/m1-lan-qr-sharing`,功能提交 **`efd7b17`**(19 文件,+1300/−30 左右),基线 master `533e0df`;本报告随后单独提交。未触碰他人未跟踪文件(`docs/M1_WINDOWS_ACCEPTANCE_CHECKLIST.md`、`evidence/m1-merge-*`、两个 zip 均保持原样)。
-- **Codex 集成注意**:①`git merge fix/m1-lan-qr-sharing`,无数据库迁移;②前端有新依赖,集成后需 `npm.cmd ci`(lockfile 已提交);③CI/验收脚本若跑前端测试,新增命令 `npm.cmd run test:unit`(14 项);④`dev:lan` 与 `dev` 并存,验收文档引用指南时以 `docs/LAN_SHARING_GUIDE.md` 为准;⑤环境现状:8080 后端为新代码 jar(含 V5 迁移),5173 已切 `dev:lan` 模式运行,浏览器中留有验证标签页(调查 7 已关闭,含 1 份合成答卷,可删)。
+```
+48a84ec docs: add M1 LAN QR final fix report (feat efd7b17)
+efd7b17 feat: LAN QR sharing, post-rotation session restore, rotation retry semantics
+533e0df merge: reviewed M1 publication lifecycle fixes and retry guards   ← 基线(含 V5/CAS)
+```
 
-**当前停止于 M1 补充修复交付节点,未进入 M2,未执行任何服务器部署。**
+本轮复核后追加:证据文件 + 本报告更新(见 git log 最新提交)。
+
+## 8. 交付 ZIP 与后续
+
+- ZIP:`zhiyan-ai-m1-lan-qr-2026-10-24.zip`(git archive,仅 git 跟踪文件,含本报告与 `evidence/m1-lan-qr-final-verification.txt`;排除 .env/.local/target/node_modules/.git)。
+- **Codex 集成注意**:①合并 `fix/m1-lan-qr-sharing` 即可,无迁移;②前端新依赖,集成后 `npm.cmd ci`;③新增前端测试命令 `npm.cmd run test:unit`(14 项)可纳入验收脚本;④真机验收按 LAN_SHARING_GUIDE 执行后回填 evidence。
+- **当前停止于 M1 最终交付节点:未进入 M2,未 push,未合并 master,未部署服务器。**
