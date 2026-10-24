@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage.vue";
 import WorkspacePage from "./pages/WorkspacePage.vue";
 import PublicPage from "./pages/PublicPage.vue";
 import "./style.css";
+import { ensureDevSession } from "./api/autoLogin";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -23,4 +24,6 @@ const router = createRouter({
     { path: "/:pathMatch(.*)*", redirect: "/" },
   ],
 });
-createApp(App).use(router).mount("#app");
+const app = createApp(App).use(router);
+// 测试阶段:本地配置了自动登录账号时先建立会话再挂载,页面初始即为已登录状态(见 api/autoLogin.ts)。
+ensureDevSession().finally(() => app.mount("#app"));
