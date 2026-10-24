@@ -13,8 +13,10 @@ import org.springframework.dao.DuplicateKeyException;
 @RestControllerAdvice
 public class ApiExceptionHandler {
     @ExceptionHandler(BusinessException.class)
-    ResponseEntity<Map<String,String>> business(BusinessException ex) {
-        return ResponseEntity.status(ex.getStatus()).body(Map.of("code",ex.getCode(),"message",ex.getMessage()));
+    ResponseEntity<Map<String,Object>> business(BusinessException ex) {
+        Map<String,Object> body=new java.util.LinkedHashMap<>();
+        body.put("code",ex.getCode()); body.put("message",ex.getMessage()); body.putAll(ex.getDetails());
+        return ResponseEntity.status(ex.getStatus()).body(body);
     }
     @ExceptionHandler(DuplicateKeyException.class)
     ResponseEntity<Map<String,String>> duplicate(DuplicateKeyException ex) {

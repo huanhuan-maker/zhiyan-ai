@@ -20,5 +20,10 @@ public class SurveyController {
     public record Publish(int revision) { }
     @PostMapping("/{id}/publish") public Object publish(@PathVariable long id,@RequestBody Publish body,Principal p) { return service.publish(id,body.revision(),p.getName()); }
     @PostMapping("/{id}/close") public Object close(@PathVariable long id,Principal p) { return service.close(id,p.getName()); }
+    public record RotateToken(@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp="[a-f0-9]{64}") String expectedShareRevision) { }
+    @PostMapping("/{id}/versions/{versionId}/rotate-token") public Object rotateToken(@PathVariable long id,@PathVariable long versionId,@jakarta.validation.Valid @RequestBody RotateToken body,Principal p,jakarta.servlet.http.HttpServletResponse response) {
+        response.setHeader("Cache-Control","no-store");
+        return service.rotateToken(id,versionId,p.getName(),body.expectedShareRevision());
+    }
     @GetMapping("/{id}/results") public Object results(@PathVariable long id,@RequestParam long versionId,Principal p) { return results.results(id,versionId,p.getName()); }
 }

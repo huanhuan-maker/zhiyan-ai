@@ -39,6 +39,11 @@ public class SurveyService {
     public SurveyVersion version(long surveyId,long versionId) {
         var row=versions.selectById(versionId); if(row==null || row.getSurveyId()!=surveyId) throw missing(); return row;
     }
+    public SurveyVersion lockVersion(long surveyId,long versionId) {
+        var row=versions.selectOne(Wrappers.<SurveyVersion>lambdaQuery().eq(SurveyVersion::getId,versionId)
+                .eq(SurveyVersion::getSurveyId,surveyId).last("FOR UPDATE"));
+        if(row==null) throw missing(); return row;
+    }
     public void validate(Draft draft) {
         Set<String> ids=new HashSet<>();
         for(Question q:draft.questions()) {
@@ -62,7 +67,7 @@ public class SurveyService {
     public Map<String,Object> detail(long id,String name) {
         Survey row=owned(id,name,false); Map<String,Object> out=view(row);
         out.put("versions",versions.selectList(Wrappers.<SurveyVersion>lambdaQuery().eq(SurveyVersion::getSurveyId,id).orderByDesc(SurveyVersion::getVersionNumber))
-                .stream().map(v->Map.of("id",v.getId(),"versionNumber",v.getVersionNumber(),"publishedAt",v.getPublishedAt())).toList());
+                .stream().map(v->Map.of("id",v.getId(),"versionNumber",v.getVersionNumber(),"publishedAt",v.getPublishedAt(),"status",v.getStatus(),"shareRevision",hash(v.getTokenHash()))).toList());
         return out;
     }
     @Transactional public Map<String,Object> create(Draft draft,String name) {
@@ -80,14 +85,19 @@ public class SurveyService {
         if(row.getRevision()!=revision) throw new BusinessException(409,"STALE_DRAFT","请保存并刷新草稿后再发布");
         validate(decode(row.getDraftJson()));
         SurveyVersion previous=row.getLatestVersionId()==null?null:versions.selectById(row.getLatestVersionId());
-        if(previous!=null && decode(previous.getSnapshotJson()).equals(decode(row.getDraftJson()))) throw new BusinessException(409,"ALREADY_PUBLISHED","该草稿已发布；核心题变化后再创建新版本");
+        if(previous!=null && decode(previous.getSnapshotJson()).equals(decode(row.getDraftJson())))
+            throw new BusinessException(409,"ALREADY_PUBLISHED","该草稿已发布；核心题变化后再创建新版本，丢失分享链接时可在发布记录中轮换该版本链接",
+                    Map.of("versionId",previous.getId(),"versionNumber",previous.getVersionNumber()));
         String token=randomToken(); SurveyVersion v=new SurveyVersion(); v.setSurveyId(id); v.setSnapshotJson(row.getDraftJson());
-        v.setVersionNumber(previous==null?1:previous.getVersionNumber()+1); v.setTokenHash(hash(token)); versions.insert(v);
+        v.setVersionNumber(previous==null?1:previous.getVersionNumber()+1); v.setTokenHash(hash(token)); v.setStatus("OPEN"); versions.insert(v);
         row.setLatestVersionId(v.getId()); row.setStatus("OPEN"); row.setUpdatedAt(LocalDateTime.now()); surveys.updateById(row); audit(row,"PUBLISH");
         return Map.of("versionId",v.getId(),"versionNumber",v.getVersionNumber(),"publicToken",token,"publicPath","/public/"+token);
     }
     @Transactional public Map<String,Object> close(long id,String name) {
-        Survey row=owned(id,name,true); row.setStatus("CLOSED"); row.setUpdatedAt(LocalDateTime.now()); surveys.updateById(row); audit(row,"CLOSE"); return view(row);
+        Survey row=owned(id,name,true);
+        versions.update(null,Wrappers.<SurveyVersion>lambdaUpdate().eq(SurveyVersion::getSurveyId,id)
+                .eq(SurveyVersion::getStatus,"OPEN").set(SurveyVersion::getStatus,"CLOSED"));
+        row.setStatus("CLOSED"); row.setUpdatedAt(LocalDateTime.now()); surveys.updateById(row); audit(row,"CLOSE"); return view(row);
     }
     void audit(Survey row,String action) { var event=new AuditEvent(); event.setActorId(row.getOwnerId()); event.setSurveyId(row.getId()); event.setAction(action); audits.insert(event); }
     public SurveyVersion publicVersion(String token) {
@@ -97,9 +107,24 @@ public class SurveyService {
     public static void ensureOpen(Survey row) {
         if(row==null || !"OPEN".equals(row.getStatus())) throw new BusinessException(410,"SURVEY_CLOSED","调查已关闭，无法继续填写或提交");
     }
+    public static void ensureVersionOpen(SurveyVersion v) {
+        if(v==null || !"OPEN".equals(v.getStatus())) throw new BusinessException(410,"VERSION_CLOSED","该发布版本已停止收集，请使用发起者提供的最新分享链接");
+    }
     public Map<String,Object> publicSurvey(String token) {
-        SurveyVersion v=publicVersion(token); ensureOpen(surveys.selectById(v.getSurveyId()));
+        SurveyVersion v=publicVersion(token); ensureOpen(surveys.selectById(v.getSurveyId())); ensureVersionOpen(v);
         return Map.of("versionId",v.getId(),"versionNumber",v.getVersionNumber(),"survey",decode(v.getSnapshotJson()),"aiMode","NOT_IMPLEMENTED");
+    }
+    @Transactional public Map<String,Object> rotateToken(long id,long versionId,String name,String expectedShareRevision) {
+        Survey row=owned(id,name,true); SurveyVersion v=lockVersion(id,versionId);
+        if(!hash(v.getTokenHash()).equals(expectedShareRevision))
+            throw new BusinessException(409,"STALE_SHARE_LINK","分享链接已变化；本次请求未再次轮换。请重新读取发布记录，确认后再生成链接。");
+        String token=randomToken(); v.setTokenHash(hash(token)); versions.updateById(v); audit(row,"ROTATE_TOKEN");
+        Map<String,Object> out=new LinkedHashMap<>();
+        out.put("versionId",v.getId()); out.put("versionNumber",v.getVersionNumber());
+        out.put("publicToken",token); out.put("publicPath","/public/"+token);
+        out.put("versionStatus",v.getStatus()); out.put("surveyStatus",row.getStatus());
+        out.put("shareRevision",hash(v.getTokenHash()));
+        return out;
     }
     public static String randomToken() { byte[] data=new byte[32]; new SecureRandom().nextBytes(data); return Base64.getUrlEncoder().withoutPadding().encodeToString(data); }
     public static String hash(String token) {

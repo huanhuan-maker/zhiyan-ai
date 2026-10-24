@@ -8,7 +8,7 @@ export interface Draft {
   title: string; description: string; privacyNotice: string; questions: Question[];
   perQuestionFollowupLimit: number; totalFollowupLimit: number;
 }
-export interface Version { id: number; versionNumber: number; publishedAt: string }
+export interface Version { id: number; versionNumber: number; publishedAt: string; status?: string; shareRevision: string }
 export interface Survey {
   id: number; draft: Draft; status: string; revision: number;
   latestVersionId: number | null; updatedAt: string; versions?: Version[];

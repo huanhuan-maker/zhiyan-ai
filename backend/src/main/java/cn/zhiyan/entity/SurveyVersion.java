@@ -12,6 +12,7 @@ public class SurveyVersion {
     private Integer versionNumber;
     private String snapshotJson;
     private String tokenHash;
+    private String status;
     private java.time.LocalDateTime publishedAt;
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -23,6 +24,8 @@ public class SurveyVersion {
     public void setSnapshotJson(String snapshotJson) { this.snapshotJson = snapshotJson; }
     public String getTokenHash() { return tokenHash; }
     public void setTokenHash(String tokenHash) { this.tokenHash = tokenHash; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
     public java.time.LocalDateTime getPublishedAt() { return publishedAt; }
     public void setPublishedAt(java.time.LocalDateTime publishedAt) { this.publishedAt = publishedAt; }
 }

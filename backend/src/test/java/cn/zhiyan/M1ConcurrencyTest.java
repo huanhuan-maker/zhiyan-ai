@@ -216,6 +216,80 @@ class M1ConcurrencyTest {
         }
     }
 
+    @Test
+    void concurrentTokenRotationLeavesExactlyOneLiveLinkWithoutBreakingInFlightSessions() throws Exception {
+        Fixture fixture = fixture();
+        Complete input = completeInput();
+        var ready = new CountDownLatch(2);
+        var rotateTogether = new CountDownLatch(1);
+        String expectedShareRevision = SurveyService.hash(jdbc.queryForObject("SELECT token_hash FROM survey_versions WHERE id=?",String.class,fixture.versionId()));
+        ExecutorService executor = Executors.newFixedThreadPool(2);
+        List<Future<String>> rotations = new ArrayList<>();
+        try {
+            for (int worker = 0; worker < 2; worker++) {
+                rotations.add(executor.submit(() -> transaction().execute(status -> {
+                    ready.countDown();
+                    await(rotateTogether);
+                    try {
+                        return (String) surveys.rotateToken(fixture.surveyId(), fixture.versionId(), fixture.owner(),expectedShareRevision).get("publicToken");
+                    } catch(BusinessException ex) {
+                        status.setRollbackOnly();
+                        assertThat(ex.getCode()).isEqualTo("STALE_SHARE_LINK");
+                        assertThat(ex.getStatus()).isEqualTo(409);
+                        return null;
+                    }
+                })));
+            }
+            await(ready);
+            rotateTogether.countDown();
+            String first = rotations.get(0).get(15, TimeUnit.SECONDS);
+            String second = rotations.get(1).get(15, TimeUnit.SECONDS);
+            assertThat(java.util.stream.Stream.of(first,second).filter(java.util.Objects::nonNull).count()).isEqualTo(1);
+
+            // Serialized by the survey row lock: the last committed rotation is the only live link.
+            List<String> live = new ArrayList<>();
+            for (String token : java.util.stream.Stream.of(first,second).filter(java.util.Objects::nonNull).toList()) {
+                try { surveys.publicVersion(token); live.add(token); }
+                catch (BusinessException ex) { assertThat(ex.getStatus()).isEqualTo(404); }
+            }
+            assertThat(live).as("exactly one rotated link stays live").hasSize(1);
+            assertThat(jdbc.queryForObject("SELECT token_hash FROM survey_versions WHERE id = ?", String.class,
+                    fixture.versionId())).isEqualTo(SurveyService.hash(live.get(0)));
+        } finally {
+            rotateTogether.countDown();
+            stop(executor);
+        }
+
+        // Rotation only invalidates share links; an in-flight respondent session still completes.
+        transaction().executeWithoutResult(status ->
+                assertThat(json.valueToTree(responses.complete(fixture.sessionToken(), input)).path("status").asText())
+                        .isEqualTo("SUBMITTED"));
+        assertThat(json.valueToTree(results.results(fixture.surveyId(), fixture.versionId(), fixture.owner()))
+                .path("completedCount").asInt()).isEqualTo(1);
+    }
+
+    @Test
+    void staleRepeatableReadShareTokenCannotStartSessionAfterRotationCommits() throws Exception {
+        Fixture f=fixture();
+        String revision=SurveyService.hash(jdbc.queryForObject("SELECT token_hash FROM survey_versions WHERE id=?",String.class,f.versionId()));
+        String oldToken=(String)surveys.rotateToken(f.surveyId(),f.versionId(),f.owner(),revision).get("publicToken");
+        var snapshotReady=new CountDownLatch(1); var rotationCommitted=new CountDownLatch(1);
+        ExecutorService executor=Executors.newSingleThreadExecutor();
+        try {
+            Future<BusinessException> result=executor.submit(()->transaction().execute(status->{
+                surveys.publicVersion(oldToken); snapshotReady.countDown(); await(rotationCommitted);
+                try { responses.start(oldToken,new Consent(true,false)); return null; }
+                catch(BusinessException ex) { status.setRollbackOnly(); return ex; }
+            }));
+            await(snapshotReady);
+            surveys.rotateToken(f.surveyId(),f.versionId(),f.owner(),SurveyService.hash(SurveyService.hash(oldToken)));
+            rotationCommitted.countDown();
+            var error=result.get(15,TimeUnit.SECONDS);
+            assertThat(error).isNotNull(); assertThat(error.getStatus()).isEqualTo(404);
+            assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM response_sessions WHERE version_id=?",Long.class,f.versionId())).isEqualTo(1);
+        } finally { rotationCommitted.countDown(); stop(executor); }
+    }
+
     @AfterEach
     void removeOnlyThisTestsCommittedFixturesInForeignKeyOrder() {
         for (Long ownerId : fixtureOwnerIds) {
