@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from "vue";
 import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import QuestionInput from "../components/QuestionInput.vue";
 import LanOriginPanel from "../components/LanOriginPanel.vue";
@@ -23,7 +23,16 @@ async function load() {
   catch (e) { error.value = (e as Error).message; }
   finally { loading.value = false; }
 }
-onMounted(load);
+onMounted(async () => {
+  await load();
+  // 工作台“分享二维码”按钮带 #share 锚点进入：直接定位分享面板；无本地链接时落到发布记录并提示轮换。
+  if (route.hash === "#share") {
+    await nextTick();
+    (document.querySelector(".share-panel") ?? document.querySelector(".version-row")?.closest("section.card"))?.scrollIntoView({ block: "start" });
+    if (!shares.value.length)
+      notice.value = "此浏览器没有保留该问卷的分享链接（服务器只存摘要，不能读回原链接）。请在下方“发布记录”点“重新生成分享链接”获取新二维码；旧链接会立即失效。";
+  }
+});
 function beforeUnload(e: BeforeUnloadEvent) { if(changed.value && !busy.value) { e.preventDefault(); e.returnValue = ""; } }
 window.addEventListener("beforeunload", beforeUnload);
 onBeforeUnmount(() => window.removeEventListener("beforeunload", beforeUnload));

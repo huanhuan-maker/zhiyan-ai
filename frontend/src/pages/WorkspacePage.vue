@@ -24,7 +24,7 @@ onMounted(load);
       <div class="section-heading"><span class="badge">{{ statusNames[survey.status] ?? survey.status }}</span><small class="muted">草稿修订 {{ survey.revision }}</small></div>
       <h2>{{ survey.draft.title }}</h2><p class="clamp-text muted">{{ survey.draft.description || "暂无调查简介" }}</p>
       <p class="muted">{{ survey.draft.questions.length }} 道题 · 更新于 {{ survey.updatedAt?.replace('T', ' ') }}</p>
-      <div class="actions"><RouterLink :to="`/surveys/${survey.id}/edit`" class="button">编辑与发布 →</RouterLink><RouterLink v-if="survey.latestVersionId" :to="`/surveys/${survey.id}/results`" class="secondary">查看统计</RouterLink></div>
+      <div class="actions"><RouterLink :to="`/surveys/${survey.id}/edit`" class="button">编辑与发布 →</RouterLink><RouterLink v-if="survey.latestVersionId" :to="`/surveys/${survey.id}/edit#share`" class="secondary">分享二维码</RouterLink><RouterLink v-if="survey.latestVersionId" :to="`/surveys/${survey.id}/results`" class="secondary">查看统计</RouterLink></div>
     </article>
   </div>
 </template>
