@@ -18,7 +18,9 @@ public class ResponseService {
         if(!input.consent()) throw new BusinessException(400,"CONSENT_REQUIRED","同意数据用途说明后才能参与");
         var v=survey.publicVersion(publicToken);
         Survey s=survey.lockSurvey(v.getSurveyId());
-        SurveyService.ensureOpen(s); SurveyService.ensureVersionOpen(survey.lockVersion(s.getId(),v.getId())); String token=SurveyService.randomToken(); var row=new ResponseSession();
+        SurveyService.ensureOpen(s); var currentVersion=survey.lockVersion(s.getId(),v.getId());
+        if(!currentVersion.getTokenHash().equals(SurveyService.hash(publicToken))) throw SurveyService.missing();
+        SurveyService.ensureVersionOpen(currentVersion); String token=SurveyService.randomToken(); var row=new ResponseSession();
         row.setSurveyId(s.getId()); row.setVersionId(v.getId()); row.setTokenHash(SurveyService.hash(token)); row.setAiConsent(input.aiConsent());
         row.setStatus("IN_PROGRESS"); row.setExpiresAt(LocalDateTime.now().plusDays(7)); sessions.insert(row);
         return Map.of("sessionToken",token,"versionId",v.getId(),"expiresAt",row.getExpiresAt());

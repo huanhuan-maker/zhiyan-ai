@@ -24,7 +24,7 @@
 | PUT | `/api/surveys/{id}` | `{draft,revision}`，revision 过期返回 409；保存成功 revision + 1 |
 | POST | `/api/surveys/{id}/publish` | `{revision}` → versionId/versionNumber/publicToken/publicPath |
 | POST | `/api/surveys/{id}/close` | 关闭调查，全部版本的公开入口停止接受填写/提交 |
-| POST | `/api/surveys/{id}/versions/{versionId}/rotate-token` | 轮换指定版本分享链接 → versionId/versionNumber/publicToken/publicPath/versionStatus/surveyStatus；旧链接立即失效 |
+| POST | `/api/surveys/{id}/versions/{versionId}/rotate-token` | `{expectedShareRevision}` → versionId/versionNumber/publicToken/publicPath/versionStatus/surveyStatus/shareRevision；旧链接立即失效，过期前置条件返回409 |
 | GET | `/api/surveys/{id}/results?versionId=...` | 仅此调查的指定版本已提交样本统计 |
 
 Draft 示例见 `fixtures/m1_survey.json`。字段：title、description、privacyNotice、questions、perQuestionFollowupLimit、totalFollowupLimit。后两者只是未来 M3 配置预留，M1 不会扣减或触发追问。
@@ -34,6 +34,8 @@ Question：稳定 id，type=SINGLE/MULTIPLE/SCALE/OPEN，text、required、allow
 发布把整个 Draft JSON 复制成新的不可变版本，新版本收集状态为 OPEN。之后 PUT 只改草稿；旧公开 token 始终读旧 snapshot，旧答案通过 response_session.version_id 关联旧版。发布相同内容返回 409（附 versionId/versionNumber，便于丢失链接后轮换），避免重复点击制造相同版本。调查状态与版本收集状态两级独立：关闭调查把当时全部 OPEN 版本固化为 CLOSED；此后再发布只让新版本收集，已关闭的旧版本不会因发布新版而恢复（公开读取与提交均 410 VERSION_CLOSED）。未被关闭的旧版本在新发布后仍按原快照继续收集。当前无单独重开接口。
 
 公开 token 为 32 字节安全随机数的 base64url，数据库仅存 SHA-256 哈希，发布时返回一次。前端可在当前浏览器保存分享地址；丢失后不能从哈希还原，发起者可对指定版本调用 rotate-token 安全轮换（旧 token 立即失效，新 token 只返回给通过所有权校验的发起者；审计仅记 ROTATE_TOKEN 动作，不记录 token 本身），或修改草稿发布新版本。轮换只影响分享链接，已在填写中的匿名会话不受影响。切勿将管理密码存入 localStorage。
+
+轮换前从所有者详情 `versions[].shareRevision` 读取当前分享版本标识（64位十六进制不透明值，非公开token）。在调查/版本锁内比较前置条件；同一值重复或并发提交只有一个200，其余409 `STALE_SHARE_LINK`，不再改token或新增审计。无/非法标识400，合法请求的非所有者404。成功响应 `Cache-Control: no-store`。这不是“重放原成功响应”的幂等缓存：仅存token摘要，故成功响应丢失后无法恢复同一明文链接。客户端不得自动更新标识并重试；需重新读详情、用户明确确认再轮换一次，新的成功响应才提供可复制链接。在重读前重试原请求始终409，不会使另一标签已复制的链接失效。公开start在锁内复查当前token摘要，阻止旧快照绕过轮换。
 
 ## 公开填写
 

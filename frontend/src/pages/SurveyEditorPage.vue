@@ -81,22 +81,26 @@ async function publish() {
 async function closeSurvey() {
   if(!window.confirm("关闭后所有已发布版本都停止接收答案。历史统计会保留。确认关闭？")) return;
   busy.value=true; error.value="";notice.value="";
-  try{await mutate(`/api/surveys/${surveyId.value}/close`);status.value="CLOSED";notice.value="调查已关闭，历史答卷仍可查看。";}catch(e){error.value=(e as Error).message;}finally{busy.value=false;}
+  try{await mutate(`/api/surveys/${surveyId.value}/close`);status.value="CLOSED";versions.value=versions.value.map(v=>({...v,status:'CLOSED'}));notice.value="调查已关闭，历史答卷仍可查看。";}catch(e){error.value=(e as Error).message;}finally{busy.value=false;}
 }
 async function rotate(v: Version) {
   if(!window.confirm(`为版本 ${v.versionNumber} 生成新的分享链接：旧链接立即失效，已在填写中的会话不受影响。若该版本或调查已停止收集，新链接同样不能填写。确认轮换？`)) return;
   busy.value=true; error.value=""; notice.value="";
   try {
-    const result = await mutate<{versionId:number;versionNumber:number;publicPath:string;versionStatus:string;surveyStatus:string}>(
-      `/api/surveys/${surveyId.value}/versions/${v.id}/rotate-token`);
+    const result = await mutate<{versionId:number;versionNumber:number;publicPath:string;versionStatus:string;surveyStatus:string;shareRevision:string}>(
+      `/api/surveys/${surveyId.value}/versions/${v.id}/rotate-token`,{expectedShareRevision:v.shareRevision});
     const link = {versionId:result.versionId,versionNumber:result.versionNumber,url:new URL(result.publicPath,window.location.origin).href};
-    rememberShare(surveyId.value!,link);
+    const retained=rememberShare(surveyId.value!,link);
     shares.value=[link,...shares.value.filter(s=>s.versionId!==link.versionId)];
-    versions.value=versions.value.map(x=>x.id===v.id?{...x,status:result.versionStatus}:x);
+    versions.value=versions.value.map(x=>x.id===v.id?{...x,status:result.versionStatus,shareRevision:result.shareRevision}:x);
     const collecting = result.surveyStatus==="OPEN" && result.versionStatus==="OPEN";
     notice.value=`版本 ${result.versionNumber} 的分享链接已轮换，旧链接已失效。${collecting?"请复制保存新的分享链接。":"注意：该版本当前不接收填写，新链接仅作留存。"}`
-      + (result.surveyStatus==="CLOSED"?"调查已关闭；如需继续收集，请修改草稿后发布新版本。":"");
-  }catch(e){error.value=(e as Error).message;}finally{busy.value=false;}
+      + (result.surveyStatus==="CLOSED"?"调查已关闭；如需继续收集，请修改草稿后发布新版本。":"")
+      + (retained?'':'浏览器未允许保存，请立即手动复制新链接。');
+  }catch(e){
+    error.value=`${(e as Error).message} 若响应丢失，服务端可能已经轮换；请重新读取发布记录并重新确认。不会自动重试或自动生成其他链接。`;
+    // A failed response leaves the current revision unchanged. A replay cannot rotate again.
+  }finally{busy.value=false;}
 }
 async function copy(url:string) {
   try {await navigator.clipboard.writeText(url);notice.value="分享链接已复制。";}catch {notice.value="自动复制不可用，请选中文本框中的完整链接手动复制。";}

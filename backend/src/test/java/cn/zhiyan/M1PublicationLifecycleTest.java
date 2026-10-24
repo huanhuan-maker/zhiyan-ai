@@ -33,6 +33,9 @@ class M1PublicationLifecycleTest {
                 .andExpect(status().isNoContent()).andReturn().getRequest().getSession(false);
     }
     MockHttpSession owner() throws Exception { return login("m0-test","Only-For-Automated-Test-2026"); }
+    String rotationBody(long version) throws Exception {
+        return json.writeValueAsString(Map.of("expectedShareRevision",SurveyService.hash(versions.selectById(version).getTokenHash())));
+    }
     JsonNode call(org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder req,int status) throws Exception {
         var action=mvc.perform(req);
         if(action.andReturn().getResponse().getStatus()!=status && action.andReturn().getResolvedException()!=null) {
@@ -65,6 +68,42 @@ class M1PublicationLifecycleTest {
     }
     JsonNode results(Published p,long versionId) throws Exception {
         return call(get("/api/surveys/"+p.id+"/results").param("versionId",""+versionId).session(p.owner),200);
+    }
+    JsonNode rotate(Published p,String revision,int expectedStatus) throws Exception {
+        return call(post("/api/surveys/"+p.id+"/versions/"+p.version+"/rotate-token").session(p.owner).with(csrf())
+                .contentType("application/json").content(json.writeValueAsString(Map.of("expectedShareRevision",revision))),expectedStatus);
+    }
+    @Test void rotationRetryAfterLostResponseDoesNotInvalidateCommittedLink() throws Exception {
+        var p=published(); String initial=SurveyService.hash(SurveyService.hash(p.token));
+        var first=rotate(p,initial,200); // Discarded response simulates loss after server commit.
+        String committedHash=versions.selectById(p.version).getTokenHash();
+        var retry=rotate(p,initial,409);
+        assertThat(retry.get("code").asText()).isEqualTo("STALE_SHARE_LINK");
+        assertThat(versions.selectById(p.version).getTokenHash()).isEqualTo(committedHash);
+        assertThat(audits.selectCount(Wrappers.<AuditEvent>lambdaQuery().eq(AuditEvent::getSurveyId,p.id).eq(AuditEvent::getAction,"ROTATE_TOKEN"))).isEqualTo(1);
+        call(get("/api/public/surveys/"+first.get("publicToken").asText()),200);
+        // A fresh owner read + explicit confirmation can recover by rotating once more.
+        var detail=call(get("/api/surveys/"+p.id).session(p.owner),200);
+        var recovered=rotate(p,detail.at("/versions/0/shareRevision").asText(),200);
+        call(get("/api/public/surveys/"+first.get("publicToken").asText()),404);
+        call(get("/api/public/surveys/"+recovered.get("publicToken").asText()),200);
+    }
+    @Test void strangerWithValidCsrfCannotRotateAndClosedVersionStaysClosed() throws Exception {
+        var p=published(); String name="other_"+UUID.randomUUID().toString().replace("-","");
+        accounts.register(name,"Other-Test-password-2026");
+        call(post("/api/surveys/"+p.id+"/versions/"+p.version+"/rotate-token").session(login(name,"Other-Test-password-2026")).with(csrf())
+                .contentType("application/json").content(json.writeValueAsString(Map.of("expectedShareRevision",SurveyService.hash(SurveyService.hash(p.token))))),404);
+        call(post("/api/surveys/"+p.id+"/close").session(p.owner).with(csrf()),200);
+        var rotated=rotate(p,SurveyService.hash(SurveyService.hash(p.token)),200);
+        assertThat(rotated.get("versionStatus").asText()).isEqualTo("CLOSED");
+        call(get("/api/public/surveys/"+rotated.get("publicToken").asText()),410);
+    }
+    @Test void rotationRequiresValidPreconditionWithoutChangingToken() throws Exception {
+        var p=published();
+        for(String body:List.of("{}","{\"expectedShareRevision\":null}","{\"expectedShareRevision\":\"invalid\"}"))
+            call(post("/api/surveys/"+p.id+"/versions/"+p.version+"/rotate-token").session(p.owner).with(csrf()).contentType("application/json").content(body),400);
+        mvc.perform(post("/api/surveys/"+p.id+"/versions/"+p.version+"/rotate-token").session(p.owner).with(csrf())
+                .contentType("application/json").content(rotationBody(p.version))).andExpect(status().isOk()).andExpect(header().string("Cache-Control","no-store"));
     }
     JsonNode editDraftAndPublishNext(Published p,String newTitle) throws Exception {
         var changed=(com.fasterxml.jackson.databind.node.ObjectNode)json.readTree(draft()); changed.put("title",newTitle);
@@ -119,7 +158,7 @@ class M1PublicationLifecycleTest {
     @Test void rotateTokenIssuesNewLinkInvalidatesOldAndKeepsInFlightSessions() throws Exception {
         var p=published();
         String inFlight=start(p.token);
-        var rotated=call(post("/api/surveys/"+p.id+"/versions/"+p.version+"/rotate-token").session(p.owner).with(csrf()),200);
+        var rotated=call(post("/api/surveys/"+p.id+"/versions/"+p.version+"/rotate-token").session(p.owner).with(csrf()).contentType("application/json").content(rotationBody(p.version)),200);
         String token2=rotated.get("publicToken").asText();
         assertThat(token2).isNotEqualTo(p.token).matches("[A-Za-z0-9_-]{43}");
         assertThat(rotated.get("versionId").asLong()).isEqualTo(p.version);
@@ -140,12 +179,12 @@ class M1PublicationLifecycleTest {
 
     @Test void rotateTokenRequiresOwnerSessionCsrfAndMatchingVersion() throws Exception {
         var p=published(); var other=published();
-        call(post("/api/surveys/"+p.id+"/versions/"+p.version+"/rotate-token").with(csrf()),401);
+        call(post("/api/surveys/"+p.id+"/versions/"+p.version+"/rotate-token").with(csrf()).contentType("application/json").content(rotationBody(p.version)),401);
         String name="stranger_"+UUID.randomUUID().toString().replace("-",""); accounts.register(name,"Stranger-Test-password-2026");
         call(post("/api/surveys/"+p.id+"/versions/"+p.version+"/rotate-token").session(login(name,"Stranger-Test-password-2026")),403);
         call(post("/api/surveys/"+p.id+"/versions/"+p.version+"/rotate-token").session(p.owner),403);
-        call(post("/api/surveys/"+p.id+"/versions/"+other.version+"/rotate-token").session(p.owner).with(csrf()),404);
-        call(post("/api/surveys/"+p.id+"/versions/999999/rotate-token").session(p.owner).with(csrf()),404);
+        call(post("/api/surveys/"+p.id+"/versions/"+other.version+"/rotate-token").session(p.owner).with(csrf()).contentType("application/json").content(rotationBody(p.version)),404);
+        call(post("/api/surveys/"+p.id+"/versions/999999/rotate-token").session(p.owner).with(csrf()).contentType("application/json").content(rotationBody(p.version)),404);
         call(get("/api/public/surveys/"+p.token),200);
     }
 
@@ -157,7 +196,7 @@ class M1PublicationLifecycleTest {
         assertThat(retry.get("versionNumber").asInt()).isEqualTo(1);
         assertThat(versions.selectCount(Wrappers.<SurveyVersion>lambdaQuery().eq(SurveyVersion::getSurveyId,p.id))).isEqualTo(1);
 
-        var rotated=call(post("/api/surveys/"+p.id+"/versions/"+retry.get("versionId").asLong()+"/rotate-token").session(p.owner).with(csrf()),200);
+        var rotated=call(post("/api/surveys/"+p.id+"/versions/"+retry.get("versionId").asLong()+"/rotate-token").session(p.owner).with(csrf()).contentType("application/json").content(rotationBody(p.version)),200);
         call(get("/api/public/surveys/"+p.token),404);
         call(get("/api/public/surveys/"+rotated.get("publicToken").asText()),200);
     }

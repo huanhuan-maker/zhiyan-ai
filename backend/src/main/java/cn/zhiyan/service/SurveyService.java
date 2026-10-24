@@ -67,7 +67,7 @@ public class SurveyService {
     public Map<String,Object> detail(long id,String name) {
         Survey row=owned(id,name,false); Map<String,Object> out=view(row);
         out.put("versions",versions.selectList(Wrappers.<SurveyVersion>lambdaQuery().eq(SurveyVersion::getSurveyId,id).orderByDesc(SurveyVersion::getVersionNumber))
-                .stream().map(v->Map.of("id",v.getId(),"versionNumber",v.getVersionNumber(),"publishedAt",v.getPublishedAt(),"status",v.getStatus())).toList());
+                .stream().map(v->Map.of("id",v.getId(),"versionNumber",v.getVersionNumber(),"publishedAt",v.getPublishedAt(),"status",v.getStatus(),"shareRevision",hash(v.getTokenHash()))).toList());
         return out;
     }
     @Transactional public Map<String,Object> create(Draft draft,String name) {
@@ -114,13 +114,16 @@ public class SurveyService {
         SurveyVersion v=publicVersion(token); ensureOpen(surveys.selectById(v.getSurveyId())); ensureVersionOpen(v);
         return Map.of("versionId",v.getId(),"versionNumber",v.getVersionNumber(),"survey",decode(v.getSnapshotJson()),"aiMode","NOT_IMPLEMENTED");
     }
-    @Transactional public Map<String,Object> rotateToken(long id,long versionId,String name) {
+    @Transactional public Map<String,Object> rotateToken(long id,long versionId,String name,String expectedShareRevision) {
         Survey row=owned(id,name,true); SurveyVersion v=lockVersion(id,versionId);
+        if(!hash(v.getTokenHash()).equals(expectedShareRevision))
+            throw new BusinessException(409,"STALE_SHARE_LINK","分享链接已变化；本次请求未再次轮换。请重新读取发布记录，确认后再生成链接。");
         String token=randomToken(); v.setTokenHash(hash(token)); versions.updateById(v); audit(row,"ROTATE_TOKEN");
         Map<String,Object> out=new LinkedHashMap<>();
         out.put("versionId",v.getId()); out.put("versionNumber",v.getVersionNumber());
         out.put("publicToken",token); out.put("publicPath","/public/"+token);
         out.put("versionStatus",v.getStatus()); out.put("surveyStatus",row.getStatus());
+        out.put("shareRevision",hash(v.getTokenHash()));
         return out;
     }
     public static String randomToken() { byte[] data=new byte[32]; new SecureRandom().nextBytes(data); return Base64.getUrlEncoder().withoutPadding().encodeToString(data); }
