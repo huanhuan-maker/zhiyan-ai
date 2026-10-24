@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="25" failures="0" errors="0" time="0.0668607">
+    <testsuite name="tests/unit/auth.test.ts" timestamp="2026-10-24T07:40:55.044Z" hostname="DESKTOP-T7C9N24" tests="9" failures="0" errors="0" skipped="0" time="0.0134457">
+        <testcase classname="tests/unit/auth.test.ts" name="session lifecycle &gt; does not clear a newer session on a delayed 401 from an old request" time="0.0036475">
+        </testcase>
+        <testcase classname="tests/unit/auth.test.ts" name="session lifecycle &gt; does not restore a login if logout happened while login was pending" time="0.0039389">
+        </testcase>
+        <testcase classname="tests/unit/auth.test.ts" name="session lifecycle &gt; does not bypass the upstream initial-password change requirement" time="0.002438">
+        </testcase>
+        <testcase classname="tests/unit/auth.test.ts" name="session lifecycle &gt; restricts redirect https://evil.test to the local workspace" time="0.0005062">
+        </testcase>
+        <testcase classname="tests/unit/auth.test.ts" name="session lifecycle &gt; restricts redirect //evil.test to the local workspace" time="0.0003544">
+        </testcase>
+        <testcase classname="tests/unit/auth.test.ts" name="session lifecycle &gt; restricts redirect /\evil.test to the local workspace" time="0.000227">
+        </testcase>
+        <testcase classname="tests/unit/auth.test.ts" name="session lifecycle &gt; restricts redirect /login to the local workspace" time="0.0001518">
+        </testcase>
+        <testcase classname="tests/unit/auth.test.ts" name="session lifecycle &gt; restricts redirect /about to the local workspace" time="0.000109">
+        </testcase>
+        <testcase classname="tests/unit/auth.test.ts" name="session lifecycle &gt; preserves a local questionnaire detail destination" time="0.0005492">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/client.test.ts" timestamp="2026-10-24T07:40:55.049Z" hostname="DESKTOP-T7C9N24" tests="15" failures="0" errors="0" skipped="0" time="0.0362444">
+        <testcase classname="tests/unit/client.test.ts" name="TDuck transport and authentication contract &gt; sends the token only in the header and encodes query input" time="0.0058352">
+        </testcase>
+        <testcase classname="tests/unit/client.test.ts" name="TDuck transport and authentication contract &gt; does not attach a previous token to login" time="0.0007517">
+        </testcase>
+        <testcase classname="tests/unit/client.test.ts" name="TDuck transport and authentication contract &gt; expires a session for upstream 401 with HTTP 200" time="0.0012905">
+        </testcase>
+        <testcase classname="tests/unit/client.test.ts" name="TDuck transport and authentication contract &gt; expires a session for upstream 401 with HTTP 401" time="0.0007411">
+        </testcase>
+        <testcase classname="tests/unit/client.test.ts" name="TDuck transport and authentication contract &gt; retains the session for a permission denial: 500 无表单权限" time="0.0007815">
+        </testcase>
+        <testcase classname="tests/unit/client.test.ts" name="TDuck transport and authentication contract &gt; retains the session for a permission denial: 401 无权限访问" time="0.0005114">
+        </testcase>
+        <testcase classname="tests/unit/client.test.ts" name="TDuck transport and authentication contract &gt; retains the session for a permission denial: 403 " time="0.0006499">
+        </testcase>
+        <testcase classname="tests/unit/client.test.ts" name="TDuck transport and authentication contract &gt; rejects a business failure wrapped in HTTP 200" time="0.0005425">
+        </testcase>
+        <testcase classname="tests/unit/client.test.ts" name="TDuck transport and authentication contract &gt; does not display internal SQL or server error messages" time="0.0012704">
+        </testcase>
+        <testcase classname="tests/unit/client.test.ts" name="TDuck transport and authentication contract &gt; fails explicitly for captcha requirements" time="0.0005843">
+        </testcase>
+        <testcase classname="tests/unit/client.test.ts" name="TDuck transport and authentication contract &gt; rejects HTML responses instead of treating them as success" time="0.0005619">
+        </testcase>
+        <testcase classname="tests/unit/client.test.ts" name="TDuck transport and authentication contract &gt; reports proxy failures as unavailable" time="0.0004036">
+        </testcase>
+        <testcase classname="tests/unit/client.test.ts" name="TDuck transport and authentication contract &gt; reports a refused connection without clearing login" time="0.0003466">
+        </testcase>
+        <testcase classname="tests/unit/client.test.ts" name="TDuck transport and authentication contract &gt; aborts a request that never responds" time="0.0200919">
+        </testcase>
+        <testcase classname="tests/unit/client.test.ts" name="TDuck transport and authentication contract &gt; rejects off-origin paths before any request" time="0.0003819">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/unit/text.test.ts" timestamp="2026-10-24T07:40:55.054Z" hostname="DESKTOP-T7C9N24" tests="1" failures="0" errors="0" skipped="0" time="0.0171706">
+        <testcase classname="tests/unit/text.test.ts" name="strips script and style contents as well as tags without executing HTML" time="0.015974">
+        </testcase>
+    </testsuite>
+</testsuites>

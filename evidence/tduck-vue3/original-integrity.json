@@ -1,0 +1,16 @@
+﻿{
+    "nonAccountDataUnchanged":  true,
+    "checkedAt":  "2026-10-24T15:48:22.3818924+08:00",
+    "originalJarUnchanged":  true,
+    "changedDataTables":  [
+                              "ac_user",
+                              "ac_user_token"
+                          ],
+    "originalDatabaseDataUnchanged":  false,
+    "backupDatabaseSha256":  "03D7267450E8F673EFE5281695C98C2A1C971C046D1ADA4230B0403C7102C6DB",
+    "deployedJarSha256":  "1525BE989421ABD92C6C02C975EBFAC50DC0CAEB032C96C26B8197137B0648BE",
+    "sourceDifferences":  [
+
+                          ],
+    "sourceFilesChecked":  727
+}

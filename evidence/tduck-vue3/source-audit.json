@@ -1,0 +1,40 @@
+{
+  "localRelease": "TDuck community 6.0",
+  "classChecks": [
+    {
+      "matchesTargetClasses": true,
+      "class": "web/controller/UserLoginController.class"
+    },
+    {
+      "matchesTargetClasses": true,
+      "class": "web/controller/UserFormController.class"
+    },
+    {
+      "matchesTargetClasses": true,
+      "class": "web/interceptor/AuthorizationInterceptor.class"
+    },
+    {
+      "matchesTargetClasses": true,
+      "class": "config/JacksonConfig.class"
+    }
+  ],
+  "note": "Compared local built classes with deployed JAR; did not rebuild upstream backend or establish a missing upstream commit.",
+  "backendGitCommit": null,
+  "backendSource": "D:\\tduck-survey-form-master",
+  "jarLibraries": [
+    "spring-boot-2.7.8.jar",
+    "mysql-connector-j-8.0.32.jar",
+    "mybatis-plus-boot-starter-3.5.3.jar",
+    "mybatis-plus-3.5.3.jar",
+    "mybatis-plus-extension-3.5.3.jar",
+    "mybatis-plus-core-3.5.3.jar",
+    "mybatis-plus-annotation-3.5.3.jar"
+  ],
+  "inspectedAt": "2026-10-24T15:40:36.3334948+08:00",
+  "legacyFrontendDirtyFiles": [
+    "package.json",
+    "package-lock.json",
+    "vue.config.js"
+  ],
+  "legacyFrontendCommit": "00db10874910b8225498ba7735e86652254cd9eb"
+}

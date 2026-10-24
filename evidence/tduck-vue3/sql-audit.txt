@@ -1,0 +1,10 @@
+mysql_version	current_database
+8.0.46	tduck_vue3_dev
+table_count
+19
+form_count
+5
+item_count
+3
+response_count
+0

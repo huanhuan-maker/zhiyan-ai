@@ -1,0 +1,30 @@
+[
+  {
+    "licenseFilePresent": true,
+    "version": "3.3.5",
+    "inspectedAt": "2026-10-24T15:39:22.0848238+08:00",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/xaboy/form-create.git"
+    },
+    "name": "@form-create/element-ui",
+    "license": "MIT",
+    "peerDependencies": {
+      "vue": "^3.5.12"
+    }
+  },
+  {
+    "licenseFilePresent": true,
+    "version": "3.2.10",
+    "inspectedAt": "2026-10-24T15:39:22.1020705+08:00",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/xaboy/form-create-designer.git"
+    },
+    "name": "form-create-designer",
+    "license": "MIT",
+    "peerDependencies": {
+      "vue": "^3.1.5"
+    }
+  }
+]

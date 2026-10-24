@@ -1,5 +1,7 @@
 # 知研 AI
 
+> **当前开发入口（2026-10-24）**：用户已选择基于 TDuck 进行二次开发，本次交付独立的 [Vue 3 迁移第一阶段](tduck-vue3/README.md)，访问 `http://127.0.0.1:5180`，详见 [阶段证据](evidence/tduck-vue3/M0.md)。原 `backend/`、`frontend/` 及以下 M0/M1 说明保留作为旧实现的对照与回退资料。本轮不进入设计器替换或 AI 阶段。
+
 当前交付为 **M0 工程联通 + M1 固定问卷闭环**，按用户授权完成后停止，等待人工验收。固定技术栈：Vue 3 + TypeScript + Vite + ECharts、Spring Boot + MyBatis-Plus、MySQL 8.x。AI 尚未开发或调用。M1 构建、真实数据库自动测试及 HTTP 闭环通过，完整浏览器流程仍待人工验证，见验收报告。
 
 交给其他 Agent 验收或续开发，请先读 [Agent 交接文档](docs/AGENT_HANDOFF.md)，文末提供可复制的接手指令。

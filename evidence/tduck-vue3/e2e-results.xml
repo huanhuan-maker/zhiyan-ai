@@ -1,0 +1,22 @@
+<testsuites id="" name="" tests="9" failures="0" skipped="0" errors="0" time="10.858881">
+<testsuite name="workspace.spec.ts" timestamp="2026-10-24T07:40:56.080Z" hostname="" tests="9" failures="0" skipped="0" time="9.578" errors="0">
+<testcase name="real login, MySQL-backed list, chart totals, detail, refresh and logout" classname="workspace.spec.ts" time="1.721">
+</testcase>
+<testcase name="wrong credentials report a real backend failure" classname="workspace.spec.ts" time="0.557">
+</testcase>
+<testcase name="search and state filter use backend query results" classname="workspace.spec.ts" time="1.313">
+</testcase>
+<testcase name="folder navigation does not lose existing nested questionnaires" classname="workspace.spec.ts" time="1.021">
+</testcase>
+<testcase name="real cross-account permission denial retains the other session" classname="workspace.spec.ts" time="1.014">
+</testcase>
+<testcase name="a stale token is rejected by the real backend and redirects to login" classname="workspace.spec.ts" time="0.708">
+</testcase>
+<testcase name="offline fault injection displays a retryable error without logging out" classname="workspace.spec.ts" time="1.161">
+</testcase>
+<testcase name="stored rich text is displayed without executing HTML" classname="workspace.spec.ts" time="1.131">
+</testcase>
+<testcase name="mobile layout remains usable" classname="workspace.spec.ts" time="0.952">
+</testcase>
+</testsuite>
+</testsuites>
