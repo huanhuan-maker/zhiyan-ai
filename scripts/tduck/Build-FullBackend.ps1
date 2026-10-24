@@ -1,17 +1,38 @@
 param([string]$Source='D:\tduck-survey-form-master', [string]$Maven='D:\maven\apache-maven-3.8.8-bin\bin\mvn.cmd', [string]$JavaHome='D:\jdk\jdk17')
 $ErrorActionPreference='Stop'
 $root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
-$build=Join-Path $root '.local\tduck-build'
+$build=Join-Path $root '.local\tduck-closure-build'
+if(Get-CimInstance Win32_Process -Filter "Name='java.exe'" | Where-Object {$_.CommandLine -like "*$build\tduck-api\target\tduck-api.jar*"}){throw 'The patched JAR is running. Stop your isolated instance before rebuilding; no files changed.'}
 if(!(Test-Path -LiteralPath (Join-Path $Source 'pom.xml'))){throw 'TDuck backend source missing'}
 & robocopy $Source $build /E /XD target .git logs readmeImages doc docker /XF *.log /NFL /NDL /NJH /NJS /NP | Out-Null
 if($LASTEXITCODE -gt 7){throw 'Private build copy failed'}
+# robocopy does not remove files introduced by the closure patch on earlier builds.
+foreach($relative in @('tduck-form\src\main\java\com\tduck\cloud\form\mapper\PublicSubmissionMapper.java','tduck-form\src\main\java\com\tduck\cloud\form\service\PublicSubmissionService.java')){
+ $generated=Join-Path $build $relative
+ if(Test-Path -LiteralPath $generated){Remove-Item -LiteralPath $generated}
+}
+# Git for Windows may check out patches as CRLF while upstream Java uses LF.
+# Normalize only the private patch/source copies; never rewrite the upstream tree.
+$utf8=New-Object System.Text.UTF8Encoding($false)
+foreach($patchName in @('local-acceptance-fixes','core-closure')){
+ $patchText=[System.IO.File]::ReadAllText((Join-Path $root "patches\tduck-backend\$patchName.patch")).Replace("`r`n","`n")
+ foreach($match in [regex]::Matches($patchText,'(?m)^--- a/(.+)$')){
+  $privateSource=Join-Path $build $match.Groups[1].Value
+  if(Test-Path -LiteralPath $privateSource){[System.IO.File]::WriteAllText($privateSource,[System.IO.File]::ReadAllText($privateSource).Replace("`r`n","`n"),$utf8)}
+ }
+ [System.IO.File]::WriteAllText((Join-Path $build "$patchName.patch"),$patchText,$utf8)
+}
 Push-Location $root
 $priorJava=$env:JAVA_HOME
 try{
- & git apply --check --directory=.local/tduck-build patches/tduck-backend/local-acceptance-fixes.patch
+ & git apply --check --directory=.local/tduck-closure-build .local/tduck-closure-build/local-acceptance-fixes.patch
  if($LASTEXITCODE -ne 0){throw 'Backend source does not match the reviewed patch'}
- & git apply --directory=.local/tduck-build patches/tduck-backend/local-acceptance-fixes.patch
+ & git apply --directory=.local/tduck-closure-build .local/tduck-closure-build/local-acceptance-fixes.patch
  if($LASTEXITCODE -ne 0){throw 'Apply patch failed'}
+ & git apply --check --directory=.local/tduck-closure-build .local/tduck-closure-build/core-closure.patch
+ if($LASTEXITCODE -ne 0){throw 'Closure patch does not match the reviewed baseline'}
+ & git apply --directory=.local/tduck-closure-build .local/tduck-closure-build/core-closure.patch
+ if($LASTEXITCODE -ne 0){throw 'Apply closure patch failed'}
  $env:JAVA_HOME=$JavaHome
  & $Maven -q -f (Join-Path $build 'pom.xml') -DskipTests package
  if($LASTEXITCODE -ne 0){throw 'Backend package failed'}

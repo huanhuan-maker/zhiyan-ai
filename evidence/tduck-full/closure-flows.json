@@ -1,0 +1,14 @@
+{
+  "checks": [
+    "eight concurrent requests with the same session persist one answer and return the same answer ID",
+    "same session retry cannot overwrite answers; missing session rejected; different sessions sharing an IP remain independent",
+    "backend calculates scale mean 3 with valid denominator 2 and missing 1; checkbox percentages are 50% and 100%",
+    "open responses retain exact original text, answer ID and question ID",
+    "statistics UI displays backend mean and traceable text without browser errors; charts fit their container at 1440px and 375px",
+    "actual browser reload retains submission session; resubmitting changed text returns original success without another answer"
+  ],
+  "passed": 6,
+  "failed": 0,
+  "formKey": "YGgjJWEC",
+  "source": "Synthetic fixtures, real Spring Boot/MyBatis-Plus/MySQL and browser"
+}

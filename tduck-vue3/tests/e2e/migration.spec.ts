@@ -4,9 +4,15 @@ import {promisify} from 'node:util'
 import {resolve} from 'node:path'
 import {writeFileSync} from 'node:fs'
 const exec=promisify(execFile)
-for(const script of ['smoke-full','feature-flows','settings-flows','admin-flows','data-roundtrip','backend-security','question-roundtrip','choice-flows']){
+for(const script of ['smoke-full','feature-flows','settings-flows','admin-flows','data-roundtrip','backend-security','question-roundtrip','choice-flows','closure-flows']){
  test(script+' real backend workflow',async()=>{
-  const {stdout}=await exec(process.execPath,[`scripts/tduck/${script}.mjs`],{cwd:resolve('..'),timeout:110000,maxBuffer:1024*1024})
+  let stdout:string
+  try{
+   ({stdout}=await exec(process.execPath,[`scripts/tduck/${script}.mjs`],{cwd:resolve('..'),timeout:110000,maxBuffer:1024*1024}))
+  }catch(error:any){
+   writeFileSync(resolve(`../.local/tduck-full-audit/${script}-failed.log`),String(error.stdout||'')+'\n'+String(error.stderr||''))
+   throw error
+  }
   writeFileSync(resolve(`../evidence/tduck-full/${script}.log`),stdout)
   expect(stdout).not.toContain('"failure"')
  })

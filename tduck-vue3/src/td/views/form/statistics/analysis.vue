@@ -9,7 +9,7 @@
                 <i class="el-icon-data-analysis"></i>
                 <span class="title-text">{{ item.label || item.title || '题目分析' }}</span>
               </span>
-              <div class="select">
+              <div v-if="!['INPUT','TEXTAREA'].includes(item.typeCode)" class="select">
                 <span class="select-label">图表类型</span>
                 <el-select v-model="item.chartType" placeholder="请选择" size="small" style="width: 120px">
                   <el-option
@@ -23,10 +23,17 @@
             </div></template>
 
             <div class="card-body">
+              <p class="analysis-denominator">总答卷 {{item.totalCount}} · 有效回答 {{item.validCount}} · 缺失 {{item.missingCount}}<span v-if="item.typeCode==='RATE'"> · 平均分：{{item.mean??'暂无'}}（后端计算）</span></p>
+              <template v-if="['INPUT','TEXTAREA'].includes(item.typeCode)">
+                <p>原始回答（按答卷编号排列，最多展示前 100 条；完整记录见数据页）</p>
+                <el-table :data="item.responses||[]"><el-table-column prop="answerId" label="答卷编号" width="210"/><el-table-column prop="text" label="回答原文"><template #default="scope"><span style="white-space:pre-wrap">{{scope.row.text}}</span></template></el-table-column></el-table>
+                <p class="analysis-denominator">题目编号：{{item.fieldId}} · 问卷：{{item.formKey}}</p>
+              </template>
+              <template v-else>
               <el-row :gutter="40" type="flex" align="top" style="flex-wrap: wrap">
                 <el-col :xs="24" :sm="24" :md="12" :lg="10">
                   <div class="chart-wrapper">
-                    <t-chart :option="getCharData(item)" :init-options="initOptions" theme="tduck-echarts-theme" />
+                    <t-chart :option="getCharData(item)" :init-options="initOptions" theme="tduck-echarts-theme" style="width:100%;height:100%" />
                   </div>
                 </el-col>
                 <el-col :xs="24" :sm="24" :md="12" :lg="14">
@@ -48,7 +55,7 @@
                           <span class="data-num">{{ scope.row.data }}</span>
                         </template>
                       </el-table-column>
-                      <el-table-column prop="proportion" label="选择次数占比" width="140" align="center">
+                      <el-table-column prop="proportion" label="有效人数占比" width="140" align="center">
                         <template #default="scope" >
                           <el-tag
                             size="small"
@@ -64,12 +71,14 @@
                   </div>
                 </el-col>
               </el-row>
+              <p>比例按本题有效回答人数计算<span v-if="item.typeCode==='CHECKBOX'">；多选合计可超过 100%，饼图扇区仅表示选择次数分布</span>。</p>
+              </template>
             </div>
           </el-card>
         </el-col>
       </el-row>
     </div>
-    <el-empty v-else description="暂无分析数据，只有单选、多选、下拉框等组件可生成图表分析" class="custom-empty">
+    <el-empty v-else description="暂无分析数据，请先添加题目并收集答卷" class="custom-empty">
       <template #image >
         <i class="el-icon-data-board empty-icon"></i>
       </template>
@@ -88,7 +97,7 @@ export default {
   data() {
     return {
       initOptions: {
-        renderer: 'png'
+        renderer: 'canvas'
       },
       list: [],
       options: [
@@ -118,6 +127,7 @@ export default {
     },
     getCharData(data) {
       const config = {
+        animation: false,
         color: [
           '#3370ff',
           '#36a3f7',
@@ -270,7 +280,7 @@ export default {
         config.series[0].label = {
           show: true,
           formatter: function (params) {
-            return params.name + '\\n' + params.value + ' (' + params.percent + '%)'
+            return params.name + '\n' + params.value + ' (' + params.percent + '%)'
           },
           color: '#666',
           fontSize: 13
@@ -285,11 +295,10 @@ export default {
     getTableData(data) {
       let fieldName = data.fieldName || []
       let dataNum = data.data || []
-      let sum = dataNum.reduce((a, b) => a + b, 0)
       return fieldName.map((field, index) => ({
         fieldName: field,
         data: dataNum[index],
-        proportion: sum === 0 ? '0.00%' : ((dataNum[index] / sum) * 100).toFixed(2) + '%'
+        proportion: Number(data.percentages?.[field]??0).toFixed(2) + '%'
       }))
     },
     getProportionType(proportion) {

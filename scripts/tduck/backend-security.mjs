@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import assert from 'node:assert/strict'
 const f=JSON.parse(fs.readFileSync('.local/tduck-dev/acceptance.json','utf8').replace(/^\uFEFF/,'')),base='http://127.0.0.1:8997',checks=[]
-async function api(url,data,token,headers={}){return fetch(base+url,{method:data===undefined?'GET':'POST',headers:{'Content-Type':'application/json',...(token?{token}:{}),...headers},...(data===undefined?{}:{body:JSON.stringify(data)})}).then(r=>r.json())}
+async function api(url,data,token,headers={}){return fetch(base+url,{method:data===undefined?'GET':'POST',headers:{'Content-Type':'application/json',...(token?{token}:{}),...(url.endsWith('/public/create')?{'X-Submission-Key':crypto.randomUUID()}:{}),...headers},...(data===undefined?{}:{body:JSON.stringify(data)})}).then(r=>r.json())}
 async function ok(url,data,token,headers){const v=await api(url,data,token,headers);assert.equal(v.code,200,url+': '+v.msg);return v.data}
 const owner=(await ok('/login/account',{account:f.owner,password:f.password})).token,other=(await ok('/login/account',{account:f.other,password:f.password})).token
 const make=async(name,t)=>{const v=await ok('/user/form/create',{name,type:0},t);return typeof v==='string'?v:v.formKey}

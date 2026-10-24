@@ -235,7 +235,13 @@ export default {
       this.submitFormData.formType = this.$refs.bizProjectForm.formConf.formType
       let res = null
       if (this.writeType === 1) {
-        res = await publicCreateFormResultRequest(this.submitFormData, this.writePassword)
+        const keyName = `tdSubmission:${this.formKey}`
+        let submissionKey = sessionStorage.getItem(keyName)
+        if (!submissionKey) {
+          submissionKey = crypto.randomUUID()
+          sessionStorage.setItem(keyName, submissionKey)
+        }
+        res = await publicCreateFormResultRequest(this.submitFormData, this.writePassword, submissionKey)
       } else {
         res = await createFormResultRequest(this.submitFormData)
       }

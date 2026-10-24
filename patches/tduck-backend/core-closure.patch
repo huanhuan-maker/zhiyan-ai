@@ -1,0 +1,248 @@
+--- a/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/UserFormResultController.java
++++ b/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/UserFormResultController.java
+@@ -20,6 +20,7 @@
+ import com.tduck.cloud.form.request.QueryFormResultRequest;
+ import com.tduck.cloud.form.service.UserFormDataService;
+ import com.tduck.cloud.form.service.UserFormService;
++import com.tduck.cloud.form.service.PublicSubmissionService;
+ import com.tduck.cloud.form.service.UserFormSettingService;
+ import com.tduck.cloud.form.service.UserFormViewCountService;
+ import com.tduck.cloud.form.util.FormAuthUtils;
+@@ -57,6 +58,7 @@
+ @RequestMapping("/user/form/data")
+ public class UserFormResultController {
+     private final UserFormDataService formResultService;
++    private final PublicSubmissionService publicSubmissions;
+     private final UserFormSettingService userFormSettingService;
+     private final FormDataImportUtils formDataImportUtils;
+     private final FormDataExportUtils formDataExportUtils;
+@@ -160,18 +162,14 @@
+                 && !StrUtil.equals(settings.getWritePassword(), request.getHeader("X-Form-Password"))) {
+             return Result.failed("请输入正确的填写密码");
+         }
+-        Result<Boolean> userFormSettingStatus = userFormSettingService.getUserFormWriteSettingStatus(entity.getFormKey(), entity.getSubmitRequestIp(), entity.getWxOpenId(), CommonConstants.ConstantNumber.ONE);
+-        if (StrUtil.isNotBlank(userFormSettingStatus.getMsg())) {
+-            return Result.failed(userFormSettingStatus.getMsg());
+-        }
+         // 如果已经登陆了也记录用户信息 try catch 避免抛出异常
+         try {
+             entity.setCreateBy(SecurityUtils.getUserId() != null ? String.valueOf(SecurityUtils.getUserId()) : null);
+         } catch (Exception ignored) {
+         }
+
+-        Map<String, Object> result = formResultService.saveFormResult(entity);
+-        ThreadUtil.execAsync(() -> {
++        Map<String, Object> result = publicSubmissions.submit(entity, request.getHeader("X-Submission-Key"));
++        if (!Boolean.TRUE.equals(result.get("replayed"))) ThreadUtil.execAsync(() -> {
+             sendWriteResultNotify(entity.getFormKey());
+         });
+         return Result.success(result);
+--- /dev/null
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/mapper/PublicSubmissionMapper.java
+@@ -0,0 +1,14 @@
++package com.tduck.cloud.form.mapper;
++
++import org.apache.ibatis.annotations.*;
++
++public interface PublicSubmissionMapper {
++    @Insert("INSERT INTO fm_public_submission(form_key, session_hash) VALUES(#{key}, #{hash}) ON DUPLICATE KEY UPDATE session_hash=VALUES(session_hash)")
++    int reserve(@Param("key") String key, @Param("hash") String hash);
++
++    @Select("SELECT answer_id FROM fm_public_submission WHERE form_key=#{key} AND session_hash=#{hash} FOR UPDATE")
++    Long answer(@Param("key") String key, @Param("hash") String hash);
++
++    @Update("UPDATE fm_public_submission SET answer_id=#{answer} WHERE form_key=#{key} AND session_hash=#{hash}")
++    int complete(@Param("key") String key, @Param("hash") String hash, @Param("answer") Long answer);
++}
+--- a/tduck-form/src/main/java/com/tduck/cloud/form/service/impl/FormDashboardServiceImpl.java
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/service/impl/FormDashboardServiceImpl.java
+@@ -83,65 +83,69 @@
+
+     @Override
+     public List<FormReportVO.Analysis> formReportAnalysis(String formKey) {
+-        List<FormItemTypeEnum> typeEnumList = CollUtil.newArrayList(
+-                FormItemTypeEnum.RADIO,
+-                FormItemTypeEnum.CHECKBOX,
+-                FormItemTypeEnum.IMAGE_SELECT,
+-                FormItemTypeEnum.SELECT
+-        );
+-        // 题目
+-        List<UserFormItemEntity> formItemList = userFormItemService.list(new QueryWrapper<UserFormItemEntity>().lambda().eq(UserFormItemEntity::getFormKey, formKey));
+-        // 结果
+-        List<UserFormDataEntity> formResultList = userFormDataService.list(new QueryWrapper<UserFormDataEntity>().lambda().select(UserFormDataEntity::getOriginalData).eq(UserFormDataEntity::getFormKey, formKey));
+-        // 标题label与id的对应值
+-        Map<String, FormReportVO.Analysis> formMap = new LinkedHashMap<>();
+-        // 储存标题与可选项
+-        List<String> idList = new ArrayList<>();
+-        for (UserFormItemEntity userFormItemEntity : formItemList) {
+-            if (typeEnumList.contains(userFormItemEntity.getType())) {
+-                // id and label
+-                FormReportVO.Analysis analysis = new FormReportVO.Analysis();
+-                analysis.setLabel(HtmlUtils.cleanHtmlTag(userFormItemEntity.getLabel()));
+-                analysis.setType(userFormItemEntity.getType().getDesc());
+-                formMap.put(userFormItemEntity.getFormItemId(), analysis);
+-                idList.add(userFormItemEntity.getFormItemId());
++        List<UserFormItemEntity> fields = userFormItemService.list(new QueryWrapper<UserFormItemEntity>().lambda()
++                .eq(UserFormItemEntity::getFormKey, formKey).orderByAsc(UserFormItemEntity::getSort));
++        List<UserFormDataEntity> answers = userFormDataService.list(new QueryWrapper<UserFormDataEntity>().lambda()
++                .eq(UserFormDataEntity::getFormKey, formKey).orderByAsc(UserFormDataEntity::getId));
++        List<FormReportVO.Analysis> result = new ArrayList<>();
++        for (UserFormItemEntity field : fields) {
++            String type = field.getType().name();
++            if (!Arrays.asList("RADIO","CHECKBOX","SELECT","IMAGE_SELECT","RATE","INPUT","TEXTAREA").contains(type)) continue;
++            FormReportVO.Analysis analysis = new FormReportVO.Analysis();
++            String id = field.getFormItemId();
++            analysis.setFieldId(id); analysis.setFormKey(formKey); analysis.setTypeCode(type);
++            analysis.setType(field.getType().getDesc()); analysis.setLabel(HtmlUtils.cleanHtmlTag(field.getLabel()));
++            analysis.setTotalCount(answers.size());
++            Map<String,Integer> counts = new LinkedHashMap<>();
++            List<Map<String,Object>> texts = new ArrayList<>();
++            int valid = 0;
++            java.math.BigDecimal sum = java.math.BigDecimal.ZERO;
++            for (UserFormDataEntity answer : answers) {
++                Map<String,Object> data = answer.getOriginalData();
++                Object value = data == null ? null : data.get(id);
++                if (value == null || value.toString().trim().isEmpty() || value instanceof Collection && ((Collection<?>)value).isEmpty()) continue;
++                if ("RATE".equals(type)) {
++                    try {
++                        java.math.BigDecimal number = new java.math.BigDecimal(value.toString());
++                        // Zero is the renderer's unanswered default, not a 1-N scale response.
++                        if(number.compareTo(java.math.BigDecimal.ONE)<0) continue;
++                        int max = 5;
++                        Object maxValue = field.getScheme()==null?null:field.getScheme().get("max");
++                        if(maxValue instanceof Number) max=((Number)maxValue).intValue();
++                        if(number.compareTo(java.math.BigDecimal.valueOf(max))>0) continue;
++                        sum=sum.add(number); valid++;
++                        counts.merge(number.stripTrailingZeros().toPlainString(),1,Integer::sum);
++                    } catch (NumberFormatException ignored) { }
++                } else if ("INPUT".equals(type) || "TEXTAREA".equals(type)) {
++                    if(!(value instanceof String)) continue;
++                    valid++;
++                    if(texts.size()<100) {
++                        Map<String,Object> text = new LinkedHashMap<>();
++                        text.put("answerId",String.valueOf(answer.getId())); text.put("fieldId",id);
++                        text.put("text",value); texts.add(text);
++                    }
++                } else {
++                    Object labels = data.get(id+"label");
++                    Collection<?> labelList = labels instanceof Collection ? (Collection<?>)labels : Collections.singletonList(labels);
++                    Set<String> unique = new LinkedHashSet<>();
++                    for(Object label:labelList) if(label!=null && !label.toString().trim().isEmpty()) unique.add(label.toString().trim());
++                    if(unique.isEmpty()) continue;
++                    valid++;
++                    for(String label:unique) counts.merge(label,1,Integer::sum);
++                }
+             }
++            analysis.setValidCount(valid); analysis.setMissingCount(answers.size()-valid);
++            if("RATE".equals(type)) {
++                analysis.setMean(valid==0?null:sum.divide(java.math.BigDecimal.valueOf(valid),2,java.math.RoundingMode.HALF_UP));
++                analysis.setChartType("bar");
++            }
++            analysis.setResponses(texts);
++            Map<String,java.math.BigDecimal> percentages=new LinkedHashMap<>();
++            for(Map.Entry<String,Integer> count:counts.entrySet()) percentages.put(count.getKey(),valid==0?java.math.BigDecimal.ZERO:
++                java.math.BigDecimal.valueOf(count.getValue()*100L).divide(java.math.BigDecimal.valueOf(valid),2,java.math.RoundingMode.HALF_UP));
++            analysis.setPercentages(percentages); analysis.setMap(counts);
++            analysis.setFieldName(counts.keySet()); analysis.setData(counts.values()); result.add(analysis);
+         }
+-        for (UserFormDataEntity userFormResultEntity : formResultList) {
+-            Map<String, Object> originalData = userFormResultEntity.getOriginalData();
+-            for (String fieldId : idList) {
+-                Map<String, Integer> labelCountMap = formMap.get(fieldId).getMap();
+-                if (ObjectUtil.isNull(labelCountMap)) {
+-                    labelCountMap = Maps.newHashMap();
+-                }
+-                if (originalData.containsKey(fieldId)) {
+-                    // 结果中字段值  处理多选
+-                    if (originalData.get(fieldId) instanceof Collection) {
+-                        List<Object> fieldValues = MapUtil.get(originalData, fieldId, List.class);
+-                        List<String> fieldLabelValues = MapUtil.get(originalData, fieldId + "label", List.class);
+-                        for (int i = 0; i < fieldValues.size(); i++) {
+-                            // 是否是其他输入
+-                            Object value = fieldValues.get(i);
+-                            String label = value.equals(CommonConstants.ConstantNumber.ZERO) ? "其他" : fieldLabelValues.get(i);
+-                            Integer count = labelCountMap.get(label);
+-                            if(StrUtil.isNotBlank(label)) {
+-                                labelCountMap.put(label.trim(), ObjectUtil.isNotNull(count) ? count + 1 : 1);
+-                            }
+-                        }
+-                    } else {
+-                        String label = MapUtil.getStr(originalData, fieldId + "label");
+-                        Integer count = labelCountMap.get(label);
+-                        if(StrUtil.isNotBlank(label)){
+-                            labelCountMap.put(label, ObjectUtil.isNotNull(count) ? count + 1 : 1);
+-                        }
+-                    }
+-                }
+-                formMap.get(fieldId).setFieldName(labelCountMap.keySet());
+-                formMap.get(fieldId).setData(labelCountMap.values());
+-                formMap.get(fieldId).setMap(labelCountMap);
+-            }
+-        }
+-        List<FormReportVO.Analysis> result = new ArrayList(formMap.values());
+         return result;
+     }
+ }
+--- /dev/null
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/service/PublicSubmissionService.java
+@@ -0,0 +1,42 @@
++package com.tduck.cloud.form.service;
++
++import cn.hutool.crypto.digest.DigestUtil;
++import com.tduck.cloud.common.util.Result;
++import com.tduck.cloud.form.entity.UserFormDataEntity;
++import com.tduck.cloud.form.mapper.PublicSubmissionMapper;
++import lombok.RequiredArgsConstructor;
++import org.springframework.stereotype.Service;
++import org.springframework.transaction.annotation.Transactional;
++import java.util.HashMap;
++import java.util.Map;
++
++@Service
++@RequiredArgsConstructor
++public class PublicSubmissionService {
++    private final PublicSubmissionMapper submissions;
++    private final UserFormDataService answers;
++    private final UserFormSettingService settings;
++
++    @Transactional(rollbackFor = Exception.class)
++    public Map<String,Object> submit(UserFormDataEntity entity, String session) {
++        if(session == null || !session.matches("[a-zA-Z0-9-]{32,80}"))
++            throw new IllegalArgumentException("缺少有效答题会话，请刷新页面后重试");
++        String hash = DigestUtil.sha256Hex(session);
++        submissions.reserve(entity.getFormKey(), hash);
++        Long existing = submissions.answer(entity.getFormKey(), hash);
++        if(existing != null) {
++            Map<String,Object> result = new HashMap<>();
++            result.put("id", existing);
++            result.put("replayed", true);
++            return result;
++        }
++        Result<Boolean> status = settings.getUserFormWriteSettingStatus(entity.getFormKey(),entity.getSubmitRequestIp(),entity.getWxOpenId(),1);
++        if(status.getMsg()!=null && !status.getMsg().isEmpty()) throw new IllegalArgumentException(status.getMsg());
++        // Generated IDs only. A public client must not choose an existing answer ID.
++        entity.setId(null);
++        Map<String,Object> result = answers.saveFormResult(entity);
++        submissions.complete(entity.getFormKey(),hash,entity.getId());
++        result.put("replayed",false);
++        return result;
++    }
++}
+--- a/tduck-form/src/main/java/com/tduck/cloud/form/vo/FormReportVO.java
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/vo/FormReportVO.java
+@@ -89,5 +89,15 @@
+          * 图表类型
+          */
+         private String chartType = "pie";
++        private String fieldId;
++        private String typeCode;
++        private String formKey;
++        private Integer totalCount;
++        private Integer validCount;
++        private Integer missingCount;
++        private java.math.BigDecimal mean;
++        private Map<String,java.math.BigDecimal> percentages;
++        private java.util.List<Map<String,Object>> responses;
++
+     }
+ }

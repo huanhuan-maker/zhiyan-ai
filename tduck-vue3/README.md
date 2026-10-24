@@ -2,6 +2,8 @@
 
 当前新建题型已按用户要求收敛为单选、多选、量表、开放题，右侧复杂属性默认折叠；旧问卷题型继续兼容。见 [简化编辑器记录](../evidence/tduck-full/SIMPLE_EDITOR.md)。
 
+2026-10-24 补齐本地核心流程：同一答题会话重复提交只保存一次；量表均值、有效/缺失数与开放题原文由后端提供。见 [本轮验收记录](../evidence/tduck-full/CORE_CLOSURE.md)。AI 尚未进入开发。
+
 当前验收入口：[http://localhost:5180/home](http://localhost:5180/home)。UI 和业务页面来自 `D:\tduck-front`，前端已改为 Vue 3、Vite、Router 4、Pinia、Element Plus 和 Apache ECharts。当前入口是 `src/td/main.js`；此前有限功能的 TypeScript 原型及测试作为历史代码保留。
 
 后端复用 `D:\tduck-survey-form-master` 的 Spring Boot / MyBatis-Plus / MySQL 业务。当前 5180 代理修复版隔离后端 **8997**，使用 **tduck_vue3_dev**；原版 **8890/8999** 和第一轮隔离后端 8998 均保留。原库后续操作不会自动同步到开发库。
@@ -19,6 +21,7 @@
 ```powershell
 cd D:\LcProject
 .\scripts\tduck\Build-FullBackend.ps1
+.\scripts\tduck\Apply-ClosureMigration.ps1
 ```
 
 终端 A 启动后端：
@@ -68,6 +71,10 @@ node scripts/tduck/check-templates.mjs
 
 问卷发布后核心题冻结，停止收集也不能直接改核心题，请复制为新问卷再修改。数据统计继续由后端计算，ECharts 展示真实返回值。
 
-没有新增业务表或修改列。数据库迁移采用备份恢复到独立库，核对见 `db/tduck/001_full_migration_audit.sql`。后端修复通过可审查补丁应用于私有构建副本，原源码不改动。修复项目见当前迁移文档。
+数据库首次采用备份恢复到独立库，核对见 `db/tduck/001_full_migration_audit.sql`。本轮新增 `002_public_submission.sql`，只在开发库添加提交回执表，不修改已有题目/答卷表。`Apply-ClosureMigration.ps1` 本机已执行，可重复执行，不覆盖已有数据。
+
+后端在 `.local/tduck-closure-build` 构建，顺序应用 `local-acceptance-fixes.patch` 和 `core-closure.patch`。构建脚本仅在私有副本统一换行符，并拒绝覆盖正在运行的同一 JAR。原源码不改动。
+
+公开提交接口现在要求 `X-Submission-Key`：5180 答题页自动生成并在同一标签页会话中复用；旧页面/直接 API 客户端需要适配。独立会话可再次提交，这是重试防重，不是每人限填一次；复制标签页可能继承 sessionStorage，请用独立浏览器上下文模拟另一位受访者。已有历史重复答卷不会自动删除。开放题统计最多展示前 100 条原文，完整记录见数据页；多选比例以本题有效回答人数为分母，合计可超过 100%。
 
 旧项目、旧知研代码和备份继续保留。所有 Git 操作仅在本地，不执行 push 或公网生产部署。第三方组件保留各自许可证；设计器原包许可仍需在任何对外分发前核实，不把外层 MIT 自动视为独立设计器包的许可。
