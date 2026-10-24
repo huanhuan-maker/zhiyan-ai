@@ -60,6 +60,9 @@
                 <div class="link-box">
                   <span class="link-text">{{ writeLink }}</span>
                 </div>
+                <p class="version-note" v-if="versionNo">
+                  当前发布版本 V{{ versionNo }}；停止收集并修改题目后重新发布会生成新版本，旧链接仍显示旧版内容。
+                </p>
                 <div class="link-actions">
                   <el-button
                     type="primary"
@@ -117,7 +120,7 @@
 
 <script>
 import VueQr from '@/compat/QrCode.vue'
-import { getFormStatusRequest, publishFormRequest, stopPublishFormRequest } from '@/api/project/publish'
+import { getFormStatusRequest, publishFormRequest, stopPublishFormRequest, listFormVersionsRequest } from '@/api/project/publish'
 
 export default {
   name: 'ProjectPublish',
@@ -130,30 +133,52 @@ export default {
       publishing: false,
       formKey: '',
       writeLink: '',
-      qrCodeUrl: ''
+      qrCodeUrl: '',
+      // 当前发布版本（发布时生成不可变快照，链接带版本令牌）
+      versionNo: null,
+      shareToken: ''
     }
   },
   mounted() {
     this.formKey = this.$route.query.key
-    let url = window.location.protocol + '//' + window.location.host
-    this.writeLink = `${url}/s/${this.formKey}`
+    this.writeLink = this.buildWriteLink()
     this.getProjectStatus()
   },
   methods: {
+    buildWriteLink() {
+      const url = window.location.protocol + '//' + window.location.host
+      return `${url}/s/${this.formKey}${this.shareToken ? '?t=' + this.shareToken : ''}`
+    },
     getProjectStatus() {
       getFormStatusRequest(this.formKey).then((res) => {
         if (res.data.status == 2) {
           this.publishStatus = true
+          this.loadCurrentVersion()
         } else {
           this.publishStatus = false
+        }
+      })
+    },
+    loadCurrentVersion() {
+      listFormVersionsRequest(this.formKey).then((res) => {
+        const open = (res.data || []).find((v) => v.status === 1)
+        if (open) {
+          this.versionNo = open.versionNo
+          this.shareToken = open.shareToken
+          this.writeLink = this.buildWriteLink()
         }
       })
     },
     publishProject() {
       this.publishing = true
       publishFormRequest({ formKey: this.formKey })
-        .then(() => {
+        .then((res) => {
           this.publishStatus = true
+          if (res.data && res.data.shareToken) {
+            this.versionNo = res.data.versionNo
+            this.shareToken = res.data.shareToken
+            this.writeLink = this.buildWriteLink()
+          }
           this.msgSuccess('发布成功')
         })
         .finally(() => {

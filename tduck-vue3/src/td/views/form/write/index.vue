@@ -15,7 +15,9 @@
       </el-card>
     </div>
     <div v-if="writeStatus == 1" class="form-container">
-      <biz-project-form v-if="formConfig.formKey" ref="bizProjectForm" :form-config="formConfig" @submit="submitForm" />
+      <el-alert v-if="versionStopped" type="warning" :closable="false"
+        title="此问卷版本已停止收集，以下为该版本的历史内容；如需参与请向发起者获取最新链接" class="version-stopped-alert" />
+      <biz-project-form v-if="formConfig.formKey" ref="bizProjectForm" :form-config="formConfig" @submit="submitForm" @completed="formLoaded" />
     </div>
     <div v-cloak v-if="writeStatus == 2" class="title-icon-view">
       <div v-if="userFormSetting.submitShowType === 2" v-html="safeHtml(userFormSetting.submitShowCustomPageContent)" />
@@ -64,10 +66,14 @@ export default {
       formKey: '',
       writePassword: '',
       inActiveTime: 0,
+      // 版本分享令牌（/s/{formKey}?t={token}）：答卷绑定受访者所见的不可变版本
+      versionToken: '',
+      versionStopped: false,
       formConfig: {
         formKey: '',
         preview: false,
         showBtns: true,
+        versionToken: '',
         supportText: 'Powered By Tduck 填鸭表单'
       },
       writeStatus: 1,
@@ -102,6 +108,8 @@ export default {
   async created() {
     this.startedAt = performance.now()
     this.formKey = this.$route.query.key || this.$route.params.key
+    this.versionToken = this.$route.query.t || ''
+    this.formConfig.versionToken = this.versionToken
     // cookie获取微信用户信息
     this.getCookieAuthorizationUserInfo()
     // 微信授权重定向到该页 会携带code参数
@@ -221,12 +229,24 @@ export default {
         this.writeStatus = 1
       })
     },
+    formLoaded() {
+      // 版本快照加载完成：旧令牌链接命中已停止版本时，展示历史内容但阻止提交
+      const conf = this.$refs.bizProjectForm && this.$refs.bizProjectForm.formConf
+      if (conf && conf.versionStatus === 2) {
+        this.versionStopped = true
+      }
+    },
     async submitForm(data) {
+      if (this.versionStopped) {
+        this.msgError('此问卷版本已停止收集，请向发起者获取最新链接')
+        return
+      }
       if (this.sending) return
       this.sending = true
       try {
       // 完成时间
       this.submitFormData.completeTime = Math.max(0, Math.round(performance.now() - this.startedAt))
+      this.submitFormData.versionToken = this.versionToken || null
       this.submitFormData.wxUserInfo = this.wxUserInfo
       this.submitFormData.wxOpenId = this.wxUserInfo ? this.wxUserInfo.openid : ''
       this.submitFormData.originalData = data.formModel

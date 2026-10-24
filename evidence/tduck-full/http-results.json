@@ -1,94 +1,94 @@
-{
-  "checks": [
-    {
-      "name": "Anonymous request is rejected",
-      "passed": true
-    },
-    {
-      "name": "Real login and current-user query",
-      "passed": true
-    },
-    {
-      "name": "Root list persists including additional migration acceptance forms",
-      "passed": true
-    },
-    {
-      "name": "Persisted form uRmy3CBG",
-      "passed": true
-    },
-    {
-      "name": "Persisted question uRmy3CBG",
-      "passed": true
-    },
-    {
-      "name": "Persisted form YiFF8Nk6",
-      "passed": true
-    },
-    {
-      "name": "Persisted question YiFF8Nk6",
-      "passed": true
-    },
-    {
-      "name": "Persisted form kj27mJ5o",
-      "passed": true
-    },
-    {
-      "name": "Persisted question kj27mJ5o",
-      "passed": true
-    },
-    {
-      "name": "Backend count for status 1 includes the original fixture",
-      "passed": true
-    },
-    {
-      "name": "Backend count for status 2 includes the original fixture",
-      "passed": true
-    },
-    {
-      "name": "Backend count for status 3 includes the original fixture",
-      "passed": true
-    },
-    {
-      "name": "Real backend pagination",
-      "passed": true
-    },
-    {
-      "name": "Cross-account access is rejected by backend",
-      "passed": true
-    },
-    {
-      "name": "Invalid token rejected by backend",
-      "passed": true
-    }
-  ],
-  "failed": 0,
-  "note": "Synthetic fixtures; no tokens, credentials or respondent data included.",
-  "passed": 15,
-  "backend": "http://127.0.0.1:8997",
-  "runAt": "2026-10-24T21:06:20.0734338+08:00",
-  "statusCountsFromBackend": [
-    9,
-    21,
-    9
-  ],
-  "upstreamTypeRoundTrip": [
-    {
-      "returnedType": 2,
-      "createRequestType": 1,
-      "key": "uRmy3CBG",
-      "returnedTypeDesc": "流程表单"
-    },
-    {
-      "returnedType": 2,
-      "createRequestType": 1,
-      "key": "YiFF8Nk6",
-      "returnedTypeDesc": "流程表单"
-    },
-    {
-      "returnedType": 2,
-      "createRequestType": 1,
-      "key": "kj27mJ5o",
-      "returnedTypeDesc": "流程表单"
-    }
-  ]
+﻿{
+    "statusCountsFromBackend":  [
+                                    16,
+                                    29,
+                                    16
+                                ],
+    "upstreamTypeRoundTrip":  [
+                                  {
+                                      "returnedTypeDesc":  "流程表单",
+                                      "returnedType":  2,
+                                      "key":  "uRmy3CBG",
+                                      "createRequestType":  1
+                                  },
+                                  {
+                                      "returnedTypeDesc":  "流程表单",
+                                      "returnedType":  2,
+                                      "key":  "YiFF8Nk6",
+                                      "createRequestType":  1
+                                  },
+                                  {
+                                      "returnedTypeDesc":  "流程表单",
+                                      "returnedType":  2,
+                                      "key":  "kj27mJ5o",
+                                      "createRequestType":  1
+                                  }
+                              ],
+    "runAt":  "2026-10-24T21:58:40.5497691+08:00",
+    "backend":  "http://127.0.0.1:8997",
+    "note":  "Synthetic fixtures; no tokens, credentials or respondent data included.",
+    "passed":  15,
+    "checks":  [
+                   {
+                       "name":  "Anonymous request is rejected",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Real login and current-user query",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Root list persists including additional migration acceptance forms",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Persisted form uRmy3CBG",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Persisted question uRmy3CBG",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Persisted form YiFF8Nk6",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Persisted question YiFF8Nk6",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Persisted form kj27mJ5o",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Persisted question kj27mJ5o",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Backend count for status 1 includes the original fixture",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Backend count for status 2 includes the original fixture",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Backend count for status 3 includes the original fixture",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Real backend pagination",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Cross-account access is rejected by backend",
+                       "passed":  true
+                   },
+                   {
+                       "name":  "Invalid token rejected by backend",
+                       "passed":  true
+                   }
+               ],
+    "failed":  0
 }

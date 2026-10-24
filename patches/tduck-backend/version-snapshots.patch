@@ -1,0 +1,750 @@
+index 417d781..8ce5f73 100644
+--- a/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/UserFormController.java
++++ b/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/UserFormController.java
+@@ -39,7 +39,10 @@ import javax.annotation.security.PermitAll;
+ import javax.validation.constraints.NotBlank;
+ import java.util.ArrayList;
+ import java.util.Comparator;
++import java.util.HashMap;
++import java.util.LinkedHashMap;
+ import java.util.List;
++import java.util.Map;
+ import java.util.stream.Collectors;
+ 
+ 
+@@ -63,6 +66,7 @@ public class UserFormController {
+     private final UserFormSettingService userFormSettingService;
+     private final FormTemplateService formTemplateService;
+     private final UserFormLogicService userFormLogicService;
++    private final UserFormVersionService versionService;
+ 
+ 
+     /**
+@@ -147,7 +151,7 @@ public class UserFormController {
+ 
+ 
+     /**
+-     * 发布表单
++     * 发布表单：将当前题目集冻结为不可变版本快照，生成带随机令牌的版本分享链接。
+      */
+     @PostMapping("/user/form/publish")
+     public Result publishForm(@RequestBody UserFormEntity request) {
+@@ -156,13 +160,18 @@ public class UserFormController {
+         if (count == CommonConstants.ConstantNumber.ZERO) {
+             return Result.failed("无有效表单项，无法发布");
+         }
++        UserFormVersionEntity version = versionService.publishSnapshot(request.getFormKey());
+         UserFormEntity entity = formService.getByKey(request.getFormKey());
+         entity.setStatus(FormStatusEnum.RELEASE);
+-        return Result.success(formService.updateById(entity));
++        formService.updateById(entity);
++        Map<String, Object> result = new HashMap<>();
++        result.put("versionNo", version.getVersionNo());
++        result.put("shareToken", version.getShareToken());
++        return Result.success(result);
+     }
+ 
+     /**
+-     * 停止收集
++     * 停止收集：关闭当前收集中的版本；停止后可修改草稿，重新发布生成新版本。
+      *
+      * @param request
+      */
+@@ -171,7 +180,9 @@ public class UserFormController {
+         FormAuthUtils.hasPermission(request.getFormKey());
+         UserFormEntity entity = formService.getByKey(request.getFormKey());
+         entity.setStatus(FormStatusEnum.STOP);
+-        return Result.success(formService.updateById(entity));
++        boolean updated = formService.updateById(entity);
++        versionService.closeOpen(request.getFormKey());
++        return Result.success(updated);
+     }
+ 
+     /**
+@@ -210,20 +221,38 @@ public class UserFormController {
+ 
+ 
+     /**
+-     * 查询表单详情
+-     * 包含表单信息 表单字段信息 表单主题
++     * 查询表单详情（公开填写入口）。
++     * 携带版本令牌时返回该令牌对应版本的不可变题目快照（旧链接始终加载旧版内容）；
++     * 未携带令牌时返回最新发布版本的快照；尚无任何版本时返回当前题目（草稿/历史兼容）。
+      *
+      * @param key
++     * @param token 版本分享令牌（/s/{formKey}?t={token}）
+      */
+     @GetMapping("/user/form/details/{key}")
+     @PermitAll
+-    public Result queryFormDetails(@PathVariable @NotBlank String key) {
++    public Result queryFormDetails(@PathVariable @NotBlank String key,
++                                   @RequestParam(value = "token", required = false) String token) {
+         UserFormEntity form = formService.getByKey(key);
+         if (ObjectUtil.isNull(form)) {
+             return Result.success();
+         }
+-        List<UserFormItemEntity> formItemList = formItemService.list(Wrappers.<UserFormItemEntity>lambdaQuery().ne(UserFormItemEntity::getHideType, 1).eq(UserFormItemEntity::getFormKey, key));
+-        formItemList.sort(Comparator.comparing(UserFormItemEntity::getSort));
++        List<UserFormItemEntity> formItemList;
++        UserFormVersionEntity version = null;
++        if (StrUtil.isNotBlank(token)) {
++            version = versionService.byToken(token);
++            if (version == null || !version.getFormKey().equals(key)) {
++                return Result.failed("分享链接无效或已失效");
++            }
++            formItemList = versionService.itemsOf(version);
++        } else {
++            version = versionService.latest(key);
++            if (version != null) {
++                formItemList = versionService.itemsOf(version);
++            } else {
++                formItemList = formItemService.list(Wrappers.<UserFormItemEntity>lambdaQuery().ne(UserFormItemEntity::getHideType, 1).eq(UserFormItemEntity::getFormKey, key));
++                formItemList.sort(Comparator.comparing(UserFormItemEntity::getSort));
++            }
++        }
+         UserFormThemeEntity theme = userFormThemeService.getByKey(key);
+         UserFormLogicEntity formLogic = userFormLogicService.getOne(Wrappers.<UserFormLogicEntity>lambdaQuery().eq(UserFormLogicEntity::getFormKey, key));
+         // 如果是考试 移除正确答案 避免把正确答案返回到前端
+@@ -236,7 +265,34 @@ public class UserFormController {
+                 item.setScheme(schemeJson);
+             });
+         }
+-        return Result.success(new UserFormDetailVO(new UserFormDetailVO.UserForm(form), formItemList, theme, formLogic));
++        UserFormDetailVO detailVO = new UserFormDetailVO(new UserFormDetailVO.UserForm(form), formItemList, theme, formLogic);
++        if (version != null) {
++            detailVO.setVersion(version.getVersionNo());
++            detailVO.setVersionStatus(version.getStatus());
++            detailVO.setShareToken(version.getShareToken());
++        }
++        return Result.success(detailVO);
++    }
++
++    /**
++     * 问卷发布版本列表（含各版本答卷数与分享令牌），需所有者权限。
++     */
++    @GetMapping("/user/form/versions")
++    public Result listFormVersions(@RequestParam @NotBlank String key) {
++        FormAuthUtils.hasPermission(key);
++        List<Map<String, Object>> rows = new ArrayList<>();
++        for (UserFormVersionEntity version : versionService.listByForm(key)) {
++            Map<String, Object> row = new LinkedHashMap<>();
++            row.put("versionNo", version.getVersionNo());
++            row.put("status", version.getStatus());
++            row.put("shareToken", version.getShareToken());
++            row.put("createTime", version.getCreateTime());
++            row.put("answerCount", userFormDataService.count(Wrappers.<UserFormDataEntity>lambdaQuery()
++                    .eq(UserFormDataEntity::getFormKey, key)
++                    .eq(UserFormDataEntity::getVersionNo, version.getVersionNo())));
++            rows.add(row);
++        }
++        return Result.success(rows);
+     }
+ 
+ 
+index 937078e..f3ee601 100644
+--- a/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/FormDashboardController.java
++++ b/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/FormDashboardController.java
+@@ -33,18 +33,33 @@ public class FormDashboardController {
+     private final UserFormViewCountService userFormViewCountService;
+     private final UserFormDataService userFormDataService;
+     private final FormDashboardService formDashboardService;
++    private final com.tduck.cloud.form.service.UserFormVersionService userFormVersionService;
+ 
+     /**
+-     * 表单收集信息
++     * 表单收集信息。version 为空时按最新发布版本统计（无版本时为全部答卷）。
+      */
+     @GetMapping("/user/form/report/stats")
+-    public Result formReportStats(String formKey) {
++    public Result formReportStats(String formKey, Integer version) {
+         FormAuthUtils.hasPermission(formKey);
+         //浏览量
+         Long viewCount = userFormViewCountService.count(formKey);
++        Integer resolved = version;
++        if (resolved == null) {
++            com.tduck.cloud.form.entity.UserFormVersionEntity latest = userFormVersionService.latest(formKey);
++            resolved = latest == null ? null : latest.getVersionNo();
++        }
++        com.baomidou.mybatisplus.core.conditions.query.QueryWrapper<UserFormDataEntity> wrapper =
++                Wrappers.<UserFormDataEntity>query().select("AVG(complete_time) as avgCompleteTime, count(1) as completeCount").eq("form_key", formKey);
++        if (resolved != null) {
++            wrapper.eq("version_no", resolved);
++        }
+         //平均完成时间
+-        Map<String, Object> resultMap = userFormDataService.getMap(Wrappers.<UserFormDataEntity>query().select("AVG(complete_time) as avgCompleteTime, count(1) as completeCount").eq("form_key", formKey));
++        Map<String, Object> resultMap = userFormDataService.getMap(wrapper);
++        if (resultMap == null) {
++            resultMap = new java.util.HashMap<>();
++        }
+         resultMap.put("viewCount", viewCount);
++        resultMap.put("versionNo", resolved);
+         return Result.success(resultMap);
+     }
+ 
+@@ -89,11 +104,11 @@ public class FormDashboardController {
+     }
+ 
+     /**
+-     * 数据分析
++     * 数据分析。version 为空时按最新发布版本统计（无版本时按当前题目与全部答卷）。
+      */
+     @GetMapping("/user/form/report/analysis")
+-    public Result formReportAnalysis(String formKey) {
++    public Result formReportAnalysis(String formKey, Integer version) {
+         FormAuthUtils.hasPermission(formKey);
+-        return Result.success(formDashboardService.formReportAnalysis(formKey));
++        return Result.success(formDashboardService.formReportAnalysis(formKey, version));
+     }
+ }
+index e0f538d..00be19f 100644
+--- a/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/UserFormResultController.java
++++ b/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/UserFormResultController.java
+@@ -168,7 +168,7 @@ public class UserFormResultController {
+         } catch (Exception ignored) {
+         }
+ 
+-        Map<String, Object> result = publicSubmissions.submit(entity, request.getHeader("X-Submission-Key"));
++        Map<String, Object> result = publicSubmissions.submit(entity, request.getHeader("X-Submission-Key"), entity.getVersionToken());
+         if (!Boolean.TRUE.equals(result.get("replayed"))) ThreadUtil.execAsync(() -> {
+             sendWriteResultNotify(entity.getFormKey());
+         });
+index 99bd0fa..f21a071 100644
+--- a/tduck-form/src/main/java/com/tduck/cloud/form/util/FormAuthUtils.java
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/util/FormAuthUtils.java
+@@ -20,13 +20,15 @@ public class FormAuthUtils {
+ 
+ 
+     /**
+-     * 是否拥有表单的权限
++     * 是否拥有表单的编辑权限。
++     * 收集中(RELEASE)题目冻结：已发布版本的题目集在版本快照中不可变；
++     * 停止收集后可修改草稿，重新发布将生成新版本，不影响旧版本内容与旧答卷。
+      */
+     public void hasEditablePermission(String formKey) {
+         hasPermission(formKey);
+         UserFormEntity form = SpringContextUtils.getBean(UserFormService.class).getByKey(formKey);
+-        if (form == null || form.getStatus() != com.tduck.cloud.form.entity.enums.FormStatusEnum.CREATE) {
+-            throw new BaseException("已发布核心题目已冻结，请复制为新问卷后修改");
++        if (form == null || form.getStatus() == com.tduck.cloud.form.entity.enums.FormStatusEnum.RELEASE) {
++            throw new BaseException("问卷正在收集中，题目已冻结；请先停止收集，修改后重新发布将生成新版本");
+         }
+     }
+ 
+index 6f89840..8d28490 100644
+--- a/tduck-form/src/main/java/com/tduck/cloud/form/entity/UserFormDataEntity.java
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/entity/UserFormDataEntity.java
+@@ -36,6 +36,17 @@ public class UserFormDataEntity extends SysBaseEntity {
+      */
+     private Long serialNumber;
+ 
++    /**
++     * 发布版本号：答卷绑定的不可变版本快照（fm_user_form_version.version_no）
++     */
++    private Integer versionNo;
++
++    /**
++     * 公开提交时携带的版本分享令牌，仅用于请求期版本定位，不落库
++     */
++    @TableField(exist = false)
++    private String versionToken;
++
+     /**
+      * 填写结果原始数据
+      */
+index 1521cf7..71f4be9 100644
+--- a/tduck-form/src/main/java/com/tduck/cloud/form/service/PublicSubmissionService.java
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/service/PublicSubmissionService.java
+@@ -3,6 +3,7 @@ package com.tduck.cloud.form.service;
+ import cn.hutool.crypto.digest.DigestUtil;
+ import com.tduck.cloud.common.util.Result;
+ import com.tduck.cloud.form.entity.UserFormDataEntity;
++import com.tduck.cloud.form.entity.UserFormVersionEntity;
+ import com.tduck.cloud.form.mapper.PublicSubmissionMapper;
+ import lombok.RequiredArgsConstructor;
+ import org.springframework.stereotype.Service;
+@@ -16,9 +17,10 @@ public class PublicSubmissionService {
+     private final PublicSubmissionMapper submissions;
+     private final UserFormDataService answers;
+     private final UserFormSettingService settings;
++    private final UserFormVersionService versions;
+ 
+     @Transactional(rollbackFor = Exception.class)
+-    public Map<String,Object> submit(UserFormDataEntity entity, String session) {
++    public Map<String,Object> submit(UserFormDataEntity entity, String session, String versionToken) {
+         if(session == null || !session.matches("[a-zA-Z0-9-]{32,80}"))
+             throw new IllegalArgumentException("缺少有效答题会话，请刷新页面后重试");
+         String hash = DigestUtil.sha256Hex(session);
+@@ -30,6 +32,18 @@ public class PublicSubmissionService {
+             result.put("replayed", true);
+             return result;
+         }
++        // 版本绑定：按链接令牌定位受访者所见的不可变版本；无令牌时绑定当前收集中的版本
++        UserFormVersionEntity version;
++        if(versionToken != null && !versionToken.trim().isEmpty()) {
++            version = versions.byToken(versionToken.trim());
++            if(version == null || !version.getFormKey().equals(entity.getFormKey()))
++                throw new IllegalArgumentException("分享链接无效或已失效");
++            if(version.getStatus() != UserFormVersionEntity.STATUS_OPEN)
++                throw new IllegalArgumentException("该问卷版本已停止收集，请向发起者获取最新链接");
++        } else {
++            version = versions.openVersion(entity.getFormKey());
++        }
++        entity.setVersionNo(version == null ? null : version.getVersionNo());
+         Result<Boolean> status = settings.getUserFormWriteSettingStatus(entity.getFormKey(),entity.getSubmitRequestIp(),entity.getWxOpenId(),1);
+         if(status.getMsg()!=null && !status.getMsg().isEmpty()) throw new IllegalArgumentException(status.getMsg());
+         // Generated IDs only. A public client must not choose an existing answer ID.
+@@ -37,6 +51,7 @@ public class PublicSubmissionService {
+         Map<String,Object> result = answers.saveFormResult(entity);
+         submissions.complete(entity.getFormKey(),hash,entity.getId());
+         result.put("replayed",false);
++        result.put("versionNo",entity.getVersionNo());
+         return result;
+     }
+ }
+index df5836b..20b48b7 100644
+--- a/tduck-form/src/main/java/com/tduck/cloud/form/service/FormDashboardService.java
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/service/FormDashboardService.java
+@@ -50,8 +50,11 @@ public interface FormDashboardService {
+ 
+ 
+     /**
++     * 题目级数据分析。versionNo 为空时按最新发布版本统计（无版本时按当前题目与全部答卷）。
++     *
+      * @param formKey
++     * @param versionNo
+      * @return
+      */
+-    List<FormReportVO.Analysis> formReportAnalysis(String formKey);
++    List<FormReportVO.Analysis> formReportAnalysis(String formKey, Integer versionNo);
+ }
+index 5a7180b..af7cda9 100644
+--- a/tduck-form/src/main/java/com/tduck/cloud/form/service/impl/FormDashboardServiceImpl.java
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/service/impl/FormDashboardServiceImpl.java
+@@ -13,13 +13,16 @@ import cn.hutool.core.util.StrUtil;
+ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+ import com.google.common.collect.Maps;
+ import com.tduck.cloud.common.constant.CommonConstants;
++import com.tduck.cloud.common.exception.BaseException;
+ import com.tduck.cloud.form.entity.UserFormDataEntity;
+ import com.tduck.cloud.form.entity.UserFormItemEntity;
++import com.tduck.cloud.form.entity.UserFormVersionEntity;
+ import com.tduck.cloud.form.entity.enums.FormItemTypeEnum;
+ import com.tduck.cloud.form.mapper.FormDashboardMapper;
+ import com.tduck.cloud.form.service.FormDashboardService;
+ import com.tduck.cloud.form.service.UserFormDataService;
+ import com.tduck.cloud.form.service.UserFormItemService;
++import com.tduck.cloud.form.service.UserFormVersionService;
+ import com.tduck.cloud.form.util.HtmlUtils;
+ import com.tduck.cloud.form.vo.FormReportVO;
+ import com.tduck.cloud.form.vo.SituationVO;
+@@ -43,6 +46,8 @@ public class FormDashboardServiceImpl implements FormDashboardService {
+ 
+     private final UserFormItemService userFormItemService;
+ 
++    private final UserFormVersionService userFormVersionService;
++
+ 
+     @Override
+     public Collection<SituationVO> formReportSituation(String formKey) {
+@@ -82,11 +87,32 @@ public class FormDashboardServiceImpl implements FormDashboardService {
+     }
+ 
+     @Override
+-    public List<FormReportVO.Analysis> formReportAnalysis(String formKey) {
+-        List<UserFormItemEntity> fields = userFormItemService.list(new QueryWrapper<UserFormItemEntity>().lambda()
+-                .eq(UserFormItemEntity::getFormKey, formKey).orderByAsc(UserFormItemEntity::getSort));
+-        List<UserFormDataEntity> answers = userFormDataService.list(new QueryWrapper<UserFormDataEntity>().lambda()
+-                .eq(UserFormDataEntity::getFormKey, formKey).orderByAsc(UserFormDataEntity::getId));
++    public List<FormReportVO.Analysis> formReportAnalysis(String formKey, Integer versionNo) {
++        // 版本口径：指定版本按该版本快照与该版本答卷统计；未指定按最新发布版本；
++        // 无任何版本时（草稿/历史兼容）按当前题目与全部答卷统计。
++        UserFormVersionEntity version;
++        if (versionNo != null) {
++            version = userFormVersionService.byNo(formKey, versionNo);
++            if (version == null) {
++                throw new BaseException("问卷版本不存在");
++            }
++        } else {
++            version = userFormVersionService.latest(formKey);
++        }
++        List<UserFormItemEntity> fields;
++        List<UserFormDataEntity> answers;
++        if (version != null) {
++            fields = userFormVersionService.itemsOf(version);
++            answers = userFormDataService.list(new QueryWrapper<UserFormDataEntity>().lambda()
++                    .eq(UserFormDataEntity::getFormKey, formKey)
++                    .eq(UserFormDataEntity::getVersionNo, version.getVersionNo())
++                    .orderByAsc(UserFormDataEntity::getId));
++        } else {
++            fields = userFormItemService.list(new QueryWrapper<UserFormItemEntity>().lambda()
++                    .eq(UserFormItemEntity::getFormKey, formKey).orderByAsc(UserFormItemEntity::getSort));
++            answers = userFormDataService.list(new QueryWrapper<UserFormDataEntity>().lambda()
++                    .eq(UserFormDataEntity::getFormKey, formKey).orderByAsc(UserFormDataEntity::getId));
++        }
+         List<FormReportVO.Analysis> result = new ArrayList<>();
+         for (UserFormItemEntity field : fields) {
+             String type = field.getType().name();
+index 9915235..b0e7c02 100644
+--- a/tduck-form/src/main/java/com/tduck/cloud/form/vo/UserFormDetailVO.java
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/vo/UserFormDetailVO.java
+@@ -5,7 +5,6 @@ import com.tduck.cloud.form.entity.UserFormItemEntity;
+ import com.tduck.cloud.form.entity.UserFormLogicEntity;
+ import com.tduck.cloud.form.entity.UserFormThemeEntity;
+ import com.tduck.cloud.form.entity.enums.FormTypeEnum;
+-import lombok.AllArgsConstructor;
+ import lombok.Data;
+ 
+ import java.util.List;
+@@ -14,7 +13,6 @@ import java.util.List;
+  * @author smalljop
+  */
+ @Data
+-@AllArgsConstructor
+ public class UserFormDetailVO {
+     /**
+      * 表单基础信息
+@@ -22,7 +20,7 @@ public class UserFormDetailVO {
+     private UserForm form;
+ 
+     /**
+-     * 表单项
++     * 表单项（有版本时来自该版本的不可变快照）
+      */
+     private List<UserFormItemEntity> formItems;
+ 
+@@ -36,6 +34,30 @@ public class UserFormDetailVO {
+      */
+     private UserFormLogicEntity formLogic;
+ 
++    /**
++     * 命中的发布版本号（无版本时为 null，表示草稿/兼容路径）
++     */
++    private Integer version;
++
++    /**
++     * 版本状态 1=收集中 2=已停止
++     */
++    private Integer versionStatus;
++
++    /**
++     * 版本分享令牌（用于公开提交时绑定同一版本）
++     */
++    private String shareToken;
++
++
++    public UserFormDetailVO(UserForm form, List<UserFormItemEntity> formItems,
++                            UserFormThemeEntity userFormTheme, UserFormLogicEntity formLogic) {
++        this.form = form;
++        this.formItems = formItems;
++        this.userFormTheme = userFormTheme;
++        this.formLogic = formLogic;
++    }
++
+ 
+     @Data
+     public static class UserForm {
+new file mode 100644
+index 0000000..cf22fbf
+--- /dev/null
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/entity/UserFormVersionEntity.java
+@@ -0,0 +1,51 @@
++package com.tduck.cloud.form.entity;
++
++import com.baomidou.mybatisplus.annotation.IdType;
++import com.baomidou.mybatisplus.annotation.TableField;
++import com.baomidou.mybatisplus.annotation.TableId;
++import com.baomidou.mybatisplus.annotation.TableName;
++import com.tduck.cloud.common.mybatis.handler.JacksonTypeHandler;
++import lombok.Data;
++import lombok.experimental.Accessors;
++
++import java.time.LocalDateTime;
++import java.util.List;
++import java.util.Map;
++
++/**
++ * 问卷发布版本快照 (fm_user_form_version)
++ * 每次发布将当前题目集冻结为不可变版本，公开链接与答卷按版本绑定；
++ * 重新发布生成新版本并自动关闭旧版本，旧版本内容与答卷不被后续编辑改变。
++ */
++@Data
++@Accessors(chain = true)
++@TableName(value = "fm_user_form_version", autoResultMap = true)
++public class UserFormVersionEntity {
++
++    /** 收集中 */
++    public static final int STATUS_OPEN = 1;
++    /** 已停止 */
++    public static final int STATUS_CLOSED = 2;
++
++    @TableId(type = IdType.AUTO)
++    private Long id;
++
++    private String formKey;
++
++    /** 版本号，同一问卷从 1 递增 */
++    private Integer versionNo;
++
++    /** 1=收集中 2=已停止 */
++    private Integer status;
++
++    /** 发布时的题目快照（UserFormItemEntity 字段列表） */
++    @TableField(typeHandler = JacksonTypeHandler.class)
++    private List<Map<String, Object>> itemsSnapshot;
++
++    /** 版本分享令牌，构成 /s/{formKey}?t={token} 公开链接 */
++    private String shareToken;
++
++    private LocalDateTime createTime;
++
++    private LocalDateTime updateTime;
++}
+new file mode 100644
+index 0000000..40923aa
+--- /dev/null
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/mapper/UserFormVersionMapper.java
+@@ -0,0 +1,11 @@
++package com.tduck.cloud.form.mapper;
++
++import com.baomidou.mybatisplus.core.mapper.BaseMapper;
++import com.tduck.cloud.form.entity.UserFormVersionEntity;
++
++/**
++ * 问卷发布版本 (fm_user_form_version) 访问层
++ */
++public interface UserFormVersionMapper extends BaseMapper<UserFormVersionEntity> {
++
++}
+new file mode 100644
+index 0000000..db0f44e
+--- /dev/null
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/service/UserFormVersionService.java
+@@ -0,0 +1,228 @@
++package com.tduck.cloud.form.service;
++
++import com.baomidou.mybatisplus.core.toolkit.Wrappers;
++import com.tduck.cloud.form.entity.UserFormItemEntity;
++import com.tduck.cloud.form.entity.UserFormVersionEntity;
++import com.tduck.cloud.form.entity.enums.FormItemTypeEnum;
++import com.tduck.cloud.form.mapper.UserFormVersionMapper;
++import lombok.RequiredArgsConstructor;
++import org.springframework.stereotype.Service;
++import org.springframework.transaction.annotation.Transactional;
++
++import java.security.SecureRandom;
++import java.util.ArrayList;
++import java.util.Comparator;
++import java.util.LinkedHashMap;
++import java.util.List;
++import java.util.Map;
++
++/**
++ * 问卷发布版本快照服务。
++ * 发布时冻结题目集为不可变版本；答卷按版本号绑定；
++ * 停止收集后可修改草稿，重新发布生成新版本并关闭旧版本。
++ */
++@Service
++@RequiredArgsConstructor
++public class UserFormVersionService {
++    private static final SecureRandom RANDOM = new SecureRandom();
++    private static final char[] TOKEN_ALPHABET =
++            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
++
++    private final UserFormVersionMapper versions;
++    private final UserFormItemService formItems;
++
++    /**
++     * 发布快照：关闭当前收集中版本，按当前题目集生成新版本（事务内）。
++     */
++    @Transactional(rollbackFor = Exception.class)
++    public UserFormVersionEntity publishSnapshot(String formKey) {
++        versions.update(null, Wrappers.<UserFormVersionEntity>lambdaUpdate()
++                .eq(UserFormVersionEntity::getFormKey, formKey)
++                .eq(UserFormVersionEntity::getStatus, UserFormVersionEntity.STATUS_OPEN)
++                .set(UserFormVersionEntity::getStatus, UserFormVersionEntity.STATUS_CLOSED));
++        List<UserFormVersionEntity> existing = versions.selectList(Wrappers.<UserFormVersionEntity>lambdaQuery()
++                .eq(UserFormVersionEntity::getFormKey, formKey)
++                .orderByDesc(UserFormVersionEntity::getVersionNo));
++        int nextNo = existing.isEmpty() ? 1 : existing.get(0).getVersionNo() + 1;
++        List<UserFormItemEntity> items = formItems.list(Wrappers.<UserFormItemEntity>lambdaQuery()
++                .eq(UserFormItemEntity::getFormKey, formKey));
++        items.sort(Comparator.comparing(item -> item.getSort() == null ? 0L : item.getSort()));
++        List<Map<String, Object>> snapshot = new ArrayList<>();
++        for (UserFormItemEntity item : items) {
++            snapshot.add(snapshotOf(item));
++        }
++        if (snapshot.isEmpty()) {
++            throw new IllegalStateException("没有可发布的题目");
++        }
++        UserFormVersionEntity version = new UserFormVersionEntity()
++                .setFormKey(formKey)
++                .setVersionNo(nextNo)
++                .setStatus(UserFormVersionEntity.STATUS_OPEN)
++                .setShareToken(newToken())
++                .setItemsSnapshot(snapshot);
++        versions.insert(version);
++        return version;
++    }
++
++    public UserFormVersionEntity byToken(String token) {
++        if (token == null || token.trim().isEmpty()) {
++            return null;
++        }
++        return versions.selectOne(Wrappers.<UserFormVersionEntity>lambdaQuery()
++                .eq(UserFormVersionEntity::getShareToken, token.trim()));
++    }
++
++    public UserFormVersionEntity byNo(String formKey, Integer versionNo) {
++        if (formKey == null || versionNo == null) {
++            return null;
++        }
++        return versions.selectOne(Wrappers.<UserFormVersionEntity>lambdaQuery()
++                .eq(UserFormVersionEntity::getFormKey, formKey)
++                .eq(UserFormVersionEntity::getVersionNo, versionNo));
++    }
++
++    /** 最新版本（含已停止），无版本返回 null（草稿/兼容路径） */
++    public UserFormVersionEntity latest(String formKey) {
++        List<UserFormVersionEntity> list = versions.selectList(Wrappers.<UserFormVersionEntity>lambdaQuery()
++                .eq(UserFormVersionEntity::getFormKey, formKey)
++                .orderByDesc(UserFormVersionEntity::getVersionNo)
++                .last("limit 1"));
++        return list.isEmpty() ? null : list.get(0);
++    }
++
++    /** 当前收集中的版本，无则返回 null */
++    public UserFormVersionEntity openVersion(String formKey) {
++        List<UserFormVersionEntity> list = versions.selectList(Wrappers.<UserFormVersionEntity>lambdaQuery()
++                .eq(UserFormVersionEntity::getFormKey, formKey)
++                .eq(UserFormVersionEntity::getStatus, UserFormVersionEntity.STATUS_OPEN)
++                .orderByDesc(UserFormVersionEntity::getVersionNo)
++                .last("limit 1"));
++        return list.isEmpty() ? null : list.get(0);
++    }
++
++    @Transactional(rollbackFor = Exception.class)
++    public void closeOpen(String formKey) {
++        versions.update(null, Wrappers.<UserFormVersionEntity>lambdaUpdate()
++                .eq(UserFormVersionEntity::getFormKey, formKey)
++                .eq(UserFormVersionEntity::getStatus, UserFormVersionEntity.STATUS_OPEN)
++                .set(UserFormVersionEntity::getStatus, UserFormVersionEntity.STATUS_CLOSED));
++    }
++
++    public List<UserFormVersionEntity> listByForm(String formKey) {
++        return versions.selectList(Wrappers.<UserFormVersionEntity>lambdaQuery()
++                .eq(UserFormVersionEntity::getFormKey, formKey)
++                .orderByDesc(UserFormVersionEntity::getVersionNo));
++    }
++
++    /** 从快照重建题目列表（隐藏题在返回时过滤，快照本体保持完整） */
++    public List<UserFormItemEntity> itemsOf(UserFormVersionEntity version) {
++        List<UserFormItemEntity> items = new ArrayList<>();
++        if (version == null || version.getItemsSnapshot() == null) {
++            return items;
++        }
++        for (Map<String, Object> raw : version.getItemsSnapshot()) {
++            if (raw == null) {
++                continue;
++            }
++            UserFormItemEntity item = new UserFormItemEntity();
++            item.setId(longOf(raw.get("id")));
++            item.setFormKey(strOf(raw.get("formKey")));
++            item.setFormItemId(strOf(raw.get("formItemId")));
++            String type = strOf(raw.get("type"));
++            if (type != null && !type.isEmpty()) {
++                try {
++                    item.setType(FormItemTypeEnum.valueOf(type));
++                } catch (IllegalArgumentException ignored) {
++                }
++            }
++            item.setLabel(strOf(raw.get("label")));
++            item.setDisplayType(boolOf(raw.get("displayType")));
++            item.setHideType(boolOf(raw.get("hideType")));
++            item.setSpecialType(boolOf(raw.get("specialType")));
++            item.setShowLabel(boolOf(raw.get("showLabel")));
++            item.setDefaultValue(strOf(raw.get("defaultValue")));
++            item.setRequired(boolOf(raw.get("required")));
++            item.setPlaceholder(strOf(raw.get("placeholder")));
++            item.setSort(longOf(raw.get("sort")));
++            item.setSpan(raw.get("span") instanceof Number ? ((Number) raw.get("span")).intValue() : 24);
++            item.setScheme(mapOf(raw.get("scheme")));
++            item.setRegList(listOfMaps(raw.get("regList")));
++            if (Boolean.TRUE.equals(item.getHideType())) {
++                continue;
++            }
++            items.add(item);
++        }
++        items.sort(Comparator.comparing(item -> item.getSort() == null ? 0L : item.getSort()));
++        return items;
++    }
++
++    /** 题目快照只保留渲染与统计所需字段，不含时间戳，保证与 SQL 回填结构一致 */
++    private static Map<String, Object> snapshotOf(UserFormItemEntity item) {
++        Map<String, Object> map = new LinkedHashMap<>();
++        map.put("id", item.getId());
++        map.put("formKey", item.getFormKey());
++        map.put("formItemId", item.getFormItemId());
++        map.put("type", item.getType() == null ? null : item.getType().name());
++        map.put("label", item.getLabel());
++        map.put("displayType", item.getDisplayType());
++        map.put("hideType", item.getHideType());
++        map.put("specialType", item.getSpecialType());
++        map.put("showLabel", item.getShowLabel());
++        map.put("defaultValue", item.getDefaultValue());
++        map.put("required", item.getRequired());
++        map.put("placeholder", item.getPlaceholder());
++        map.put("sort", item.getSort());
++        map.put("span", item.getSpan());
++        map.put("scheme", item.getScheme());
++        map.put("regList", item.getRegList());
++        return map;
++    }
++
++    private static String newToken() {
++        StringBuilder token = new StringBuilder(24);
++        for (int i = 0; i < 24; i++) {
++            token.append(TOKEN_ALPHABET[RANDOM.nextInt(TOKEN_ALPHABET.length)]);
++        }
++        return token.toString();
++    }
++
++    private static String strOf(Object value) {
++        return value == null ? null : String.valueOf(value);
++    }
++
++    private static Long longOf(Object value) {
++        return value instanceof Number ? ((Number) value).longValue() : null;
++    }
++
++    private static Boolean boolOf(Object value) {
++        if (value instanceof Boolean) {
++            return (Boolean) value;
++        }
++        if (value instanceof Number) {
++            return ((Number) value).intValue() != 0;
++        }
++        if (value instanceof String) {
++            return Boolean.parseBoolean((String) value);
++        }
++        return null;
++    }
++
++    @SuppressWarnings("unchecked")
++    private static Map<String, Object> mapOf(Object value) {
++        return value instanceof Map ? (Map<String, Object>) value : null;
++    }
++
++    @SuppressWarnings("unchecked")
++    private static List<Map<String, Object>> listOfMaps(Object value) {
++        if (!(value instanceof List)) {
++            return null;
++        }
++        List<Map<String, Object>> result = new ArrayList<>();
++        for (Object element : (List<Object>) value) {
++            if (element instanceof Map) {
++                result.add((Map<String, Object>) element);
++            }
++        }
++        return result;
++    }
++}

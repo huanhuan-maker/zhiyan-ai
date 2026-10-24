@@ -4,8 +4,9 @@
     "authenticated private create requires form ownership",
     "delete with another form key is rejected; original answer remains unchanged",
     "password protected public submission is enforced by server, including direct requests",
-    "published then stopped core cannot be edited, deleted, appended, batch modified or unlocked through generic update"
+    "while collecting, core items are frozen (update/delete/create/batch rejected)",
+    "stopped form may draft the next version, but the published snapshot, existing answers and stop status stay unchanged"
   ],
-  "passed": 5,
+  "passed": 6,
   "failed": 0
 }

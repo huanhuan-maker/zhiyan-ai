@@ -38,9 +38,11 @@ watch(()=>props.formConfig.formKey,async key=>{
  if(!key)return
  loaded.value=false;error.value=''
  try{
-  const res=await api.get(`${Number(props.formConfig.formKind)===2?'/form/template/details/':'/user/form/details/'}${encodeURIComponent(key)}`)
+  const token=props.formConfig.versionToken
+  const res=await api.get(`${Number(props.formConfig.formKind)===2?'/form/template/details/':'/user/form/details/'}${encodeURIComponent(key)}${token?'?token='+encodeURIComponent(token):''}`)
   const d=res.data;if(!d)throw new Error('问卷不存在或已被删除')
-  Object.assign(formConf,{formKey:key,formType:d.form?.type??d.formType,formId:d.form?.id,title:d.form?.name||props.formConfig.name,description:d.form?.description,fields:(d.formItems||[]).map(dbDataConvertForItemJson),theme:d.userFormTheme||{},logicRules:d.formLogic?.scheme||d.userFormLogic?.scheme||d.logic?.scheme||[],formBtns:props.formConfig.showBtns!==false})
+  Object.assign(formConf,{formKey:key,formType:d.form?.type??d.formType,formId:d.form?.id,title:d.form?.name||props.formConfig.name,description:d.form?.description,fields:(d.formItems||[]).map(dbDataConvertForItemJson),theme:d.userFormTheme||{},logicRules:d.formLogic?.scheme||d.userFormLogic?.scheme||d.logic?.scheme||[],formBtns:props.formConfig.showBtns!==false,
+   version:d.version??null,versionStatus:d.versionStatus??null,versionShareToken:d.shareToken??null})
   loaded.value=true;emit('completed')
  }catch(e){error.value=e.msg||e.message||'加载失败'}
 },{immediate:true})

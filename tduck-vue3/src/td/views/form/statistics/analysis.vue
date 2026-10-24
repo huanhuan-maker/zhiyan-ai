@@ -1,5 +1,14 @@
 <template>
   <div class="analysis-container">
+    <div v-if="versions && versions.length > 0" class="version-bar">
+      <span class="version-bar-label">统计版本</span>
+      <el-select v-model="currentVersion" size="small" style="width: 240px" @change="getData">
+        <el-option v-for="v in versions" :key="v.versionNo"
+          :label="'V' + v.versionNo + (v.status === 1 ? '（收集中）' : '（已停止）') + ' · ' + v.answerCount + ' 份答卷'"
+          :value="v.versionNo" />
+      </el-select>
+      <span class="version-bar-tip">不同版本的题目互不影响，统计按版本口径计算</span>
+    </div>
     <div v-if="list && list.length > 0">
       <el-row :gutter="24">
         <el-col :span="24" v-for="(item, index) in list" :key="index" style="margin-bottom: 24px">
@@ -89,6 +98,7 @@
 <script>
 import TChart from '@/views/components/TChart'
 import { getFormAnalysisRequest } from '@/api/project/report'
+import { listFormVersionsRequest } from '@/api/project/publish'
 
 export default {
   components: {
@@ -100,6 +110,8 @@ export default {
         renderer: 'canvas'
       },
       list: [],
+      versions: [],
+      currentVersion: null,
       options: [
         {
           value: 'pie',
@@ -117,11 +129,25 @@ export default {
     }
   },
   mounted() {
-    this.getData()
+    this.loadVersions()
   },
   methods: {
+    loadVersions() {
+      listFormVersionsRequest(this.$route.query.key)
+        .then((res) => {
+          this.versions = res.data || []
+          if (this.versions.length > 0) {
+            this.currentVersion = this.versions[0].versionNo
+          }
+        })
+        .finally(() => this.getData())
+    },
     getData() {
-      getFormAnalysisRequest({ formKey: this.$route.query.key }).then((res) => {
+      const params = { formKey: this.$route.query.key }
+      if (this.currentVersion != null) {
+        params.version = this.currentVersion
+      }
+      getFormAnalysisRequest(params).then((res) => {
         this.list = res.data
       })
     },

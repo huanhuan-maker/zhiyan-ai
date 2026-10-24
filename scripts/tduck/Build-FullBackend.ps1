@@ -6,15 +6,20 @@ if(Get-CimInstance Win32_Process -Filter "Name='java.exe'" | Where-Object {$_.Co
 if(!(Test-Path -LiteralPath (Join-Path $Source 'pom.xml'))){throw 'TDuck backend source missing'}
 & robocopy $Source $build /E /XD target .git logs readmeImages doc docker /XF *.log /NFL /NDL /NJH /NJS /NP | Out-Null
 if($LASTEXITCODE -gt 7){throw 'Private build copy failed'}
-# robocopy does not remove files introduced by the closure patch on earlier builds.
-foreach($relative in @('tduck-form\src\main\java\com\tduck\cloud\form\mapper\PublicSubmissionMapper.java','tduck-form\src\main\java\com\tduck\cloud\form\service\PublicSubmissionService.java')){
+# robocopy does not remove files introduced by the closure/version patches on earlier builds.
+foreach($relative in @(
+  'tduck-form\src\main\java\com\tduck\cloud\form\mapper\PublicSubmissionMapper.java',
+  'tduck-form\src\main\java\com\tduck\cloud\form\service\PublicSubmissionService.java',
+  'tduck-form\src\main\java\com\tduck\cloud\form\entity\UserFormVersionEntity.java',
+  'tduck-form\src\main\java\com\tduck\cloud\form\mapper\UserFormVersionMapper.java',
+  'tduck-form\src\main\java\com\tduck\cloud\form\service\UserFormVersionService.java')){
  $generated=Join-Path $build $relative
  if(Test-Path -LiteralPath $generated){Remove-Item -LiteralPath $generated}
 }
 # Git for Windows may check out patches as CRLF while upstream Java uses LF.
 # Normalize only the private patch/source copies; never rewrite the upstream tree.
 $utf8=New-Object System.Text.UTF8Encoding($false)
-foreach($patchName in @('local-acceptance-fixes','core-closure')){
+foreach($patchName in @('local-acceptance-fixes','core-closure','version-snapshots')){
  $patchText=[System.IO.File]::ReadAllText((Join-Path $root "patches\tduck-backend\$patchName.patch")).Replace("`r`n","`n")
  foreach($match in [regex]::Matches($patchText,'(?m)^--- a/(.+)$')){
   $privateSource=Join-Path $build $match.Groups[1].Value
@@ -33,6 +38,10 @@ try{
  if($LASTEXITCODE -ne 0){throw 'Closure patch does not match the reviewed baseline'}
  & git apply --directory=.local/tduck-closure-build .local/tduck-closure-build/core-closure.patch
  if($LASTEXITCODE -ne 0){throw 'Apply closure patch failed'}
+ & git apply --check --directory=.local/tduck-closure-build .local/tduck-closure-build/version-snapshots.patch
+ if($LASTEXITCODE -ne 0){throw 'Version patch does not match the reviewed baseline'}
+ & git apply --directory=.local/tduck-closure-build .local/tduck-closure-build/version-snapshots.patch
+ if($LASTEXITCODE -ne 0){throw 'Apply version patch failed'}
  $env:JAVA_HOME=$JavaHome
  & $Maven -q -f (Join-Path $build 'pom.xml') -DskipTests package
  if($LASTEXITCODE -ne 0){throw 'Backend package failed'}

@@ -407,3 +407,18 @@ D:\LcProject\tduck-vue3\tests\phase1\workspace.spec.ts
 D:\LcProject\tduck-vue3\tests\unit\migration-data.test.js
 D:\LcProject\tduck-vue3\vite.config.ts
 D:\LcProject\tduck-vue3\vitest.config.ts
+db/tduck/003_form_versions.sql
+patches/tduck-backend/version-snapshots.patch
+scripts/tduck/Apply-VersionMigration.ps1
+scripts/tduck/version-flows.mjs
+scripts/tduck/Build-FullBackend.ps1 (接入第三份补丁)
+scripts/tduck/backend-security.mjs (更新至 M1 版本语义)
+tduck-vue3/src/td/api/project/publish.js
+tduck-vue3/src/td/views/form/publish/index.vue
+tduck-vue3/src/td/views/form/write/index.vue
+tduck-vue3/src/td/generator/BizProjectForm.vue
+tduck-vue3/src/td/views/form/statistics/analysis.vue
+tduck-vue3/README.md
+evidence/tduck-full/M1_VERSIONS.md
+evidence/tduck-full/16-version-analysis-v1.png
+evidence/tduck-full/17-old-link-v1-stopped.png
