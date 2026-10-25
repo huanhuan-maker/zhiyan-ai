@@ -6,7 +6,9 @@
           <i class="el-icon-back" />
         </div>
         <div class="logo-wrapper" @click="$router.push({ path: '/home' })">
-          <img src="@/assets/images/logo-tduck-ce.svg" alt="TDUCK Logo" class="form-logo-img" />
+          <img src="@/assets/images/logo-tduck-ce.svg" alt="TDUCK" class="form-logo-img" />
+          <span v-if="isAiDraft" class="ai-header-divider" />
+          <span v-if="isAiDraft" class="ai-header-title">知研 AI</span>
         </div>
       </div>
       <div v-if="!isAiDraft" class="header-right">
@@ -154,7 +156,8 @@ export default {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: #f7f8fa;
+  background-color: var(--zy-page);
+  font-family: var(--zy-font-family);
   overflow: hidden;
   z-index: 1; /* 保证它位于正常的层级 */
 }
@@ -165,11 +168,8 @@ export default {
   justify-content: space-between;
   height: 56px;
   padding: 0 24px;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  background: var(--zy-surface);
+  border-bottom: 1px solid var(--zy-border);
   z-index: 10;
   flex-shrink: 0;
 
@@ -357,11 +357,37 @@ export default {
   }
 }
 
+.ai-header-divider {
+  width: 1px;
+  height: 22px;
+  margin: 0 14px;
+  background: var(--zy-border);
+}
+
+.ai-header-title {
+  color: var(--zy-text);
+  font-family: var(--zy-font-family);
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .form-editor-content {
   flex: 1;
   overflow: hidden;
   position: relative;
-  background-color: #f7f8fa;
+  background-color: var(--zy-page);
+}
+
+@media (max-width: 767px) {
+  .form-editor-header {
+    height: 56px;
+    padding: 0 16px;
+    background: var(--zy-surface);
+    border-bottom-color: var(--zy-border);
+  }
+  .form-editor-header .back-btn { margin-right: 8px; }
+  .form-editor-header .form-logo-img { height: 28px; }
+  .ai-header-divider { margin: 0 10px; }
 }
 
 ::v-deep .preview-dialog {

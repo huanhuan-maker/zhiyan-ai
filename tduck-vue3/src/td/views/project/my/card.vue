@@ -1,99 +1,48 @@
 <template>
   <div class="project-card-container">
     <div v-if="projectList.length" class="project-card-grid">
-      <div v-for="p in projectList" :key="p.id" class="project-card-item">
-        <!-- 精致卡片封面饰图，采用高雅 CSS 渐变与线条，富于科技感 -->
-        <div class="card-cover" @click="toProjectHandle(p, 'editor')">
-          <div class="cover-pattern">
-            <!-- 抽象极简的表单线条装饰 -->
-            <svg class="pattern-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="15" y="25" width="70" height="8" rx="2" fill="currentColor" fill-opacity="0.08" />
-              <rect x="15" y="45" width="50" height="8" rx="2" fill="currentColor" fill-opacity="0.06" />
-              <rect x="15" y="65" width="60" height="8" rx="2" fill="currentColor" fill-opacity="0.04" />
-              <circle cx="75" cy="49" r="4" fill="currentColor" fill-opacity="0.1" />
-              <circle cx="75" cy="69" r="4" fill="currentColor" fill-opacity="0.1" />
-            </svg>
-          </div>
-          <!-- 悬浮类型标章 -->
-          <span class="form-type-badge" :class="'type-' + p.type">
-            {{ getType(p.type).name }}
-          </span>
-        </div>
-
-        <!-- 卡片主要内容区 -->
+      <article v-for="p in projectList" :key="p.id" class="project-card-item">
         <div class="card-body">
-          <div class="card-title-row">
-            <h3 class="card-title" :title="p.textName" @click="toProjectHandle(p, 'editor')">
-              {{ p.textName }}
-            </h3>
+          <div class="card-topline">
+            <span class="form-type-badge" :class="'type-' + p.type">{{ getType(p.type).name || '问卷' }}</span>
+            <span class="card-status" :class="'status-' + p.status">{{ getFormStatusName(p.status).statusName }}</span>
           </div>
-
-          <!-- 状态呼吸灯与创建时间 -->
-          <div class="card-meta-row">
-            <div class="card-status" :class="{ 'status-active': p.status == 2 }">
-              <span class="status-indicator" :style="{ backgroundColor: getFormStatusName(p.status).color }" />
-              <span class="status-name" :style="{ color: getFormStatusName(p.status).color }">
-                {{ getFormStatusName(p.status).statusName }}
-              </span>
+          <h3 class="card-title" :title="p.textName" @click="toProjectHandle(p, 'editor')">{{ p.textName }}</h3>
+          <div class="card-metrics" aria-label="问卷信息">
+            <div class="metric-item">
+              <span class="metric-value status-value" :class="'status-' + p.status">{{ p.status == 2 ? '收集' : p.status == 3 ? '停止' : '草稿' }}</span>
+              <span class="metric-label">状态</span>
             </div>
-            <span class="card-time">创建于 {{ formatDate(p.createTime ) }}</span>
+            <div class="metric-item">
+              <span class="metric-value type-value">{{ getType(p.type).code || '1' }}</span>
+              <span class="metric-label">类型编号</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-value time-value">{{ formatDate(p.updateTime || p.createTime) }}</span>
+              <span class="metric-label">更新时间</span>
+            </div>
           </div>
         </div>
-
-        <!-- 动作操作栏 -->
         <div class="card-actions">
-          <div class="action-left-btns">
-            <el-button
-              size="small"
-              class="action-btn primary-action"
-              :icon="tdIcon('el-icon-edit')"
-              @click="toProjectHandle(p, 'editor')"
-            >
-              编辑
-            </el-button>
-            <el-button
-              size="small"
-              class="action-btn secondary-action"
-              :icon="tdIcon('el-icon-data-analysis')"
-              @click="toProjectHandle(p, 'data')"
-            >
-              数据
-            </el-button>
-          </div>
-
-          <div class="action-right-more">
-            <el-dropdown trigger="click" placement="bottom-end">
-              <span class="more-trigger">
-                <i class="el-icon-more" />
-              </span>
-              <template #dropdown><el-dropdown-menu  class="card-more-menu">
-                <el-dropdown-item :icon="tdIcon('el-icon-pie-chart')" @click="toProjectHandle(p, 'statistics')">
-                  统计分析
-                </el-dropdown-item>
-                <el-dropdown-item
-                  v-if="p.status == 2"
-                  :icon="tdIcon('el-icon-video-pause')"
-                  class="text-warning"
-                  @click="stopProject(p.formKey)"
-                >
-                  停止收集
-                </el-dropdown-item>
-                <el-dropdown-item
-                  v-if="p.status != 2"
-                  :icon="tdIcon('el-icon-delete')"
-                  class="text-danger"
-                  @click="deleteFrom(p.formKey)"
-                >
-                  删除表单
-                </el-dropdown-item>
-              </el-dropdown-menu></template>
-            </el-dropdown>
-          </div>
+          <el-button class="edit-action" @click="toProjectHandle(p, 'editor')"><i class="el-icon-edit" />编辑</el-button>
+          <el-button @click="toProjectHandle(p, 'data')"><i class="el-icon-data-analysis" />数据</el-button>
+          <el-dropdown trigger="click" placement="bottom-end">
+            <button class="more-trigger" aria-label="更多问卷操作"><i class="el-icon-more" /></button>
+            <template #dropdown>
+              <el-dropdown-menu class="card-more-menu">
+                <el-dropdown-item :icon="tdIcon('el-icon-pie-chart')" @click="toProjectHandle(p, 'statistics')">统计分析</el-dropdown-item>
+                <el-dropdown-item v-if="p.status == 2" :icon="tdIcon('el-icon-video-pause')" class="text-warning" @click="stopProject(p.formKey)">停止收集</el-dropdown-item>
+                <el-dropdown-item v-if="p.status != 2" :icon="tdIcon('el-icon-delete')" class="text-danger" @click="deleteFrom(p.formKey)">删除问卷</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </div>
-      </div>
+      </article>
     </div>
-    <div v-if="projectList.length == 0" class="empty-view">
-      <el-empty  description="暂无项目，开始新建一个吧！" />
+    <div v-else class="empty-view">
+      <el-empty description="暂无符合条件的问卷">
+        <template #description><p>暂无符合条件的问卷</p><span>可调整筛选条件，或创建一份新问卷</span></template>
+      </el-empty>
     </div>
   </div>
 </template>
@@ -106,41 +55,17 @@ export default {
   components: {},
   mixins: [mixin],
   props: {
-    projectList: {
-      type: Array,
-      default: () => {
-        return []
-      }
-    },
-    // 我的表单页还是协作页区分 默认为表单页 协作页某些内容不显示
-    type: {
-      type: String,
-      default: ''
-    }
+    projectList: { type: Array, default: () => [] },
+    type: { type: String, default: '' }
   },
   data() {
-    return {
-      visible: false
-    }
+    return { visible: false }
   },
   computed: {
-    getStatusColorStyle() {
-      return function (code) {
-        let color = this.projectStatusList.find((item) => item.code == code).color
-        return {
-          backgroundColor: color,
-          borderColor: color
-        }
-      }
-    },
     getFormStatusName() {
       return function (code) {
-        let name = this.projectStatusList.find((item) => item.code == code).name
-        let statusColor = this.projectStatusList.find((item) => item.code == code).color
-        return {
-          statusName: name,
-          color: statusColor
-        }
+        const status = this.projectStatusList.find((item) => item.code == code)
+        return { statusName: status?.name || '未知状态', color: status?.color || '#7c8798' }
       }
     }
   },
@@ -150,333 +75,147 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      })
-        .then(() => {
-          this.logicDeleteForm(key)
-        })
-        .catch(() => {})
-    },
-    endEvent(event) {
-      void 0
+      }).then(() => this.logicDeleteForm(key)).catch(() => {})
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/styles/variables.scss';
-
-.project-card-container {
-  margin: 10px auto 30px;
-}
-
-/* 自适应 Apple 响应式网格 */
+.project-card-container { margin-bottom: 8px; }
 .project-card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
+  gap: 16px;
   width: 100%;
 }
-
-/* 单个卡片重构 */
 .project-card-item {
-  background-color: #ffffff;
-  border-radius: 16px;
-  border: 1px solid #eaebee;
-  overflow: hidden;
-  box-shadow: 0 4px 18px rgba(31, 35, 41, 0.02);
-  transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
   display: flex;
   flex-direction: column;
-  position: relative;
-
-  &:hover {
-    transform: translateY(-6px);
-    border-color: rgba(0, 122, 255, 0.25);
-    box-shadow: 0 20px 35px rgba(31, 35, 41, 0.08);
-
-    .card-cover {
-      .cover-pattern {
-        transform: scale(1.05);
-        opacity: 0.85;
-      }
-    }
-
-    .card-title {
-      color: #007aff;
-    }
-  }
-}
-
-/* 卡片封面饰图 */
-.card-cover {
-  height: 110px;
-  background: linear-gradient(135deg, rgba(235, 243, 255, 0.8) 0%, rgba(244, 248, 255, 0.4) 100%);
-  position: relative;
+  min-width: 0;
   overflow: hidden;
-  cursor: pointer;
-  border-bottom: 1px solid #f1f2f5;
-
-  .cover-pattern {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #006eff;
-    opacity: 0.6;
-    transition: all 0.5s ease;
-
-    .pattern-svg {
-      width: 70px;
-      height: 70px;
-    }
-  }
+  background: var(--zy-surface);
+  border: 1px solid var(--zy-border);
+  border-radius: var(--zy-radius-md);
+  transition: border-color 0.15s ease;
+  &:hover { border-color: #cbd5e1; }
 }
-
-/* 精致半透明表单类型 Badge */
+.card-body { flex: 1; padding: 18px 18px 16px; }
+.card-topline { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .form-type-badge {
-  position: absolute;
-  top: 12px;
-  left: 12px;
+  padding: 3px 8px;
+  color: var(--zy-primary);
   font-size: 11px;
+  background: var(--zy-primary-soft);
+  border-radius: var(--zy-radius-sm);
+  &.type-2 { color: var(--zy-warning); background: #fff7ed; }
+  &.type-4 { color: var(--zy-success); background: #f0fdf4; }
+  &.type-3 { color: var(--zy-text-secondary); background: var(--zy-surface-subtle); }
+}
+.card-status {
+  color: var(--zy-text-secondary);
+  font-size: 12px;
+  white-space: nowrap;
+  &.status-2 { color: var(--zy-success); }
+  &.status-3 { color: var(--zy-text-secondary); }
+}
+.card-title {
+  min-height: 46px;
+  margin: 14px 0 15px;
+  overflow: hidden;
+  color: var(--zy-text);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.55;
+  word-break: break-word;
+  cursor: pointer;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  &:hover { color: var(--zy-primary); }
+}
+.card-metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr;
+  padding-top: 14px;
+  border-top: 1px solid var(--zy-border-light);
+}
+.metric-item { min-width: 0; }
+.metric-value {
+  display: block;
+  margin-bottom: 3px;
+  overflow: hidden;
+  font-family: var(--zy-font-number);
+  font-size: 13px;
   font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 6px;
-  letter-spacing: 0.2px;
-  backdrop-filter: blur(4px);
-
-  /* 根据不同类型定制温润透亮色 */
-  &.type-1 {
-    /* 表单 */
-    background-color: rgba(0, 110, 255, 0.08);
-    color: #006eff;
-  }
-
-  &.type-2 {
-    /* 流程 */
-    background-color: rgba(255, 119, 15, 0.08);
-    color: #ff770f;
-  }
-
-  &.type-4 {
-    /* 考试 */
-    background-color: rgba(89, 192, 117, 0.08);
-    color: #4db368;
-  }
-
-  &.type-3 {
-    /* 默认其他 */
-    background-color: rgba(144, 147, 153, 0.08);
-    color: #7f828a;
-  }
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  &.status-1 { color: var(--zy-warning); }
+  &.status-2 { color: var(--zy-success); }
+  &.status-3 { color: var(--zy-danger); }
 }
-
-/* 卡片内容体 */
-.card-body {
-  padding: 16px 18px;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.card-title-row {
-  margin-bottom: 12px;
-
-  .card-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: #1f2329;
-    margin: 0;
-    line-height: 1.4;
-    cursor: pointer;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    transition: color 0.25s ease;
-
-    &:hover {
-      color: #006eff;
-    }
-  }
-}
-
-/* 呼吸灯状态与时间 */
-.card-meta-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  .card-status {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-
-    .status-indicator {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      display: inline-block;
-    }
-
-    .status-name {
-      font-size: 12px;
-      font-weight: 500;
-    }
-
-    /* 收集中状态添加呼吸高光动效 */
-    &.status-active {
-      .status-indicator {
-        animation: pulse 2s infinite;
-      }
-    }
-  }
-
-  .card-time {
-    font-size: 12px;
-    color: #8f959e;
-  }
-}
-
-/* 动作操作栏 */
+.type-value { color: var(--zy-purple); }
+.time-value { color: var(--zy-text-regular); font-size: 12px; }
+.metric-label { color: var(--zy-text-secondary); font-size: 11px; }
 .card-actions {
   display: flex;
+  gap: 8px;
   align-items: center;
-  justify-content: space-between;
-  padding: 12px 18px;
-  background-color: #fcfdfe;
-  border-top: 1px solid #f1f2f5;
-
-  .action-left-btns {
-    display: flex;
-    gap: 8px;
-    flex-grow: 1;
-
-    .action-btn {
-      border-radius: 8px;
-      padding: 6px 14px;
-      font-size: 12px;
-      font-weight: 600;
-      height: 30px;
-      transition: all 0.25s ease;
-
-      &.primary-action {
-        background-color: rgba(0, 110, 255, 0.05);
-        color: #006eff;
-        border: 1px solid transparent;
-
-        &:hover {
-          background-color: #006eff;
-          color: #ffffff;
-        }
-      }
-
-      &.secondary-action {
-        background-color: transparent;
-        color: #646a73;
-        border: 1px solid #eaebee;
-
-        &:hover {
-          background-color: #f1f2f5;
-          color: #1f2329;
-          border-color: #d1d5db;
-        }
-      }
-    }
+  padding: 11px 16px;
+  background: var(--zy-surface-subtle);
+  border-top: 1px solid var(--zy-border-light);
+  :deep(.el-button) {
+    height: 30px;
+    padding: 0 10px;
+    margin: 0;
+    color: var(--zy-text-regular);
+    font-size: 12px;
+    background: var(--zy-surface);
+    border-color: var(--zy-border);
+    border-radius: var(--zy-radius-sm);
+    &:hover { color: var(--zy-primary); border-color: #bfdbfe; }
+    i { margin-right: 5px; }
   }
-
-  .action-right-more {
-    .more-trigger {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
-      cursor: pointer;
-      color: #8f959e;
-      transition: all 0.25s ease;
-
-      &:hover {
-        background-color: #f1f2f5;
-        color: #1f2329;
-      }
-    }
-  }
+  .edit-action { color: var(--zy-primary); }
 }
-
-/* 状态圆点呼吸灯动画 */
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(64, 158, 255, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 6px rgba(64, 158, 255, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(64, 158, 255, 0);
-  }
-}
-
-.empty-view {
-  padding: 80px 0;
-  background-color: #ffffff;
-  border-radius: 16px;
-  border: 1px solid #eaebee;
-  display: flex;
+.more-trigger {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
+  width: 30px;
+  height: 30px;
+  margin-left: auto;
+  color: var(--zy-text-secondary);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: var(--zy-radius-sm);
+  &:hover { color: var(--zy-primary); background: var(--zy-primary-soft); }
+}
+.empty-view {
+  display: flex;
   align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  background: var(--zy-surface);
+  border: 1px dashed var(--zy-border);
+  border-radius: var(--zy-radius-md);
+  :deep(.el-empty__description) {
+    p { margin-bottom: 6px; color: var(--zy-text-regular); font-size: 14px; }
+    span { color: var(--zy-text-secondary); font-size: 12px; }
+  }
+}
+@media (max-width: 767px) {
+  .project-card-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .card-body { padding: 16px; }
+  .card-actions { padding: 10px 14px; }
 }
 </style>
 
 <style lang="scss">
-/* 更多下拉菜单美化 */
 .card-more-menu.el-dropdown-menu {
-  border-radius: 10px !important;
-  padding: 6px !important;
-  box-shadow: 0 10px 25px rgba(31, 35, 41, 0.08) !important;
-  border: 1px solid #eaebee !important;
-
-  .el-dropdown-menu__item {
-    font-size: 13px;
-    font-weight: 500;
-    color: #1f2329;
-    padding: 8px 14px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.2s ease;
-
-    i {
-      font-size: 14px;
-      margin: 0;
-    }
-
-    &:hover {
-      background-color: #f1f2f5 !important;
-      color: #007aff !important;
-    }
-
-    &.text-warning {
-      color: #e6a23c;
-      &:hover {
-        background-color: rgba(230, 162, 60, 0.08) !important;
-        color: #e6a23c !important;
-      }
-    }
-
-    &.text-danger {
-      color: #f56c6c;
-      &:hover {
-        background-color: rgba(245, 108, 108, 0.08) !important;
-        color: #f56c6c !important;
-      }
-    }
-  }
+  .el-dropdown-menu__item { border-radius: var(--zy-radius-sm); }
+  .text-warning { color: var(--zy-warning); }
+  .text-danger { color: var(--zy-danger); }
 }
 </style>

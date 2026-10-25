@@ -123,12 +123,10 @@ export default {
 
 <style lang="scss" scoped>
 .project-table-view {
-  margin-top: 10px;
-  background-color: #ffffff;
-  border-radius: 16px;
-  border: 1px solid #eaebee;
-  overflow: hidden;
-  box-shadow: 0 4px 18px rgba(31, 35, 41, 0.02);
+  overflow-x: auto;
+  background: var(--zy-surface);
+  border: 1px solid var(--zy-border);
+  border-radius: var(--zy-radius-md);
 }
 
 ::v-deep .el-table {

@@ -1,0 +1,33 @@
+// 知研 AI 控制台设计令牌：本轮工作台与建卷页统一引用。
+:root {
+  --zy-primary: #2563eb;
+  --zy-primary-hover: #1d4ed8;
+  --zy-primary-soft: #eef4ff;
+  --zy-accent: #059669;
+  --zy-text: #1f2937;
+  --zy-text-regular: #4b5563;
+  --zy-text-secondary: #6b7280;
+  --zy-text-placeholder: #9ca3af;
+  --zy-border: #e5e7eb;
+  --zy-border-light: #f0f1f3;
+  --zy-page: #f5f6f8;
+  --zy-surface: #ffffff;
+  --zy-surface-subtle: #f9fafb;
+  --zy-success: #16a34a;
+  --zy-warning: #d97706;
+  --zy-danger: #dc2626;
+  --zy-purple: #7c3aed;
+  --zy-radius-sm: 8px;
+  --zy-radius-md: 10px;
+  --zy-radius-lg: 14px;
+  --zy-space-1: 4px;
+  --zy-space-2: 8px;
+  --zy-space-3: 12px;
+  --zy-space-4: 16px;
+  --zy-space-5: 24px;
+  --zy-space-6: 32px;
+  --zy-space-7: 48px;
+  --zy-shadow-popup: 0 10px 25px rgba(31, 41, 55, 0.08);
+  --zy-font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
+  --zy-font-number: Inter, 'SF Pro Text', system-ui, sans-serif;
+}

@@ -7,16 +7,16 @@ export default {
     return {
       folderId: 0,
       projectStatusList: [
-        { code: '', name: '全部', color: '#006EFF' },
-        { code: 1, name: '待发布', color: '#909399' },
-        { code: 2, name: '收集中', color: '#409EFF' },
-        { code: 3, name: '已停止', color: '#F56C6C' }
+        { code: '', name: '全部', color: '#2563eb' },
+        { code: 1, name: '待发布', color: '#d97706' },
+        { code: 2, name: '收集中', color: '#16a34a' },
+        { code: 3, name: '已停止', color: '#dc2626' }
       ],
       projectTypeList: [
-        { code: '', name: '全部', color: '#006EFF' },
-        { code: 1, name: '表单', color: '#5190DE' },
-        { code: 2, name: '流程', color: '#FF770F' },
-        { code: 4, name: '考试', color: '#59C075' }
+        { code: '', name: '全部', color: '#2563eb' },
+        { code: 1, name: '表单', color: '#2563eb' },
+        { code: 2, name: '流程', color: '#d97706' },
+        { code: 4, name: '考试', color: '#16a34a' }
       ]
     }
   },
