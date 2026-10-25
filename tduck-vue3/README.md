@@ -1,5 +1,7 @@
 # TDuck Vue 3 本地迁移版
 
+2026-10-25 M2 续传修复：草稿刷新可恢复；同一草稿保存中断后重试补齐剩余题目。重新生成时选项、描述、必填或量表范围变化会独立导入，并提示之前草稿仍在“我的项目”；查询原问卷断网/被拒绝时保留续传记录，恢复后重试，不会自动新建副本。修复前旧版导入记录会提示先检查原问卷。专项命令：根目录 `node scripts/tduck/m2-import-recovery.mjs`。见[本轮修复报告](../evidence/tduck-full/import-recovery/M2_IMPORT_RECOVERY.md)。
+
 2026-10-25 M2 用户问题修复：期望题数可见可编辑；生成后可直接点击“预览答题效果”，不必先导入。同步修复长内容滚动、卷首语导入、生成请求30秒超时和停收草稿误锁定。专项复验命令（仓库根目录）：`node scripts/tduck/m2-usability.mjs`、`node scripts/tduck/m2-slow-request.mjs`、`node scripts/tduck/m2-real-usability.mjs`。真实AI十三题已走通生成到匿名提交/后端统计；详见[本轮报告](../evidence/tduck-full/usability/M2_USABILITY.md)。
 
 当前新建题型已按用户要求收敛为单选、多选、量表、开放题，右侧复杂属性默认折叠；旧问卷题型继续兼容。见 [简化编辑器记录](../evidence/tduck-full/SIMPLE_EDITOR.md)。

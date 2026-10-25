@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-25T05:08:56.656Z",
+  "source": "Explicit synthetic response and failure injection; real isolated backend persistence",
+  "checks": [
+    {
+      "name": "regeneration with same title/labels but new options imports the new content",
+      "passed": false,
+      "error": "Imported stale content: {\"originalKey\":\"AG9SZfma\",\"importedKey\":\"AG9SZfma\",\"creates\":1,\"description\":\"Introduction A\",\"containsNewOption\":false,\"containsOldOption\":true}"
+    },
+    {
+      "name": "temporary network failure while checking resumable form does not create another form",
+      "passed": false,
+      "error": "expect(locator).not.toHaveClass(expected) failed\n\nLocator: getByRole('button', { name: '导入编辑器继续编辑', exact: true })\nExpected pattern: not /is-loading/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"not toHaveClass\" getByRole('button', { name: '导入编辑器继续编辑', exact: true }) with timeout 5000ms\n  - waiting for getByRole('button', { name: '导入编辑器继续编辑', exact: true })\n    2 × locator resolved to <button disabled type=\"button\" data-v-0ebd7150=\"\" aria-disabled=\"true\" class=\"el-button el-button--primary is-loading\">…</button>\n      - unexpected value \"el-button el-button--primary is-loading\"\n"
+    },
+    {
+      "name": "lost response after first question is persisted can be retried without duplicated questions",
+      "passed": true,
+      "detail": {
+        "creates": 1,
+        "itemCount": 2
+      }
+    }
+  ],
+  "passed": 1,
+  "failed": 2
+}

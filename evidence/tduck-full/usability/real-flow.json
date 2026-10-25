@@ -1,24 +1,24 @@
 {
-  "date": "2026-10-25T04:41:48.539Z",
-  "formKey": "bAKld6IS",
+  "date": "2026-10-25T05:11:24.513Z",
+  "formKey": "JtP2seAj",
   "sample": {
     "provider": "本机推理网关",
     "model": "group/group",
-    "elapsedMs": 4675,
+    "elapsedMs": 10607,
     "questionCount": 13,
     "types": [
       "RADIO",
       "RADIO",
       "CHECKBOX",
+      "RATE",
+      "RADIO",
       "CHECKBOX",
       "RATE",
       "RATE",
       "RATE",
       "RADIO",
       "RADIO",
-      "RADIO",
-      "RATE",
-      "TEXTAREA",
+      "CHECKBOX",
       "TEXTAREA"
     ]
   },

@@ -39,8 +39,8 @@
       </el-form>
 
       <div class="actions">
-        <el-button type="primary" :loading="generating" @click="generate">生成草稿</el-button>
-        <el-button v-if="result" :disabled="generating" @click="reset">清空结果</el-button>
+        <el-button type="primary" :loading="generating" :disabled="importing" @click="generate">生成草稿</el-button>
+        <el-button v-if="result" :disabled="generating || importing" @click="reset">清空结果</el-button>
         <span class="hint">AI 仅生成可编辑草稿，不写库、不发布；发布由你在编辑器里手动完成</span>
       </div>
     </el-card>
@@ -106,7 +106,7 @@
 
       <div class="actions">
         <el-button :disabled="generating || importing" @click="previewVisible = true">预览答题效果</el-button>
-        <el-button type="primary" :loading="importing" @click="importToEditor">导入编辑器继续编辑</el-button>
+        <el-button type="primary" :loading="importing" :disabled="generating" @click="importToEditor">导入编辑器继续编辑</el-button>
         <el-button :disabled="generating || importing" @click="generate">重新生成</el-button>
       </div>
     </el-card>
@@ -123,7 +123,7 @@
 <script>
 import { generateAiDraftRequest, getAiStatusRequest } from '@/api/project/ai'
 import { createFormRequest } from '@/api/project/form'
-import { postRequest } from '@/api/baseRequest'
+import { getRequest, postRequest } from '@/api/baseRequest'
 import { convert, GenerateForm } from '@/generator'
 import '@/generator/style.css'
 
@@ -141,6 +141,7 @@ export default {
     }
   },
   created() {
+    this.restoreDraft()
     this.loadStatus()
   },
   computed: {
@@ -166,6 +167,23 @@ export default {
       data.done?.()
       this.$message.success('预览填写完成，没有保存答卷')
     },
+    // 草稿与生成时的输入保存在本标签页 sessionStorage，刷新可恢复。
+    restoreDraft() {
+      try {
+        const saved = JSON.parse(sessionStorage.getItem('aiDraft:last') || 'null')
+        if (saved && saved.form) this.form = saved.form
+        if (saved && saved.result && Array.isArray(saved.result.questions)) this.result = saved.result
+      } catch (e) {
+        /* 本地缓存损坏时忽略，回到空白页 */
+      }
+    },
+    persistDraft() {
+      try {
+        sessionStorage.setItem('aiDraft:last', JSON.stringify({ form: this.form, result: this.result }))
+      } catch (e) {
+        /* 存储不可用时静默降级：仅失去刷新保留能力 */
+      }
+    },
     loadStatus() {
       getAiStatusRequest()
         .then((res) => {
@@ -185,6 +203,7 @@ export default {
       return map[type] || { label: type, type: 'info' }
     },
     generate() {
+      if (this.generating || this.importing) return
       if (!this.form.goal.trim()) {
         this.$message.warning('请先填写调查目标')
         return
@@ -197,6 +216,7 @@ export default {
       generateAiDraftRequest({ ...this.form })
         .then((res) => {
           this.result = res.data
+          this.persistDraft()
           this.$message.success(res.data.kind === 'draft' ? '草稿已生成，请人工审核' : 'AI 请求澄清，请补充信息')
         })
         .catch((err) => {
@@ -208,30 +228,90 @@ export default {
         })
     },
     reset() {
+      if (this.generating || this.importing) return
       this.result = null
+      this.form = { goal: '', audience: '', extra: '', questionCount: 8 }
+      sessionStorage.removeItem('aiDraft:last')
+      sessionStorage.removeItem('aiDraft:import')
     },
     focusGoal() {
       this.$el.querySelector('.input-card textarea')?.focus()
     },
-    // 草稿导入：新建 CREATE 状态问卷 + 逐题走现有题目接口（与编辑器同构），随后进入现有编辑器
-    importToEditor() {
+    // 草稿导入：新建 CREATE 状态问卷 + 逐题走现有题目接口（与编辑器同构），随后进入现有编辑器。
+    // 断点续传：导入会话记入 sessionStorage；第 N 题保存失败后重试会复用同一份问卷，
+    // 只续传完整内容一致的草稿；重新生成后内容变化须独立导入。
+    draftKey() {
+      return JSON.stringify({
+        title: this.result.title,
+        description: this.result.description || '',
+        questions: this.result.questions
+      })
+    },
+    async importToEditor() {
+      if (this.importing || this.generating || this.result?.kind !== 'draft') return
       const questions = this.result.questions
       const title = this.result.title.slice(0, 100)
+      const key = this.draftKey()
+      let session = null
+      try {
+        session = JSON.parse(sessionStorage.getItem('aiDraft:import') || 'null')
+      } catch (e) {
+        session = null
+      }
+      if (session && session.draftKey !== key) {
+        const legacyKey = JSON.stringify([this.result.title, questions.map((q) => [q.type, q.label])])
+        if (session.draftKey === legacyKey) {
+          this.$message.warning('检测到旧版导入记录，无法确认内容是否一致。请先到“我的项目”检查原问卷；需要另建时，请清空结果后重新生成')
+          return
+        }
+        this.$message.warning('草稿内容已变化，将单独导入。上一份已保存的草稿仍可在“我的项目”中管理')
+        session = null
+      }
       this.importing = true
-      createFormRequest({ name: title, description: this.result.description || '', type: 0, folderId: 0 })
-        .then(async (res) => {
-          const formKey = typeof res.data === 'string' ? res.data : res.data.formKey
-          for (const q of questions) {
-            const field = this.createDraftField(q)
-            await postRequest('/user/form/item/create', convert.formItemConvertData(field, formKey))
+      let formKey = ''
+      let saved = 0
+      try {
+        if (session && session.formKey) {
+          // 查询失败不等于问卷不存在：保留续传记录，禁止自动另建。
+          let chk
+          try {
+            chk = await getRequest('/user/form/' + session.formKey)
+          } catch (e) {
+            throw new Error('暂时无法确认原导入问卷状态，已保留续传记录。请恢复网络或登录状态后重试，不会自动新建问卷')
           }
-          this.$message.success('已创建问卷草稿（未发布），正在打开编辑器')
-          this.$router.push({ path: '/project/form/editor', query: { key: formKey } })
-        })
-        .catch(() => {})
-        .finally(() => {
-          this.importing = false
-        })
+          if (!chk || chk.code !== 200 || !chk.data) {
+            throw new Error('无法确认原导入问卷，已保留续传记录，请稍后重试')
+          }
+          if (Number(chk.data.status) !== 1) {
+            throw new Error('原导入问卷已不再是未发布草稿。请到“我的项目”确认；需要另建时，请清空结果后重新生成')
+          }
+          formKey = session.formKey
+        }
+        if (!formKey) {
+          const res = await createFormRequest({ name: title, description: this.result.description || '', type: 0, folderId: 0 })
+          formKey = typeof res.data === 'string' ? res.data : res.data.formKey
+          sessionStorage.setItem('aiDraft:import', JSON.stringify({ draftKey: key, formKey }))
+        }
+        const list = await getRequest('/user/form/item/list', { key: formKey })
+        const done = new Set((list.data || []).map((x) => x.type + '|' + x.label))
+        saved = done.size
+        for (let i = 0; i < questions.length; i++) {
+          const q = questions[i]
+          if (done.has(q.type + '|' + q.label)) continue
+          try {
+            await postRequest('/user/form/item/create', convert.formItemConvertData(this.createDraftField(q), formKey))
+            saved++
+          } catch (e) {
+            throw new Error('第 ' + (i + 1) + ' 题保存失败：已保存 ' + saved + '/' + questions.length + ' 题。可重试“导入编辑器”自动续传剩余题目，不会重复建卷')
+          }
+        }
+        this.$message.success('已创建问卷草稿（未发布），正在打开编辑器')
+        this.$router.push({ path: '/project/form/editor', query: { key: formKey } })
+      } catch (e) {
+        this.$message.error((e && (e.message || e.msg)) || '导入失败，可重试导入或改用手工建卷')
+      } finally {
+        this.importing = false
+      }
     }
   }
 }
