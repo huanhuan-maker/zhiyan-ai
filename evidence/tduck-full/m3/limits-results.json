@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-25T06:09:41.321Z",
+  "source": "Real MySQL; clock fixtures scoped to synthetic session IDs; RULE provider",
+  "formKey": "Ufytk49d",
+  "checks": [
+    {
+      "name": "zero per-question allowance stops before provider",
+      "passed": true
+    },
+    {
+      "name": "an unapproved open question cannot trigger a provider",
+      "passed": true
+    },
+    {
+      "name": "zero global budget cannot generate a prompt",
+      "passed": true
+    },
+    {
+      "name": "elapsed time budget is checked by server without charging",
+      "passed": true
+    },
+    {
+      "name": "expired AI capability cannot block ordinary core submission",
+      "passed": true
+    }
+  ],
+  "passed": 5,
+  "failed": 0
+}

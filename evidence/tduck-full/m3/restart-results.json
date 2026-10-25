@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-25T06:08:49.554Z",
+  "source": "Actual stop/start of isolated 8997 backend; real MySQL; no exported capabilities",
+  "formKey": "bdUEdvwX",
+  "checks": [
+    "budget and skipped decision survive actual backend restart",
+    "original source ID and text survive restart",
+    "replayed old question does not reopen or recharge after restart",
+    "remaining one prompt can be used and independently answered after restart",
+    "core answer persists and associates both pre/post restart sources"
+  ],
+  "passed": 5,
+  "failed": 0
+}

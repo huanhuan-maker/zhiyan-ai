@@ -41,6 +41,7 @@ import { checkWritePwdRequest, getPublicSettingsRequest, getWriteSettingStatusRe
 import { jumpUrl } from './SubmitJump'
 import { checkWriteCountCap, saveWriteCount } from '@/views/form/write/DeviceWriteCount'
 import FormQrcode from '@/views/form/write/FormQrcode.vue'
+import {followupStorageKey} from '@/generator/followup'
 
 import uaParser from 'ua-parser-js'
 const ua = uaParser(navigator.userAgent)
@@ -72,6 +73,7 @@ export default {
       formConfig: {
         formKey: '',
         preview: false,
+        allowFollowup: true,
         showBtns: true,
         versionToken: '',
         supportText: 'Powered By Tduck 填鸭表单'
@@ -106,6 +108,7 @@ export default {
     }
   },
   async created() {
+    this.formConfig.allowFollowup = this.writeType === 1
     this.startedAt = performance.now()
     this.formKey = this.$route.query.key || this.$route.params.key
     this.versionToken = this.$route.query.t || ''
@@ -226,6 +229,7 @@ export default {
         formKey: this.formKey,
         password: this.writePassword
       }).then((res) => {
+        this.formConfig.writePassword = this.writePassword
         this.writeStatus = 1
       })
     },
@@ -263,7 +267,8 @@ export default {
           submissionKey = crypto.randomUUID()
           sessionStorage.setItem(keyName, submissionKey)
         }
-        res = await publicCreateFormResultRequest(this.submitFormData, this.writePassword, submissionKey)
+        const followupCapability=sessionStorage.getItem(followupStorageKey(this.formKey,versionTag))||''
+        res = await publicCreateFormResultRequest(this.submitFormData, this.writePassword, submissionKey,followupCapability)
       } else {
         res = await createFormResultRequest(this.submitFormData)
       }

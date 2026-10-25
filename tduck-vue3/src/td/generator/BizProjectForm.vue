@@ -42,7 +42,8 @@ watch(()=>props.formConfig.formKey,async key=>{
   const res=await api.get(`${Number(props.formConfig.formKind)===2?'/form/template/details/':'/user/form/details/'}${encodeURIComponent(key)}${token?'?token='+encodeURIComponent(token):''}`)
   const d=res.data;if(!d)throw new Error('问卷不存在或已被删除')
   Object.assign(formConf,{formKey:key,formType:d.form?.type??d.formType,formId:d.form?.id,title:d.form?.name||props.formConfig.name,description:d.form?.description,fields:(d.formItems||[]).map(dbDataConvertForItemJson),theme:d.userFormTheme||{},logicRules:d.formLogic?.scheme||d.userFormLogic?.scheme||d.logic?.scheme||[],formBtns:props.formConfig.showBtns!==false,
-   version:d.version??null,versionStatus:d.versionStatus??null,versionShareToken:d.shareToken??null})
+   version:d.version??null,versionStatus:d.versionStatus??null,versionShareToken:d.shareToken??null,
+   allowFollowup:props.formConfig.allowFollowup===true&&!props.formConfig.preview,versionToken:token||'',writePassword:props.formConfig.writePassword||''})
   loaded.value=true;emit('completed')
  }catch(e){error.value=e.msg||e.message||'加载失败'}
 },{immediate:true})

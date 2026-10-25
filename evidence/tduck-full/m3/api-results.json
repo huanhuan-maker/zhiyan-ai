@@ -1,0 +1,92 @@
+{
+  "date": "2026-10-25T06:09:40.177Z",
+  "backend": "http://127.0.0.1:8997",
+  "source": "Real MySQL and Spring Boot; synthetic input; deterministic RULE provider",
+  "formKey": "s3LYRXc0",
+  "checks": [
+    {
+      "name": "published followup policy is frozen and owner protected",
+      "passed": true,
+      "detail": {
+        "version": 1,
+        "totalBudget": 2
+      }
+    },
+    {
+      "name": "vague answer produces one neutral clarification with real source ID",
+      "passed": true,
+      "detail": {
+        "sourceAnswerId": 76,
+        "action": "CLARIFY",
+        "reason": "AMBIGUOUS_EXPERIENCE",
+        "budget": 1
+      }
+    },
+    {
+      "name": "specific context is skipped without length-only threshold",
+      "passed": true
+    },
+    {
+      "name": "new self-raised social cue can be explored with a literal quote",
+      "passed": true,
+      "detail": {
+        "action": "EXPLORE",
+        "quoteVerified": true
+      }
+    },
+    {
+      "name": "skipped followup never reopens or overwrites original answer",
+      "passed": true
+    },
+    {
+      "name": "explicit refusal and privacy risk stop before any provider",
+      "passed": true
+    },
+    {
+      "name": "no AI consent means no provider call and normal core submission works",
+      "passed": true
+    },
+    {
+      "name": "global budget is enforced under concurrent different-question requests",
+      "passed": true,
+      "detail": {
+        "shown": 2,
+        "usedAfterReplay": 2
+      }
+    },
+    {
+      "name": "same-question concurrent retries only create one decision and one charge",
+      "passed": true
+    },
+    {
+      "name": "supplement is independently persisted and attached to the real submitted answer",
+      "passed": true,
+      "detail": {
+        "answerId": 212119,
+        "sourceAnswerId": 78
+      }
+    },
+    {
+      "name": "invalid or foreign session and question IDs are rejected",
+      "passed": true
+    },
+    {
+      "name": "consent revocation closes outstanding prompts without reopening on retry",
+      "passed": true
+    },
+    {
+      "name": "owner can trace source, state transitions, model policy and cost uncertainty",
+      "passed": true
+    },
+    {
+      "name": "new published policy cannot alter old version snapshot or old answers",
+      "passed": true,
+      "detail": {
+        "oldVersion": 1,
+        "newVersion": 2
+      }
+    }
+  ],
+  "passed": 14,
+  "failed": 0
+}

@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-25T06:09:57.195Z",
+  "backend": "http://127.0.0.1:8997",
+  "formKey": "FSNOg7Wi",
+  "source": "Actual configured model request; synthetic survey and response",
+  "sample": {
+    "provider": "本机推理网关",
+    "model": "group/group",
+    "action": "CLARIFY",
+    "reasonCode": "AMBIGUOUS",
+    "state": "ASKED",
+    "elapsedMs": 4082,
+    "sourceAnswerId": 95,
+    "budgetRemaining": 0,
+    "policyVersion": "constrained-llm-v1",
+    "outcome": "VALIDATED_MODEL_DECISION"
+  },
+  "checks": [
+    "configured real provider and model explicitly identified",
+    "real model request produced a validated decision or explicitly recorded safe degradation",
+    "ordinary core submission succeeds and links source after optional model decision",
+    "real decision and source evidence remain queryable from owner audit"
+  ],
+  "passed": 4,
+  "failed": 0
+}

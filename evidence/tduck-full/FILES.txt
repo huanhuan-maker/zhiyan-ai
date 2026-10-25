@@ -449,3 +449,13 @@ import-recovery/01-regenerated-content.png import-recovery/02-network-interrupti
 scripts/tduck/m2-import-recovery.mjs 十项续传/内容一致性回归
 scripts/tduck/m2-fixes.mjs m2-fixes.json 继承前一agent的41项回归，本轮重新运行
 24-timeout-31s-success.png 25-import-refresh-fidelity.png 26-resume-error.png 27-resume-complete.png 41项回归截图
+--- M3 可选追问 2026-10-25 ---
+evidence/M3.md evidence/M3-FILES.txt 阶段验收/文件清单/运行/已知边界
+db/tduck/005_followup.sql scripts/tduck/Apply-FollowupMigration.ps1 五表幂等迁移
+patches/tduck-backend/followup.patch Java生产代码与测试补丁（14文件）
+scripts/tduck/Build-FullBackend.ps1 scripts/tduck/Verify-Followup.ps1 可复现干净构建/自动验证
+scripts/tduck/m3-api.mjs scripts/tduck/m3-limits.mjs scripts/tduck/m3-ui.mjs API/时钟边界/浏览器回归
+scripts/tduck/m3-real-provider.mjs scripts/tduck/m3-restart.mjs scripts/tduck/m3-login-replay.mjs 真实模型/重启/并发登录
+scripts/tduck/New-FollowupDemo.mjs scripts/tduck/Start-FollowupStaging.ps1 合成演示/临时验证启动
+m3/*.json 脱敏测试结果、构建哈希、合成演示摘要；capability与完整演示链接只在.local
+m3/01-policy-settings.png m3/02-mobile-neutral-question.png m3/03-owner-audit.png m3/04-demo-ready.png 真实截图

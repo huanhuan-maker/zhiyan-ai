@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-25T06:09:52.395Z",
+  "frontend": "http://127.0.0.1:5180",
+  "backend": "http://127.0.0.1:8997",
+  "source": "Real Vue and MySQL workflow; RULE provider; browser API forwarded only when staging selected; one explicitly injected browser network failure",
+  "formKey": "wfvfSeMs",
+  "checks": [
+    {
+      "name": "owner configures allowed questions and budgets through Vue UI then publishes",
+      "passed": true
+    },
+    {
+      "name": "without AI consent no decision request is sent and ordinary submission succeeds",
+      "passed": true
+    },
+    {
+      "name": "neutral followup can be skipped, survives reload, and a self-raised cue can be answered separately",
+      "passed": true,
+      "detail": {
+        "used": 2,
+        "decisions": 3,
+        "linked": true
+      }
+    },
+    {
+      "name": "browser AI network failure does not block ordinary submission",
+      "passed": true
+    },
+    {
+      "name": "owner audit UI exposes traceable source and decision records without capability tokens",
+      "passed": true
+    },
+    {
+      "name": "browser has no uncaught application error",
+      "passed": true
+    }
+  ],
+  "passed": 6,
+  "failed": 0
+}

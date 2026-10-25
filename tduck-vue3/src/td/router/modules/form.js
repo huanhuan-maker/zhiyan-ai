@@ -35,6 +35,11 @@ export default [
         component: () => import(/* webpackChunkName: 'root' */ '@/views/form/setting')
       },
       {
+        path: 'followup',
+        meta: { requireLogin: true },
+        component: () => import('@/views/form/followup')
+      },
+      {
         path: 'publish',
         meta: { requireLogin: true },
         component: () => import(/* webpackChunkName: 'root' */ '@/views/form/publish')

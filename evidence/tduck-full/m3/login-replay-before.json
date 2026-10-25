@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-25T05:58:55.218Z",
+  "source": "Six concurrent real logins using private synthetic acceptance fixture; no credentials or tokens exported",
+  "passed": false,
+  "results": [
+    {
+      "code": 500,
+      "hasToken": false
+    },
+    {
+      "code": 500,
+      "hasToken": false
+    },
+    {
+      "code": 500,
+      "hasToken": false
+    },
+    {
+      "code": 500,
+      "hasToken": false
+    },
+    {
+      "code": 200,
+      "hasToken": true
+    },
+    {
+      "code": 500,
+      "hasToken": false
+    }
+  ]
+}
