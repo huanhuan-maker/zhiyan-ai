@@ -1,0 +1,16 @@
+[
+  {
+    "name": "com.tduck.cloud.api.ai.AiDraftServiceTest",
+    "tests": 18,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  {
+    "name": "com.tduck.cloud.api.ai.AnalysisReportTest",
+    "tests": 19,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+]

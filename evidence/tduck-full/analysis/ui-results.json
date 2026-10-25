@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-25T10:30:41.076Z",
+  "source": "Real browser/backend; synthetic answers; one injected browser network failure; no new model calls",
+  "formKey": "AQy19yzU",
+  "reportId": "d0d37cbf-af53-4a74-a40c-77ea88cde0bc",
+  "checks": [
+    {
+      "name": "ECharts renders selected-version backend facts and labels the denominator",
+      "passed": true
+    },
+    {
+      "name": "version switching changes numerical statistics and preserves URL form key",
+      "passed": true
+    },
+    {
+      "name": "saved report and coverage load from real backend after opening the new tab",
+      "passed": true
+    },
+    {
+      "name": "actual model report can be selected and every evidence dialog shows stored source coordinates",
+      "passed": true
+    },
+    {
+      "name": "real model generation requires transfer acknowledgment and local grouping needs none",
+      "passed": true
+    },
+    {
+      "name": "review note persists after a full browser refresh",
+      "passed": true
+    },
+    {
+      "name": "Markdown and JSON download through authenticated endpoints with safe raw-answer escaping",
+      "passed": true
+    },
+    {
+      "name": "generation network failure retains selected saved report and supports recovery",
+      "passed": true
+    },
+    {
+      "name": "new submission is flagged as changed and prevents approving an outdated snapshot",
+      "passed": true
+    },
+    {
+      "name": "regeneration creates a new report and refreshed facts without losing history",
+      "passed": true
+    },
+    {
+      "name": "390px report and source dialog stay usable without document overflow or XSS",
+      "passed": true
+    },
+    {
+      "name": "answer data page preserves version selection and offers statistics navigation on mobile",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "passed": 13,
+  "failed": 0
+}

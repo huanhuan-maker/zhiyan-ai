@@ -62,7 +62,7 @@ api.interceptors.response.use(
      * 请求出错时 msg 会返回错误信息
      * 则代码如下
      */
-    if (response.config.responseType === 'blob') {
+    if (response.config.responseType === 'blob' && !response.headers['content-disposition']) {
       if ((response.headers['content-type'] || '').includes('json')) {
         response.data = JSON.parse(await response.data.text())
       } else return response

@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-25T10:33:36.323Z",
+  "source": "Real Spring Boot/MyBatis-Plus/MySQL; synthetic survey and answers",
+  "formKey": "AQy19yzU",
+  "reportId": "d0d37cbf-af53-4a74-a40c-77ea88cde0bc",
+  "checks": [
+    {
+      "name": "report, snapshot and audit persist after a real backend restart",
+      "passed": true,
+      "detail": {
+        "reportId": "d0d37cbf-af53-4a74-a40c-77ea88cde0bc",
+        "version": 2,
+        "status": "PENDING",
+        "revision": 0
+      }
+    },
+    {
+      "name": "nonempty human review history also survives the backend restart",
+      "passed": true,
+      "detail": {
+        "reviewedReportId": "68e4992c-da7c-4956-98f2-414362d2ff55",
+        "status": "APPROVED",
+        "revision": 1,
+        "eventCount": 1
+      }
+    }
+  ],
+  "passed": 2,
+  "failed": 0
+}

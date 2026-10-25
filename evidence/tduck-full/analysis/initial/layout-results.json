@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-25T10:29:20.966Z",
+  "source": "Real browser/backend; synthetic answers; one version-request network failure",
+  "checks": [
+    {
+      "name": "390px toolbar buttons remain above the table header without overlapping",
+      "passed": false,
+      "error": "{\"headerTop\":446.1875,\"buttons\":[{\"title\":\"查询\",\"bottom\":390.578125},{\"title\":\"导入\",\"bottom\":390.578125},{\"title\":\"添加\",\"bottom\":390.578125},{\"title\":\"下载附件\",\"bottom\":426.578125},{\"title\":\"删除\",\"bottom\":426.578125},{\"title\":\"导出\",\"bottom\":460.578125},{\"title\":\"打印\",\"bottom\":460.578125},{\"title\":\"刷新\",\"bottom\":460.578125},{\"title\":\"全屏\",\"bottom\":460.578125},{\"title\":\"个性化设置\",\"bottom\":460.578125}]}"
+    },
+    {
+      "name": "switching data version queries exactly that backend version",
+      "passed": true
+    },
+    {
+      "name": "version request failure blocks the table until an explicit retry succeeds",
+      "passed": true
+    }
+  ],
+  "passed": 2,
+  "failed": 1
+}

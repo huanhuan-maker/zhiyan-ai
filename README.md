@@ -1,5 +1,7 @@
 # 知研 AI
 
+> **当前轮次 M4-R：统计与可追溯分析**。用户已授权在固定问卷基础上增加按版本统计、开放题证据归纳、报告人工审核及 Markdown/JSON 导出。动态追问继续停用。本轮范围见 [ANALYSIS_STAGE.md](docs/ANALYSIS_STAGE.md)，交付与实测见 [M4-R.md](evidence/M4-R.md)。实际入口仍为 `tduck-vue3` / 5180 → 8997；历史原型与下文旧端口不作为当前入口。
+
 > **当前开发入口（2026-10-25）**：[TDuck Vue 3 二次开发版](tduck-vue3/README.md)，访问 `http://localhost:5180`，隔离后端8997。用户已决定停止追问方向，入口与服务端追问调用已停用；继续保留AI建卷、固定问卷、收集与真实统计，见[停用记录](evidence/tduck-full/followup-retired/README.md)。原 `backend/`、`frontend/` 及以下M0/M1说明为旧原型归档。
 
 以下为旧原型的 **M0 工程联通 + M1 固定问卷闭环** 归档。固定技术栈仍为Vue 3 + ECharts、Spring Boot + MyBatis-Plus、MySQL 8.x；当前迁移版的AI和浏览器验证情况以页首M3报告为准。

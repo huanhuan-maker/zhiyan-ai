@@ -1,0 +1,11 @@
+(node:10540) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+  "checks": [
+    "downloaded a valid XLSX import template through migrated UI",
+    "XLSX import through UI persists the synthetic text and choice label",
+    "server CSV export contains the imported answer and human choice label",
+    "migrated table export dialog downloads the real server export"
+  ],
+  "errors": []
+}

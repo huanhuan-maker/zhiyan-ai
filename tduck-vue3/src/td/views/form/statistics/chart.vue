@@ -7,7 +7,7 @@
             <i class="el-icon-s-claim card-panel-icon" />
           </div>
           <div class="card-panel-description">
-            <div class="card-panel-text">有效回收量</div>
+            <div class="card-panel-text">最新版本已提交答卷</div>
             <count-to :end-val="projectStats.completeCount" class="card-panel-num" />
           </div>
         </div>
@@ -29,8 +29,8 @@
             <i class="el-icon-data-line card-panel-icon" />
           </div>
           <div class="card-panel-description">
-            <div class="card-panel-text">回收率</div>
-            <div class="card-panel-num"><count-to :end-val="projectStats.completeRate" /> %</div>
+            <div class="card-panel-text">答卷统计版本</div>
+            <div class="card-panel-num">{{ projectStats.versionNo ? 'V' + projectStats.versionNo : '历史未版本化' }}</div>
           </div>
         </div>
       </el-col>
@@ -104,11 +104,8 @@ export default {
       getFormReportRequest({ formKey: this.formKey }).then((res) => {
         this.projectStats = res.data
         if (this.projectStats.completeCount) {
-          let rate = this.projectStats.completeCount / this.projectStats.viewCount
-          this.projectStats.completeRate = rate > 1 ? 100 : rate * 100
           this.projectStats.avgCompleteFormatStr = Number.isFinite(Number(this.projectStats.avgCompleteTime)) && this.projectStats.avgCompleteTime != null ? timeFormat(Number(this.projectStats.avgCompleteTime)) : '未记录'
         } else {
-          this.projectStats.completeRate = 0
           this.projectStats.avgCompleteFormatStr = 0
         }
       })

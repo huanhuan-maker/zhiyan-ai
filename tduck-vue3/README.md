@@ -1,5 +1,18 @@
 # TDuck Vue 3 本地迁移版
 
+**当前交付轮次 M4-R（2026-10-25）**：问卷左侧“统计”→“题目统计 / 主题与报告”；按发布版本查看有效/缺失分母、量表均值及 ECharts。报告可用本地相同文本分组（非语义模型）或服务端真实 Provider；真实模式先核对生成输入，并确认已有回答数据处理告知与模型传输授权。原文与数值由后端提供，模型只提出带证据编号的候选归纳/解释。保存报告快照、通过/驳回与审核历史，支持 Markdown / JSON 导出；新改删答卷使旧报告显示数据变化。报告范围与限制见 [ANALYSIS_STAGE.md](../docs/ANALYSIS_STAGE.md)，本轮结果、截图和完整命令见 [M4-R.md](../evidence/M4-R.md)。以下 M3/早期迁移段落均为历史，不恢复追问。
+
+M4-R 新增后端源码保存在 `backend-extensions/analysis/`（Git 跟踪）；构建脚本在既有补丁链后复制这些增量源码，避免修改原 TDuck 工程。现有私有配置与 MySQL 数据继续复用。首次升级只对隔离开发库新增两表：
+
+```powershell
+Set-Location D:\LcProject
+.\scripts\tduck\Build-FullBackend.ps1 -BuildName tduck-analysis-build
+.\scripts\tduck\Apply-AnalysisMigration.ps1
+.\scripts\tduck\Install-AnalysisBackend.ps1
+```
+
+安装脚本只重启经路径及 8997 核对的隔离后端，私下备份原 JAR。升级完成后日常启动仍用 `.\scripts\tduck\Start-FullBackend.ps1` 和前端目录下的 `npm.cmd run dev`，服务已运行时无需重复启动。若正常 `Build-FullBackend.ps1` 重建标准目录，同样会包含新增分析源码。升级脚本不推送、不公开部署、不清空答卷。
+
 **当前范围（2026-10-25）**：用户决定不继续追问方向。公开填写不再加载追问区或请求追问服务；设置入口移除，旧设置URL跳回编辑器；服务端默认拒绝追问操作，日常启动显式关闭该功能。问卷、答卷、历史追问记录及AI建卷保留。临时8996服务已关闭，仍用5180→8997。以下M3开发记录与脚本仅为历史归档；当前验证用`node scripts/tduck/verify-followup-retired.mjs`，见[停用及回归记录](../evidence/tduck-full/followup-retired/README.md)。
 
 M3用户复验修复：追问需先同意、填写开放题、再点击该题下“查看可选追问”；入口和具体跳过原因现已明确显示。新增独立真实模型版演示（`node scripts/tduck/New-FollowupDemo.mjs LLM`），保留原规则演示与用户记录。见[修复及实测](../evidence/tduck-full/m3-visibility/README.md)。

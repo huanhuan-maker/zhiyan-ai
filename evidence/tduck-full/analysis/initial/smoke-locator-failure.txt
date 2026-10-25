@@ -1,0 +1,7 @@
+(node:22344) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+  "failure": "locator.fill: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByPlaceholder('例如：用户满意度调研问卷...')\u001b[22m\n",
+  "errors": [],
+  "text": "知研 AI\n问卷工作台\n我的问卷\n共享模板\n回收中心\n本地研究数据\n安全保存在当前环境\n退出登录\n我的问卷\n\n管理、发布并持续收集你的调查问卷。\n\nV\n问卷概览\n\n共 414 份问卷，按创建时间排列\n\nAI 建卷\n新建问卷\n全部\n待发布\n收集中\n已停止\n时间筛选\n考试\n待发布\nArchive - acceptance fixture\n草稿\n状态\n4\n类型编号\n2026/10/24\n更新时间\n编辑\n数据\n表单\n已停止\nSynthetic review legacy 1792917593378\n停止\n状态\n1\n类型编号\n2026/10/25\n更新时间\n编辑\n数据\n表单\n已停止\nSynthetic review published 1792917593378\n停止\n状态\n1\n类型编号\n2026/10/25\n更新时间\n编辑\n数据\n表单\n已停止\nSynthetic review lookup-rejected 1792917593378\n停止\n状态\n1\n类型编号\n2026/10/25\n更新时间\n编辑\n数据\n表单\n已停止\nSynthetic review changed-rateMax 1792917593378\n停止\n状态\n1\n类型编号\n2026/10/25\n更新时间\n编辑\n数据\n表单\n已停止\nSynthetic review changed-rateMax 1792917593378\n停止\n状态\n1\n类型编号\n2026/10/25\n更新时间\n编辑\n数据\n表单\n已停止\nSynthetic review changed-placeholder 1792917593378\n停止\n状态\n1\n类型编号\n2026/10/25\n更新时间\n编辑\n数据\n表单\n已停止\nSynthetic review changed-placeholder 1792917593378\n停止\n状态\n1\n类型编号\n2026/10/25\n更新时间\n编辑\n数据\n表单\n已停止\nSynthetic review changed-required 1792917593378\n停止\n状态\n1\n类型编号\n2026/10/25\n更新时间\n编辑\n数据\n共 414 条\n9条/页\n1\n2\n3\n4\n5\n6\n46\n前往\n页\n新建问卷\n\n先填写基本信息，进入编辑器后可添加单选、多选、量表和开放题。\n\n问卷名称\n问卷说明\n取消\n创建并编辑"
+}

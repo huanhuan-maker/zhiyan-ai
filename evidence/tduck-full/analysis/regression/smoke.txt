@@ -1,0 +1,12 @@
+(node:23152) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"route":"logic","text":"预览\n保存至模板中心\n编辑\n逻辑\n外观\n设置\n发布\n数据\n统计\n\n逻辑设置\n\n你可以为选择字段（单项选择、多项选择、图片单选、图片多选、评分、下拉框、）设定一些规则：在填写者选择某选项后，触发显示其他显示字段\n\n当前表单暂无逻辑规则\n\n立即添加逻辑","errors":[]}
+{"route":"theme","text":"预览\n保存至模板中心\n编辑\n逻辑\n外观\n设置\n发布\n数据\n统计\n\n外观主题\n\n全部\n 手机\n 电脑\n\n外观设置\n\n添加logo\n头图设置\n背景设置\n按钮设置\n显示标题\n显示描述\n显示序号","errors":[]}
+{"route":"setting","text":"预览\n保存至模板中心\n编辑\n逻辑\n外观\n设置\n发布\n数据\n统计\n 提交设置\n 回收设置\n 通知设置\n 分享设置\n 数据推送\n\n提交设置\n自定义表单提交成功后的提示内容，以及可以跳转指定链接\n\n提交后显示方式\n\n系统默认提示\n自定义文案\n\n提交后跳转网页地址\n\n保存设置","errors":[]}
+{"route":"data","text":"预览\n保存至模板中心\n编辑\n逻辑\n外观\n设置\n发布\n数据\n统计\n答卷数据\n\n按发布版本查看原始答卷，修改与导出沿用当前选择。\n\n查看统计与报告\n查询\n导入\n添加\n下载附件\n删除\n\t\n开放题\n\t\n单选题\n\t\n多选题\n\t\n量表题\n\t\n提交序号\n\t\n扩展字段\n\t\n修改用户\n\t\n提交用户\n\t\n提交时间\n\t\n修改时间\n\n暂无数据\n\n1\n共 0 条记录","errors":[]}
+{"route":"statistics","text":"预览\n保存至模板中心\n编辑\n逻辑\n外观\n设置\n发布\n数据\n统计\n统计与分析\n\n查看真实回收结果，沿原文核查归纳与解释。\n\n刷新版本\n题目统计\n主题与报告\n访问与收集概览\n\n发布问卷并收集答卷后，可按版本查看统计","errors":[]}
+{
+  "url": "http://127.0.0.1:5180/project/form/data?key=sfNVQ6Gp",
+  "text": "预览\n保存至模板中心\n编辑\n逻辑\n外观\n设置\n发布\n数据\n统计\n答卷数据\n\n按发布版本查看原始答卷，修改与导出沿用当前选择。\n\n查看统计与报告\n发布版本\nV1（收集中） · 1 份答卷\n数据表、详情与导出按所选发布版本的题目渲染\n查询\n导入\n添加\n下载附件\n删除\n\t\n开放题\n\t\n单选题\n\t\n多选题\n\t\n量表题\n\t\n提交序号\n\t\n扩展字段\n\t\n修改用户\n\t\n提交用户\n\t\n提交时间\n\t\n修改时间\n\t\nSynthetic Vue 3 response\n\t\n选项一\n\t\n选项一\n\t\n4\n\t\n1\n\t\n　\n\t\n　\n\t\n　\n\t\n2026-10-25 06:32:17\n\t\n2026-10-25 06:32:17\n1\n共 1 条记录",
+  "errors": []
+}

@@ -1,5 +1,5 @@
 <template>
-  <div class="form-index-container">
+  <div class="form-index-container" :class="{ 'results-page': /\/form\/(statistics|data)$/.test($route.path) }">
     <header class="form-editor-header">
       <div class="header-left">
         <div class="back-btn" @click="$router.back(-1)" title="返回">
@@ -19,6 +19,7 @@
           plain
           :icon="tdIcon('el-icon-view')"
           @click="previewDialogVisible = true"
+          aria-label="预览"
         >
           预览
         </el-button>
@@ -28,6 +29,7 @@
           type="primary"
           :icon="tdIcon('el-icon-folder-add')"
           @click="saveProjectAsTemplateHandle"
+          aria-label="保存至模板中心"
         >
           保存至模板中心
         </el-button>
@@ -400,4 +402,8 @@ export default {
     height: 100vh;
   }
 }
+</style>
+
+<style scoped>
+@media(max-width:600px){.results-page .form-editor-header{padding:10px 12px;gap:8px}.results-page .form-editor-header .header-left{gap:8px;min-width:0}.results-page .form-editor-header .form-logo-img{max-width:105px;height:auto}.results-page .form-editor-header .header-right{gap:6px;flex-shrink:0}.results-page .form-editor-header .action-btn{font-size:0;width:34px;height:34px;padding:6px;margin:0}.results-page .form-editor-header .action-btn :deep(.el-icon){font-size:16px}.results-page .form-editor-header .action-btn :deep(svg){width:16px;height:16px}}
 </style>

@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-25T10:39:52.561Z",
+  "source": "Actual configured provider, known synthetic evidence only, fresh snapshot; left pending for human review",
+  "formKey": "AQy19yzU",
+  "reportId": "c008f3ef-623b-46fa-9ced-dd3bcc84358b",
+  "version": 2,
+  "answerCount": 4,
+  "provider": "本机推理网关",
+  "model": "group/group",
+  "status": "PENDING",
+  "url": "http://localhost:5180/project/form/statistics?key=AQy19yzU",
+  "themes": [
+    {
+      "label": "图书馆插座不足",
+      "evidenceIds": [
+        "E1"
+      ],
+      "classification": "MODEL_INFERRED_UNCONFIRMED",
+      "supportAnswerCount": 1
+    },
+    {
+      "label": "晚间图书馆座位不足",
+      "evidenceIds": [
+        "E2",
+        "E3",
+        "E4"
+      ],
+      "classification": "MODEL_INFERRED_UNCONFIRMED",
+      "supportAnswerCount": 3
+    },
+    {
+      "label": "希望增加晚间座位",
+      "evidenceIds": [
+        "E2",
+        "E3",
+        "E4"
+      ],
+      "classification": "MODEL_INFERRED_UNCONFIRMED",
+      "supportAnswerCount": 3
+    }
+  ]
+}

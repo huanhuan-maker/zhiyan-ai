@@ -1,14 +1,7 @@
 <template>
   <div class="analysis-container">
-    <div v-if="versions && versions.length > 0" class="version-bar">
-      <span class="version-bar-label">统计版本</span>
-      <el-select v-model="currentVersion" size="small" style="width: 240px" @change="getData">
-        <el-option v-for="v in versions" :key="v.versionNo"
-          :label="'V' + v.versionNo + (v.status === 1 ? '（收集中）' : '（已停止）') + ' · ' + v.answerCount + ' 份答卷'"
-          :value="v.versionNo" />
-      </el-select>
-      <span class="version-bar-tip">不同版本的题目互不影响，统计按版本口径计算</span>
-    </div>
+    <el-alert v-if="loadError" class="analysis-error" title="题目统计加载失败，已保留上次结果" type="error" :closable="false"><el-button text @click="getData">重试</el-button></el-alert>
+    <p v-if="list.length" class="analysis-scope">V{{ currentVersion }} · 本版本答卷 {{ list[0].totalCount }} 份 · 图表数值由后端计算。缺失包含未答、无效或条件未展示，不能直接外推总体。</p>
     <div v-if="list && list.length > 0">
       <el-row :gutter="24">
         <el-col :span="24" v-for="(item, index) in list" :key="index" style="margin-bottom: 24px">
@@ -87,7 +80,7 @@
         </el-col>
       </el-row>
     </div>
-    <el-empty v-else description="暂无分析数据，请先添加题目并收集答卷" class="custom-empty">
+    <el-empty v-else-if="!loadError && !loading" description="暂无分析数据，请先添加题目并收集答卷" class="custom-empty">
       <template #image >
         <i class="el-icon-data-board empty-icon"></i>
       </template>
@@ -98,9 +91,9 @@
 <script>
 import TChart from '@/views/components/TChart'
 import { getFormAnalysisRequest } from '@/api/project/report'
-import { listFormVersionsRequest } from '@/api/project/publish'
 
 export default {
+  props: { versionNo: { type: Number, required: true } },
   components: {
     TChart
   },
@@ -110,8 +103,9 @@ export default {
         renderer: 'canvas'
       },
       list: [],
-      versions: [],
       currentVersion: null,
+      loadError: false,
+      loading: false,
       options: [
         {
           value: 'pie',
@@ -129,27 +123,20 @@ export default {
     }
   },
   mounted() {
-    this.loadVersions()
+    this.currentVersion = this.versionNo
+    this.getData()
   },
   methods: {
-    loadVersions() {
-      listFormVersionsRequest(this.$route.query.key)
-        .then((res) => {
-          this.versions = res.data || []
-          if (this.versions.length > 0) {
-            this.currentVersion = this.versions[0].versionNo
-          }
-        })
-        .finally(() => this.getData())
-    },
     getData() {
+      this.loading = true
+      this.loadError = false
       const params = { formKey: this.$route.query.key }
       if (this.currentVersion != null) {
         params.version = this.currentVersion
       }
       getFormAnalysisRequest(params).then((res) => {
         this.list = res.data
-      })
+      }).catch(() => { this.loadError = true }).finally(() => { this.loading = false })
     },
     getCharData(data) {
       const config = {
@@ -204,8 +191,9 @@ export default {
           }
         },
         tooltip: {
+          renderMode: 'richText',
           trigger: 'axis',
-          formatter: '{b} <br/> 数量: {c}',
+          formatter: '{b}\n数量: {c}',
           backgroundColor: 'rgba(255, 255, 255, 0.9)',
           textStyle: {
             color: '#333'
@@ -299,8 +287,9 @@ export default {
         }
       } else {
         config.tooltip = {
+          renderMode: 'richText',
           trigger: 'item',
-          formatter: '{b} <br/> 数量: {c} ({d}%)'
+          formatter: '{b}\n数量: {c} ({d}%)'
         }
         config.series[0].type = 'pie'
         config.series[0].label = {
@@ -340,9 +329,8 @@ export default {
 
 <style lang="scss" scoped>
 .analysis-container {
-  padding: 10px;
-  height: calc(100vh - 140px);
-  overflow-y: auto !important;
+  padding: 0;
+  min-height: 180px;
   overflow-x: hidden !important;
 
   .analysis-card {
@@ -465,4 +453,9 @@ export default {
     }
   }
 }
+</style>
+
+<style scoped>
+.analysis-scope{color:#667085;font-size:13px;line-height:1.8;margin:4px 0 16px}
+@media(max-width:600px){.analysis-container .analysis-card .card-header{align-items:flex-start;flex-wrap:wrap;gap:12px}.analysis-container .analysis-card :deep(.el-card__header){padding:14px}.analysis-container .analysis-card :deep(.el-card__body){padding:8px}.analysis-container .analysis-card .card-body{padding:4px}.analysis-container .analysis-card .card-body .chart-wrapper{height:270px;padding:0}}
 </style>

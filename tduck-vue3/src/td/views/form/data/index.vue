@@ -1,8 +1,10 @@
 <template>
   <div class="app-container">
-    <div v-if="versions.length > 0" class="version-bar" style="margin-bottom: 12px">
+    <header class="data-page-heading"><div><h2>答卷数据</h2><p>按发布版本查看原始答卷，修改与导出沿用当前选择。</p></div><el-button v-if="mode === 1" @click="$router.push({ path: '/project/form/statistics', query: { key: formKey } })">查看统计与报告</el-button></header>
+    <el-alert v-if="dataLoadError" title="答卷版本或字段加载失败，请重试" type="error" :closable="false"><el-button text @click="initializeData">重试加载答卷</el-button></el-alert>
+    <section v-if="versions.length > 0" class="version-bar data-version-bar">
       <span style="margin-right: 8px; font-weight: 600">发布版本</span>
-      <el-select v-model="currentVersion" size="default" style="width: 300px" @change="handleVersionChange">
+      <el-select v-model="currentVersion" aria-label="答卷发布版本" size="default" style="width: 300px; max-width: 100%" @change="handleVersionChange">
         <el-option
           v-for="v in versions"
           :key="v.versionNo"
@@ -11,8 +13,10 @@
         />
       </el-select>
       <span style="margin-left: 12px; color: #909399; font-size: 12px">数据表、详情与导出按所选发布版本的题目渲染</span>
-    </div>
+    </section>
     <base-table
+      v-if="dataReady"
+      class="answer-data-table"
       ref="baseTable"
       :grid-options="gridOptions"
       @cell-click="handleViewOrUpdate"
@@ -115,6 +119,8 @@ export default {
   data() {
     return {
       formKey: '',
+      dataReady: false,
+      dataLoadError: false,
       formConfig: {
         formKey: '',
         preview: false,
@@ -295,22 +301,23 @@ export default {
   },
   created() {
     this.formKey = this.$route.query.key || this.$route.params.key
-    // 先确定发布版本（默认最新），字段与数据按该版本题目渲染
-    this.loadVersions()
-      .then(() => this.handleQueryFields())
-      .then(() => {
-        this.initPerms()
-        // 版本号在异步加载后才写入 queryParams，表格初始查询未带版本，需补一次刷新
-        if (this.currentVersion !== null) {
-          this.handleReloadTable()
-        }
-      })
+    this.initializeData()
     // 查询详情固定字段
     listFixedFormFieldsRequest(this.formKey).then((res) => {
       this.fixedFields = res.data
     })
   },
   methods: {
+    async initializeData() {
+      this.dataReady = false
+      this.dataLoadError = false
+      try {
+        await this.loadVersions()
+        await this.handleQueryFields()
+        this.initPerms()
+        this.dataReady = true
+      } catch { this.dataLoadError = true }
+    },
     // 加载发布版本列表，默认选中最新版本；从未发布的问卷不显示版本栏
     loadVersions() {
       return listFormVersionsRequest(this.formKey)
@@ -321,15 +328,14 @@ export default {
           }
           this.queryParams.versionNo = this.currentVersion
         })
-        .catch(() => {
-          this.versions = []
-        })
     },
     // 切换版本：字段、表格、导出口径同步切换
-    handleVersionChange() {
+    async handleVersionChange() {
       this.queryParams.versionNo = this.currentVersion
-      this.handleQueryFields().then(() => this.initPerms())
-      this.handleReloadTable()
+      this.dataReady = false
+      this.dataLoadError = false
+      try { await this.handleQueryFields(); this.initPerms(); this.dataReady = true }
+      catch { this.dataLoadError = true }
     },
     /**
      * 检查按钮是否有权限
@@ -478,7 +484,7 @@ export default {
       this.addDialogVisible = true
     },
     handleReloadTable() {
-      this.$refs.baseTable.getXGrid().commitProxy('reload')
+      this.$refs.baseTable?.getXGrid().commitProxy('reload')
     },
     cellContextMenuEvent({ row }) {
       const $grid = this.$refs.baseTable.getXGrid()
@@ -545,16 +551,23 @@ export default {
   padding: 24px;
   box-sizing: border-box;
   background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: auto;
 
-  > div {
+  > .answer-data-table {
     background-color: #ffffff;
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
-    height: 100%;
+    flex: 1;
+    min-height: 400px;
     box-sizing: border-box;
   }
 }
+.data-page-heading{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;flex:none}.data-page-heading h2{font-size:23px;margin:0 0 8px;color:#1d2939}.data-page-heading p{margin:0;color:#667085;font-size:13px}.data-version-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:16px;border:1px solid #e4e7ec;background:white;border-radius:12px;flex:none}
+@media(max-width:600px){.app-container{padding:12px}.data-page-heading h2{font-size:20px}.data-page-heading p{line-height:1.7}.data-version-bar{padding:12px}.app-container>.answer-data-table{padding:8px}}
 
 ::v-deep .project-form {
   background-color: #ffffff !important;
@@ -589,5 +602,15 @@ export default {
       margin-top: 10px;
     }
   }
+}
+</style>
+
+<style scoped>
+@media(max-width:600px){
+  .app-container :deep(.vxe-toolbar){height:auto!important;min-height:120px;padding:8px 0!important;align-items:flex-start;gap:10px;overflow:visible}
+  .app-container :deep(.vxe-buttons--wrapper),.app-container :deep(.vxe-tools--wrapper){display:flex;flex-wrap:wrap;flex-basis:100%;gap:6px;justify-content:flex-start}
+  .app-container :deep(.vxe-toolbar .el-button){margin:0}
+  .app-container :deep(.vxe-pager){height:auto;min-height:76px;padding:12px 0}
+  .app-container :deep(.vxe-pager--wrapper){display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px;white-space:normal;height:auto}
 }
 </style>

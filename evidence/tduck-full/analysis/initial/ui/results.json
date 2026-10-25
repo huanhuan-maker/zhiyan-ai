@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-25T10:21:01.534Z",
+  "source": "Real browser/backend; synthetic answers; one injected browser network failure; no new model calls",
+  "formKey": "A9LURtEq",
+  "reportId": "95882f17-590b-466f-a637-d9c18dc0899f",
+  "checks": [
+    {
+      "name": "ECharts renders selected-version backend facts and labels the denominator",
+      "passed": true
+    },
+    {
+      "name": "version switching changes numerical statistics and preserves URL form key",
+      "passed": true
+    },
+    {
+      "name": "saved report and coverage load from real backend after opening the new tab",
+      "passed": true
+    },
+    {
+      "name": "actual model report can be selected and every evidence dialog shows stored source coordinates",
+      "passed": true
+    },
+    {
+      "name": "real model generation requires transfer acknowledgment and local grouping needs none",
+      "passed": false,
+      "error": "locator.check: Timeout 8000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('radio', { name: '真实模型归纳', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <input type=\"radio\" value=\"REAL\" name=\"el-id-3014-63\" class=\"el-radio-button__original-radio\"/>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into v"
+    },
+    {
+      "name": "review note persists after a full browser refresh",
+      "passed": true
+    },
+    {
+      "name": "Markdown and JSON download through authenticated endpoints with safe raw-answer escaping",
+      "passed": false,
+      "error": "page.waitForEvent: Timeout 8000ms exceeded while waiting for event \"download\"\n=========================== logs ===========================\nwaiting for event \"download\"\n============================================================"
+    },
+    {
+      "name": "generation network failure retains selected saved report and supports recovery",
+      "passed": true
+    },
+    {
+      "name": "new submission is flagged as changed and prevents approving an outdated snapshot",
+      "passed": true
+    },
+    {
+      "name": "regeneration creates a new report and refreshed facts without losing history",
+      "passed": true
+    },
+    {
+      "name": "390px report and source dialog stay usable without document overflow or XSS",
+      "passed": true
+    },
+    {
+      "name": "answer data page preserves version selection and offers statistics navigation on mobile",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "passed": 11,
+  "failed": 2
+}

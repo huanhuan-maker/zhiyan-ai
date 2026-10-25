@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-25T10:37:00.6397571Z",
+  "source": "Actually executed in this M4-R turn; synthetic inputs, real local persistence. Actual model case recorded separately.",
+  "checks": [
+    {
+      "name": "Java: 19 analysis regressions plus 18 AI draft regressions",
+      "passed": 37,
+      "failed": 0
+    },
+    {
+      "name": "Frontend Vitest",
+      "passed": 31,
+      "failed": 0
+    },
+    {
+      "name": "Analysis API including actual model",
+      "passed": 14,
+      "failed": 0
+    },
+    {
+      "name": "Analysis browser workflow",
+      "passed": 13,
+      "failed": 0
+    },
+    {
+      "name": "Data mobile layout, version isolation and retry",
+      "passed": 3,
+      "failed": 0
+    },
+    {
+      "name": "Actual backend restart persistence",
+      "passed": 2,
+      "failed": 0
+    },
+    {
+      "name": "Existing AI draft and fixed survey closure",
+      "passed": 10,
+      "failed": 0
+    },
+    {
+      "name": "Existing home workflow",
+      "passed": 11,
+      "failed": 0
+    },
+    {
+      "name": "Followup remains disabled",
+      "passed": 6,
+      "failed": 0
+    },
+    {
+      "name": "Existing XLSX import, CSV and XLSX export",
+      "passed": 4,
+      "failed": 0
+    },
+    {
+      "name": "Existing end-to-end smoke script",
+      "passed": 1,
+      "failed": 0
+    }
+  ],
+  "frontendBuildExitCode": 0,
+  "backendBuildExitCode": 0,
+  "initialFailuresPreserved": "initial/",
+  "countNote": "Counts combine assertions reported by the named scripts and JUnit/Vitest test cases; not a claim of exhaustive coverage."
+}

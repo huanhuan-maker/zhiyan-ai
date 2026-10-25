@@ -50,7 +50,7 @@ try{
  const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];page.on('pageerror',e=>errors.push(e.message))
  await page.addInitScript(token=>localStorage.setItem('token',token),token)
  await page.goto('http://127.0.0.1:5180/project/form/statistics?key='+key)
- await page.getByText('数据分析',{exact:true}).click()
+ await page.getByRole('tab',{name:'题目统计',exact:true}).click()
  await expect(page.getByText('平均分：3',{exact:false})).toBeVisible()
  await expect(page.getByText('Synthetic original text',{exact:true})).toBeVisible()
  await expect(page.getByText('Synthetic second text',{exact:true})).toBeVisible()

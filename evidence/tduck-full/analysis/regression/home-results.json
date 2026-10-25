@@ -1,0 +1,57 @@
+{
+  "commit": "f09546626fd14e9223b6a201f7ce8ad57291e51c",
+  "source": "Real 5180/8997; synthetic blank questionnaire only; one injected network failure; no model calls",
+  "date": "2026-10-25T10:32:39.468Z",
+  "checks": [
+    {
+      "name": "desktop brand remains readable on one line",
+      "passed": true
+    },
+    {
+      "name": "blank creation validates and persists the exact synthetic form",
+      "passed": true,
+      "detail": {
+        "formKey": "Sl5TYGVZ",
+        "type": 1
+      }
+    },
+    {
+      "name": "card and table navigation preserve the selected form key",
+      "passed": true
+    },
+    {
+      "name": "status filtering returns matching real backend records",
+      "passed": true
+    },
+    {
+      "name": "list failure preserves known records and offers an explicit retry",
+      "passed": true
+    },
+    {
+      "name": "current sort caption matches the backend ordering",
+      "passed": true
+    },
+    {
+      "name": "workbench does not present an unimplemented notification action",
+      "passed": true
+    },
+    {
+      "name": "390px home dialogs and list view remain usable",
+      "passed": true
+    },
+    {
+      "name": "mobile time filter and date picker open without runtime exceptions",
+      "passed": true
+    },
+    {
+      "name": "account menu remains accessible on mobile",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser errors",
+      "passed": true
+    }
+  ],
+  "passed": 11,
+  "failed": 0
+}

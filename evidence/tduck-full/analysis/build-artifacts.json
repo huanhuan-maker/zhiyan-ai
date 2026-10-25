@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-25T10:34:58.0297498Z",
+  "builtJarSha256": "C69F102B67ED5BB6B93AAF5EA46C2EF72B16075BF8D6E8D6FBCAC6D67946EDA3",
+  "installedJarSha256": "C69F102B67ED5BB6B93AAF5EA46C2EF72B16075BF8D6E8D6FBCAC6D67946EDA3",
+  "sourcesIdenticalToBuilt": true,
+  "sourceFiles": [
+    {
+      "path": "tduck-api\\src\\main\\java\\com\\tduck\\cloud\\api\\web\\controller\\AnalysisReportController.java",
+      "sha256": "80AA59C56ADF7D63BCF2052489FA0715470DA907A1E533380F01163F1384D4C1"
+    },
+    {
+      "path": "tduck-api\\src\\test\\java\\com\\tduck\\cloud\\api\\ai\\AnalysisReportTest.java",
+      "sha256": "F82B2688F781D9FB8570D1BE35CAA71B843BC5E71371B28CDBFA66AD856F4A9E"
+    },
+    {
+      "path": "tduck-form\\src\\main\\java\\com\\tduck\\cloud\\form\\analysis\\AnalysisJson.java",
+      "sha256": "917BEAB7B097444209A58E1D155B04A5C2B39375574012D30C12AED691065136"
+    },
+    {
+      "path": "tduck-form\\src\\main\\java\\com\\tduck\\cloud\\form\\analysis\\AnalysisMarkdown.java",
+      "sha256": "7DCC7E8D0DB3C9C0506EFA0C0F03B880D621C683D317792067941356FADCD697"
+    },
+    {
+      "path": "tduck-form\\src\\main\\java\\com\\tduck\\cloud\\form\\analysis\\AnalysisOutputValidator.java",
+      "sha256": "7D9AC23119E803CBB793CB5FEF5F4D2F42860B291D17A92D19E373DE5F0A2747"
+    },
+    {
+      "path": "tduck-form\\src\\main\\java\\com\\tduck\\cloud\\form\\analysis\\AnalysisReportService.java",
+      "sha256": "F5E87C3FD85D442AE613A784E99592F575DD8339E78E4E678BC3CDE81E311737"
+    },
+    {
+      "path": "tduck-form\\src\\main\\java\\com\\tduck\\cloud\\form\\analysis\\AnalysisSnapshotService.java",
+      "sha256": "8A60D2B4B2188E5B4A00A95AFE0018AE3170E8B2BF20B43FBCF3494725AC858F"
+    },
+    {
+      "path": "tduck-form\\src\\main\\java\\com\\tduck\\cloud\\form\\entity\\AnalysisReportEntity.java",
+      "sha256": "7C008605F523F22476DAF283DAA02904954F1D712747E1D33ADC7FECEBAEF59D"
+    },
+    {
+      "path": "tduck-form\\src\\main\\java\\com\\tduck\\cloud\\form\\entity\\AnalysisReviewEntity.java",
+      "sha256": "6FAA869319EE565A585A09163B9F64D6827730BD55107940ABDAA5AC4225A087"
+    },
+    {
+      "path": "tduck-form\\src\\main\\java\\com\\tduck\\cloud\\form\\mapper\\AnalysisReportMapper.java",
+      "sha256": "C988FA6E435DB8AEDD038EB86055E318C8E10A3C08A42E8955760BFB6879E259"
+    },
+    {
+      "path": "tduck-form\\src\\main\\java\\com\\tduck\\cloud\\form\\mapper\\AnalysisReviewMapper.java",
+      "sha256": "25CB94671DB748DBC79CCB96AA53EF911CC5BC8C004C66D20226F5E3CEAADF6C"
+    }
+  ]
+}

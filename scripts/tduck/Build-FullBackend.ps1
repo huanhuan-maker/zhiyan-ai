@@ -68,6 +68,16 @@ try{
  if($LASTEXITCODE -ne 0){throw 'Follow-up patch does not match the reviewed baseline'}
  & git apply "--directory=.local/$BuildName" (Join-Path $build 'followup.patch')
  if($LASTEXITCODE -ne 0){throw 'Apply follow-up patch failed'}
+ # Tracked additive Java sources; no changes to the upstream checkout or its data.
+ $analysisSources=Join-Path $root 'backend-extensions\analysis'
+ if(Test-Path -LiteralPath $analysisSources){
+  foreach($sourceFile in Get-ChildItem -LiteralPath $analysisSources -Recurse -File -Filter '*.java'){
+   $relative=$sourceFile.FullName.Substring($analysisSources.Length).TrimStart('\','/')
+   $destination=Join-Path $build $relative
+   New-Item -ItemType Directory -Path (Split-Path $destination -Parent) -Force | Out-Null
+   Copy-Item -LiteralPath $sourceFile.FullName -Destination $destination -Force
+  }
+ }
  $env:JAVA_HOME=$JavaHome
  & $Maven -q -f (Join-Path $build 'pom.xml') clean package -DskipTests
  if($LASTEXITCODE -ne 0){throw 'Backend package failed'}
