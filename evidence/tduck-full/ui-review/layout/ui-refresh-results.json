@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-25T08:40:34.836Z",
+  "source": "Real UI and backend; AI draft response is explicitly synthetic and labelled fixture-no-model-call",
+  "checks": [
+    {
+      "name": "desktop home keeps create and AI entries clickable",
+      "passed": true
+    },
+    {
+      "name": "AI form accepts values and question count is visible",
+      "passed": true
+    },
+    {
+      "name": "desktop preview and import entries remain enabled",
+      "passed": true
+    },
+    {
+      "name": "mobile AI page has no horizontal overflow and bottom actions are reachable",
+      "passed": true
+    },
+    {
+      "name": "mobile home keeps entries and does not overflow horizontally",
+      "passed": true
+    }
+  ],
+  "passed": 5,
+  "failed": 0
+}

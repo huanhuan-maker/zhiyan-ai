@@ -1,0 +1,98 @@
+{
+  "date": "2026-10-25T08:40:24.301Z",
+  "source": "Explicit synthetic response and failure injection; real isolated backend persistence",
+  "checks": [
+    {
+      "name": "regeneration with same title/labels but new options imports the new content",
+      "passed": true,
+      "detail": {
+        "originalKey": "PMWzFlZE",
+        "importedKey": "zg8dW3nu",
+        "creates": 2,
+        "description": "Introduction B",
+        "containsNewOption": true,
+        "containsOldOption": false
+      }
+    },
+    {
+      "name": "temporary network failure while checking resumable form does not create another form",
+      "passed": true,
+      "detail": {
+        "creates": 1,
+        "originalKey": "Z2aEXbUA",
+        "currentKey": "Z2aEXbUA",
+        "originalQuestionCount": 1
+      }
+    },
+    {
+      "name": "lost response after first question is persisted can be retried without duplicated questions",
+      "passed": true,
+      "detail": {
+        "creates": 1,
+        "itemCount": 2
+      }
+    },
+    {
+      "name": "regeneration changing only description preserves the new value",
+      "passed": true,
+      "detail": {
+        "creates": 2,
+        "property": "description",
+        "newValuePreserved": true
+      }
+    },
+    {
+      "name": "regeneration changing only required preserves the new value",
+      "passed": true,
+      "detail": {
+        "creates": 2,
+        "property": "required",
+        "newValuePreserved": true
+      }
+    },
+    {
+      "name": "regeneration changing only placeholder preserves the new value",
+      "passed": true,
+      "detail": {
+        "creates": 2,
+        "property": "placeholder",
+        "newValuePreserved": true
+      }
+    },
+    {
+      "name": "regeneration changing only rateMax preserves the new value",
+      "passed": true,
+      "detail": {
+        "creates": 2,
+        "property": "rateMax",
+        "newValuePreserved": true
+      }
+    },
+    {
+      "name": "server rejection during form lookup preserves the session and permits retry",
+      "passed": true,
+      "detail": {
+        "creates": 1,
+        "recovered": true
+      }
+    },
+    {
+      "name": "published resumable form is blocked instead of silently creating a replacement",
+      "passed": true,
+      "detail": {
+        "creates": 1,
+        "publishedQuestionCount": 1
+      }
+    },
+    {
+      "name": "legacy incomplete draft identity requires review without creating another form",
+      "passed": true,
+      "detail": {
+        "creates": 1,
+        "reviewRequired": true
+      }
+    }
+  ],
+  "passed": 10,
+  "failed": 0
+}

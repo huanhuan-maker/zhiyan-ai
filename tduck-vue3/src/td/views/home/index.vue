@@ -41,7 +41,6 @@
             <p>{{ headerSubtitle }}</p>
           </div>
           <div class="right-header">
-            <button class="header-icon-btn" aria-label="消息提醒"><i class="el-icon-bell" /></button>
             <el-popover placement="bottom-end" trigger="click" width="220" popper-class="workbench-user-popover">
               <div class="user-person-menu">
                 <div v-if="getUserInfo" class="user-profile-summary">
@@ -208,7 +207,9 @@ export default {
 .home-logo-img {
   display: block;
   width: auto;
+  max-width: 116px;
   max-height: 30px;
+  flex-shrink: 0;
 }
 .brand-divider {
   width: 1px;
@@ -219,6 +220,8 @@ export default {
 .brand-copy {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
+  white-space: nowrap;
   gap: 2px;
   strong { font-size: 15px; font-weight: 600; letter-spacing: 0.2px; }
   span { color: var(--zy-text-secondary); font-size: 11px; }

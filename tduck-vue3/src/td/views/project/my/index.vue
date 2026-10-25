@@ -4,7 +4,7 @@
       <div class="project-header">
         <div class="header-left">
           <h2 class="page-title">问卷概览</h2>
-          <p class="page-subtitle">共 {{ total || 0 }} 份问卷，按最近更新排列</p>
+          <p class="page-subtitle">共 {{ total || 0 }} 份问卷，按创建时间排列</p>
         </div>
         <div class="header-right">
           <el-button class="ai-create-btn" aria-label="AI 建卷" @click="$router.push('/project/form/ai-draft')">
@@ -102,6 +102,17 @@
       </section>
 
       <div class="content-view">
+        <el-alert
+          v-if="projectListError"
+          class="project-list-error"
+          type="error"
+          :closable="false"
+          title="问卷列表暂时加载失败，已保留当前页面内容"
+        >
+          <template #default>
+            <el-button size="small" type="danger" plain @click="queryProjectPage">重试</el-button>
+          </template>
+        </el-alert>
         <form-card-list
           v-if="dataShowType == 'card'"
           v-loading="projectListLoading"
@@ -188,6 +199,7 @@ export default {
       formData: { description: '', name: '未命名问卷', type: 0 },
       projectList: [],
       projectListLoading: true,
+      projectListError: false,
       pageCurrent: '',
       requestLoading: { pushFormData: false, pushFolderData: false }
     }
@@ -268,6 +280,7 @@ export default {
       })
     },
     queryProjectPage() {
+      this.projectListError = false
       pageFormRequest(this.queryParams).then((res) => {
         let { records, total, size } = res.data
         this.projectList = records
@@ -275,8 +288,7 @@ export default {
         this.queryParams.size = size
         this.projectListLoading = false
       }).catch(() => {
-        this.projectList = []
-        this.total = 0
+        this.projectListError = true
         this.projectListLoading = false
       })
     },
