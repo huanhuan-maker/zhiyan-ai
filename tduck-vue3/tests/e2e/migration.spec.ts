@@ -4,7 +4,7 @@ import {promisify} from 'node:util'
 import {resolve} from 'node:path'
 import {writeFileSync} from 'node:fs'
 const exec=promisify(execFile)
-for(const script of ['smoke-full','feature-flows','settings-flows','admin-flows','data-roundtrip','backend-security','question-roundtrip','choice-flows','closure-flows']){
+for(const script of ['smoke-full','feature-flows','settings-flows','workspace-menu','data-roundtrip','backend-security','question-roundtrip','choice-flows','closure-flows']){
  test(script+' real backend workflow',async()=>{
   let stdout:string
   try{

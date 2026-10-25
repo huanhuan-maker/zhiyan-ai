@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-25T10:48:11.799Z",
+  "source": "Real ordinary-owner backend and synthetic questionnaire; admin menu screenshot uses UI-only synthetic role, no admin account changes or admin API validation",
+  "checks": [
+    {
+      "name": "ordinary owner sees only My Questionnaires in the workspace navigation",
+      "passed": false,
+      "error": "expect(locator).toHaveText(expected) failed\n\nLocator:  locator('.menu-view')\nExpected: \"我的问卷\"\nReceived: \"我的问卷用户管理系统配置\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveText\" locator('.menu-view') with timeout 5000ms\n  - waiting for locator('.menu-view')\n    14 × locator resolved to <nav class=\"menu-view\" data-v-9b1d6f9d=\"\">…</nav>\n       - unexpected value \"我的问卷用户管理系统配置\"\n"
+    },
+    {
+      "name": "all six retired URLs return to My Questionnaires instead of loading their pages",
+      "passed": false,
+      "error": "page.waitForURL: Timeout 8000ms exceeded.\n=========================== logs ===========================\nwaiting for navigation to \"**/home\" until \"load\"\n  navigated to \"http://127.0.0.1:5180/home?key=synthetic\"\n============================================================"
+    },
+    {
+      "name": "new questionnaire remains a real persisted editable form",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ '<h2 style=\"text-align: center;\">Synthetic simplified workspace 1792925284953</h2>'\n- 'Synthetic simplified workspace 1792925284953'\n"
+    },
+    {
+      "name": "template creation entry is removed while normal preview still works",
+      "passed": true
+    },
+    {
+      "name": "per-questionnaire appearance settings are preserved",
+      "passed": true
+    },
+    {
+      "name": "AI drafting and evidence report pages remain available",
+      "passed": true
+    },
+    {
+      "name": "ordinary owner remains blocked from both retained administration routes",
+      "passed": true
+    },
+    {
+      "name": "administrator presentation contains exactly the three retained menu items",
+      "passed": false,
+      "error": "Expected values to be strictly deep-equal:\n+ actual - expected\n\n+ []\n- [\n-   '我的问卷',\n-   '用户管理',\n-   '系统配置'\n- ]\n"
+    },
+    {
+      "name": "removing a synthetic questionnaire still archives it without deleting its question records",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n\n0 !== 1\n"
+    },
+    {
+      "name": "no uncaught browser errors",
+      "passed": true
+    }
+  ],
+  "passed": 5,
+  "failed": 5
+}

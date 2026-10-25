@@ -76,7 +76,7 @@
 
             <el-popconfirm
               v-if="scope.row.status != 2"
-              title="确定删除该项目吗？"
+              title="移除后将不再显示在“我的问卷”中，是否继续？"
               @confirm="logicDeleteForm(scope.row.formKey)"
             >
               <template #reference><el-button  class="action-btn-text danger-action" type="text">

@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-25T10:50:23.660Z",
+  "source": "Real ordinary-owner backend and synthetic questionnaire; admin menu screenshot uses UI-only synthetic role, no admin account changes or admin API validation",
+  "checks": [
+    {
+      "name": "ordinary owner sees only My Questionnaires in the workspace navigation",
+      "passed": true
+    },
+    {
+      "name": "all six retired URLs return to My Questionnaires instead of loading their pages",
+      "passed": true
+    },
+    {
+      "name": "new questionnaire remains a real persisted editable form",
+      "passed": true
+    },
+    {
+      "name": "template creation entry is removed while normal preview still works",
+      "passed": true
+    },
+    {
+      "name": "per-questionnaire appearance settings are preserved",
+      "passed": true
+    },
+    {
+      "name": "AI drafting and evidence report pages remain available",
+      "passed": true
+    },
+    {
+      "name": "ordinary owner remains blocked from both retained administration routes",
+      "passed": true
+    },
+    {
+      "name": "administrator presentation contains exactly the three retained menu items",
+      "passed": true
+    },
+    {
+      "name": "removing a synthetic questionnaire still archives it without deleting its question records",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser errors",
+      "passed": true
+    }
+  ],
+  "passed": 10,
+  "failed": 0
+}

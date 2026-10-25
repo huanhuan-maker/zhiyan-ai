@@ -23,16 +23,6 @@
         >
           预览
         </el-button>
-        <el-button
-          round
-          class="action-btn"
-          type="primary"
-          :icon="tdIcon('el-icon-folder-add')"
-          @click="saveProjectAsTemplateHandle"
-          aria-label="保存至模板中心"
-        >
-          保存至模板中心
-        </el-button>
       </div>
     </header>
 
@@ -66,17 +56,15 @@
     >
       <pre-view :key="previewKey" :preview-qrcode="true" @close="previewDialogVisible = false" />
     </el-dialog>
-    <template-create ref="templateCreate" :form-key="projectKey" />
   </div>
 </template>
 
 <script>
 import PreView from '@/views/form/preview'
-import TemplateCreate from '@/views/project/template/create'
 
 export default {
   name: 'NewIndex',
-  components: { TemplateCreate, PreView },
+  components: { PreView },
   data() {
     return {
       previewKey: +new Date(),
@@ -139,9 +127,6 @@ export default {
     openPreviewHandle() {
       this.previewKey = +new Date()
       this.previewDialogVisible = true
-    },
-    saveProjectAsTemplateHandle() {
-      this.$refs['templateCreate'].handleOpen()
     }
   }
 }

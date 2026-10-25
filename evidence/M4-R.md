@@ -1,5 +1,7 @@
 # M4-R｜统计与可追溯分析交付（2026-10-25）
 
+> 后续用户界面范围调整：工作台侧栏精简，仅保留我的问卷、用户管理、系统配置。模板/主题库/回收中心的界面和旧路由退役，统计分析功能保留。该调整的修改文件、测试、截图及启动命令见 [WORKSPACE_MENU_CLEANUP.md](tduck-full/WORKSPACE_MENU_CLEANUP.md)；下方为分析阶段原交付记录。
+
 ## 本轮范围与当前入口
 
 用户在 UI 复核后明确授权开始“统计与分析页”。本轮按 `docs/ANALYSIS_STAGE.md` 实施，替代旧计划中依赖动态追问的 M4 安排。技术栈保持 Vue 3 / ECharts、Spring Boot / MyBatis-Plus / MySQL 8，追问继续关闭。完成本轮后停止等待用户验收。

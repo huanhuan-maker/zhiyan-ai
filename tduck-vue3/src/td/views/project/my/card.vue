@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     deleteFrom(key) {
-      this.$confirm('此操作将删除该文件, 是否继续?', '提示', {
+      this.$confirm('移除后，该问卷将不再显示在“我的问卷”中，是否继续？', '移除问卷', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

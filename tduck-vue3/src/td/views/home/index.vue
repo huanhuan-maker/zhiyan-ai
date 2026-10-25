@@ -83,7 +83,6 @@
 <script>
 import store from '@/store'
 import router from '@/router'
-import { createFormRequest } from '@/api/project/form'
 
 export default {
   name: 'NewIndex',
@@ -93,13 +92,8 @@ export default {
       defaultActiveMenu: '/home',
       menuList: [
         { route: '/home', name: '我的问卷', icon: 'fa-pencil-square' },
-        { route: '/project/template', name: '共享模板', icon: 'fa-caret-square-o-up' },
         { route: '/manage/user', name: '用户管理', icon: 'fa-user', admin: true },
-        { route: '/manage/system', name: '系统配置', icon: 'el-icon-s-tools', admin: true },
-        { route: '/project/template/category', name: '模板分类', icon: 'el-icon-bank-card', admin: true },
-        { route: '/project/theme/index', name: '主题列表', icon: 'el-icon-view', admin: true },
-        { route: '/project/theme/category', name: '主题分类', icon: 'el-icon-edit', admin: true },
-        { route: '/project/recycle', name: '回收中心', icon: 'fa-trash' }
+        { route: '/manage/system', name: '系统配置', icon: 'el-icon-s-tools', admin: true }
       ]
     }
   },
@@ -129,13 +123,6 @@ export default {
   },
   created() {
     let user = this.getStore.getters['user/userInfo'] || {}
-    const isAdmin = user.admin
-    if (isAdmin) {
-      this.menuList.push(
-        { route: '/manage/user', name: '用户管理', icon: 'fa-user' },
-        { route: '/manage/system', name: '系统配置', icon: 'fa-arrow-circle-up' }
-      )
-    }
     if (!user) {
       this.$router.push({ path: '/login', query: { redirect: router.currentRoute.value.fullPath } })
     } else if (this.$route.path == '/') {
@@ -148,11 +135,6 @@ export default {
   methods: {
     menuClickHandle(menu) {
       this.$router.replace({ path: menu.route })
-    },
-    createBlankTemplate() {
-      createFormRequest({ description: '快来填写你的问卷描述吧', type: 'ORDINARY', name: '问卷名称' }).then((res) => {
-        this.$router.push({ path: '/project/form', query: { key: res.data.formKey } })
-      })
     },
     logoutHandle() {
       this.$confirm('您确定要退出登录吗？', '退出确认', {

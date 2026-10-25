@@ -1,0 +1,3 @@
+(node:12876) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"failure":"locator.waitFor: Error: strict mode violation: getByText('选项二', { exact: true }) resolved to 2 elements:\n    1) <span>选项二</span> aka getByText('选项二').first()\n    2) <span>选项二</span> aka getByText('选项二').nth(2)\n\nCall log:\n\u001b[2m  - waiting for getByText('选项二', { exact: true }) to be visible\u001b[22m\n","errors":[]}

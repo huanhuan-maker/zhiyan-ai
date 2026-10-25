@@ -9,36 +9,9 @@ export default [
         meta: { requireLogin: true },
         component: () => import(/* webpackChunkName: 'root' */ '@/views/project/my/index')
       },
-      {
-        path: 'recycle',
-        meta: { requireLogin: true },
-        component: () => import(/* webpackChunkName: 'root' */ '@/views/project/recycle/index')
-      },
-      {
-        path: 'template',
-        meta: { requireLogin: true },
-        component: () => import(/* webpackChunkName: 'root' */ '@/views/project/template/index')
-      },
-      {
-        path: 'template/category',
-        meta: { requireLogin: true },
-        component: () => import(/* webpackChunkName: 'root' */ '@/views/project/template/category.vue')
-      },
-      {
-        path: 'theme/category',
-        meta: { requireLogin: true },
-        component: () => import(/* webpackChunkName: 'root' */ '@/views/project/theme/category.vue')
-      },
-      {
-        path: 'theme/index',
-        meta: { requireLogin: true },
-        component: () => import(/* webpackChunkName: 'root' */ '@/views/project/theme/index.vue')
-      },
-      {
-        path: 'template/preview',
-        meta: { requireLogin: true },
-        component: () => import(/* webpackChunkName: 'root' */ '@/views/project/template/preview.vue')
-      }
+      // Retired workspace modules: no page imports or template creation entry remain.
+      ...['recycle', 'template', 'template/category', 'theme/category', 'theme/index', 'template/preview']
+        .map(path => ({ path, meta: { requireLogin: true }, redirect: () => ({ path: '/home', query: {}, hash: '' }) }))
     ]
   },
   {

@@ -1,0 +1,13 @@
+(node:30316) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+  "checks": [
+    "27 question schemas render in native editor; rich title survives save and reload",
+    "27 question preview loads without page errors (external SMS/upload/map providers not invoked)",
+    "non-admin is redirected from administration",
+    "retired recycle page redirects home; archived questionnaire leaves the list and retains all question records",
+    "answer edit validates and retains both value and choice label after reload"
+  ],
+  "errors": [],
+  "formKey": "cJ936gWP"
+}
