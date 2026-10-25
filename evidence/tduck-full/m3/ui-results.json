@@ -1,9 +1,9 @@
 {
-  "date": "2026-10-25T06:09:52.395Z",
+  "date": "2026-10-25T06:36:42.044Z",
   "frontend": "http://127.0.0.1:5180",
   "backend": "http://127.0.0.1:8997",
   "source": "Real Vue and MySQL workflow; RULE provider; browser API forwarded only when staging selected; one explicitly injected browser network failure",
-  "formKey": "wfvfSeMs",
+  "formKey": "3x0LsYKm",
   "checks": [
     {
       "name": "owner configures allowed questions and budgets through Vue UI then publishes",

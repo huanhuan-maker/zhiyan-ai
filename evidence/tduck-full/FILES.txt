@@ -459,3 +459,8 @@ scripts/tduck/m3-real-provider.mjs scripts/tduck/m3-restart.mjs scripts/tduck/m3
 scripts/tduck/New-FollowupDemo.mjs scripts/tduck/Start-FollowupStaging.ps1 合成演示/临时验证启动
 m3/*.json 脱敏测试结果、构建哈希、合成演示摘要；capability与完整演示链接只在.local
 m3/01-policy-settings.png m3/02-mobile-neutral-question.png m3/03-owner-audit.png m3/04-demo-ready.png 真实截图
+--- M3 用户复验：追问可见性 2026-10-25 ---
+m3-visibility/README.md 原因/修改/先失败后通过/运行/真实模型样例
+m3-visibility/results.json m3-visibility/real-demo-results.json 5项回归/2项真实模型UI
+m3-visibility/01-skip-explained.png m3-visibility/02-followup-visible.png m3-visibility/03-real-model-question.png 真实截图
+scripts/tduck/m3-followup-visibility.mjs scripts/tduck/m3-real-demo-ui.mjs 新增验证

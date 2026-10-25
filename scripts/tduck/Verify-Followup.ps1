@@ -17,7 +17,7 @@ try{
   [pscustomobject]@{name=$name;tests=[int]$report.testsuite.tests;failures=[int]$report.testsuite.failures;errors=[int]$report.testsuite.errors;skipped=[int]$report.testsuite.skipped}
  }
  $reports | ConvertTo-Json -Depth 5 | Set-Content evidence/tduck-full/m3/java-tests.json -Encoding UTF8
- foreach($scriptName in @('m3-login-replay','m3-api','m3-limits','m3-ui')){
+ foreach($scriptName in @('m3-login-replay','m3-api','m3-limits','m3-ui','m3-followup-visibility')){
   & $Node "scripts/tduck/$scriptName.mjs" *> ".local/tduck-full-audit/$scriptName-final.log"
   if($LASTEXITCODE -ne 0){throw "$scriptName failed; inspect its private log and evidence/tduck-full/m3 report"}
  }

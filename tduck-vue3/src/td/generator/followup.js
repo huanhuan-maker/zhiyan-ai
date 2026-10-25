@@ -39,7 +39,7 @@ export function useFollowup(props,formModel){
       const response=await client.get('/form/followup/info',{params:{formKey:conf.formKey,versionToken:conf.versionToken||''}})
       if(current!==revision||response.data?.code!==200||!response.data.data?.enabled)return
       const policy=response.data.data;enabled.value=true;allowed.value=policy.allowedQuestionIds||[];remaining.value=policy.totalBudget
-      providerLabel.value=[policy.providerInfo?.provider,policy.providerInfo?.model,`本次追问时间上限 ${Math.ceil(policy.timeBudgetSeconds/60)} 分钟`].filter(Boolean).join(' · ')
+      providerLabel.value=[policy.providerInfo?.mode==='REAL'?`真实模型：${policy.providerInfo.provider}`:policy.providerInfo?.provider,policy.providerInfo?.model,`本次追问时间上限 ${Math.ceil(policy.timeBudgetSeconds/60)} 分钟`].filter(Boolean).join(' · ')
       storageKey=followupStorageKey(conf.formKey,conf.version);capability=sessionStorage.getItem(storageKey)||''
       if(capability)applyState(await request('state'),true)
       else{

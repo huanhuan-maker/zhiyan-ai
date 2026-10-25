@@ -1,5 +1,7 @@
 # TDuck Vue 3 本地迁移版
 
+M3用户复验修复：追问需先同意、填写开放题、再点击该题下“查看可选追问”；入口和具体跳过原因现已明确显示。新增独立真实模型版演示（`node scripts/tduck/New-FollowupDemo.mjs LLM`），保留原规则演示与用户记录。见[修复及实测](../evidence/tduck-full/m3-visibility/README.md)。
+
 2026-10-25 M3 可选追问：问卷左侧新增“AI追问”，选择允许追问的开放题、调查目标、全卷/每题/时间预算及本地规则或模型辅助策略。设置随发布版本冻结；受访者默认不同意追问，可同意、拒绝、跳过，原回答/追问/回应独立入库。预算与决策可刷新恢复并经真实后端重启验证。模型辅助实际连接本机推理网关`group/group`，规则模式明确标注非模型。日常仍使用5180→8997；当前停在M3验收，不进入M4。见[M3完整报告](../evidence/M3.md)。
 
 M3新增迁移：根目录运行`.\scripts\tduck\Apply-FollowupMigration.ps1`（新建5表，可重复）；后端重建仍用`Build-FullBackend.ps1`，现改为clean package防止旧依赖进入运行包。完整M3回归：`.\scripts\tduck\Verify-Followup.ps1 -RealAI`，需5180/8997及本机合成验收配置已运行。新机器或服务关闭时按下方日常启动步骤操作，不要重复启动已占用端口的实例。

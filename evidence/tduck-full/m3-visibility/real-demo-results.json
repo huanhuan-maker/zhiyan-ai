@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-25T06:36:33.101Z",
+  "source": "Actual configured model; synthetic answer in a separate browser session; original demo/session unchanged",
+  "formKey": "NqqlwySZ",
+  "sample": {
+    "provider": "本机推理网关",
+    "model": "group/group",
+    "action": "CLARIFY",
+    "state": "ASKED",
+    "reasonCode": "AMBIGUOUS",
+    "elapsedMs": 4411,
+    "sourceAnswerId": 101
+  },
+  "checks": [
+    "fresh real-model demo displays an actual answerable followup for synthetic input",
+    "real generated question remains optional and can be skipped"
+  ],
+  "passed": 2,
+  "failed": 0
+}

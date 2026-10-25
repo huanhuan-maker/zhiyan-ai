@@ -47,14 +47,14 @@ try{
  await check('neutral followup can be skipped, survives reload, and a self-raised cue can be answered separately',async()=>{
   const c=await context(false,{width:390,height:844});try{
    const p=await publicPage(c);await p.locator('.followup-consent .el-checkbox').click()
-   await core(p,0).fill('食堂不太方便');await panel(p,0).getByRole('button',{name:'继续此题（可选追问）'}).click()
+   await core(p,0).fill('食堂不太方便');await panel(p,0).getByRole('button',{name:'查看可选追问'}).click()
    await expect(panel(p,0).locator('.followup-question')).toContainText('具体指什么');await expect(panel(p,0)).not.toContainText('卫生')
    await expect(p.locator('.followup-consent')).toContainText('剩余 1 次')
    await p.screenshot({path:out+'/02-mobile-neutral-question.png',animations:'disabled'})
    await panel(p,0).getByRole('button',{name:'跳过追问',exact:true}).click();await expect(panel(p,0)).toContainText('已跳过')
    await p.reload();await expect(panel(p,0)).toContainText('已跳过');await expect(p.locator('.followup-consent')).toContainText('剩余 1 次');await expect(core(p,0)).toHaveValue('食堂不太方便')
-   await core(p,1).fill('六点二楼排队十五分钟，轮到我时菜卖完了');await panel(p,1).getByRole('button',{name:'继续此题（可选追问）'}).click();await expect(panel(p,1)).toContainText('本题不再追问')
-   await core(p,2).fill('我朋友都不去，所以我也没动力去');await panel(p,2).getByRole('button',{name:'继续此题（可选追问）'}).click();await expect(panel(p,2).locator('.followup-question')).toContainText('朋友')
+   await core(p,1).fill('六点二楼排队十五分钟，轮到我时菜卖完了');await panel(p,1).getByRole('button',{name:'查看可选追问'}).click();await expect(panel(p,1)).toContainText('已包含具体情境')
+   await core(p,2).fill('我朋友都不去，所以我也没动力去');await panel(p,2).getByRole('button',{name:'查看可选追问'}).click();await expect(panel(p,2).locator('.followup-question')).toContainText('朋友')
    await panel(p,2).getByPlaceholder('补充回答，可跳过').fill('Synthetic independent supplement')
    await panel(p,2).getByRole('button',{name:'保存补充回答',exact:true}).click();await expect(panel(p,2)).toContainText('补充回答已保存');await expect(core(p,2)).toHaveValue('我朋友都不去，所以我也没动力去')
    await expect(p.locator('.followup-consent')).toContainText('剩余 0 次')
@@ -66,7 +66,7 @@ try{
  await check('browser AI network failure does not block ordinary submission',async()=>{
   const c=await context();try{
    await c.route('**/tduck-api/form/followup/decide*',r=>r.abort('failed'))
-   const p=await publicPage(c);await p.locator('.followup-consent .el-checkbox').click();await core(p,0).fill('食堂不太方便');await panel(p,0).getByRole('button',{name:'继续此题（可选追问）'}).click()
+   const p=await publicPage(c);await p.locator('.followup-consent .el-checkbox').click();await core(p,0).fill('食堂不太方便');await panel(p,0).getByRole('button',{name:'查看可选追问'}).click()
    await expect(p.locator('.followup-consent')).toContainText('追问评估未完成')
    await p.getByRole('button',{name:'提交',exact:true}).click();await p.getByText('提交成功',{exact:true}).waitFor()
   }finally{await c.close()}

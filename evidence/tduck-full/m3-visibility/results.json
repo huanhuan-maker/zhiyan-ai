@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-25T06:35:22.742Z",
+  "source": "Synthetic answers; real localhost UI, Spring Boot and MySQL; RULE explicitly non-model",
+  "checks": [
+    "guide and visible disabled entry explain opt-in without sending an answer",
+    "rule skip is explicitly explained instead of a misleading generic no-followup message",
+    "skipped evaluation leaves the actual backend budget untouched",
+    "refresh preserves the explanation without repeating the decision",
+    "recognized gap still displays an answerable question after the clearer entry"
+  ],
+  "passed": 5,
+  "failed": 0
+}

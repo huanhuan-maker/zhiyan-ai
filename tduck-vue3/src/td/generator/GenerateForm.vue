@@ -5,6 +5,7 @@
       <p>这份问卷可在开放题后提出中立追问。只有同意后，相关回答才会用于追问决策；如使用模型，回答会发送至服务端配置的模型服务。你可以拒绝、跳过或随时取消，不影响提交。</p>
       <small>{{providerLabel}} · 剩余 {{followupRemaining}} 次 · 每道开放题最多一次</small>
       <el-checkbox v-model="followupConsent" :disabled="!followupReady" @change="changeFollowupConsent">我同意参与可选追问</el-checkbox>
+      <p class="followup-guide">同意后，填写开放题，再点击题目下方“查看可选追问”。系统会判断是否需要补充，并非每份回答都会追问。</p>
       <p v-if="followupNotice" role="status">{{followupNotice}}</p>
     </section>
     <template v-for="(field,i) in shown" :key="field.config.formId">
@@ -15,8 +16,9 @@
         <QuestionField v-model="formModel[field.config.formId]" :models="formModel" :item="field" :form-key="formConf.formKey" :disabled="formConf.disabled"/>
         <section v-if="followupEnabled && field.typeId==='TEXTAREA' && followupAllowed.includes(field.config.formId)" class="followup-panel" :data-followup-for="field.config.formId">
           <template v-if="!followupDecisions[field.config.formId]">
-            <el-button v-if="followupConsent" :disabled="!followupReady || !String(formModel[field.config.formId]||'').trim()" :loading="followupBusy[field.config.formId]" @click="evaluateFollowup(field)">继续此题（可选追问）</el-button>
-            <small v-else>已选择只填核心题，追问不会影响提交。</small>
+            <el-button type="primary" :disabled="!followupConsent || !followupReady || !String(formModel[field.config.formId]||'').trim()" :loading="followupBusy[field.config.formId]" @click="evaluateFollowup(field)">查看可选追问</el-button>
+            <small v-if="!followupConsent" class="followup-entry-hint">如需补充问题，请先勾选上方“我同意参与可选追问”；也可直接提交核心问卷。</small>
+            <small v-else-if="!String(formModel[field.config.formId]||'').trim()" class="followup-entry-hint">先填写本题，再点击按钮查看是否需要补充。</small>
           </template>
           <template v-else-if="followupDecisions[field.config.formId].state==='ASKED'">
             <p class="followup-question">补充问题：{{followupDecisions[field.config.formId].questionText}}</p>
@@ -27,7 +29,7 @@
           <small v-else-if="followupDecisions[field.config.formId].state==='REPLIED'">补充回答已保存，原回答保持独立。</small>
           <small v-else-if="followupDecisions[field.config.formId].state==='DECLINED'">已跳过，不会再弹出同一追问。</small>
           <small v-else-if="['MODEL_FAILURE','INVALID_MODEL_OUTPUT','NO_KEY'].includes(followupDecisions[field.config.formId].reasonCode)">追问服务暂不可用，本题已跳过，不影响提交。</small>
-          <small v-else>本题不再追问，可继续填写。</small>
+          <small v-else>{{followupSkipMessage(followupDecisions[field.config.formId])}}</small>
         </section>
       </el-form-item>
     </template>
@@ -54,6 +56,10 @@ const {enabled:followupEnabled,consent:followupConsent,ready:followupReady,notic
 const resolvedOptions=reactive({})
 provide('tdResolvedOptions',resolvedOptions)
 const safe=value=>DOMPurify.sanitize(String(value||''))
+function followupSkipMessage(decision){
+  const messages={NO_CLEAR_INFORMATION_GAP:'规则模式未识别到补充方向，本次未生成追问；可继续填写。',CONCRETE_CONTEXT:'这段回答已包含具体情境，本次不再追问。',BUDGET_EXHAUSTED:'本卷追问次数已用完，本题不再追问。',TIME_BUDGET:'本次追问时间已到，本题不再追问。',RESPONDENT_DECLINED:'已按你的拒答意愿跳过本题追问。',PRIVACY_RISK:'这段回答可能含敏感信息，已跳过追问。',NO_CONSENT:'当前未同意追问，可继续填写核心问卷。'}
+  return messages[decision.reasonCode]||'本次判断无需补充，可继续填写。'
+}
 watch(()=>props.formConf.fields,fields=>{
   for(const f of fields||[]){
     const id=f.config.formId
@@ -97,6 +103,7 @@ defineExpose({formModel,submit,reset,getAnswers,validate:()=>check(visible.value
 <style scoped>
 .followup-consent{grid-column:span 24;padding:16px;margin-bottom:20px;background:#f0f7ff;border-radius:8px;line-height:1.7}
 .followup-consent p{margin:6px 0}.followup-consent small{display:block;color:#475569}.followup-consent .el-checkbox{white-space:normal;height:auto;min-height:36px}
+.followup-guide{font-size:13px;color:#334155}.followup-entry-hint{display:block;margin-top:8px;line-height:1.7}
 .followup-panel{width:100%;padding:12px;margin-top:10px;box-sizing:border-box;background:#f8fafc;border-left:3px solid #409eff;border-radius:4px}
 .followup-panel small{color:#64748b}.followup-question{margin:0 0 8px}.followup-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
 </style>
