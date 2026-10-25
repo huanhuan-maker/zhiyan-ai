@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-25T12:48:02.314Z",
+  "checks": [
+    {
+      "name": "移除供应商 normal",
+      "color": "rgb(245, 108, 108)",
+      "background": "rgb(255, 59, 48)",
+      "contrast": 1.22,
+      "passed": false
+    },
+    {
+      "name": "移除供应商 hover",
+      "color": "rgb(245, 108, 108)",
+      "background": "rgb(245, 247, 250)",
+      "contrast": 2.7,
+      "passed": false
+    },
+    {
+      "name": "移除模型 normal",
+      "color": "rgb(245, 108, 108)",
+      "background": "rgb(255, 59, 48)",
+      "contrast": 1.22,
+      "passed": false
+    },
+    {
+      "name": "移除模型 hover",
+      "color": "rgb(245, 108, 108)",
+      "background": "rgb(245, 247, 250)",
+      "contrast": 2.7,
+      "passed": false
+    }
+  ],
+  "passed": 0,
+  "failed": 4
+}
