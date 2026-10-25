@@ -1,5 +1,7 @@
 # TDuck Vue 3 本地迁移版
 
+2026-10-25 M2 用户问题修复：期望题数可见可编辑；生成后可直接点击“预览答题效果”，不必先导入。同步修复长内容滚动、卷首语导入、生成请求30秒超时和停收草稿误锁定。专项复验命令（仓库根目录）：`node scripts/tduck/m2-usability.mjs`、`node scripts/tduck/m2-slow-request.mjs`、`node scripts/tduck/m2-real-usability.mjs`。真实AI十三题已走通生成到匿名提交/后端统计；详见[本轮报告](../evidence/tduck-full/usability/M2_USABILITY.md)。
+
 当前新建题型已按用户要求收敛为单选、多选、量表、开放题，右侧复杂属性默认折叠；旧问卷题型继续兼容。见 [简化编辑器记录](../evidence/tduck-full/SIMPLE_EDITOR.md)。
 
 2026-10-24 补齐本地核心流程：同一答题会话重复提交只保存一次；量表均值、有效/缺失数与开放题原文由后端提供。见 [本轮验收记录](../evidence/tduck-full/CORE_CLOSURE.md)。AI 尚未进入开发。

@@ -5,8 +5,8 @@
     "theme submit button text saves through the UI",
     "conditional question shows only for matching choice; enabled draft restores after reload",
     "real submission applies completion text and removes the temporary draft",
-    "stopped published form remains frozen in the designer"
+    "stopped form permits editing the next draft; published versions remain separate snapshots"
   ],
   "errors": [],
-  "formKey": "A7XSqjZJ"
+  "formKey": "7wPg2nmM"
 }

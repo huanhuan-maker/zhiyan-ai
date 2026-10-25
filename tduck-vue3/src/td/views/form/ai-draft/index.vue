@@ -105,10 +105,18 @@
       </div>
 
       <div class="actions">
+        <el-button :disabled="generating || importing" @click="previewVisible = true">预览答题效果</el-button>
         <el-button type="primary" :loading="importing" @click="importToEditor">导入编辑器继续编辑</el-button>
         <el-button :disabled="generating || importing" @click="generate">重新生成</el-button>
       </div>
     </el-card>
+    <el-dialog v-model="previewVisible" title="问卷答题预览（不会保存答卷）" width="min(900px, 96vw)" destroy-on-close>
+      <div v-if="result && result.kind === 'draft'" class="draft-answer-preview">
+        <h2>{{ result.title }}</h2>
+        <p>{{ result.description }}</p>
+        <GenerateForm :form-conf="previewForm" @submit="previewSubmitted" />
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -116,23 +124,48 @@
 import { generateAiDraftRequest, getAiStatusRequest } from '@/api/project/ai'
 import { createFormRequest } from '@/api/project/form'
 import { postRequest } from '@/api/baseRequest'
-import { convert } from '@/generator'
+import { convert, GenerateForm } from '@/generator'
+import '@/generator/style.css'
 
 export default {
   name: 'AiDraft',
+  components: { GenerateForm },
   data() {
     return {
       status: null,
       form: { goal: '', audience: '', extra: '', questionCount: 8 },
       generating: false,
       importing: false,
+      previewVisible: false,
       result: null
     }
   },
   created() {
     this.loadStatus()
   },
+  computed: {
+    previewForm() {
+      return { fields: (this.result?.questions || []).map(this.createDraftField), formBtns: true, theme: { showNumber: true } }
+    }
+  },
   methods: {
+    createDraftField(q) {
+      const field = convert.createField(q.type)
+      field.config.label = q.label
+      field.config.required = q.required !== false
+      if (q.type === 'RADIO' || q.type === 'CHECKBOX') {
+        field.config.options = q.options.map((label, i) => ({ label, value: i + 1, quotaSetting: null }))
+      } else if (q.type === 'RATE') {
+        field.max = q.rateMax || 5
+      } else {
+        field.placeholder = q.placeholder || ''
+      }
+      return field
+    },
+    previewSubmitted(data) {
+      data.done?.()
+      this.$message.success('预览填写完成，没有保存答卷')
+    },
     loadStatus() {
       getAiStatusRequest()
         .then((res) => {
@@ -185,18 +218,11 @@ export default {
       const questions = this.result.questions
       const title = this.result.title.slice(0, 100)
       this.importing = true
-      createFormRequest({ name: title, type: 0, folderId: 0 })
+      createFormRequest({ name: title, description: this.result.description || '', type: 0, folderId: 0 })
         .then(async (res) => {
           const formKey = typeof res.data === 'string' ? res.data : res.data.formKey
           for (const q of questions) {
-            const field = convert.createField(q.type)
-            field.config.label = q.label
-            field.config.required = q.required !== false
-            if (q.type === 'RADIO' || q.type === 'CHECKBOX') {
-              field.config.options = q.options.map((label, i) => ({ label, value: i + 1, quotaSetting: null }))
-            } else if (q.type === 'RATE') {
-              field.max = q.rateMax || 5
-            }
+            const field = this.createDraftField(q)
             await postRequest('/user/form/item/create', convert.formItemConvertData(field, formKey))
           }
           this.$message.success('已创建问卷草稿（未发布），正在打开编辑器')
@@ -214,7 +240,15 @@ export default {
 <style lang="scss" scoped>
 .ai-draft-container {
   max-width: 960px;
+  height: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
   margin: 0 auto;
+  :deep(.el-input-number) {
+    width: 168px;
+    .el-input__wrapper { padding: 0 36px; }
+    .el-input__inner { padding: 0; width: 100%; min-width: 0; box-sizing: border-box; }
+  }
 }
 .card-header {
   display: flex;

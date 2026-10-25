@@ -436,3 +436,9 @@ m2-ui-flows.json UI 级回归 9 项（Edge 无头真实流程）
 21-ai-draft-page.png AI 草稿页：状态栏"真实 AI · 本机推理网关 · group/group"+输入表单
 22-ai-draft-preview.png 草稿预览：6 题、题型标签、开放题/量表标注、审核提示
 23-ai-draft-imported-editor.png 导入现有编辑器：6 题可编辑、未发布无冻结
+--- M2 用户问题修复 2026-10-25 ---
+usability/M2_USABILITY.md 问题根因/修改文件/修复前后测试/启动/已知边界
+usability/results.json usability/slow-request.json usability/real-flow.json 专项回归与真实模型结果
+usability/01-generated.png usability/02-preview.png 合成fixture草稿与答题预览
+usability/03-real-13-questions.png usability/04-real-answer-preview.png 真实AI十三题与预览
+scripts/tduck/m2-usability.mjs scripts/tduck/m2-slow-request.mjs scripts/tduck/m2-real-usability.mjs 专项测试

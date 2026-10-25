@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-25T04:41:48.539Z",
+  "formKey": "bAKld6IS",
+  "sample": {
+    "provider": "本机推理网关",
+    "model": "group/group",
+    "elapsedMs": 4675,
+    "questionCount": 13,
+    "types": [
+      "RADIO",
+      "RADIO",
+      "CHECKBOX",
+      "CHECKBOX",
+      "RATE",
+      "RATE",
+      "RATE",
+      "RADIO",
+      "RADIO",
+      "RADIO",
+      "RATE",
+      "TEXTAREA",
+      "TEXTAREA"
+    ]
+  },
+  "checks": [
+    "real AI generated exactly 13 questions for the user takeout scenario",
+    "all 13 generated questions render in answer preview before database import",
+    "13 questions and generated introduction survive real import and reload as an unpublished draft",
+    "human edit and save followed by editor answer preview works",
+    "manual UI publish, anonymous mobile completion, persistence and backend statistics work for all 13 questions"
+  ]
+}

@@ -60,9 +60,9 @@ try{
  checks.push('real submission applies completion text and removes the temporary draft')
  await api('/user/form/stop',{formKey:key})
  await page.goto(`${base}/project/form/editor?key=${key}`)
- await page.getByText('该表单曾经发布，核心题目已冻结。请复制为新问卷后修改，以保留既有答卷口径。',{exact:true}).waitFor()
- assert.equal(await page.getByRole('button',{name:'保存',exact:true}).isDisabled(),true)
- checks.push('stopped published form remains frozen in the designer')
+ await page.locator('.question-card').first().waitFor()
+ assert.equal(await page.locator('.designer-title').getByRole('button',{name:'保存',exact:true}).isEnabled(),true)
+ checks.push('stopped form permits editing the next draft; published versions remain separate snapshots')
  assert.deepEqual(errors,[])
  fs.writeFileSync('evidence/tduck-full/settings-flows.json',JSON.stringify({checks,errors,formKey:key},null,2));console.log(JSON.stringify({checks,errors},null,2))
 }catch(e){console.log(JSON.stringify({failure:e.message,checks,errors}));await page.screenshot({path:'evidence/tduck-full/settings-failure.png',fullPage:true});process.exitCode=1}finally{await browser.close()}

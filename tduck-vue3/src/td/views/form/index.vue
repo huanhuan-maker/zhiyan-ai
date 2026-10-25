@@ -9,7 +9,7 @@
           <img src="@/assets/images/logo-tduck-ce.svg" alt="TDUCK Logo" class="form-logo-img" />
         </div>
       </div>
-      <div class="header-right">
+      <div v-if="!isAiDraft" class="header-right">
         <el-button
           round
           class="action-btn"
@@ -33,7 +33,7 @@
     </header>
 
     <div class="form-editor-body">
-      <aside class="form-editor-sidebar">
+      <aside v-if="!isAiDraft" class="form-editor-sidebar">
         <div class="custom-el-menu">
           <div
             v-for="menuItem in menuItemList"
@@ -121,6 +121,11 @@ export default {
   created() {
     this.projectKey = this.$route.query.key
     this.defaultActiveMenu = this.$route.path
+  },
+  computed: {
+    isAiDraft() {
+      return this.$route.path === '/project/form/ai-draft'
+    }
   },
   methods: {
     menuSelectHandle(index) {
