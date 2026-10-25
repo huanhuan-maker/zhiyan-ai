@@ -1,0 +1,80 @@
+{
+  "date": "2026-10-25T11:47:15.189Z",
+  "source": "Real browser, MCP HTTP and configured model question planning; synthetic data; two injected network failures; administrator screenshot is UI-only synthetic role, no admin account changes",
+  "checks": [
+    {
+      "name": "assistant entry follows My Questionnaires and is active after in-app navigation",
+      "passed": true
+    },
+    {
+      "name": "owner can search a real questionnaire and explicitly choose the old published version",
+      "passed": true
+    },
+    {
+      "name": "chat executes HTTP MCP statistics and renders authoritative old-version facts",
+      "passed": true
+    },
+    {
+      "name": "statistics citation shows the same version and source coordinate",
+      "passed": true
+    },
+    {
+      "name": "keyword answer contains literal matching scope and escaped original evidence",
+      "passed": true
+    },
+    {
+      "name": "report question uses an approved versioned report instead of pending model output",
+      "passed": true
+    },
+    {
+      "name": "actual AI question planning requires consent then still uses backend statistics",
+      "passed": true
+    },
+    {
+      "name": "conversation and source-backed answer recover after a browser refresh",
+      "passed": true
+    },
+    {
+      "name": "lost MCP response recovers persisted output without duplicating a turn",
+      "passed": true
+    },
+    {
+      "name": "a failed tool request resumes the saved plan through real MCP without regenerating it",
+      "passed": true
+    },
+    {
+      "name": "unsupported write question returns a read-only notice and leaves the survey intact",
+      "passed": true
+    },
+    {
+      "name": "390px assistant retains usable input, scope controls and source dialog without overflow",
+      "passed": true
+    },
+    {
+      "name": "source navigation honors V1 even though the latest published version is V2",
+      "passed": true
+    },
+    {
+      "name": "administrator presentation places the assistant second and preserves the two management entries",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "rpcMethods": [
+    "initialize",
+    "notifications/initialized",
+    "tools/list",
+    "tools/call"
+  ],
+  "rpcTools": [
+    "search_surveys",
+    "survey_stats",
+    "search_answers",
+    "survey_report"
+  ],
+  "passed": 15,
+  "failed": 0
+}

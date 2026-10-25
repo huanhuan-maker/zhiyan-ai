@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-25T11:37:16.078Z",
+  "source": "Real 5180/8997 and MySQL; synthetic ordinary submission; no followup/model evaluation performed",
+  "checks": [
+    "backend reports feature disabled even for previously enabled surveys",
+    "all followup mutation endpoints reject before reaching provider/session processing",
+    "old questionnaire still renders six original questions with zero followup UI or requests",
+    "new fixed questionnaire publishes and persists a normal anonymous submission without any followup request",
+    "followup settings URL redirects to editor and its menu entry is removed",
+    "AI draft service remains available"
+  ],
+  "passed": 6,
+  "failed": 0
+}

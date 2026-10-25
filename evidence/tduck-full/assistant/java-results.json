@@ -1,0 +1,23 @@
+[
+  {
+    "errors": 0,
+    "skipped": 0,
+    "tests": 18,
+    "suite": "com.tduck.cloud.api.ai.AiDraftServiceTest",
+    "failures": 0
+  },
+  {
+    "errors": 0,
+    "skipped": 0,
+    "tests": 19,
+    "suite": "com.tduck.cloud.api.ai.AnalysisReportTest",
+    "failures": 0
+  },
+  {
+    "errors": 0,
+    "skipped": 0,
+    "tests": 24,
+    "suite": "com.tduck.cloud.api.ai.AssistantQueryTest",
+    "failures": 0
+  }
+]

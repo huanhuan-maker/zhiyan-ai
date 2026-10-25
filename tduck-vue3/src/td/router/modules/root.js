@@ -38,6 +38,11 @@ export default [
         path: 'member',
         meta: { requireLogin: true },
         component: () => import(/* webpackChunkName: 'root' */ '@/views/account/member')
+      },
+      {
+        path: 'assistant',
+        meta: { requireLogin: true, title: '问卷助手' },
+        component: () => import('@/views/assistant/index.vue')
       }
     ]
   },

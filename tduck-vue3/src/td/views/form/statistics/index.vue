@@ -46,6 +46,8 @@ export default {
         const res = await listFormVersionsRequest(key)
         if (this.$route.query.key !== key) return
         this.versions = res.data || []
+        const requested = Number(this.$route.query.version)
+        if (this.version === null && this.versions.some(v => v.versionNo === requested)) this.version = requested
         if (!this.versions.some(v => v.versionNo === this.version)) this.version = this.versions[0]?.versionNo ?? null
         this.refreshKey++
       } catch { this.error = '发布版本加载失败，请重试' }

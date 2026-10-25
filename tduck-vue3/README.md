@@ -1,5 +1,20 @@
 # TDuck Vue 3 本地迁移版
 
+**当前交付 M5-A（2026-10-25）**：在“我的问卷”下增加“问卷助手”，直接访问 `http://localhost:5180/home/assistant`。普通用户两项菜单，管理员另有用户管理、系统配置。助手可以搜索自己的问卷、读取指定发布版本统计、查找提到某关键词的核心开放回答、读取已审核且数据未变化的报告。每次结果保留版本、查询时间及来源；历史是查询时快照，新提问读取当前数据。
+
+站内页面实际调用 `/assistant-mcp` 的初始化、工具发现和只读工具，不允许自由 SQL 或业务写入。真实 AI 仅理解提问并选择工具，需勾选提问传输确认；统计及引文由后端生成，答卷原文不发给规划模型。本地规则明确标注非模型。当前检索是字面关键词，尚无向量索引或语义 RAG。范围、协议与限制见 [ASSISTANT_STAGE.md](../docs/ASSISTANT_STAGE.md) 和 [后端说明](../backend-extensions/assistant/README.md)。
+
+本机已完成升级，无需重复安装。其他同版本环境从根目录执行（先完成此前的分析迁移 `Apply-AnalysisMigration.ps1`）：
+
+```powershell
+Set-Location D:\LcProject
+.\scripts\tduck\Build-FullBackend.ps1 -BuildName tduck-assistant-build
+.\scripts\tduck\Apply-AssistantMigration.ps1
+.\scripts\tduck\Install-AnalysisBackend.ps1 -BuildName tduck-assistant-build
+```
+
+新增两张对话表，保留既有问卷与答卷；构建同时包含分析与助手增量源码。安装只替换并重启经核对的隔离 8997 服务。日常启动仍用根目录 `.\scripts\tduck\Start-FullBackend.ps1`，另一个终端在 `tduck-vue3` 执行 `npm.cmd run dev`；服务已运行时不重复启动。本轮自动化为 `node scripts/tduck/assistant-api.mjs --real`、`node scripts/tduck/assistant-ui.mjs`，需要本机已配置的合成验收账号和真实模型；脚本写入标注 Synthetic 的测试问卷。完整执行记录及人工验收见 [M5-A.md](../evidence/M5-A.md)。下文 M4-R/菜单精简及更早记录为历史。
+
 **工作台精简（2026-10-25）**：管理员只保留“我的问卷、用户管理、系统配置”，普通用户只显示“我的问卷”。模板共享/分类、主题库列表/分类、回收中心及“保存至模板中心”入口已移除，旧页面地址统一返回首页。问卷内部外观和“主题与报告”继续使用；后端和既有数据归档保留。本轮无需 SQL 迁移或后端重启。历史模板/回收站测试不再代表当前功能范围，活跃套件改用 `node scripts/tduck/workspace-menu.mjs` 验证精简及权限行为。
 
 **当前交付轮次 M4-R（2026-10-25）**：问卷左侧“统计”→“题目统计 / 主题与报告”；按发布版本查看有效/缺失分母、量表均值及 ECharts。报告可用本地相同文本分组（非语义模型）或服务端真实 Provider；真实模式先核对生成输入，并确认已有回答数据处理告知与模型传输授权。原文与数值由后端提供，模型只提出带证据编号的候选归纳/解释。保存报告快照、通过/驳回与审核历史，支持 Markdown / JSON 导出；新改删答卷使旧报告显示数据变化。报告范围与限制见 [ANALYSIS_STAGE.md](../docs/ANALYSIS_STAGE.md)，本轮结果、截图和完整命令见 [M4-R.md](../evidence/M4-R.md)。以下 M3/早期迁移段落均为历史，不恢复追问。

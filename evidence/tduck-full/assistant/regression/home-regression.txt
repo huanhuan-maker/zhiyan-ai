@@ -1,0 +1,14 @@
+(node:23832) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS desktop brand remains readable on one line
+PASS blank creation validates and persists the exact synthetic form
+PASS card and table navigation preserve the selected form key
+PASS status filtering returns matching real backend records
+PASS list failure preserves known records and offers an explicit retry
+PASS current sort caption matches the backend ordering
+PASS workbench does not present an unimplemented notification action
+PASS 390px home dialogs and list view remain usable
+PASS mobile time filter and date picker open without runtime exceptions
+PASS account menu remains accessible on mobile
+PASS no uncaught browser errors
+{"passed":11,"failed":0}

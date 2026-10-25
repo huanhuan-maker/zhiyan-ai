@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-25T11:35:10.199Z",
+  "source": "Actual model planning; synthetic question and selected identifier only; no answers in planner input",
+  "model": "group/group",
+  "provider": "本机推理网关",
+  "mode": "REAL",
+  "tool": "survey_stats",
+  "version": 1,
+  "answerCount": 3,
+  "turnId": "7e7edcc6-eb1c-4bea-b5b3-1edd2062f8e3"
+}

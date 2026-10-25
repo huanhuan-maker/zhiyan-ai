@@ -92,6 +92,7 @@ export default {
       defaultActiveMenu: '/home',
       menuList: [
         { route: '/home', name: '我的问卷', icon: 'fa-pencil-square' },
+        { route: '/home/assistant', name: '问卷助手', icon: 'el-icon-chat-dot-round' },
         { route: '/manage/user', name: '用户管理', icon: 'fa-user', admin: true },
         { route: '/manage/system', name: '系统配置', icon: 'el-icon-s-tools', admin: true }
       ]
@@ -118,9 +119,11 @@ export default {
     },
     headerSubtitle() {
       if (this.defaultActiveMenu === '/home') return '管理、发布并持续收集你的调查问卷。'
+      if (this.defaultActiveMenu === '/home/assistant') return '用自然语言查询自己的问卷、统计和原文证据。'
       return '知研 AI 学术调查工作台。'
     }
   },
+  watch: { '$route.path'(path) { this.defaultActiveMenu = path } },
   created() {
     let user = this.getStore.getters['user/userInfo'] || {}
     if (!user) {

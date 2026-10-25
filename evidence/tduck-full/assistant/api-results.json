@@ -1,0 +1,103 @@
+{
+  "date": "2026-10-25T11:35:10.814Z",
+  "source": "Real HTTP MCP and Spring Boot/MyBatis-Plus/MySQL; synthetic inputs only",
+  "formKey": "eFdpUktP",
+  "checks": [
+    {
+      "name": "real MCP initialization, initialized notification and tools discovery complete",
+      "passed": true,
+      "detail": {
+        "tools": [
+          "search_surveys",
+          "survey_stats",
+          "search_answers",
+          "survey_report"
+        ]
+      }
+    },
+    {
+      "name": "MCP transport rejects anonymous and forged credentials with HTTP 401",
+      "passed": true
+    },
+    {
+      "name": "MCP Origin, Accept, method, JSON and protocol boundaries are enforced",
+      "passed": true
+    },
+    {
+      "name": "survey search filters ownership before returning any records",
+      "passed": true
+    },
+    {
+      "name": "statistics tool reads true version totals, valid/missing denominators and mean",
+      "passed": true,
+      "detail": {
+        "version": 1,
+        "answers": 3,
+        "mean": 3
+      }
+    },
+    {
+      "name": "cross-owner scopes, arbitrary owner arguments and unavailable versions are denied",
+      "passed": true
+    },
+    {
+      "name": "keyword retrieval returns exact source text and separates matches from returned evidence",
+      "passed": true,
+      "detail": {
+        "matches": 2,
+        "returned": 1,
+        "mode": "KEYWORD_LITERAL"
+      }
+    },
+    {
+      "name": "write tools, SQL arguments and out-of-range limits cannot execute",
+      "passed": true
+    },
+    {
+      "name": "report tool excludes pending candidates and returns only fresh approved reports",
+      "passed": true
+    },
+    {
+      "name": "a saved local plan executes through HTTP MCP and appears in owner history",
+      "passed": true
+    },
+    {
+      "name": "plan and tool retries are idempotent and cannot overwrite question or arguments",
+      "passed": true
+    },
+    {
+      "name": "other users cannot read conversations, plan in them or replay private turn IDs",
+      "passed": true
+    },
+    {
+      "name": "real planner requires question-transfer acknowledgment",
+      "passed": true
+    },
+    {
+      "name": "actual configured model plans a read tool and authoritative results remain backend facts",
+      "passed": true
+    },
+    {
+      "name": "unsupported write request remains a notice without invoking a write tool",
+      "passed": true
+    },
+    {
+      "name": "read-only tool and dialogue operations do not alter original answer rows",
+      "passed": true
+    },
+    {
+      "name": "new queries read changed data while earlier chat answers remain labelled snapshots",
+      "passed": true
+    },
+    {
+      "name": "archiving a source hides stored answer text on subsequent history reads",
+      "passed": true
+    },
+    {
+      "name": "default latest version and explicitly selected historical version never mix answers",
+      "passed": true
+    }
+  ],
+  "passed": 19,
+  "failed": 0
+}

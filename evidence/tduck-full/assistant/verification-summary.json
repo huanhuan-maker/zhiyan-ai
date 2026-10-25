@@ -1,0 +1,54 @@
+{
+  "frontendBuild": "success",
+  "failed": 0.0,
+  "backendBuild": "success",
+  "checks": [
+    {
+      "name": "JUnit",
+      "failed": 0,
+      "passed": 61
+    },
+    {
+      "name": "Vitest",
+      "failed": 0,
+      "passed": 31
+    },
+    {
+      "name": "assistant-api",
+      "failed": 0,
+      "passed": 19
+    },
+    {
+      "name": "assistant-ui",
+      "failed": 0,
+      "passed": 15
+    },
+    {
+      "name": "restart",
+      "failed": 0,
+      "passed": 3
+    },
+    {
+      "name": "menu",
+      "failed": 0,
+      "passed": 10
+    },
+    {
+      "name": "core",
+      "failed": 0,
+      "passed": 10
+    },
+    {
+      "name": "home",
+      "failed": 0,
+      "passed": 11
+    },
+    {
+      "name": "retirement",
+      "failed": 0,
+      "passed": 6
+    }
+  ],
+  "date": "2026-10-25T11:50:19.3185682Z",
+  "passed": 166.0
+}

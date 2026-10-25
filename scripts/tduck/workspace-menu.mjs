@@ -16,9 +16,9 @@ try{
  const user=await api('/login/account',{account:f.owner,password:f.password});token=user.token;assert.equal(Boolean(user.admin),false)
  const page=await browser.newPage({viewport:{width:1440,height:1000}});page.setDefaultTimeout(8000);page.on('pageerror',e=>errors.push(e.message))
  await page.addInitScript(user=>{localStorage.setItem('token',user.token);localStorage.setItem('userInfo',JSON.stringify(user))},user)
- await check('ordinary owner sees only My Questionnaires in the workspace navigation',async()=>{
-  await page.goto('http://127.0.0.1:5180/home');await expect(page.locator('.menu-view .menu-item:visible')).toHaveCount(1)
-  await expect(page.locator('.menu-view .menu-item:visible .menu-label')).toHaveText('我的问卷')
+ await check('ordinary owner sees My Questionnaires and the authorized assistant entry',async()=>{
+  await page.goto('http://127.0.0.1:5180/home');await expect(page.locator('.menu-view .menu-item:visible')).toHaveCount(2)
+  assert.deepEqual(await page.locator('.menu-view .menu-item:visible .menu-label').allTextContents(),['我的问卷','问卷助手'])
  })
  await check('all six retired URLs return to My Questionnaires instead of loading their pages',async()=>{
   for(const route of ['template','template/category','template/preview?key=synthetic','theme/index','theme/category','recycle']){
@@ -55,13 +55,13 @@ try{
   for(const route of ['user','system']){await page.goto('http://127.0.0.1:5180/manage/'+route);await page.waitForURL('**/home')}
   assert.deepEqual(rootRoutes.find(r=>r.path==='/manage').children.map(r=>r.path),['user','system'])
  })
- await check('administrator presentation contains exactly the three retained menu items',async()=>{
+ await check('administrator presentation preserves management plus the authorized assistant entry',async()=>{
   // UI-only role fixture, deliberately never used to request an admin endpoint.
   const adminPage=await browser.newPage({viewport:{width:1440,height:1000}})
   await adminPage.addInitScript(token=>{localStorage.setItem('token',token);localStorage.setItem('userInfo',JSON.stringify({name:'Synthetic menu layout',avatar:'',admin:true}))},token)
   await adminPage.goto('http://127.0.0.1:5180/home')
-  await expect(adminPage.locator('.menu-view .menu-item:visible')).toHaveCount(3)
-  assert.deepEqual(await adminPage.locator('.menu-view .menu-item:visible .menu-label').allTextContents(),['我的问卷','用户管理','系统配置'])
+  await expect(adminPage.locator('.menu-view .menu-item:visible')).toHaveCount(4)
+  assert.deepEqual(await adminPage.locator('.menu-view .menu-item:visible .menu-label').allTextContents(),['我的问卷','问卷助手','用户管理','系统配置'])
   await adminPage.locator('.menu-box').screenshot({path:out+'/01-admin-menu-synthetic-state.png',animations:'disabled'})
   await adminPage.setViewportSize({width:390,height:844})
   assert.equal(await adminPage.evaluate(()=>document.documentElement.scrollWidth>document.documentElement.clientWidth),false)

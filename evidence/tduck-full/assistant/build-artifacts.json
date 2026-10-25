@@ -1,0 +1,146 @@
+{
+  "matches": true,
+  "sources": [
+    {
+      "sha256": "80AA59C56ADF7D63BCF2052489FA0715470DA907A1E533380F01163F1384D4C1",
+      "path": "tduck-api/src/main/java/com/tduck/cloud/api/web/controller/AnalysisReportController.java",
+      "extension": "analysis",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "F82B2688F781D9FB8570D1BE35CAA71B843BC5E71371B28CDBFA66AD856F4A9E",
+      "path": "tduck-api/src/test/java/com/tduck/cloud/api/ai/AnalysisReportTest.java",
+      "extension": "analysis",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "917BEAB7B097444209A58E1D155B04A5C2B39375574012D30C12AED691065136",
+      "path": "tduck-form/src/main/java/com/tduck/cloud/form/analysis/AnalysisJson.java",
+      "extension": "analysis",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "7DCC7E8D0DB3C9C0506EFA0C0F03B880D621C683D317792067941356FADCD697",
+      "path": "tduck-form/src/main/java/com/tduck/cloud/form/analysis/AnalysisMarkdown.java",
+      "extension": "analysis",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "7D9AC23119E803CBB793CB5FEF5F4D2F42860B291D17A92D19E373DE5F0A2747",
+      "path": "tduck-form/src/main/java/com/tduck/cloud/form/analysis/AnalysisOutputValidator.java",
+      "extension": "analysis",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "F5E87C3FD85D442AE613A784E99592F575DD8339E78E4E678BC3CDE81E311737",
+      "path": "tduck-form/src/main/java/com/tduck/cloud/form/analysis/AnalysisReportService.java",
+      "extension": "analysis",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "8A60D2B4B2188E5B4A00A95AFE0018AE3170E8B2BF20B43FBCF3494725AC858F",
+      "path": "tduck-form/src/main/java/com/tduck/cloud/form/analysis/AnalysisSnapshotService.java",
+      "extension": "analysis",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "7C008605F523F22476DAF283DAA02904954F1D712747E1D33ADC7FECEBAEF59D",
+      "path": "tduck-form/src/main/java/com/tduck/cloud/form/entity/AnalysisReportEntity.java",
+      "extension": "analysis",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "6FAA869319EE565A585A09163B9F64D6827730BD55107940ABDAA5AC4225A087",
+      "path": "tduck-form/src/main/java/com/tduck/cloud/form/entity/AnalysisReviewEntity.java",
+      "extension": "analysis",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "C988FA6E435DB8AEDD038EB86055E318C8E10A3C08A42E8955760BFB6879E259",
+      "path": "tduck-form/src/main/java/com/tduck/cloud/form/mapper/AnalysisReportMapper.java",
+      "extension": "analysis",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "25CB94671DB748DBC79CCB96AA53EF911CC5BC8C004C66D20226F5E3CEAADF6C",
+      "path": "tduck-form/src/main/java/com/tduck/cloud/form/mapper/AnalysisReviewMapper.java",
+      "extension": "analysis",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "F82B121F23F183917FBF4E730CAF037EE2172E2C5514134E34793D0FB8F484DC",
+      "path": "tduck-api/src/main/java/com/tduck/cloud/api/web/controller/AssistantController.java",
+      "extension": "assistant",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "AC410D384FE7D16B94FCE4D40697E2CA52C7381952198E6672D80D6464FA1D26",
+      "path": "tduck-api/src/main/java/com/tduck/cloud/api/web/filter/AssistantMcpFilter.java",
+      "extension": "assistant",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "2914B1ACD376A79419B3874CB5E5CFA85FFC0E7A6EC674D04BCE0573D733840F",
+      "path": "tduck-api/src/test/java/com/tduck/cloud/api/ai/AssistantQueryTest.java",
+      "extension": "assistant",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "5684BF9CE5F507CBD578C5A33B542186EAAEF6D6D933D12B5ED5F54921594F3B",
+      "path": "tduck-form/src/main/java/com/tduck/cloud/form/assistant/AssistantChatService.java",
+      "extension": "assistant",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "270356EDC56AB1AD0D17971676C2B77E56E345891E04961618F71453BB9B92EB",
+      "path": "tduck-form/src/main/java/com/tduck/cloud/form/assistant/AssistantMcpProtocol.java",
+      "extension": "assistant",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "9955D895073F3EF20F12C0B3B374ECE83EE79FCBC31DC0411F803EF89E9C68DF",
+      "path": "tduck-form/src/main/java/com/tduck/cloud/form/assistant/AssistantPlanner.java",
+      "extension": "assistant",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "6D23B9B39479028D570FEEE894929BD97D5731044B97C874FC4C853DA2EEAEB0",
+      "path": "tduck-form/src/main/java/com/tduck/cloud/form/assistant/AssistantRateLimit.java",
+      "extension": "assistant",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "AAF3F63962F6D758FAA41F579AEE3C972E2C282563A44D8D8E02489FF52E1AC4",
+      "path": "tduck-form/src/main/java/com/tduck/cloud/form/assistant/AssistantTools.java",
+      "extension": "assistant",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "32CA2B6800010BB3DE8DB7CB24B4E6C26C76DEE48F43412C8B7E990B6FC0A711",
+      "path": "tduck-form/src/main/java/com/tduck/cloud/form/entity/AssistantConversationEntity.java",
+      "extension": "assistant",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "F58B5841DD9EB374DBCAA29B19490C1AF7125DF164C257BAC9AB0D09132C3088",
+      "path": "tduck-form/src/main/java/com/tduck/cloud/form/entity/AssistantTurnEntity.java",
+      "extension": "assistant",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "1074C6CD2F895AB6DCA1B9D52C661BA3D40E547C5B830E75B9C5EE4F827A613F",
+      "path": "tduck-form/src/main/java/com/tduck/cloud/form/mapper/AssistantConversationMapper.java",
+      "extension": "assistant",
+      "matchesBuild": true
+    },
+    {
+      "sha256": "574A5A716DEA26CE4FD5A48E13455D3F864671E99FBF36539031556BC529D7E4",
+      "path": "tduck-form/src/main/java/com/tduck/cloud/form/mapper/AssistantTurnMapper.java",
+      "extension": "assistant",
+      "matchesBuild": true
+    }
+  ],
+  "date": "2026-10-25T11:48:15.2738356Z",
+  "installedJarSha256": "1AE0316EE31AA2F79768B075A7BD2A70254F3802929AEB1392B33E250A7CB7D0",
+  "buildJarSha256": "1AE0316EE31AA2F79768B075A7BD2A70254F3802929AEB1392B33E250A7CB7D0"
+}

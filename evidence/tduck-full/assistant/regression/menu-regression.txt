@@ -1,0 +1,13 @@
+(node:24488) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS ordinary owner sees My Questionnaires and the authorized assistant entry
+PASS all six retired URLs return to My Questionnaires instead of loading their pages
+PASS new questionnaire remains a real persisted editable form
+PASS template creation entry is removed while normal preview still works
+PASS per-questionnaire appearance settings are preserved
+PASS AI drafting and evidence report pages remain available
+PASS ordinary owner remains blocked from both retained administration routes
+PASS administrator presentation preserves management plus the authorized assistant entry
+PASS removing a synthetic questionnaire still archives it without deleting its question records
+PASS no uncaught browser errors
+{"passed":10,"failed":0}

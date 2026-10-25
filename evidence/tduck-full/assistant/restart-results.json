@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-25T11:42:05.358Z",
+  "source": "Real HTTP MCP and Spring Boot/MyBatis-Plus/MySQL; synthetic inputs only",
+  "formKey": "eFdpUktP",
+  "checks": [
+    {
+      "name": "conversation and sourced tool result survive a real backend restart",
+      "passed": true,
+      "detail": {
+        "conversationId": "45f43a9b-bf96-4f29-b252-e59465ef7c7f",
+        "turnId": "a6f6275a-a8cf-476f-82ea-c81dbe5ee551",
+        "tool": "survey_stats"
+      }
+    },
+    {
+      "name": "browser-created dialogue and citations also persist across backend restart",
+      "passed": true,
+      "detail": {
+        "conversationId": "5dcbbdd2-db45-4ed7-b05f-03c5eac64f38",
+        "turnId": "002bbe49-5ef6-443e-8b61-38190ec67556"
+      }
+    },
+    {
+      "name": "stateless MCP can reinitialize after restart and read the current version",
+      "passed": true
+    }
+  ],
+  "passed": 3,
+  "failed": 0
+}
