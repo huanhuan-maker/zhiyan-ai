@@ -1,5 +1,6 @@
 param([string]$JavaHome='D:\jdk\jdk17')
 $ErrorActionPreference='Stop'
+throw 'Follow-up direction was retired at the user request. The staging script is archived and will not start a backend.'
 $root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $jar=Join-Path $root '.local\tduck-m3-build\tduck-api\target\tduck-api.jar'
 if(!(Test-Path -LiteralPath $jar)){throw 'M3 staging JAR is missing; build it first'}

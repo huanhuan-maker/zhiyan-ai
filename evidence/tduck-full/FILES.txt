@@ -464,3 +464,8 @@ m3-visibility/README.md 原因/修改/先失败后通过/运行/真实模型样�
 m3-visibility/results.json m3-visibility/real-demo-results.json 5项回归/2项真实模型UI
 m3-visibility/01-skip-explained.png m3-visibility/02-followup-visible.png m3-visibility/03-real-model-question.png 真实截图
 scripts/tduck/m3-followup-visibility.mjs scripts/tduck/m3-real-demo-ui.mjs 新增验证
+--- 用户决定停止追问 2026-10-25 ---
+followup-retired/README.md 停用范围/保留数据/真实验证/启动说明
+followup-retired/results.json followup-retired/before.json followup-retired/build-artifacts.json 停用前后与部署证据
+followup-retired/01-fixed-questions-only.png followup-retired/m2-usability/ 固定问卷与原闭环截图/结果
+scripts/tduck/verify-followup-retired.mjs 当前回归入口；旧追问脚本归档

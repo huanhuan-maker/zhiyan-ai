@@ -101,11 +101,6 @@ export default {
           route: '/project/form/setting'
         },
         {
-          title: 'AI追问',
-          icon: 'el-icon-chat-dot-round',
-          route: '/project/form/followup'
-        },
-        {
           title: '发布',
           icon: 'el-icon-video-play',
           route: '/project/form/publish'

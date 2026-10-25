@@ -37,7 +37,7 @@ export default [
       {
         path: 'followup',
         meta: { requireLogin: true },
-        component: () => import('@/views/form/followup')
+        redirect: to => ({path:'/project/form/editor',query:to.query})
       },
       {
         path: 'publish',

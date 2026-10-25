@@ -8,7 +8,7 @@ $jar=Join-Path $root '.local\tduck-closure-build\tduck-api\target\tduck-api.jar'
 if(!(Test-Path -LiteralPath $jar)){throw 'Run Build-FullBackend.ps1 first'}
 if(Get-NetTCPConnection -State Listen -LocalPort 8997 -ErrorAction SilentlyContinue){throw '8997 is occupied. No process was stopped.'}
 $java=Join-Path $JavaHome 'bin\java.exe'
-$argsFull=@('-jar',$jar,'--spring.config.additional-location=file:./application-local.yml','--server.address=127.0.0.1','--server.port=8997')
+$argsFull=@('-jar',$jar,'--spring.config.additional-location=file:./application-local.yml','--server.address=127.0.0.1','--server.port=8997','--followup.enabled=false')
 $manifest.backend='http://127.0.0.1:8997'
 $manifest | ConvertTo-Json -Depth 10 | Set-Content (Join-Path $dev 'manifest.json') -Encoding utf8
 $fixturePath=Join-Path $dev 'acceptance.json'

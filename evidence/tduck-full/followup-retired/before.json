@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-25T06:51:41.245Z",
+  "source": "Real 5180/8997 and MySQL; synthetic ordinary submission; no followup/model evaluation performed",
+  "checks": [
+    {
+      "failure": "Expected values to be strictly equal:\n\ntrue !== false\n"
+    }
+  ],
+  "passed": 0,
+  "failed": 1
+}

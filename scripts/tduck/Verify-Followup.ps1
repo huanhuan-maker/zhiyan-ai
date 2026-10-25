@@ -1,5 +1,6 @@
 param([string]$JavaHome='D:\jdk\jdk17',[string]$Maven='D:\maven\apache-maven-3.8.8-bin\bin\mvn.cmd',[string]$Node='D:\nodejs\node.exe',[switch]$RealAI)
 $ErrorActionPreference='Stop'
+throw 'Follow-up direction was retired at the user request. This script is archived; use the ordinary survey verification instead.'
 $root=Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $manifest=Get-Content (Join-Path $root '.local\tduck-dev\manifest.json') -Raw | ConvertFrom-Json
 if($manifest.database -ne 'tduck_vue3_dev'){throw 'Only the isolated acceptance database is allowed'}

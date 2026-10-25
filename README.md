@@ -1,6 +1,6 @@
 # 知研 AI
 
-> **当前开发入口（2026-10-25）**：[TDuck Vue 3 二次开发版](tduck-vue3/README.md)，访问 `http://localhost:5180`，隔离后端8997。M2已验收，M3可选追问已实现并完成自动复测，等待用户验收，见[M3报告](evidence/M3.md)。原 `backend/`、`frontend/` 及下面的M0/M1命令保留为旧原型的对照与回退资料；日常启动请使用TDuck目录的说明。
+> **当前开发入口（2026-10-25）**：[TDuck Vue 3 二次开发版](tduck-vue3/README.md)，访问 `http://localhost:5180`，隔离后端8997。用户已决定停止追问方向，入口与服务端追问调用已停用；继续保留AI建卷、固定问卷、收集与真实统计，见[停用记录](evidence/tduck-full/followup-retired/README.md)。原 `backend/`、`frontend/` 及以下M0/M1说明为旧原型归档。
 
 以下为旧原型的 **M0 工程联通 + M1 固定问卷闭环** 归档。固定技术栈仍为Vue 3 + ECharts、Spring Boot + MyBatis-Plus、MySQL 8.x；当前迁移版的AI和浏览器验证情况以页首M3报告为准。
 
@@ -144,4 +144,4 @@ Spring Security 使用 HttpOnly、SameSite=Strict cookie、30 分钟空闲会话
 
 数据库迁移与备份说明：[db/README.md](db/README.md)。验收报告：[M0](evidence/M0.md)、[M1](evidence/M1.md)。M0有历史真实截图；M1完整浏览器端到端/窄屏/截图尚未完成，工具安全策略拦截后未绕过，不以自动测试代替人工UI验收。六库源码调研：[OPEN_SOURCE_RESEARCH.md](docs/OPEN_SOURCE_RESEARCH.md)，未复制集成上游代码。原始材料说明保留于 `docs/DELIVERY_PACKAGE_README.md`。
 
-**以上为M0/M1原型归档。当前TDuck迁移版停止于M3人工验收节点；M4–M6未进入。**
+**以上为M0/M1原型归档。追问方向已按用户决定停用；后续阶段尚未推进。**

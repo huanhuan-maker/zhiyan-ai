@@ -1,6 +1,8 @@
 // Synthetic acceptance demo only. Never modifies existing surveys.
+// Archived after the user retired this product direction.
 import fs from 'node:fs'
 import {allComponents} from '../../tduck-vue3/src/td/generator/config.js'
+throw Error('追问方向已停用，演示脚本仅作历史归档，不再创建或调用追问问卷')
 function createField(type){const item=structuredClone(allComponents.flatMap(g=>g.list).find(q=>q.typeId===type));item.config.formId=type.toLowerCase()+Date.now()+Math.floor(Math.random()*1000);item.vModel=item.config.formId;return item}
 function formItemConvertData(item,formKey){const c=item.config;return {type:item.typeId,formItemId:c.formId,label:c.label,required:c.required,placeholder:item.placeholder||'',showLabel:c.showLabel,span:24,scheme:item,formKey}}
 const mode=process.argv[2]||'RULE'

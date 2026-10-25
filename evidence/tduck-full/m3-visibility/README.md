@@ -1,5 +1,7 @@
 # M3 用户复验修复：追问入口与未生成原因
 
+**后续用户决定停止追问方向，本报告已归档。** 当前停用状态见[停用记录](../followup-retired/README.md)。
+
 日期：2026-10-25。用户反馈“没看到哪里有追问”。本轮仍为M3修复，不推进M4；本地提交为本报告所属提交，可用`git log -1 --format="%h %s" -- evidence/tduck-full/m3-visibility/README.md`查询，未推送。
 
 ## 核对结果

@@ -62,19 +62,21 @@ diff --git a/tduck-form/src/main/java/com/tduck/cloud/form/ai/OpenAiCompatiblePr
 diff --git a/tduck-form/src/main/java/com/tduck/cloud/form/service/UserFormVersionService.java b/tduck-form/src/main/java/com/tduck/cloud/form/service/UserFormVersionService.java
 --- a/tduck-form/src/main/java/com/tduck/cloud/form/service/UserFormVersionService.java
 +++ b/tduck-form/src/main/java/com/tduck/cloud/form/service/UserFormVersionService.java
-@@ -43,6 +43,7 @@
+@@ -43,6 +43,9 @@
      private final UserFormService forms;
      private final UserFormLogicService logics;
      private final UserFormThemeService themes;
 +    private final com.tduck.cloud.form.mapper.FollowUpMapper followups;
++    @org.springframework.beans.factory.annotation.Value("${followup.enabled:false}")
++    private boolean followupEnabled;
 
      /**
       * 发布快照：关闭当前收集中版本，按当前题目集生成新版本（事务内）。
-@@ -92,6 +93,7 @@
+@@ -92,6 +95,7 @@
                  .setLogicSnapshot(logicSnapshot)
                  .setThemeSnapshot(theme == null ? new LinkedHashMap<>() : themeOf(theme));
          versions.insert(version);
-+        followups.freeze(formKey,nextNo);
++        if(followupEnabled)followups.freeze(formKey,nextNo);
          return version;
      }
 
@@ -82,7 +84,7 @@ diff --git a/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/FollowUp
 new file mode 100644
 --- /dev/null
 +++ b/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/FollowUpController.java
-@@ -0,0 +1,45 @@
+@@ -0,0 +1,49 @@
 +package com.tduck.cloud.api.web.controller;
 +
 +import com.tduck.cloud.common.exception.BaseException;
@@ -91,6 +93,7 @@ new file mode 100644
 +import com.tduck.cloud.form.util.FormAuthUtils;
 +import lombok.RequiredArgsConstructor;
 +import org.springframework.web.bind.annotation.*;
++import org.springframework.beans.factory.annotation.Value;
 +import javax.annotation.security.PermitAll;
 +import javax.servlet.http.HttpServletRequest;
 +import java.util.*;
@@ -101,6 +104,9 @@ new file mode 100644
 +@RequiredArgsConstructor
 +public class FollowUpController {
 +    private final FollowUpService service;
++    @Value("${followup.enabled:false}")
++    private boolean enabled;
++    private void requireEnabled(){if(!enabled)throw new BaseException("可选追问功能已停用，不影响填写核心问卷");}
 +    private final ConcurrentHashMap<String,AtomicInteger> rates=new ConcurrentHashMap<>();
 +    private volatile long minute=System.currentTimeMillis()/60000;
 +    private void limit(HttpServletRequest request,boolean create){
@@ -112,21 +118,53 @@ new file mode 100644
 +    @GetMapping("/user/form/followup/config")
 +    public Result config(@RequestParam String formKey){FormAuthUtils.hasPermission(formKey);return Result.success(service.policy(formKey,0));}
 +    @PostMapping("/user/form/followup/config")
-+    public Result save(@RequestBody Map<String,Object> input){String key=String.valueOf(input.get("formKey"));FormAuthUtils.hasEditablePermission(key);return Result.success(service.savePolicy(key,input));}
++    public Result save(@RequestBody Map<String,Object> input){String key=String.valueOf(input.get("formKey"));FormAuthUtils.hasPermission(key);requireEnabled();FormAuthUtils.hasEditablePermission(key);return Result.success(service.savePolicy(key,input));}
 +    @GetMapping("/user/form/followup/records")
 +    public Result records(@RequestParam String formKey,@RequestParam int versionNo){FormAuthUtils.hasPermission(formKey);return Result.success(service.records(formKey,versionNo));}
 +    @PermitAll @GetMapping("/form/followup/info")
-+    public Result info(@RequestParam String formKey,@RequestParam(defaultValue="") String versionToken,HttpServletRequest r){limit(r,false);return Result.success(service.info(formKey,versionToken));}
++    public Result info(@RequestParam String formKey,@RequestParam(defaultValue="") String versionToken,HttpServletRequest r){if(!enabled)return Result.success(Collections.singletonMap("enabled",false));limit(r,false);return Result.success(service.info(formKey,versionToken));}
 +    @PermitAll @PostMapping("/form/followup/session")
-+    public Result session(@RequestBody Map<String,Object> input,HttpServletRequest r){limit(r,true);return Result.success(service.create(input,r.getHeader("X-Form-Password"),r.getRemoteAddr()));}
++    public Result session(@RequestBody Map<String,Object> input,HttpServletRequest r){requireEnabled();limit(r,true);return Result.success(service.create(input,r.getHeader("X-Form-Password"),r.getRemoteAddr()));}
 +    @PermitAll @GetMapping("/form/followup/state")
-+    public Result state(@RequestHeader("X-Followup-Session") String capability,HttpServletRequest r){limit(r,false);return Result.success(service.state(capability));}
++    public Result state(@RequestHeader("X-Followup-Session") String capability,HttpServletRequest r){requireEnabled();limit(r,false);return Result.success(service.state(capability));}
 +    @PermitAll @PostMapping("/form/followup/consent")
-+    public Result consent(@RequestHeader("X-Followup-Session") String capability,@RequestBody Map<String,Object> input,HttpServletRequest r){limit(r,false);return Result.success(service.consent(capability,Boolean.TRUE.equals(input.get("consent"))));}
++    public Result consent(@RequestHeader("X-Followup-Session") String capability,@RequestBody Map<String,Object> input,HttpServletRequest r){requireEnabled();limit(r,false);return Result.success(service.consent(capability,Boolean.TRUE.equals(input.get("consent"))));}
 +    @PermitAll @PostMapping("/form/followup/decide")
-+    public Result decide(@RequestHeader("X-Followup-Session") String capability,@RequestBody Map<String,Object> input,HttpServletRequest r){limit(r,false);Object answer=input.get("answer"),id=input.get("questionId");if(!(answer instanceof String)||!(id instanceof String))throw new BaseException("请提供开放题编号和文本答案");return Result.success(service.decide(capability,(String)id,(String)answer));}
++    public Result decide(@RequestHeader("X-Followup-Session") String capability,@RequestBody Map<String,Object> input,HttpServletRequest r){requireEnabled();limit(r,false);Object answer=input.get("answer"),id=input.get("questionId");if(!(answer instanceof String)||!(id instanceof String))throw new BaseException("请提供开放题编号和文本答案");return Result.success(service.decide(capability,(String)id,(String)answer));}
 +    @PermitAll @PostMapping("/form/followup/respond")
-+    public Result respond(@RequestHeader("X-Followup-Session") String capability,@RequestBody Map<String,Object> input,HttpServletRequest r){limit(r,false);Object id=input.get("decisionId"),answer=input.get("answer");if(!(id instanceof Number)||(answer!=null&&!(answer instanceof String)))throw new BaseException("追问编号或回答格式不正确");return Result.success(service.respond(capability,((Number)id).longValue(),(String)answer,Boolean.TRUE.equals(input.get("skip"))));}
++    public Result respond(@RequestHeader("X-Followup-Session") String capability,@RequestBody Map<String,Object> input,HttpServletRequest r){requireEnabled();limit(r,false);Object id=input.get("decisionId"),answer=input.get("answer");if(!(id instanceof Number)||(answer!=null&&!(answer instanceof String)))throw new BaseException("追问编号或回答格式不正确");return Result.success(service.respond(capability,((Number)id).longValue(),(String)answer,Boolean.TRUE.equals(input.get("skip"))));}
++}
+diff --git a/tduck-api/src/test/java/com/tduck/cloud/api/ai/FollowUpDisabledTest.java b/tduck-api/src/test/java/com/tduck/cloud/api/ai/FollowUpDisabledTest.java
+new file mode 100644
+--- /dev/null
++++ b/tduck-api/src/test/java/com/tduck/cloud/api/ai/FollowUpDisabledTest.java
+@@ -0,0 +1,27 @@
++package com.tduck.cloud.api.ai;
++import com.tduck.cloud.api.web.controller.FollowUpController;
++import com.tduck.cloud.form.followup.FollowUpService;
++import com.tduck.cloud.common.exception.BaseException;
++import org.junit.Test;
++import javax.servlet.http.HttpServletRequest;
++import java.util.*;
++import static org.junit.Assert.*;
++import static org.mockito.Mockito.*;
++
++public class FollowUpDisabledTest {
++ @Test public void publicInfoIsDisabledWithoutReadingPolicies(){
++  FollowUpService service=mock(FollowUpService.class);
++  Map<?,?> data=(Map<?,?>)new FollowUpController(service).info("synthetic","",mock(HttpServletRequest.class)).getData();
++  assertEquals(false,data.get("enabled"));verifyNoInteractions(service);
++ }
++ @Test public void noDecisionOrProviderRunsWhenDisabled(){
++  FollowUpService service=mock(FollowUpService.class);boolean rejected=false;
++  try{new FollowUpController(service).decide("synthetic",Collections.emptyMap(),mock(HttpServletRequest.class));}catch(BaseException e){rejected=e.getMessage().contains("停用");}
++  assertTrue(rejected);verifyNoInteractions(service);
++ }
++ @Test public void noPublicFollowupSessionIsCreated(){
++  FollowUpService service=mock(FollowUpService.class);boolean rejected=false;
++  try{new FollowUpController(service).session(Collections.emptyMap(),mock(HttpServletRequest.class));}catch(BaseException e){rejected=e.getMessage().contains("停用");}
++  assertTrue(rejected);verifyNoInteractions(service);
++ }
 +}
 diff --git a/tduck-api/src/test/java/com/tduck/cloud/api/ai/FollowUpFailureTest.java b/tduck-api/src/test/java/com/tduck/cloud/api/ai/FollowUpFailureTest.java
 new file mode 100644

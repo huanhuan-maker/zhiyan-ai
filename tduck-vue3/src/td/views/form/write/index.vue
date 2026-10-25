@@ -73,7 +73,7 @@ export default {
       formConfig: {
         formKey: '',
         preview: false,
-        allowFollowup: true,
+        allowFollowup: false,
         showBtns: true,
         versionToken: '',
         supportText: 'Powered By Tduck 填鸭表单'
@@ -108,7 +108,6 @@ export default {
     }
   },
   async created() {
-    this.formConfig.allowFollowup = this.writeType === 1
     this.startedAt = performance.now()
     this.formKey = this.$route.query.key || this.$route.params.key
     this.versionToken = this.$route.query.t || ''
