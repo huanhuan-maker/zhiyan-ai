@@ -3,10 +3,12 @@ import fs from 'node:fs'
 import path from 'node:path'
 import {createRequire} from 'node:module'
 import assert from 'node:assert/strict'
+import {execFileSync} from 'node:child_process'
 const {chromium,expect}=createRequire(path.resolve('tduck-vue3/package.json'))('@playwright/test')
 const fixture=JSON.parse(fs.readFileSync('.local/tduck-dev/acceptance.json','utf8').replace(/^\uFEFF/,''))
 assert.equal(fixture.backend,'http://127.0.0.1:8997')
 const out='evidence/tduck-full/ui-review/home';fs.mkdirSync(out,{recursive:true})
+const commit=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim()
 const checks=[],errors=[];let key,token
 async function api(url,data){const r=await fetch(fixture.backend+url,{method:data===undefined?'GET':'POST',headers:{'Content-Type':'application/json',...(token?{token}:{})},...(data===undefined?{}:{body:JSON.stringify(data)})}).then(r=>r.json());assert.equal(r.code,200,url+': '+r.msg);return r.data}
 async function check(name,fn){try{const detail=await fn();checks.push({name,passed:true,detail});console.log('PASS '+name)}catch(e){checks.push({name,passed:false,error:e.message.slice(0,450)});console.log('FAIL '+name+': '+e.message.slice(0,160))}}
@@ -105,9 +107,12 @@ try{
   await expect(page.locator('.person-menu-item').filter({hasText:'退出登录'})).toBeVisible()
  })
  await check('no uncaught browser errors',async()=>{assert.deepEqual(errors,[])})
+}catch(e){
+ checks.push({name:'review setup and execution complete',passed:false,error:e.message.slice(0,450)})
+ console.log('FAIL review setup and execution: '+e.message.slice(0,160))
 }finally{
  if(key)try{await api('/user/form/logic/delete',{formKey:key})}catch{}
  await browser.close()
- const r={commit:'7800e2b',source:'Real 5180/8997; synthetic blank questionnaire only; one injected network failure; no model calls',date:new Date().toISOString(),checks,passed:checks.filter(x=>x.passed).length,failed:checks.filter(x=>!x.passed).length}
+ const r={commit,source:'Real 5180/8997; synthetic blank questionnaire only; one injected network failure; no model calls',date:new Date().toISOString(),checks,passed:checks.filter(x=>x.passed).length,failed:checks.filter(x=>!x.passed).length}
  fs.writeFileSync(out+'/results.json',JSON.stringify(r,null,2)+'\n');console.log(JSON.stringify({passed:r.passed,failed:r.failed}));if(r.failed)process.exitCode=1
 }

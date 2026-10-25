@@ -1,7 +1,7 @@
 {
-  "date": "2026-10-25T08:39:52.425Z",
+  "date": "2026-10-25T09:56:38.454Z",
   "source": "Synthetic UI response fixture; real Spring Boot/MySQL import, publish and submission",
-  "formKey": "UbkVn1fh",
+  "formKey": "AFSaoSK8",
   "checks": [
     {
       "name": "question count is readable and editable with buttons/keyboard",

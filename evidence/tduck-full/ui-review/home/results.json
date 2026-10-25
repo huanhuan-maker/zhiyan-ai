@@ -1,7 +1,7 @@
 {
-  "commit": "7800e2b",
+  "commit": "1b5b2b45a7c6a9e3ce85b2219b43cd52371f24e2",
   "source": "Real 5180/8997; synthetic blank questionnaire only; one injected network failure; no model calls",
-  "date": "2026-10-25T08:40:20.514Z",
+  "date": "2026-10-25T09:56:25.545Z",
   "checks": [
     {
       "name": "desktop brand remains readable on one line",
@@ -11,7 +11,7 @@
       "name": "blank creation validates and persists the exact synthetic form",
       "passed": true,
       "detail": {
-        "formKey": "ZWmIHVwV",
+        "formKey": "wEvucU2H",
         "type": 1
       }
     },
