@@ -1,28 +1,28 @@
-<testsuites id="" name="" tests="12" failures="0" skipped="0" errors="0" time="62.279194000000004">
-<testsuite name="migration.spec.ts" timestamp="2026-10-25T03:20:39.459Z" hostname="" tests="12" failures="0" skipped="0" time="61.224" errors="0">
-<testcase name="smoke-full real backend workflow" classname="migration.spec.ts" time="13.448">
+<testsuites id="" name="" tests="12" failures="0" skipped="0" errors="0" time="64.57209">
+<testsuite name="migration.spec.ts" timestamp="2026-10-25T03:59:08.592Z" hostname="" tests="12" failures="0" skipped="0" time="63.35" errors="0">
+<testcase name="smoke-full real backend workflow" classname="migration.spec.ts" time="13.806">
 </testcase>
-<testcase name="feature-flows real backend workflow" classname="migration.spec.ts" time="6.767">
+<testcase name="feature-flows real backend workflow" classname="migration.spec.ts" time="7.151">
 </testcase>
-<testcase name="settings-flows real backend workflow" classname="migration.spec.ts" time="7.744">
+<testcase name="settings-flows real backend workflow" classname="migration.spec.ts" time="8.034">
 </testcase>
-<testcase name="admin-flows real backend workflow" classname="migration.spec.ts" time="11.453">
+<testcase name="admin-flows real backend workflow" classname="migration.spec.ts" time="10.763">
 </testcase>
-<testcase name="data-roundtrip real backend workflow" classname="migration.spec.ts" time="3.198">
+<testcase name="data-roundtrip real backend workflow" classname="migration.spec.ts" time="4.229">
 </testcase>
-<testcase name="backend-security real backend workflow" classname="migration.spec.ts" time="0.65">
+<testcase name="backend-security real backend workflow" classname="migration.spec.ts" time="0.677">
 </testcase>
-<testcase name="question-roundtrip real backend workflow" classname="migration.spec.ts" time="4.139">
+<testcase name="question-roundtrip real backend workflow" classname="migration.spec.ts" time="4.422">
 </testcase>
-<testcase name="choice-flows real backend workflow" classname="migration.spec.ts" time="7.423">
+<testcase name="choice-flows real backend workflow" classname="migration.spec.ts" time="7.721">
 </testcase>
-<testcase name="closure-flows real backend workflow" classname="migration.spec.ts" time="3.852">
+<testcase name="closure-flows real backend workflow" classname="migration.spec.ts" time="3.93">
 </testcase>
-<testcase name="anonymous owner page requires login" classname="migration.spec.ts" time="0.653">
+<testcase name="anonymous owner page requires login" classname="migration.spec.ts" time="0.676">
 </testcase>
-<testcase name="wrong password stays on login and displays server error" classname="migration.spec.ts" time="0.718">
+<testcase name="wrong password stays on login and displays server error" classname="migration.spec.ts" time="0.744">
 </testcase>
-<testcase name="invalid token is rejected by real backend and removed locally" classname="migration.spec.ts" time="1.179">
+<testcase name="invalid token is rejected by real backend and removed locally" classname="migration.spec.ts" time="1.197">
 </testcase>
 </testsuite>
 </testsuites>

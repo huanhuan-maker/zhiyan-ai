@@ -1,0 +1,1020 @@
+new file mode 100644
+index 0000000..026a63efe0e56a8ea166d5914ccdca9b8146e8df
+--- /dev/null
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/ai/AiProvider.java
+@@ -0,0 +1,23 @@
++package com.tduck.cloud.form.ai;
++
++/**
++ * M2 问卷草稿 AI Provider 抽象。Provider 仅由 Spring Boot 服务端统一调用，
++ * API Key 只存在于服务端私有配置，不进入前端、日志或数据库。
++ */
++public interface AiProvider {
++
++    /** 配置是否可用（决定页面展示"真实 AI"还是降级 Mock） */
++    boolean available();
++
++    /** 展示名（Provider 标识，不含任何密钥） */
++    String providerName();
++
++    /** 模型标识 */
++    String model();
++
++    /**
++     * 完成一次草稿生成。输入为结构化 JSON 字符串，期望返回纯 JSON 文本。
++     * 失败抛出面向用户的 {@link AiProviderException}。
++     */
++    String complete(String systemPrompt, String inputJson) throws AiProviderException;
++}
+
+new file mode 100644
+index 0000000..9d962026d255049aba16656bfa4ee5bbea85f345
+--- /dev/null
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/ai/AiProviderException.java
+@@ -0,0 +1,16 @@
++package com.tduck.cloud.form.ai;
++
++/**
++ * AI 服务调用异常。消息面向用户、可恢复：调用方可提示重试或改用手工建卷，
++ * 不携带 API Key、内部 URL 细节或堆栈信息。
++ */
++public class AiProviderException extends RuntimeException {
++
++    public AiProviderException(String userMessage) {
++        super(userMessage);
++    }
++
++    public AiProviderException(String userMessage, Throwable cause) {
++        super(userMessage, cause);
++    }
++}
+
+new file mode 100644
+index 0000000..b2ca19634e38c5a7ebf7743f7ca38999c3266bfa
+--- /dev/null
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/ai/OpenAiCompatibleProvider.java
+@@ -0,0 +1,119 @@
++package com.tduck.cloud.form.ai;
++
++import cn.hutool.core.util.StrUtil;
++import cn.hutool.http.HttpRequest;
++import cn.hutool.http.HttpResponse;
++import com.fasterxml.jackson.databind.JsonNode;
++import com.fasterxml.jackson.databind.ObjectMapper;
++import lombok.extern.slf4j.Slf4j;
++import org.springframework.beans.factory.annotation.Value;
++import org.springframework.stereotype.Component;
++
++import java.util.Arrays;
++import java.util.HashMap;
++import java.util.Map;
++
++/**
++ * OpenAI 兼容 Chat Completions Provider（配置于服务端私有 application-local.yml）。
++ * 无密钥/超时/网络失败/非 200 均抛出可恢复异常，不阻塞普通问卷功能。
++ */
++@Slf4j
++@Component
++public class OpenAiCompatibleProvider implements AiProvider {
++
++    private static final ObjectMapper MAPPER = new ObjectMapper();
++
++    private final String providerName;
++    private final String baseUrl;
++    private final String apiKey;
++    private final String model;
++    private final int timeoutMs;
++
++    public OpenAiCompatibleProvider(
++            @Value("${ai.provider-name:OpenAI Compatible}") String providerName,
++            @Value("${ai.base-url:}") String baseUrl,
++            @Value("${ai.api-key:}") String apiKey,
++            @Value("${ai.model:}") String model,
++            @Value("${ai.timeout-ms:60000}") int timeoutMs) {
++        this.providerName = providerName;
++        this.baseUrl = baseUrl == null ? "" : baseUrl.trim();
++        this.apiKey = apiKey == null ? "" : apiKey.trim();
++        this.model = model == null ? "" : model.trim();
++        this.timeoutMs = timeoutMs <= 0 ? 60000 : timeoutMs;
++    }
++
++    @Override
++    public boolean available() {
++        return StrUtil.isNotBlank(baseUrl) && StrUtil.isNotBlank(apiKey) && StrUtil.isNotBlank(model);
++    }
++
++    @Override
++    public String providerName() {
++        return providerName;
++    }
++
++    @Override
++    public String model() {
++        return model;
++    }
++
++    @Override
++    public String complete(String systemPrompt, String inputJson) {
++        if (!available()) {
++            throw new AiProviderException("AI 服务未配置（缺少 base-url/api-key/model），当前为 Mock 模式");
++        }
++        Map<String, Object> body = new HashMap<>();
++        body.put("model", model);
++        body.put("messages", Arrays.asList(
++                message("system", systemPrompt),
++                message("user", inputJson)));
++        body.put("temperature", 0.3);
++        String payload;
++        try {
++            payload = MAPPER.writeValueAsString(body);
++        } catch (Exception e) {
++            throw new AiProviderException("AI 请求组装失败，请重试", e);
++        }
++        String responseText;
++        try (HttpResponse response = HttpRequest.post(trimTrailingSlash(baseUrl) + "/chat/completions")
++                .header("Authorization", "Bearer " + apiKey)
++                .header("Content-Type", "application/json;charset=UTF-8")
++                .body(payload)
++                .timeout(timeoutMs)
++                .execute()) {
++            if (response.getStatus() != 200) {
++                // 只记录状态码与截断片段，绝不记录鉴权头或密钥
++                log.warn("AI provider http status {}, body head: {}", response.getStatus(), StrUtil.maxLength(response.body(), 200));
++                throw new AiProviderException("AI 服务返回异常（HTTP " + response.getStatus() + "），请稍后重试或改用手工建卷");
++            }
++            responseText = response.body();
++        } catch (AiProviderException e) {
++            throw e;
++        } catch (Exception e) {
++            log.warn("AI provider request failed: {}", e.getMessage());
++            throw new AiProviderException("AI 服务请求失败（超时或网络异常），可稍后重试；手工建卷不受影响", e);
++        }
++        try {
++            JsonNode content = MAPPER.readTree(responseText).path("choices").path(0).path("message").path("content");
++            if (content.isMissingNode() || content.asText().trim().isEmpty()) {
++                throw new AiProviderException("AI 服务返回内容为空，请重试");
++            }
++            return content.asText();
++        } catch (AiProviderException e) {
++            throw e;
++        } catch (Exception e) {
++            throw new AiProviderException("AI 服务响应无法解析，请重试", e);
++        }
++    }
++
++    private static Map<String, String> message(String role, String content) {
++        Map<String, String> m = new HashMap<>();
++        m.put("role", role);
++        m.put("content", content);
++        return m;
++    }
++
++    private static String trimTrailingSlash(String url) {
++        return url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
++    }
++}
+
+new file mode 100644
+index 0000000..eb3026fb86e03e287971d4b39fa9f8a7bca6f637
+--- /dev/null
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/ai/MockAiProvider.java
+@@ -0,0 +1,86 @@
++package com.tduck.cloud.form.ai;
++
++import com.fasterxml.jackson.databind.ObjectMapper;
++import org.springframework.stereotype.Component;
++
++import java.util.ArrayList;
++import java.util.LinkedHashMap;
++import java.util.List;
++import java.util.Map;
++
++/**
++ * 无密钥时的降级 Provider：按输入确定性生成草稿，页面与响应中明确标注 Mock。
++ * 输出与真实 Provider 同构，仍需通过 AiDraftValidator 全量校验。
++ */
++@Component
++public class MockAiProvider implements AiProvider {
++
++    private static final ObjectMapper MAPPER = new ObjectMapper();
++
++    @Override
++    public boolean available() {
++        return true;
++    }
++
++    @Override
++    public String providerName() {
++        return "Mock（未配置真实 AI）";
++    }
++
++    @Override
++    public String model() {
++        return "mock-template";
++    }
++
++    @Override
++    public String complete(String systemPrompt, String inputJson) {
++        try {
++            Map<?, ?> input = MAPPER.readValue(inputJson, Map.class);
++            String goal = String.valueOf(input.get("goal"));
++            String audience = String.valueOf(input.get("audience"));
++            int count = ((Number) input.get("questionCount")).intValue();
++            String trimmedGoal = goal.length() > 18 ? goal.substring(0, 18) : goal;
++            Map<String, Object> spec = new LinkedHashMap<>();
++            spec.put("kind", "draft");
++            spec.put("title", "（Mock）" + trimmedGoal + "调查");
++            spec.put("description", "本问卷由 Mock 模式生成，仅用于流程验证；内容未经过真实 AI。目标人群：" + audience + "。");
++            List<Map<String, Object>> questions = new ArrayList<>();
++            String[] cycle = {"RADIO", "CHECKBOX", "RATE", "TEXT"};
++            for (int i = 0; i < count; i++) {
++                String type = cycle[i % cycle.length];
++                int no = i + 1;
++                Map<String, Object> q = new LinkedHashMap<>();
++                q.put("type", type);
++                q.put("required", type.equals("TEXT") ? Boolean.FALSE : Boolean.TRUE);
++                if ("RADIO".equals(type)) {
++                    q.put("label", "（Mock·" + no + "）您认为" + audience + "不参与「" + trimmedGoal + "」的最主要原因是？");
++                    q.put("options", List.of("不了解信息", "时间冲突", "兴趣不足", "其他"));
++                } else if ("CHECKBOX".equals(type)) {
++                    q.put("label", "（Mock·" + no + "）以下哪些因素会影响" + audience + "参与「" + trimmedGoal + "」？（可多选）");
++                    q.put("options", List.of("时间安排", "费用成本", "同伴参与", "宣传渠道"));
++                } else if ("RATE".equals(type)) {
++                    q.put("label", "（Mock·" + no + "）您对「" + trimmedGoal + "」相关安排的整体满意度评分");
++                    q.put("rateMax", 5);
++                } else {
++                    q.put("label", "（Mock·" + no + "）关于「" + trimmedGoal + "」，您还有什么想补充的？");
++                }
++                questions.add(q);
++            }
++            // 保证至少一道开放题（题数少于 4 时循环可能未覆盖 TEXT）
++            if (questions.stream().noneMatch(q -> "TEXT".equals(q.get("type")))) {
++                Map<String, Object> last = questions.get(questions.size() - 1);
++                last.put("type", "TEXT");
++                last.remove("options");
++                last.remove("rateMax");
++                last.put("label", "（Mock·" + count + "）关于「" + trimmedGoal + "」，您还有什么想补充的？");
++                last.put("required", Boolean.FALSE);
++            }
++            spec.put("questions", questions);
++            spec.put("assumptions", List.of("Mock 模式：未调用真实模型，假设仅供占位"));
++            spec.put("dimensions", List.of("参与障碍", "满意度", "开放补充"));
++            return MAPPER.writeValueAsString(spec);
++        } catch (Exception e) {
++            throw new AiProviderException("Mock 生成失败：" + e.getMessage(), e);
++        }
++    }
++}
+
+new file mode 100644
+index 0000000..693dcdb693dd5ab407c875846d1af545b19c558b
+--- /dev/null
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/ai/AiDraftInput.java
+@@ -0,0 +1,22 @@
++package com.tduck.cloud.form.ai;
++
++import lombok.Data;
++
++/**
++ * AI 草稿生成请求（发起者输入）。
++ */
++@Data
++public class AiDraftInput {
++
++    /** 调查目标（必填，1-500 字） */
++    private String goal;
++
++    /** 目标人群（必填，1-100 字） */
++    private String audience;
++
++    /** 可选补充信息（≤500 字） */
++    private String extra;
++
++    /** 期望题数（必填，1-30） */
++    private Integer questionCount;
++}
+
+new file mode 100644
+index 0000000..2e29cc66e9f2c31f2b8f4940fb371c2ee6b12ab7
+--- /dev/null
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/ai/AiDraftSpec.java
+@@ -0,0 +1,42 @@
++package com.tduck.cloud.form.ai;
++
++import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
++import lombok.Data;
++
++import java.util.List;
++
++/**
++ * 模型输出契约（宽松解析：未知字段忽略，逐字段由校验器严格把关）。
++ */
++@Data
++@JsonIgnoreProperties(ignoreUnknown = true)
++public class AiDraftSpec {
++
++    /** draft=问卷草稿；clarification=目标含糊需要澄清 */
++    private String kind;
++
++    private String title;
++
++    private String description;
++
++    private List<AiDraftQuestion> questions;
++
++    /** 澄清模式：需要发起者回答的问题 */
++    private List<String> clarification;
++
++    private List<String> assumptions;
++
++    private List<String> dimensions;
++
++    @Data
++    @JsonIgnoreProperties(ignoreUnknown = true)
++    public static class AiDraftQuestion {
++        /** RADIO/CHECKBOX/RATE/TEXT（TEXT/TEXTAREA/INPUT/OPEN 统一映射为开放题） */
++        private String type;
++        private String label;
++        private Boolean required;
++        private List<String> options;
++        private Integer rateMax;
++        private String placeholder;
++    }
++}
+
+new file mode 100644
+index 0000000..b66cad2a0d72d8c7f256c398ebfa90a83fc69bf2
+--- /dev/null
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/ai/AiDraftValidator.java
+@@ -0,0 +1,196 @@
++package com.tduck.cloud.form.ai;
++
++import java.util.ArrayList;
++import java.util.HashSet;
++import java.util.LinkedHashMap;
++import java.util.List;
++import java.util.Map;
++import java.util.Set;
++
++/**
++ * AI 草稿服务端校验器（纯函数，可单测）。
++ * 任何 error 级违规的草稿都不允许进入编辑器/保存/发布路径；
++ * warning 级提示仅展示给发起者人工审核。
++ */
++public final class AiDraftValidator {
++
++    public static final int MAX_QUESTIONS = 30;
++    public static final int MIN_OPTIONS = 2;
++    public static final int MAX_OPTIONS = 20;
++    public static final int MIN_RATE_MAX = 2;
++    public static final int MAX_RATE_MAX = 10;
++    public static final int DEFAULT_RATE_MAX = 5;
++
++    /** 诱导性措辞黑名单（warning 级，供人工审核） */
++    private static final String[] LEADING_WORDS = {"难道", "难道说", "显然", "当然不", "肯定不", "不觉得", "大家都认为"};
++
++    private AiDraftValidator() {
++    }
++
++    /** 支持的题型（编辑器四题型） */
++    static String normalizeType(String raw) {
++        if (raw == null) {
++            return null;
++        }
++        switch (raw.trim().toUpperCase()) {
++            case "RADIO":
++            case "CHECKBOX":
++            case "RATE":
++                return raw.trim().toUpperCase();
++            case "TEXT":
++            case "TEXTAREA":
++            case "INPUT":
++            case "OPEN":
++                return "TEXTAREA";
++            default:
++                return null;
++        }
++    }
++
++    public static Result validate(AiDraftSpec spec, int expectedCount) {
++        Result result = new Result();
++        if (spec == null || spec.getKind() == null || spec.getKind().trim().isEmpty()) {
++            result.errors.add("输出缺少 kind 字段");
++            return result;
++        }
++        String kind = spec.getKind().trim().toLowerCase();
++        if ("clarification".equals(kind)) {
++            validateClarification(spec, result);
++            return result;
++        }
++        if (!"draft".equals(kind)) {
++            result.errors.add("kind 必须是 draft 或 clarification，实际为 " + spec.getKind());
++            return result;
++        }
++        validateDraft(spec, expectedCount, result);
++        return result;
++    }
++
++    private static void validateClarification(AiDraftSpec spec, Result result) {
++        List<String> questions = spec.getClarification();
++        if (questions == null || questions.isEmpty()) {
++            result.errors.add("澄清模式缺少 clarification 问题列表");
++            return;
++        }
++        for (String q : questions) {
++            if (q == null || q.trim().isEmpty()) {
++                result.errors.add("澄清问题不能为空");
++            }
++        }
++    }
++
++    private static void validateDraft(AiDraftSpec spec, int expectedCount, Result result) {
++        if (isBlank(spec.getTitle())) {
++            result.errors.add("问卷标题不能为空");
++        } else if (spec.getTitle().trim().length() > 100) {
++            result.errors.add("问卷标题超过 100 字");
++        }
++        List<AiDraftSpec.AiDraftQuestion> questions = spec.getQuestions();
++        if (questions == null || questions.isEmpty()) {
++            result.errors.add("草稿缺少题目列表");
++            return;
++        }
++        if (questions.size() != expectedCount) {
++            result.errors.add("题数 " + questions.size() + " 与期望题数 " + expectedCount + " 不符");
++        }
++        if (questions.size() > MAX_QUESTIONS) {
++            result.errors.add("题目数量超过上限 " + MAX_QUESTIONS);
++        }
++        Set<String> seenLabels = new HashSet<>();
++        int openCount = 0;
++        for (int i = 0; i < questions.size(); i++) {
++            AiDraftSpec.AiDraftQuestion q = questions.get(i);
++            String at = "第 " + (i + 1) + " 题";
++            String type = normalizeType(q.getType());
++            if (type == null) {
++                result.errors.add(at + "题型 " + q.getType() + " 不在支持范围（RADIO/CHECKBOX/RATE/TEXT）");
++                continue;
++            }
++            if (isBlank(q.getLabel())) {
++                result.errors.add(at + "题干为空");
++                continue;
++            }
++            if (q.getLabel().trim().length() > 200) {
++                result.errors.add(at + "题干超过 200 字");
++            }
++            String labelKey = q.getLabel().trim();
++            if (!seenLabels.add(labelKey)) {
++                result.errors.add(at + "题干与其他题目重复");
++            }
++            if (containsLeadingWord(labelKey)) {
++                result.warnings.add(at + "题干可能含诱导性措辞，请人工确认");
++            }
++            Map<String, Object> normalized = new LinkedHashMap<>();
++            normalized.put("type", type);
++            normalized.put("label", labelKey);
++            normalized.put("required", q.getRequired() == null ? Boolean.TRUE : q.getRequired());
++            if ("RADIO".equals(type) || "CHECKBOX".equals(type)) {
++                List<String> options = q.getOptions();
++                if (options == null || options.size() < MIN_OPTIONS) {
++                    result.errors.add(at + "选项数量不足（至少 " + MIN_OPTIONS + " 个）");
++                } else if (options.size() > MAX_OPTIONS) {
++                    result.errors.add(at + "选项数量超过上限 " + MAX_OPTIONS);
++                } else {
++                    Set<String> seen = new HashSet<>();
++                    for (String option : options) {
++                        if (isBlank(option)) {
++                            result.errors.add(at + "存在空选项");
++                        } else if (!seen.add(option.trim())) {
++                            result.errors.add(at + "选项「" + option.trim() + "」重复");
++                        }
++                        if (containsLeadingWord(option)) {
++                            result.warnings.add(at + "选项「" + trim(option) + "」可能含诱导性措辞，请人工确认");
++                        }
++                    }
++                    if (options.size() == MIN_OPTIONS) {
++                        result.warnings.add(at + "仅有 2 个选项，覆盖面可能不足");
++                    }
++                }
++                normalized.put("options", options);
++            } else if ("RATE".equals(type)) {
++                Integer max = q.getRateMax();
++                if (max == null) {
++                    max = DEFAULT_RATE_MAX;
++                } else if (max < MIN_RATE_MAX || max > MAX_RATE_MAX) {
++                    result.errors.add(at + "量表范围 rateMax=" + max + " 超出 " + MIN_RATE_MAX + "-" + MAX_RATE_MAX);
++                    max = null;
++                }
++                normalized.put("rateMax", max);
++            } else {
++                openCount++;
++                normalized.put("placeholder", trim(q.getPlaceholder()));
++            }
++            result.questions.add(normalized);
++        }
++        if (openCount == 0 && result.errors.isEmpty()) {
++            result.errors.add("草稿缺少开放题（至少 1 道 TEXT）");
++        }
++    }
++
++    private static boolean isBlank(String value) {
++        return value == null || value.trim().isEmpty();
++    }
++
++    private static String trim(String value) {
++        return value == null ? "" : value.trim();
++    }
++
++    private static boolean containsLeadingWord(String text) {
++        if (text == null) {
++            return false;
++        }
++        for (String word : LEADING_WORDS) {
++            if (text.contains(word)) {
++                return true;
++            }
++        }
++        return false;
++    }
++
++    /** 校验结果：errors 非空即拒绝；questions 为归一化后的题目（编辑器四题型） */
++    public static class Result {
++        public final List<String> errors = new ArrayList<>();
++        public final List<String> warnings = new ArrayList<>();
++        public final List<Map<String, Object>> questions = new ArrayList<>();
++    }
++}
+
+new file mode 100644
+index 0000000..d9b9eb022b4d3928ffec62b34fa951cad9b5a67c
+--- /dev/null
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/ai/AiDraftService.java
+@@ -0,0 +1,140 @@
++package com.tduck.cloud.form.ai;
++
++import cn.hutool.core.util.StrUtil;
++import com.fasterxml.jackson.databind.DeserializationFeature;
++import com.fasterxml.jackson.databind.ObjectMapper;
++import com.tduck.cloud.common.exception.BaseException;
++import lombok.RequiredArgsConstructor;
++import lombok.extern.slf4j.Slf4j;
++import org.springframework.stereotype.Service;
++
++import java.util.LinkedHashMap;
++import java.util.Map;
++
++/**
++ * M2 AI 问卷草稿服务：生成 → 解析 → 服务端校验，返回结构化草稿供人工编辑。
++ * 本服务不写数据库、不发布问卷；发布复用 M1 版本机制，由用户手动触发。
++ */
++@Slf4j
++@Service
++@RequiredArgsConstructor
++public class AiDraftService {
++
++    private static final ObjectMapper MAPPER = new ObjectMapper()
++            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
++
++    private final OpenAiCompatibleProvider realProvider;
++    private final MockAiProvider mockProvider;
++
++    static final String SYSTEM_PROMPT = "你是严谨的问卷设计助手。根据用户 JSON 输入（goal=调查目标, audience=目标人群, extra=补充说明, questionCount=期望题数）设计问卷草稿。\n"
++            + "只输出一个 JSON 对象，禁止输出解释文字、markdown 代码块或其他内容。\n"
++            + "若目标足够明确，输出：\n"
++            + "{\"kind\":\"draft\",\"title\":\"问卷标题(不超过30字)\",\"description\":\"卷首语(1-2句)\",\"questions\":[{\"type\":\"RADIO|CHECKBOX|RATE|TEXT\",\"label\":\"题干\",\"required\":true,\"options\":[\"选项A\",\"选项B\"],\"rateMax\":5}],\"assumptions\":[\"设计假设\"],\"dimensions\":[\"预设调查维度\"]}\n"
++            + "硬性规则：1 questions 数量必须恰好等于 questionCount；2 至少 1 道 type=TEXT 的开放题；3 单选 RADIO 与多选 CHECKBOX 需 2-20 个互斥、不重复、覆盖主要可能的选项；4 RATE 的 rateMax 是 2-10 的整数（不填默认 5）；5 required 为布尔值；6 措辞中立，不得诱导；7 全部使用简体中文，贴合 audience 的语言习惯；8 预设维度放入 dimensions 供人工审核，不写入题目。\n"
++            + "若调查目标过于含糊、无法设计出有效问卷，改输出：\n"
++            + "{\"kind\":\"clarification\",\"clarification\":[\"需要发起者澄清的问题，最多3条\"],\"assumptions\":[\"初步假设\"]}";
++
++    /** AI 状态（页面展示 Provider/模型/真实或 Mock；不返回任何密钥） */
++    public Map<String, Object> status() {
++        boolean real = realProvider.available();
++        Map<String, Object> status = new LinkedHashMap<>();
++        status.put("mode", real ? "REAL" : "MOCK");
++        status.put("provider", real ? realProvider.providerName() : mockProvider.providerName());
++        status.put("model", real ? realProvider.model() : mockProvider.model());
++        status.put("configured", real);
++        return status;
++    }
++
++    public Map<String, Object> generate(AiDraftInput input) {
++        validateInput(input);
++        boolean real = realProvider.available();
++        AiProvider provider = real ? realProvider : mockProvider;
++        long startedAt = System.currentTimeMillis();
++        String raw;
++        try {
++            raw = provider.complete(SYSTEM_PROMPT, inputJson(input));
++        } catch (AiProviderException e) {
++            // 超时/网络/非200等统一转为面向用户的可恢复提示
++            log.warn("AI provider degraded: {}", e.getMessage());
++            throw new BaseException(e.getMessage());
++        }
++        AiDraftSpec spec = parse(extractJson(raw));
++        AiDraftValidator.Result validation = AiDraftValidator.validate(spec, input.getQuestionCount());
++        if (!validation.errors.isEmpty()) {
++            // 模型坏输出在此拦截：不允许进入编辑器/保存/发布路径
++            log.warn("AI draft rejected by validator: {}", String.join("; ", validation.errors));
++            throw new BaseException("AI 草稿未通过服务端校验：" + String.join("；", validation.errors) + "。可重试生成或改用手工建卷");
++        }
++        Map<String, Object> result = new LinkedHashMap<>();
++        result.put("kind", spec.getKind().trim().toLowerCase());
++        result.put("mode", real ? "REAL" : "MOCK");
++        result.put("provider", provider.providerName());
++        result.put("model", provider.model());
++        result.put("elapsedMs", System.currentTimeMillis() - startedAt);
++        result.put("warnings", validation.warnings);
++        result.put("assumptions", spec.getAssumptions());
++        if ("clarification".equals(result.get("kind"))) {
++            result.put("clarification", spec.getClarification());
++        } else {
++            result.put("title", spec.getTitle().trim());
++            result.put("description", StrUtil.nullToEmpty(spec.getDescription()));
++            result.put("questions", validation.questions);
++            result.put("dimensions", spec.getDimensions());
++        }
++        return result;
++    }
++
++    private static void validateInput(AiDraftInput input) {
++        if (input == null) {
++            throw new BaseException("请填写调查需求");
++        }
++        if (StrUtil.isBlank(input.getGoal()) || input.getGoal().trim().length() > 500) {
++            throw new BaseException("调查目标必填且不超过 500 字");
++        }
++        if (StrUtil.isBlank(input.getAudience()) || input.getAudience().trim().length() > 100) {
++            throw new BaseException("目标人群必填且不超过 100 字");
++        }
++        if (StrUtil.isNotBlank(input.getExtra()) && input.getExtra().trim().length() > 500) {
++            throw new BaseException("补充信息不超过 500 字");
++        }
++        Integer count = input.getQuestionCount();
++        if (count == null || count < 1 || count > AiDraftValidator.MAX_QUESTIONS) {
++            throw new BaseException("期望题数必须是 1-" + AiDraftValidator.MAX_QUESTIONS + " 的整数");
++        }
++    }
++
++    private static String inputJson(AiDraftInput input) {
++        Map<String, Object> m = new LinkedHashMap<>();
++        m.put("goal", input.getGoal().trim());
++        m.put("audience", input.getAudience().trim());
++        m.put("extra", StrUtil.nullToEmpty(input.getExtra()).trim());
++        m.put("questionCount", input.getQuestionCount());
++        try {
++            return MAPPER.writeValueAsString(m);
++        } catch (Exception e) {
++            throw new BaseException("请求组装失败，请重试");
++        }
++    }
++
++    /** 剥离 markdown 代码块等外壳，截取首个 { 到最后一个 } 之间的 JSON 文本 */
++    static String extractJson(String raw) {
++        if (raw == null || raw.trim().isEmpty()) {
++            throw new BaseException("AI 返回了空内容，请重试；不影响手工建卷");
++        }
++        String text = raw.trim();
++        int start = text.indexOf('{');
++        int end = text.lastIndexOf('}');
++        if (start < 0 || end <= start) {
++            throw new BaseException("AI 返回了无法解析的内容（非 JSON），请重试；不影响手工建卷");
++        }
++        return text.substring(start, end + 1);
++    }
++
++    static AiDraftSpec parse(String json) {
++        try {
++            return MAPPER.readValue(json, AiDraftSpec.class);
++        } catch (Exception e) {
++            throw new BaseException("AI 输出的 JSON 无法解析，请重试；不影响手工建卷");
++        }
++    }
++}
+
+new file mode 100644
+index 0000000..9945fde475dff008d10bb5a6f81eee3ecaa7aebc
+--- /dev/null
++++ b/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/AiDraftController.java
+@@ -0,0 +1,42 @@
++package com.tduck.cloud.api.web.controller;
++
++import com.tduck.cloud.common.util.Result;
++import com.tduck.cloud.form.ai.AiDraftInput;
++import com.tduck.cloud.form.ai.AiDraftService;
++import lombok.RequiredArgsConstructor;
++import lombok.extern.slf4j.Slf4j;
++import org.springframework.web.bind.annotation.GetMapping;
++import org.springframework.web.bind.annotation.PostMapping;
++import org.springframework.web.bind.annotation.RequestAttribute;
++import org.springframework.web.bind.annotation.RequestBody;
++import org.springframework.web.bind.annotation.RestController;
++
++/**
++ * M2 AI 问卷草稿。仅登录发起者可用；AI 只生成草稿，
++ * 不写问卷/题目数据，不触发发布（发布复用 M1 版本机制，由用户手动操作）。
++ */
++@Slf4j
++@RequiredArgsConstructor
++@RestController
++public class AiDraftController {
++
++    private final AiDraftService aiDraftService;
++
++    /**
++     * AI 状态：Provider 展示名、模型、真实 AI / Mock。
++     * 不返回 API Key 或内部地址。
++     */
++    @GetMapping("/user/form/ai/status")
++    public Result aiStatus(@RequestAttribute Long userId) {
++        return Result.success(aiDraftService.status());
++    }
++
++    /**
++     * 生成问卷草稿：返回结构化草稿与校验警告，供前端预览与人工编辑；
++     * 校验失败、超时、坏 JSON 均返回可恢复的失败信息。
++     */
++    @PostMapping("/user/form/ai/draft")
++    public Result aiDraft(@RequestBody AiDraftInput input, @RequestAttribute Long userId) {
++        return Result.success(aiDraftService.generate(input));
++    }
++}
+
+new file mode 100644
+index 0000000..722e6d18ce6a135438771ee831a9f100abdb1229
+--- /dev/null
++++ b/tduck-api/src/test/java/com/tduck/cloud/api/ai/AiDraftServiceTest.java
+@@ -0,0 +1,274 @@
++package com.tduck.cloud.api.ai;
++
++import com.tduck.cloud.common.exception.BaseException;
++import com.tduck.cloud.form.ai.AiDraftInput;
++import com.tduck.cloud.form.ai.AiDraftService;
++import com.tduck.cloud.form.ai.AiDraftSpec;
++import com.tduck.cloud.form.ai.AiDraftValidator;
++import com.tduck.cloud.form.ai.AiProviderException;
++import com.tduck.cloud.form.ai.MockAiProvider;
++import com.tduck.cloud.form.ai.OpenAiCompatibleProvider;
++import org.junit.Test;
++
++import java.util.Arrays;
++import java.util.List;
++import java.util.Map;
++
++import static org.junit.Assert.assertEquals;
++import static org.junit.Assert.assertFalse;
++import static org.junit.Assert.assertNotNull;
++import static org.junit.Assert.assertTrue;
++import static org.junit.Assert.fail;
++
++/**
++ * M2 AI 草稿单元回归（无需 Spring/网络）：校验器规则、Mock 生成链路、坏输出拦截。
++ */
++public class AiDraftServiceTest {
++
++    private static AiDraftService serviceWith(final String rawOutput) {
++        OpenAiCompatibleProvider unconfigured = new OpenAiCompatibleProvider("unused", "", "", "", 1000);
++        return new AiDraftService(unconfigured, new AiProviderStub(rawOutput));
++    }
++
++    /** 把脚本化输出的 Provider 伪装成 MockAiProvider 注入（Mock 仅在真实 Provider 未配置时被调用） */
++    private static class AiProviderStub extends MockAiProvider {
++        private final String output;
++
++        AiProviderStub(String output) {
++            this.output = output;
++        }
++
++        @Override
++        public String complete(String systemPrompt, String inputJson) {
++            return output;
++        }
++    }
++
++    private static AiDraftInput input(int count) {
++        AiDraftInput input = new AiDraftInput();
++        input.setGoal("调查大学生为什么不参加社团");
++        input.setAudience("在校大学生");
++        input.setQuestionCount(count);
++        return input;
++    }
++
++    private static AiDraftSpec draft(AiDraftSpec.AiDraftQuestion... questions) {
++        AiDraftSpec spec = new AiDraftSpec();
++        spec.setKind("draft");
++        spec.setTitle("大学生社团参与调查");
++        spec.setQuestions(Arrays.asList(questions));
++        return spec;
++    }
++
++    private static AiDraftSpec.AiDraftQuestion q(String type, String label, String... options) {
++        AiDraftSpec.AiDraftQuestion question = new AiDraftSpec.AiDraftQuestion();
++        question.setType(type);
++        question.setLabel(label);
++        question.setRequired(true);
++        if (options.length > 0) {
++            question.setOptions(Arrays.asList(options));
++        }
++        return question;
++    }
++
++    // ===== 校验器规则 =====
++
++    @Test
++    public void validDraftPassesWithAllFourTypesAndOpenQuestion() {
++        AiDraftValidator.Result result = AiDraftValidator.validate(draft(
++                q("RADIO", "您未参加社团的主要原因是？", "不了解", "时间冲突", "兴趣不足"),
++                q("CHECKBOX", "影响您参加的因素有哪些？", "时间", "费用", "同伴"),
++                q("RATE", "整体兴趣评分"),
++                q("TEXT", "您还有什么想补充？")), 4);
++        assertTrue(result.errors.toString(), result.errors.isEmpty());
++        assertEquals(4, result.questions.size());
++        assertEquals("TEXTAREA", result.questions.get(3).get("type"));
++        assertEquals(Boolean.TRUE, result.questions.get(3).get("required"));
++    }
++
++    @Test
++    public void illegalTypeIsRejected() {
++        AiDraftValidator.Result result = AiDraftValidator.validate(draft(
++                q("RADIO", "单选题", "A", "B"),
++                q("DROPDOWN", "非法题型", "A", "B")), 2);
++        assertFalse(result.errors.isEmpty());
++        assertTrue(result.errors.get(0).contains("不在支持范围"));
++    }
++
++    @Test
++    public void duplicateOptionsAreRejected() {
++        AiDraftValidator.Result result = AiDraftValidator.validate(draft(
++                q("RADIO", "题干", "相同", " 相同 ")), 1);
++        assertFalse(result.errors.isEmpty());
++        assertTrue(result.errors.stream().anyMatch(e -> e.contains("重复")));
++    }
++
++    @Test
++    public void tooFewOptionsAreRejected() {
++        AiDraftValidator.Result result = AiDraftValidator.validate(draft(
++                q("RADIO", "题干", "唯一选项"), q("TEXT", "开放")), 2);
++        assertTrue(result.errors.stream().anyMatch(e -> e.contains("选项数量不足")));
++    }
++
++    @Test
++    public void questionCountMismatchIsRejected() {
++        AiDraftValidator.Result result = AiDraftValidator.validate(draft(
++                q("RADIO", "题干", "A", "B")), 5);
++        assertTrue(result.errors.stream().anyMatch(e -> e.contains("与期望题数")));
++    }
++
++    @Test
++    public void rateMaxOutOfRangeIsRejected() {
++        AiDraftSpec.AiDraftQuestion rate = q("RATE", "量表题");
++        rate.setRateMax(11);
++        AiDraftValidator.Result result = AiDraftValidator.validate(draft(rate, q("TEXT", "开放")), 2);
++        assertTrue(result.errors.stream().anyMatch(e -> e.contains("量表范围")));
++    }
++
++    @Test
++    public void rateMaxDefaultsToFiveWhenAbsent() {
++        AiDraftValidator.Result result = AiDraftValidator.validate(draft(q("RATE", "量表题"), q("TEXT", "开放")), 2);
++        assertTrue(result.errors.isEmpty());
++        assertEquals(5, result.questions.get(0).get("rateMax"));
++    }
++
++    @Test
++    public void missingOpenQuestionIsRejected() {
++        AiDraftValidator.Result result = AiDraftValidator.validate(draft(
++                q("RADIO", "题一", "A", "B"),
++                q("CHECKBOX", "题二", "A", "B")), 2);
++        assertTrue(result.errors.stream().anyMatch(e -> e.contains("开放题")));
++    }
++
++    @Test
++    public void blankLabelIsRejected() {
++        AiDraftValidator.Result result = AiDraftValidator.validate(draft(
++                q("RADIO", "  ", "A", "B"), q("TEXT", "开放")), 2);
++        assertTrue(result.errors.stream().anyMatch(e -> e.contains("题干为空")));
++    }
++
++    @Test
++    public void leadingWordingProducesWarningNotError() {
++        AiDraftValidator.Result result = AiDraftValidator.validate(draft(
++                q("RADIO", "难道您不觉得社团很有意义吗", "是", "否"), q("TEXT", "开放")), 2);
++        assertTrue(result.errors.isEmpty());
++        assertFalse(result.warnings.isEmpty());
++    }
++
++    @Test
++    public void clarificationWithQuestionsPassesAndEmptyOneFails() {
++        AiDraftSpec spec = new AiDraftSpec();
++        spec.setKind("clarification");
++        spec.setClarification(List.of("您想调查的是从未参加还是中途退出的人？"));
++        assertTrue(AiDraftValidator.validate(spec, 5).errors.isEmpty());
++        spec.setClarification(List.of());
++        assertFalse(AiDraftValidator.validate(spec, 5).errors.isEmpty());
++    }
++
++    // ===== 服务层：Mock 链路与坏输出拦截 =====
++
++    @Test
++    public void mockProviderProducesValidDraftInMockMode() {
++        AiDraftService service = new AiDraftService(
++                new OpenAiCompatibleProvider("unused", "", "", "", 1000), new MockAiProvider());
++        Map<String, Object> result = service.generate(input(6));
++        assertEquals("MOCK", result.get("mode"));
++        assertEquals("draft", result.get("kind"));
++        List<Map<String, Object>> questions = (List<Map<String, Object>>) result.get("questions");
++        assertEquals(6, questions.size());
++        assertTrue(questions.stream().anyMatch(x -> "TEXTAREA".equals(x.get("type"))));
++        assertNotNull(result.get("title"));
++    }
++
++    @Test
++    public void markdownFencedJsonIsUnwrappedAndParsed() {
++        String fenced = "```json\n" + mockRawDraft(2) + "\n```";
++        Map<String, Object> result = serviceWith(fenced).generate(input(2));
++        assertEquals("MOCK", result.get("mode"));
++        assertEquals("draft", result.get("kind"));
++    }
++
++    @Test
++    public void brokenJsonOutputIsRejectedWithRecoverableMessage() {
++        try {
++            serviceWith("抱歉，我无法以 JSON 输出……").generate(input(2));
++            fail("坏输出应被拒绝");
++        } catch (BaseException e) {
++            assertTrue(e.getMessage(), e.getMessage().contains("无法解析"));
++        }
++    }
++
++    @Test
++    public void invalidModelOutputFailsValidationInsteadOfPassingThrough() {
++        // 题数不符 + 选项重复的"模型输出"
++        String bad = "{\"kind\":\"draft\",\"title\":\"坏草稿\",\"questions\":["
++                + "{\"type\":\"RADIO\",\"label\":\"题\",\"options\":[\"A\",\"A\"]}]}";
++        try {
++            serviceWith(bad).generate(input(4));
++            fail("未通过校验的草稿不应返回");
++        } catch (BaseException e) {
++            assertTrue(e.getMessage(), e.getMessage().contains("未通过服务端校验"));
++        }
++    }
++
++    @Test
++    public void providerTimeoutSurfacesAsRecoverableBaseException() {
++        OpenAiCompatibleProvider unconfigured = new OpenAiCompatibleProvider("unused", "", "", "", 1);
++        AiDraftService service = new AiDraftService(unconfigured, new MockAiProvider());
++        // 未配置真实 Provider 时走 Mock；这里直接验证异常转译路径
++        try {
++            new AiDraftService(unconfigured, new MockAiProvider() {
++                @Override
++                public String complete(String systemPrompt, String inputJson) {
++                    throw new AiProviderException("AI 服务请求失败（超时或网络异常），可稍后重试；手工建卷不受影响");
++                }
++            }).generate(input(2));
++            fail("超时应转为可恢复提示");
++        } catch (BaseException e) {
++            assertTrue(e.getMessage().contains("手工建卷"));
++        }
++        assertNotNull(service.status());
++    }
++
++    @Test
++    public void inputValidationRejectsBlankGoalAndBadCount() {
++        AiDraftService service = new AiDraftService(
++                new OpenAiCompatibleProvider("unused", "", "", "", 1000), new MockAiProvider());
++        AiDraftInput blank = input(5);
++        blank.setGoal(" ");
++        try {
++            service.generate(blank);
++            fail("空白目标应被拒绝");
++        } catch (BaseException e) {
++            assertTrue(e.getMessage().contains("调查目标"));
++        }
++        AiDraftInput badCount = input(0);
++        try {
++            service.generate(badCount);
++            fail("非法题数应被拒绝");
++        } catch (BaseException e) {
++            assertTrue(e.getMessage().contains("题数"));
++        }
++    }
++
++    @Test
++    public void statusReportsRealProviderWhenConfigured() {
++        OpenAiCompatibleProvider real = new OpenAiCompatibleProvider(
++                "测试网关", "http://127.0.0.1:1/v1", "secret-key-not-returned", "group/group", 1000);
++        Map<String, Object> status = new AiDraftService(real, new MockAiProvider()).status();
++        assertEquals("REAL", status.get("mode"));
++        assertEquals("group/group", status.get("model"));
++        assertFalse(status.toString().contains("secret-key-not-returned"));
++    }
++
++    private static String mockRawDraft(int count) {
++        StringBuilder sb = new StringBuilder("{\"kind\":\"draft\",\"title\":\"临时问卷\",\"questions\":[");
++        for (int i = 0; i < count; i++) {
++            if (i > 0) {
++                sb.append(',');
++            }
++            sb.append("{\"type\":\"TEXT\",\"label\":\"开放题").append(i + 1).append("\",\"required\":false}");
++        }
++        return sb.append("]}").toString();
++    }
++}
+

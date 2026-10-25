@@ -8,7 +8,7 @@
           <p class="page-subtitle">共 {{ total || 0 }} 个收集项目，实时数据随时掌握</p>
         </div>
         <div class="header-right">
-          <el-button class="ai-create-btn" type="primary" @click="$refs.chatFormDialog.open()">
+          <el-button class="ai-create-btn" type="primary" @click="$router.push('/project/form/ai-draft')">
             <i class="el-icon-magic-stick ai-icon"></i>
             AI 智能建表
           </el-button>

@@ -429,3 +429,10 @@ credential-scan.json credential-scan.mjs 凭据扫描结果（仅文件/行号/�
 18-data-version-v1.png 数据页切到 V1：列头旧题目Q、仅 1 份旧A 答卷
 19-data-version-v2.png 数据页默认 V2：列头新题目Q、仅 1 份新X 答卷
 20-old-link-snapshot-title.png 旧令牌链接标题为发布时快照（草稿已改名）
+--- M2 AI 问卷草稿 2026-10-25 ---
+M2_AI_DRAFT.md M2 验收证据（规格映射/实现/回归/真实模型验证/剧本对照/运行步骤/遗留）
+ai-draft.json API 级回归 21 项（含真实模型与无密钥 Mock 降级；不含 API Key）
+m2-ui-flows.json UI 级回归 9 项（Edge 无头真实流程）
+21-ai-draft-page.png AI 草稿页：状态栏"真实 AI · 本机推理网关 · group/group"+输入表单
+22-ai-draft-preview.png 草稿预览：6 题、题型标签、开放题/量表标注、审核提示
+23-ai-draft-imported-editor.png 导入现有编辑器：6 题可编辑、未发布无冻结

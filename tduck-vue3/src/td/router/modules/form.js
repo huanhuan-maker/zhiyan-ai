@@ -15,6 +15,11 @@ export default [
         component: () => import(/* webpackChunkName: 'root' */ '@/views/form/editor')
       },
       {
+        path: 'ai-draft',
+        meta: { requireLogin: true },
+        component: () => import('@/views/form/ai-draft')
+      },
+      {
         path: 'logic',
         meta: { requireLogin: true },
         component: () => import(/* webpackChunkName: 'root' */ '@/views/form/logic')

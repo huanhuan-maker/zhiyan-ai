@@ -60,9 +60,13 @@ node scripts/tduck/check-templates.mjs
 node scripts/tduck/version-flows.mjs
 node scripts/tduck/version-fixes.mjs
 node scripts/tduck/credential-scan.mjs
+node scripts/tduck/ai-draft.mjs
+node scripts/tduck/m2-ui-flows.mjs
 .\scripts\tduck\Verify-HTTP.ps1
 .\scripts\tduck\Verify-Original.ps1
 ```
+
+`ai-draft.mjs`/`m2-ui-flows.mjs` 是 M2 AI 问卷草稿回归：AI Provider 只由服务端调用（`.local/tduck-dev/application-local.yml` 的 `ai:` 段，含本机推理网关地址与密钥，不入库），页面与响应明确标注 Provider/模型/真实 AI 或 Mock；草稿经服务端校验后导入现有四题型编辑器，发布由用户手动完成（复用 M1 版本机制）。
 
 `version-fixes.mjs` 是 M1 修复轮专项回归（22 项）：版本快照冻结表单标题/描述/逻辑/主题、提交回执按版本分键（跨版本同会话键不互相吞答卷）、历史答卷/数据页按所属版本题目渲染与筛选。`credential-scan.mjs` 扫描全部 Git 跟踪文本文件不得包含 `.local/tduck-credentials.json` 中的真实凭据；测试脚本一律从 `.local` 读取账号与口令，不落仓库。
 

@@ -18,8 +18,9 @@ export default defineConfig(({ mode }) => {
       target,
       changeOrigin: true,
       rewrite: (path: string) => path.replace(/^\/tduck-api/, ""),
-      timeout: 15000,
-      proxyTimeout: 15000,
+      // AI 草稿生成走真实模型，可能超过默认代理超时（后端 ai.timeout-ms 默认 90s）
+      timeout: 120000,
+      proxyTimeout: 120000,
     },
   };
   return {

@@ -1,0 +1,105 @@
+{
+ "date": "2026-10-25T03:57:36.132Z",
+ "total": 21,
+ "failed": 0,
+ "checks": [
+  {
+   "name": "M2-1: 未登录访问 AI 状态被拒绝",
+   "ok": true
+  },
+  {
+   "name": "M2-2: 未登录生成草稿被拒绝",
+   "ok": true
+  },
+  {
+   "name": "M2-3: 状态显示真实 AI + Provider/模型",
+   "ok": true
+  },
+  {
+   "name": "M2-4: 状态响应不含 API Key",
+   "ok": true
+  },
+  {
+   "name": "M2-5: 空白目标被拒绝且提示可恢复",
+   "ok": true
+  },
+  {
+   "name": "M2-6: 非法题数被拒绝",
+   "ok": true
+  },
+  {
+   "name": "M2-7: 题数超上限(30)被拒绝",
+   "ok": true
+  },
+  {
+   "name": "M2-8: 真实模型直接生成草稿(mode=REAL)",
+   "ok": "group/group"
+  },
+  {
+   "name": "M2-9: 草稿元信息完整(跳过澄清场景)",
+   "ok": true
+  },
+  {
+   "name": "M2-10: 草稿题数=期望6且仅四题型",
+   "ok": true
+  },
+  {
+   "name": "M2-11: 草稿含开放题与量表",
+   "ok": true
+  },
+  {
+   "name": "M2-12: 选择题选项唯一且≥2",
+   "ok": true
+  },
+  {
+   "name": "M2-13: 量表范围合法(2-10)",
+   "ok": true
+  },
+  {
+   "name": "M2-14: 草稿含标题与设计假设",
+   "ok": true
+  },
+  {
+   "name": "M2-15: 草稿可按四题型结构导入(现有题目接口)",
+   "ok": true
+  },
+  {
+   "name": "M2-16: 编辑器读取到全部题目(与草稿同数)",
+   "ok": true
+  },
+  {
+   "name": "M2-17: AI 草稿导入后仍为未发布草稿(status=1)",
+   "ok": true
+  },
+  {
+   "name": "M2-18: AI 存在时手工建卷/发布/答题不受影响",
+   "ok": true
+  },
+  {
+   "name": "M2-19: 无密钥实例可在 8996 启动",
+   "ok": true
+  },
+  {
+   "name": "M2-20: 无密钥时状态明确标注 Mock(不假称真实 AI)",
+   "ok": true
+  },
+  {
+   "name": "M2-21: Mock 模式可生成草稿且通过同一校验(含开放题)",
+   "ok": true
+  }
+ ],
+ "realSample": {
+  "title": "大学生社团参与意愿调查",
+  "provider": "本机推理网关",
+  "model": "group/group",
+  "elapsedMs": 4564,
+  "types": [
+   "RADIO",
+   "CHECKBOX",
+   "RATE",
+   "RADIO",
+   "RADIO",
+   "TEXTAREA"
+  ]
+ }
+}
