@@ -422,3 +422,10 @@ tduck-vue3/README.md
 evidence/tduck-full/M1_VERSIONS.md
 evidence/tduck-full/16-version-analysis-v1.png
 evidence/tduck-full/17-old-link-v1-stopped.png
+--- M1 修复轮 2026-10-25（四项缺陷：明文凭证/快照不完整/跨版本回执/历史答卷展示）---
+M1_VERSIONS.md 追加 §8 修复轮记录（测试先行、修复前后结果、边界更新）
+version-fixes.json version-fixes.mjs 22 项专项回归结果（脱敏，仅检查名与通过状态）
+credential-scan.json credential-scan.mjs 凭据扫描结果（仅文件/行号/规则名，不含凭据值）
+18-data-version-v1.png 数据页切到 V1：列头旧题目Q、仅 1 份旧A 答卷
+19-data-version-v2.png 数据页默认 V2：列头新题目Q、仅 1 份新X 答卷
+20-old-link-snapshot-title.png 旧令牌链接标题为发布时快照（草稿已改名）

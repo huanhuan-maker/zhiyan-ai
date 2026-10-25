@@ -3,13 +3,17 @@
 //       → 旧令牌链接加载 v1 旧内容并拒绝提交 → 答卷按版本绑定 → 旧答案不变 → 统计按版本口径
 import {execFileSync} from 'node:child_process'
 import path from 'node:path'
+import fs from 'node:fs'
 
 const assert=(c,m)=>{if(!c)throw new Error(m)}
 const BASE='http://127.0.0.1:8997'
 const MYSQL='D:/MySQL/MySQL Server 8.0/bin/mysql.exe'
+// 凭据一律取自 .local（不入库）：数据库口令见 tduck-credentials.json，测试账号见 tduck-dev/acceptance.json
+const creds=JSON.parse(fs.readFileSync('.local/tduck-credentials.json','utf8').replace(/^\uFEFF/,''))
+const fixt=JSON.parse(fs.readFileSync('.local/tduck-dev/acceptance.json','utf8').replace(/^\uFEFF/,''))
 const checks=[],errors=[]
 function check(name,ok,detail=''){checks.push({name,ok,detail});console.log((ok?'[ok] ':'[FAIL] ')+name+(detail?' | '+detail:''));if(!ok)errors.push(name)}
-function sql(q){return execFileSync(MYSQL,['-uroot','-p123456','-N','-B','--default-character-set=utf8mb4','-e',q,'tduck_vue3_dev'],{stdio:['pipe','pipe','pipe']}).toString().trim()}
+function sql(q){return execFileSync(MYSQL,['-uroot','-p'+creds.mysqlRootPassword,'-N','-B','--default-character-set=utf8mb4','-e',q,'tduck_vue3_dev'],{stdio:['pipe','pipe','pipe']}).toString().trim()}
 function sqlRows(q){const out=sql(q);return out?out.split('\n').map(r=>r.split('\t')):[]}
 async function api(path,{method='GET',token,body,headers={}}={}){
   const r=await fetch(BASE+path,{method,headers:{'Content-Type':'application/json',...headers,...(token?{token}:{})},...(body!==undefined?{body:JSON.stringify(body)}:{})})
@@ -22,8 +26,8 @@ const defs=Object.fromEntries(allComponents.flatMap(g=>g.list).map(x=>[x.typeId,
 const mk=t=>{const it=clone(defs[t]);it.config.formId=t.toLowerCase()+Date.now()+Math.floor(Math.random()*1000);return it}
 const conv=(it,k)=>{const c=it.config;return {type:it.typeId,formItemId:c.formId,label:c.label,required:c.required,placeholder:it.placeholder||'',regList:c.regList||[],showLabel:c.showLabel,span:c.span||24,scheme:it,formKey:k}}
 
-const login=await api('/login/account',{method:'POST',body:{account:'2913620982@qq.com',password:'134679852'}})
-assert(login.json?.code===200,'管理员登录失败: '+login.json?.msg)
+const login=await api('/login/account',{method:'POST',body:{account:fixt.owner,password:fixt.password}})
+assert(login.json?.code===200,'测试账号登录失败: '+login.json?.msg)
 const token=login.json.data.token
 
 // ===== 1. 建卷 → 发布 v1（生成快照+令牌） =====

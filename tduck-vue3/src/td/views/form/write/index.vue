@@ -255,7 +255,9 @@ export default {
       this.submitFormData.formType = this.$refs.bizProjectForm.formConf.formType
       let res = null
       if (this.writeType === 1) {
-        const keyName = `tdSubmission:${this.formKey}`
+        // 提交幂等键按发布版本隔离：同一标签页跨版本不互相复用回执
+        const versionTag = this.$refs.bizProjectForm?.formConf?.version ?? 'draft'
+        const keyName = `tdSubmission:${this.formKey}:v${versionTag}`
         let submissionKey = sessionStorage.getItem(keyName)
         if (!submissionKey) {
           submissionKey = crypto.randomUUID()

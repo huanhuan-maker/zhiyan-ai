@@ -1,4 +1,4 @@
-index 417d781..8ce5f73 100644
+index 417d7815b7ad69fdc7e2f84038669a14a267f793..e9075520432134cba18a4ab7c909df54fd1b2a8c 100644
 --- a/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/UserFormController.java
 +++ b/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/UserFormController.java
 @@ -39,7 +39,10 @@ import javax.annotation.security.PermitAll;
@@ -61,7 +61,7 @@ index 417d781..8ce5f73 100644
      }
  
      /**
-@@ -210,20 +221,38 @@ public class UserFormController {
+@@ -210,24 +221,49 @@ public class UserFormController {
  
  
      /**
@@ -104,13 +104,26 @@ index 417d781..8ce5f73 100644
 +        }
          UserFormThemeEntity theme = userFormThemeService.getByKey(key);
          UserFormLogicEntity formLogic = userFormLogicService.getOne(Wrappers.<UserFormLogicEntity>lambdaQuery().eq(UserFormLogicEntity::getFormKey, key));
-         // 如果是考试 移除正确答案 避免把正确答案返回到前端
-@@ -236,7 +265,34 @@ public class UserFormController {
+-        // 如果是考试 移除正确答案 避免把正确答案返回到前端
+-        if (form.getType() == FormTypeEnum.EXAM) {
++        UserFormDetailVO.UserForm formInfo = new UserFormDetailVO.UserForm(form);
++        if (version != null) {
++            // 旧链接所见即发布时内容：标题/描述/主题/逻辑均取版本快照，草稿修改不影响已发布版本
++            formInfo = versionService.restoreForm(version, form);
++            theme = versionService.restoreTheme(version, theme);
++            formLogic = versionService.restoreLogic(version, formLogic);
++        }
++        // 如果是考试 移除正确答案 避免把正确答案返回到前端（按发布时的表单类型判断）
++        if (formInfo.getType() == FormTypeEnum.EXAM) {
+             formItemList.forEach(item -> {
+                 JSONObject schemeJson = JSONUtil.parseObj(item.getScheme());
+                 if (schemeJson.containsKey("examConfig")) {
+@@ -236,7 +272,34 @@ public class UserFormController {
                  item.setScheme(schemeJson);
              });
          }
 -        return Result.success(new UserFormDetailVO(new UserFormDetailVO.UserForm(form), formItemList, theme, formLogic));
-+        UserFormDetailVO detailVO = new UserFormDetailVO(new UserFormDetailVO.UserForm(form), formItemList, theme, formLogic);
++        UserFormDetailVO detailVO = new UserFormDetailVO(formInfo, formItemList, theme, formLogic);
 +        if (version != null) {
 +            detailVO.setVersion(version.getVersionNo());
 +            detailVO.setVersionStatus(version.getStatus());
@@ -141,7 +154,34 @@ index 417d781..8ce5f73 100644
      }
  
  
-index 937078e..f3ee601 100644
+@@ -273,11 +336,23 @@ public class UserFormController {
+ 
+     /**
+      * 获取表单字段 包括系统默认字段
++     *
++     * @param version 发布版本号：按版本快照返回字段（历史答卷按其所属版本渲染），缺省返回当前题目
+      */
+     @GetMapping("/user/form/fields/{formKey}")
+-    public Result queryUserFormFields(@PathVariable String formKey) {
++    public Result queryUserFormFields(@PathVariable String formKey,
++                                      @RequestParam(value = "version", required = false) Integer version) {
+         FormAuthUtils.hasPermission(formKey);
+-        return Result.success(formItemService.listAllFormFields(formKey));
++        if (version == null) {
++            return Result.success(formItemService.listAllFormFields(formKey));
++        }
++        UserFormVersionEntity versionEntity = versionService.byNo(formKey, version);
++        if (versionEntity == null) {
++            return Result.failed("问卷版本不存在");
++        }
++        List<FormFieldVO> fields = versionService.fieldsOf(versionEntity);
++        FormDataUtils.addFormDefaultDataField(formService.getByKey(formKey), fields);
++        return Result.success(fields);
+     }
+ 
+     /**
+
+index 937078efeb53118f967b9fbc437c7197348a612b..f3ee601865f3cefcab4e0309180d927cf090512a 100644
 --- a/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/FormDashboardController.java
 +++ b/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/FormDashboardController.java
 @@ -33,18 +33,33 @@ public class FormDashboardController {
@@ -196,7 +236,8 @@ index 937078e..f3ee601 100644
 +        return Result.success(formDashboardService.formReportAnalysis(formKey, version));
      }
  }
-index e0f538d..00be19f 100644
+
+index e0f538dadd161e2a3e831c7a7c8bae30174db0c0..00be19f63fa84b42a419776c594a00cb7df22dd1 100644
 --- a/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/UserFormResultController.java
 +++ b/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/UserFormResultController.java
 @@ -168,7 +168,7 @@ public class UserFormResultController {
@@ -208,7 +249,8 @@ index e0f538d..00be19f 100644
          if (!Boolean.TRUE.equals(result.get("replayed"))) ThreadUtil.execAsync(() -> {
              sendWriteResultNotify(entity.getFormKey());
          });
-index 99bd0fa..f21a071 100644
+
+index 99bd0fae37b339a085b815d105637237919b25df..f21a0718dcfd5440aa92194ec639e18cd625430f 100644
 --- a/tduck-form/src/main/java/com/tduck/cloud/form/util/FormAuthUtils.java
 +++ b/tduck-form/src/main/java/com/tduck/cloud/form/util/FormAuthUtils.java
 @@ -20,13 +20,15 @@ public class FormAuthUtils {
@@ -230,7 +272,51 @@ index 99bd0fa..f21a071 100644
          }
      }
  
-index 6f89840..8d28490 100644
+
+index b5f8e26689b23df803428efce0d4b2410cbfc5c0..0421bec2ce4a1bc9d9232353b92652202e1a7ff2 100644
+--- a/tduck-form/src/main/java/com/tduck/cloud/form/util/FormDataImportUtils.java
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/util/FormDataImportUtils.java
+@@ -17,6 +17,7 @@ import com.tduck.cloud.common.util.SecurityUtils;
+ import com.tduck.cloud.common.util.ServletUtils;
+ import com.tduck.cloud.form.entity.UserFormDataEntity;
+ import com.tduck.cloud.form.entity.UserFormItemEntity;
++import com.tduck.cloud.form.entity.UserFormVersionEntity;
+ import com.tduck.cloud.form.entity.enums.FormItemTypeEnum;
+ import com.tduck.cloud.form.entity.struct.CascaderSchemaStruct;
+ import com.tduck.cloud.form.entity.struct.ImageSelectSchemaStruct;
+@@ -24,6 +25,7 @@ import com.tduck.cloud.form.entity.struct.OptionSchemaStruct;
+ import com.tduck.cloud.form.entity.struct.UploadResultStruct;
+ import com.tduck.cloud.form.service.UserFormDataService;
+ import com.tduck.cloud.form.service.UserFormItemService;
++import com.tduck.cloud.form.service.UserFormVersionService;
+ import lombok.Data;
+ import lombok.RequiredArgsConstructor;
+ import org.springframework.stereotype.Component;
+@@ -53,6 +55,7 @@ public class FormDataImportUtils {
+      */
+     private final UserFormItemService userFormItemService;
+     private final UserFormDataService userFormDataService;
++    private final UserFormVersionService userFormVersionService;
+     private final List<FormItemTypeEnum> MULTIPLE_TYPE_LIST = CollUtil.newArrayList(FormItemTypeEnum.CHECKBOX, FormItemTypeEnum.CASCADER);
+     private final String LABEL = "label";
+ 
+@@ -185,11 +188,14 @@ public class FormDataImportUtils {
+             successNum++;
+             rows.add(rowData);
+         }
++        // 导入数据归属最新发布版本，与该版本的题目模板/统计口径保持一致（未发布问卷保持无版本兼容）
++        UserFormVersionEntity latestVersion = userFormVersionService.latest(formKey);
+         rows.forEach(row -> {
+             UserFormDataEntity entity = new UserFormDataEntity();
+             // 导入Excel时设置提交用户为当前登录用户
+             entity.setCreateBy(String.valueOf(SecurityUtils.getUserId()));
+             entity.setFormKey(formKey);
++            entity.setVersionNo(latestVersion == null ? null : latestVersion.getVersionNo());
+             entity.setSubmitRequestIp(ServletUtils.getRequest().getRemoteAddr());
+             entity.setOriginalData(row);
+             userFormDataService.saveFormResult(entity);
+
+index 6f89840e9f2854717728dd8ede7eb70e089c7d41..8d28490232541a7f81f7ab9188d7702762616e98 100644
 --- a/tduck-form/src/main/java/com/tduck/cloud/form/entity/UserFormDataEntity.java
 +++ b/tduck-form/src/main/java/com/tduck/cloud/form/entity/UserFormDataEntity.java
 @@ -36,6 +36,17 @@ public class UserFormDataEntity extends SysBaseEntity {
@@ -251,7 +337,8 @@ index 6f89840..8d28490 100644
      /**
       * 填写结果原始数据
       */
-index 1521cf7..71f4be9 100644
+
+index 1521cf7b508f5a48095db78efe2ba821fbd446ea..b5fc7643e28b037e4e4ac44f66b7996c443aa7c3 100644
 --- a/tduck-form/src/main/java/com/tduck/cloud/form/service/PublicSubmissionService.java
 +++ b/tduck-form/src/main/java/com/tduck/cloud/form/service/PublicSubmissionService.java
 @@ -3,6 +3,7 @@ package com.tduck.cloud.form.service;
@@ -262,7 +349,7 @@ index 1521cf7..71f4be9 100644
  import com.tduck.cloud.form.mapper.PublicSubmissionMapper;
  import lombok.RequiredArgsConstructor;
  import org.springframework.stereotype.Service;
-@@ -16,9 +17,10 @@ public class PublicSubmissionService {
+@@ -16,18 +17,34 @@ public class PublicSubmissionService {
      private final PublicSubmissionMapper submissions;
      private final UserFormDataService answers;
      private final UserFormSettingService settings;
@@ -273,12 +360,7 @@ index 1521cf7..71f4be9 100644
 +    public Map<String,Object> submit(UserFormDataEntity entity, String session, String versionToken) {
          if(session == null || !session.matches("[a-zA-Z0-9-]{32,80}"))
              throw new IllegalArgumentException("缺少有效答题会话，请刷新页面后重试");
-         String hash = DigestUtil.sha256Hex(session);
-@@ -30,6 +32,18 @@ public class PublicSubmissionService {
-             result.put("replayed", true);
-             return result;
-         }
-+        // 版本绑定：按链接令牌定位受访者所见的不可变版本；无令牌时绑定当前收集中的版本
++        // 版本绑定先于回执：按链接令牌定位受访者所见的不可变版本；无令牌时绑定当前收集中的版本
 +        UserFormVersionEntity version;
 +        if(versionToken != null && !versionToken.trim().isEmpty()) {
 +            version = versions.byToken(versionToken.trim());
@@ -290,18 +372,141 @@ index 1521cf7..71f4be9 100644
 +            version = versions.openVersion(entity.getFormKey());
 +        }
 +        entity.setVersionNo(version == null ? null : version.getVersionNo());
++        // 回执按 (formKey, session, version) 分键：同版本幂等去重，跨版本同键各自计数
++        int receiptVersion = version == null ? 0 : version.getVersionNo();
+         String hash = DigestUtil.sha256Hex(session);
+-        submissions.reserve(entity.getFormKey(), hash);
+-        Long existing = submissions.answer(entity.getFormKey(), hash);
++        submissions.reserve(entity.getFormKey(), hash, receiptVersion);
++        Long existing = submissions.answer(entity.getFormKey(), hash, receiptVersion);
+         if(existing != null) {
+             Map<String,Object> result = new HashMap<>();
+             result.put("id", existing);
+             result.put("replayed", true);
++            result.put("versionNo", version == null ? null : version.getVersionNo());
+             return result;
+         }
          Result<Boolean> status = settings.getUserFormWriteSettingStatus(entity.getFormKey(),entity.getSubmitRequestIp(),entity.getWxOpenId(),1);
-         if(status.getMsg()!=null && !status.getMsg().isEmpty()) throw new IllegalArgumentException(status.getMsg());
+@@ -35,8 +52,9 @@ public class PublicSubmissionService {
          // Generated IDs only. A public client must not choose an existing answer ID.
-@@ -37,6 +51,7 @@ public class PublicSubmissionService {
+         entity.setId(null);
          Map<String,Object> result = answers.saveFormResult(entity);
-         submissions.complete(entity.getFormKey(),hash,entity.getId());
+-        submissions.complete(entity.getFormKey(),hash,entity.getId());
++        submissions.complete(entity.getFormKey(),hash,receiptVersion,entity.getId());
          result.put("replayed",false);
 +        result.put("versionNo",entity.getVersionNo());
          return result;
      }
  }
-index df5836b..20b48b7 100644
+
+index e5b69a779193c856bf68460091e23e8832befb8f..bb570d53b973572629e4b9e66df01ff2e6569692 100644
+--- a/tduck-form/src/main/java/com/tduck/cloud/form/mapper/PublicSubmissionMapper.java
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/mapper/PublicSubmissionMapper.java
+@@ -3,12 +3,13 @@ package com.tduck.cloud.form.mapper;
+ import org.apache.ibatis.annotations.*;
+ 
+ public interface PublicSubmissionMapper {
+-    @Insert("INSERT INTO fm_public_submission(form_key, session_hash) VALUES(#{key}, #{hash}) ON DUPLICATE KEY UPDATE session_hash=VALUES(session_hash)")
+-    int reserve(@Param("key") String key, @Param("hash") String hash);
++    /** 回执按 (form_key, session_hash, version_no) 分键：同一会话在不同发布版本各自计数，跨版本不互相吞答卷 */
++    @Insert("INSERT INTO fm_public_submission(form_key, session_hash, version_no) VALUES(#{key}, #{hash}, #{version}) ON DUPLICATE KEY UPDATE session_hash=VALUES(session_hash)")
++    int reserve(@Param("key") String key, @Param("hash") String hash, @Param("version") int version);
+ 
+-    @Select("SELECT answer_id FROM fm_public_submission WHERE form_key=#{key} AND session_hash=#{hash} FOR UPDATE")
+-    Long answer(@Param("key") String key, @Param("hash") String hash);
++    @Select("SELECT answer_id FROM fm_public_submission WHERE form_key=#{key} AND session_hash=#{hash} AND version_no=#{version} FOR UPDATE")
++    Long answer(@Param("key") String key, @Param("hash") String hash, @Param("version") int version);
+ 
+-    @Update("UPDATE fm_public_submission SET answer_id=#{answer} WHERE form_key=#{key} AND session_hash=#{hash}")
+-    int complete(@Param("key") String key, @Param("hash") String hash, @Param("answer") Long answer);
++    @Update("UPDATE fm_public_submission SET answer_id=#{answer} WHERE form_key=#{key} AND session_hash=#{hash} AND version_no=#{version}")
++    int complete(@Param("key") String key, @Param("hash") String hash, @Param("version") int version, @Param("answer") Long answer);
+ }
+
+index ee2b67c44301a6f9d4065f0dc91ca990579c52ae..ff0faf6e5cd99d6771b417ee16ffdf001bc203e0 100644
+--- a/tduck-form/src/main/java/com/tduck/cloud/form/request/QueryFormResultRequest.java
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/request/QueryFormResultRequest.java
+@@ -55,6 +55,11 @@ public class QueryFormResultRequest {
+      */
+     private List<String> dataIds;
+ 
++    /**
++     * 发布版本号：按版本筛选答卷（历史答卷与当前题目分版本展示）
++     */
++    private Integer versionNo;
++
+ 
+     public void validateSqlInjection() {
+         Assert.isFalse(SqlInjectionUtils.check(formKey), "参数异常");
+
+index e6ab5f25cf7610802f98a5245074d5b59b9b26e9..a9f65b48a5984d46ceee438b15592966108ed3e8 100644
+--- a/tduck-form/src/main/java/com/tduck/cloud/form/service/data/FormDataMysqlService.java
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/service/data/FormDataMysqlService.java
+@@ -89,7 +89,9 @@ public class FormDataMysqlService extends FormDataBaseService {
+         }
+ 
+         com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<UserFormDataEntity> wrapper = Wrappers.<UserFormDataEntity>lambdaQuery()
+-                .eq(UserFormDataEntity::getFormKey, request.getFormKey());
++                .eq(UserFormDataEntity::getFormKey, request.getFormKey())
++                // 按发布版本筛选：历史答卷与当前题目分版本展示
++                .eq(ObjectUtil.isNotNull(request.getVersionNo()), UserFormDataEntity::getVersionNo, request.getVersionNo());
+ 
+         // 查询指定id数据
+         if (ObjectUtil.isNotNull(request.getDataIds()) && !request.getDataIds().isEmpty()) {
+@@ -141,6 +143,7 @@ public class FormDataMysqlService extends FormDataBaseService {
+         List<UserFormDataEntity> userFormDataEntities = userFormDataMapper.selectList(
+                 Wrappers.<UserFormDataEntity>lambdaQuery()
+                         .eq(UserFormDataEntity::getFormKey, request.getFormKey())
++                        .eq(ObjectUtil.isNotNull(request.getVersionNo()), UserFormDataEntity::getVersionNo, request.getVersionNo())
+         );
+         return expandData(userFormDataEntities, null);
+     }
+
+index d5137a1719dfaa5ccc953908b91c88ed3ae53265..8d32ec263d93447a46be8a402d0825d30b461867 100644
+--- a/tduck-form/src/main/java/com/tduck/cloud/form/service/impl/UserFormDataServiceImpl.java
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/service/impl/UserFormDataServiceImpl.java
+@@ -20,12 +20,14 @@ import com.tduck.cloud.common.constant.CommonConstants;
+ import com.tduck.cloud.common.util.*;
+ import com.tduck.cloud.form.entity.UserFormDataEntity;
+ import com.tduck.cloud.form.entity.UserFormItemEntity;
++import com.tduck.cloud.form.entity.UserFormVersionEntity;
+ import com.tduck.cloud.form.entity.enums.FormItemTypeEnum;
+ import com.tduck.cloud.form.entity.struct.UploadResultStruct;
+ import com.tduck.cloud.form.mapper.UserFormDataMapper;
+ import com.tduck.cloud.form.request.QueryFormResultRequest;
+ import com.tduck.cloud.form.service.UserFormDataService;
+ import com.tduck.cloud.form.service.UserFormItemService;
++import com.tduck.cloud.form.service.UserFormVersionService;
+ import com.tduck.cloud.form.util.FormAuthUtils;
+ import com.tduck.cloud.form.util.FormDataUtils;
+ import com.tduck.cloud.form.util.FormWebHookUtils;
+@@ -61,6 +63,7 @@ import static com.tduck.cloud.webhook.constant.WebhookEventConstants.WEBHOOK_EVE
+ public class UserFormDataServiceImpl extends ServiceImpl<UserFormDataMapper, UserFormDataEntity> implements UserFormDataService {
+ 
+     private final UserFormItemService userFormItemService;
++    private final UserFormVersionService userFormVersionService;
+     private final CacheUtils redisUtils;
+     private final FormDataUtils formDataUtils;
+ 
+@@ -224,7 +227,15 @@ public class UserFormDataServiceImpl extends ServiceImpl<UserFormDataMapper, Use
+         }
+         // 权限校验
+         FormAuthUtils.hasPermission(dataEntity.getFormKey());
+-        List<FormFieldVO> formFields = userFormItemService.listFormFields(dataEntity.getFormKey());
++        // 历史答卷按其所属发布版本的题目渲染，避免用当前题目展示旧答案
++        List<FormFieldVO> formFields;
++        UserFormVersionEntity version = dataEntity.getVersionNo() == null ? null
++                : userFormVersionService.byNo(dataEntity.getFormKey(), dataEntity.getVersionNo());
++        if (version != null) {
++            formFields = userFormVersionService.fieldsOf(version);
++        } else {
++            formFields = userFormItemService.listFormFields(dataEntity.getFormKey());
++        }
+         // 表单字段
+         result.put("formFields", formFields);
+         // 表单填写数据
+
+index df5836b2abd82151dae7f7007adc64cc2c65cba4..20b48b7925c1e170ba0de086c6ee815acc4052fd 100644
 --- a/tduck-form/src/main/java/com/tduck/cloud/form/service/FormDashboardService.java
 +++ b/tduck-form/src/main/java/com/tduck/cloud/form/service/FormDashboardService.java
 @@ -50,8 +50,11 @@ public interface FormDashboardService {
@@ -317,7 +522,8 @@ index df5836b..20b48b7 100644
 -    List<FormReportVO.Analysis> formReportAnalysis(String formKey);
 +    List<FormReportVO.Analysis> formReportAnalysis(String formKey, Integer versionNo);
  }
-index 5a7180b..af7cda9 100644
+
+index 5a7180b775504ec80c462db3c3c0d007c56388ab..af7cda9cc0cdb85d82a7ff76322fac55781f9fb8 100644
 --- a/tduck-form/src/main/java/com/tduck/cloud/form/service/impl/FormDashboardServiceImpl.java
 +++ b/tduck-form/src/main/java/com/tduck/cloud/form/service/impl/FormDashboardServiceImpl.java
 @@ -13,13 +13,16 @@ import cn.hutool.core.util.StrUtil;
@@ -384,7 +590,8 @@ index 5a7180b..af7cda9 100644
          List<FormReportVO.Analysis> result = new ArrayList<>();
          for (UserFormItemEntity field : fields) {
              String type = field.getType().name();
-index 9915235..b0e7c02 100644
+
+index 9915235c21601331956ca634886e87b698c33e3b..2ba356e78e30744aab15735e6ce8ddb87de8b8b5 100644
 --- a/tduck-form/src/main/java/com/tduck/cloud/form/vo/UserFormDetailVO.java
 +++ b/tduck-form/src/main/java/com/tduck/cloud/form/vo/UserFormDetailVO.java
 @@ -5,7 +5,6 @@ import com.tduck.cloud.form.entity.UserFormItemEntity;
@@ -443,11 +650,23 @@ index 9915235..b0e7c02 100644
  
      @Data
      public static class UserForm {
+@@ -52,6 +74,10 @@ public class UserFormDetailVO {
+ 
+         private FormTypeEnum type;
+ 
++        /** 供版本快照还原（标题/描述/类型来自发布时快照）逐字段赋值使用 */
++        public UserForm() {
++        }
++
+         public UserForm(UserFormEntity entity) {
+             this.formKey = entity.getFormKey();
+             this.name = entity.getName();
+
 new file mode 100644
-index 0000000..cf22fbf
+index 0000000..7866f1d3060c5427ef5ffd0bcdcd43decc891159
 --- /dev/null
 +++ b/tduck-form/src/main/java/com/tduck/cloud/form/entity/UserFormVersionEntity.java
-@@ -0,0 +1,51 @@
+@@ -0,0 +1,63 @@
 +package com.tduck.cloud.form.entity;
 +
 +import com.baomidou.mybatisplus.annotation.IdType;
@@ -492,6 +711,18 @@ index 0000000..cf22fbf
 +    @TableField(typeHandler = JacksonTypeHandler.class)
 +    private List<Map<String, Object>> itemsSnapshot;
 +
++    /** 发布时的表单信息快照（标题/描述/类型），旧链接展示不受后续草稿改名影响 */
++    @TableField(typeHandler = JacksonTypeHandler.class)
++    private Map<String, Object> formSnapshot;
++
++    /** 发布时的显示逻辑快照，发布时无逻辑则为 null */
++    @TableField(typeHandler = JacksonTypeHandler.class)
++    private List<Map<String, Object>> logicSnapshot;
++
++    /** 发布时的主题快照，发布时未配置主题则为 null */
++    @TableField(typeHandler = JacksonTypeHandler.class)
++    private Map<String, Object> themeSnapshot;
++
 +    /** 版本分享令牌，构成 /s/{formKey}?t={token} 公开链接 */
 +    private String shareToken;
 +
@@ -499,34 +730,27 @@ index 0000000..cf22fbf
 +
 +    private LocalDateTime updateTime;
 +}
+
 new file mode 100644
-index 0000000..40923aa
---- /dev/null
-+++ b/tduck-form/src/main/java/com/tduck/cloud/form/mapper/UserFormVersionMapper.java
-@@ -0,0 +1,11 @@
-+package com.tduck.cloud.form.mapper;
-+
-+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-+import com.tduck.cloud.form.entity.UserFormVersionEntity;
-+
-+/**
-+ * 问卷发布版本 (fm_user_form_version) 访问层
-+ */
-+public interface UserFormVersionMapper extends BaseMapper<UserFormVersionEntity> {
-+
-+}
-new file mode 100644
-index 0000000..db0f44e
+index 0000000..d621b748b4ebf035c9675a1cc174a1f576f99570
 --- /dev/null
 +++ b/tduck-form/src/main/java/com/tduck/cloud/form/service/UserFormVersionService.java
-@@ -0,0 +1,228 @@
+@@ -0,0 +1,347 @@
 +package com.tduck.cloud.form.service;
 +
 +import com.baomidou.mybatisplus.core.toolkit.Wrappers;
++import com.fasterxml.jackson.core.type.TypeReference;
++import com.fasterxml.jackson.databind.ObjectMapper;
++import com.tduck.cloud.form.entity.UserFormEntity;
 +import com.tduck.cloud.form.entity.UserFormItemEntity;
++import com.tduck.cloud.form.entity.UserFormLogicEntity;
++import com.tduck.cloud.form.entity.UserFormThemeEntity;
 +import com.tduck.cloud.form.entity.UserFormVersionEntity;
 +import com.tduck.cloud.form.entity.enums.FormItemTypeEnum;
++import com.tduck.cloud.form.entity.enums.FormTypeEnum;
 +import com.tduck.cloud.form.mapper.UserFormVersionMapper;
++import com.tduck.cloud.form.vo.FormFieldVO;
++import com.tduck.cloud.form.vo.UserFormDetailVO;
 +import lombok.RequiredArgsConstructor;
 +import org.springframework.stereotype.Service;
 +import org.springframework.transaction.annotation.Transactional;
@@ -537,6 +761,7 @@ index 0000000..db0f44e
 +import java.util.LinkedHashMap;
 +import java.util.List;
 +import java.util.Map;
++import java.util.stream.Collectors;
 +
 +/**
 + * 问卷发布版本快照服务。
@@ -547,11 +772,15 @@ index 0000000..db0f44e
 +@RequiredArgsConstructor
 +public class UserFormVersionService {
 +    private static final SecureRandom RANDOM = new SecureRandom();
++    private static final ObjectMapper MAPPER = new ObjectMapper();
 +    private static final char[] TOKEN_ALPHABET =
 +            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
 +
 +    private final UserFormVersionMapper versions;
 +    private final UserFormItemService formItems;
++    private final UserFormService forms;
++    private final UserFormLogicService logics;
++    private final UserFormThemeService themes;
 +
 +    /**
 +     * 发布快照：关闭当前收集中版本，按当前题目集生成新版本（事务内）。
@@ -576,14 +805,52 @@ index 0000000..db0f44e
 +        if (snapshot.isEmpty()) {
 +            throw new IllegalStateException("没有可发布的题目");
 +        }
++        UserFormEntity form = forms.getByKey(formKey);
++        Map<String, Object> formSnapshot = new LinkedHashMap<>();
++        if (form != null) {
++            formSnapshot.put("name", form.getName());
++            formSnapshot.put("description", form.getDescription());
++            formSnapshot.put("type", form.getType() == null ? null : form.getType().name());
++        }
++        UserFormLogicEntity logic = logics.getOne(Wrappers.<UserFormLogicEntity>lambdaQuery()
++                .eq(UserFormLogicEntity::getFormKey, formKey));
++        // 空集合哨兵：区分"发布时无逻辑/主题"（还原为无）与"历史版本无快照"（回退当前值）
++        List<Map<String, Object>> logicSnapshot = new ArrayList<>();
++        if (logic != null && logic.getScheme() != null && !logic.getScheme().isEmpty()) {
++            logicSnapshot = MAPPER.convertValue(logic.getScheme(), new TypeReference<List<Map<String, Object>>>() {});
++        }
++        UserFormThemeEntity theme = themes.getByKey(formKey);
 +        UserFormVersionEntity version = new UserFormVersionEntity()
 +                .setFormKey(formKey)
 +                .setVersionNo(nextNo)
 +                .setStatus(UserFormVersionEntity.STATUS_OPEN)
 +                .setShareToken(newToken())
-+                .setItemsSnapshot(snapshot);
++                .setItemsSnapshot(snapshot)
++                .setFormSnapshot(formSnapshot)
++                .setLogicSnapshot(logicSnapshot)
++                .setThemeSnapshot(theme == null ? new LinkedHashMap<>() : themeOf(theme));
 +        versions.insert(version);
 +        return version;
++    }
++
++    /** 主题快照只取业务字段，不含主键与时间戳 */
++    private static Map<String, Object> themeOf(UserFormThemeEntity theme) {
++        if (theme == null) {
++            return null;
++        }
++        Map<String, Object> map = new LinkedHashMap<>();
++        map.put("logoImg", theme.getLogoImg());
++        map.put("logoPosition", theme.getLogoPosition());
++        map.put("headImgUrl", theme.getHeadImgUrl());
++        map.put("themeColor", theme.getThemeColor());
++        map.put("submitBtnText", theme.getSubmitBtnText());
++        map.put("backgroundColor", theme.getBackgroundColor());
++        map.put("backgroundImg", theme.getBackgroundImg());
++        map.put("showTitle", theme.getShowTitle());
++        map.put("showDescribe", theme.getShowDescribe());
++        map.put("showNumber", theme.getShowNumber());
++        map.put("showSubmitBtn", theme.getShowSubmitBtn());
++        return map;
 +    }
 +
 +    public UserFormVersionEntity byToken(String token) {
@@ -678,6 +945,74 @@ index 0000000..db0f44e
 +        return items;
 +    }
 +
++    /** 从快照重建数据页字段（过滤展示型组件；隐藏题已在 itemsOf 过滤） */
++    public List<FormFieldVO> fieldsOf(UserFormVersionEntity version) {
++        return itemsOf(version).stream()
++                .filter(item -> !Boolean.TRUE.equals(item.getDisplayType()))
++                .map(FormFieldVO::new)
++                .collect(Collectors.toList());
++    }
++
++    /** 还原发布时的表单展示信息（标题/描述/类型），快照缺失时回退当前值 */
++    public UserFormDetailVO.UserForm restoreForm(UserFormVersionEntity version, UserFormEntity fallback) {
++        Map<String, Object> snap = version.getFormSnapshot();
++        if (snap == null || snap.isEmpty()) {
++            return new UserFormDetailVO.UserForm(fallback);
++        }
++        UserFormDetailVO.UserForm form = new UserFormDetailVO.UserForm();
++        form.setFormKey(version.getFormKey());
++        form.setName(strOf(snap.get("name")));
++        form.setDescription(strOf(snap.get("description")));
++        String type = strOf(snap.get("type"));
++        if (type != null && !type.isEmpty()) {
++            try {
++                form.setType(FormTypeEnum.valueOf(type));
++            } catch (IllegalArgumentException ignored) {
++            }
++        }
++        return form;
++    }
++
++    /** 还原发布时的主题配置：无快照(历史版本)回退当前值，空快照表示发布时未配置主题 */
++    public UserFormThemeEntity restoreTheme(UserFormVersionEntity version, UserFormThemeEntity fallback) {
++        Map<String, Object> snap = version.getThemeSnapshot();
++        if (snap == null) {
++            return fallback;
++        }
++        if (snap.isEmpty()) {
++            return null;
++        }
++        UserFormThemeEntity theme = new UserFormThemeEntity();
++        theme.setFormKey(version.getFormKey());
++        theme.setLogoImg(strOf(snap.get("logoImg")));
++        theme.setLogoPosition(strOf(snap.get("logoPosition")));
++        theme.setHeadImgUrl(strOf(snap.get("headImgUrl")));
++        theme.setThemeColor(strOf(snap.get("themeColor")));
++        theme.setSubmitBtnText(strOf(snap.get("submitBtnText")));
++        theme.setBackgroundColor(strOf(snap.get("backgroundColor")));
++        theme.setBackgroundImg(strOf(snap.get("backgroundImg")));
++        theme.setShowTitle(boolOf(snap.get("showTitle")));
++        theme.setShowDescribe(boolOf(snap.get("showDescribe")));
++        theme.setShowNumber(boolOf(snap.get("showNumber")));
++        theme.setShowSubmitBtn(boolOf(snap.get("showSubmitBtn")));
++        return theme;
++    }
++
++    /** 还原发布时的显示逻辑：无快照(历史版本)回退当前值，空快照表示发布时无逻辑 */
++    public UserFormLogicEntity restoreLogic(UserFormVersionEntity version, UserFormLogicEntity fallback) {
++        List<Map<String, Object>> snap = version.getLogicSnapshot();
++        if (snap == null) {
++            return fallback;
++        }
++        if (snap.isEmpty()) {
++            return null;
++        }
++        UserFormLogicEntity logic = new UserFormLogicEntity();
++        logic.setFormKey(version.getFormKey());
++        logic.setScheme(MAPPER.convertValue(snap, new TypeReference<List<UserFormLogicEntity.Definition>>() {}));
++        return logic;
++    }
++
 +    /** 题目快照只保留渲染与统计所需字段，不含时间戳，保证与 SQL 回填结构一致 */
 +    private static Map<String, Object> snapshotOf(UserFormItemEntity item) {
 +        Map<String, Object> map = new LinkedHashMap<>();
@@ -748,3 +1083,21 @@ index 0000000..db0f44e
 +        return result;
 +    }
 +}
+
+new file mode 100644
+index 0000000..40923aa84ef5e34b7ab65359c3cb8655e6d7a714
+--- /dev/null
++++ b/tduck-form/src/main/java/com/tduck/cloud/form/mapper/UserFormVersionMapper.java
+@@ -0,0 +1,11 @@
++package com.tduck.cloud.form.mapper;
++
++import com.baomidou.mybatisplus.core.mapper.BaseMapper;
++import com.tduck.cloud.form.entity.UserFormVersionEntity;
++
++/**
++ * 问卷发布版本 (fm_user_form_version) 访问层
++ */
++public interface UserFormVersionMapper extends BaseMapper<UserFormVersionEntity> {
++
++}
+

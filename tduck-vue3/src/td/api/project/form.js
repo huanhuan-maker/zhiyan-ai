@@ -26,8 +26,8 @@ export const pageFormRequest = (params) => getRequest('/user/form/page', params)
 // 查询表单项内容
 export const listProjectItemRequest = (params) => getRequest('/user/form/item/list', params)
 
-// 查询表单项内容
-export const listFormFieldsRequest = (formKey) => getRequest(`/user/form/fields/${formKey}`)
+// 查询表单项内容（version=发布版本号时返回该版本快照字段，用于历史答卷按所属版本渲染）
+export const listFormFieldsRequest = (formKey, version) => getRequest(`/user/form/fields/${formKey}`, version ? { version } : {})
 
 // 查询固定表单项内容
 export const listFixedFormFieldsRequest = (formKey) => getRequest(`/user/form/fixed/fields/${formKey}`)

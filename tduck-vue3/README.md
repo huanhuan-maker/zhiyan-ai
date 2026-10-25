@@ -25,6 +25,7 @@ cd D:\LcProject
 .\scripts\tduck\Build-FullBackend.ps1
 .\scripts\tduck\Apply-ClosureMigration.ps1
 .\scripts\tduck\Apply-VersionMigration.ps1
+.\scripts\tduck\Apply-FixMigration.ps1
 ```
 
 终端 A 启动后端：
@@ -57,9 +58,13 @@ npm.cmd audit
 cd D:\LcProject
 node scripts/tduck/check-templates.mjs
 node scripts/tduck/version-flows.mjs
+node scripts/tduck/version-fixes.mjs
+node scripts/tduck/credential-scan.mjs
 .\scripts\tduck\Verify-HTTP.ps1
 .\scripts\tduck\Verify-Original.ps1
 ```
+
+`version-fixes.mjs` 是 M1 修复轮专项回归（22 项）：版本快照冻结表单标题/描述/逻辑/主题、提交回执按版本分键（跨版本同会话键不互相吞答卷）、历史答卷/数据页按所属版本题目渲染与筛选。`credential-scan.mjs` 扫描全部 Git 跟踪文本文件不得包含 `.local/tduck-credentials.json` 中的真实凭据；测试脚本一律从 `.local` 读取账号与口令，不落仓库。
 
 端到端套件包含真实登录、设计、发布、匿名答题、数据修改、逻辑/主题/设置、草稿、分类和模板、Excel 导入导出、服务端权限与冻结、17 种本地输入题型的真实控件操作和数据库原始答案核对。新增高级选项回归覆盖动态标签、嵌套路径、级联子项、加载失败重试、互斥选项和题目禁用属性；动态源是明确标注的合成 fixture，问卷及答卷持久化仍走真实后端。单元测试中的 25 项属于保留的阶段原型，另有 6 项迁移协议/校验回归。两者在证据中明确区分。
 

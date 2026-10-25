@@ -1,5 +1,17 @@
 <template>
   <div class="app-container">
+    <div v-if="versions.length > 0" class="version-bar" style="margin-bottom: 12px">
+      <span style="margin-right: 8px; font-weight: 600">发布版本</span>
+      <el-select v-model="currentVersion" size="default" style="width: 300px" @change="handleVersionChange">
+        <el-option
+          v-for="v in versions"
+          :key="v.versionNo"
+          :label="`V${v.versionNo}（${v.status === 1 ? '收集中' : '已停止'}） · ${v.answerCount} 份答卷`"
+          :value="v.versionNo"
+        />
+      </el-select>
+      <span style="margin-left: 12px; color: #909399; font-size: 12px">数据表、详情与导出按所选发布版本的题目渲染</span>
+    </div>
     <base-table
       ref="baseTable"
       :grid-options="gridOptions"
@@ -73,6 +85,7 @@ import {
   listFormDataTableRequest
 } from '@/api/project/data'
 import { listFixedFormFieldsRequest, listFormFieldsRequest } from '@/api/project/form'
+import { listFormVersionsRequest } from '@/api/project/publish'
 import _ from 'lodash'
 import Import from './import'
 import { formatTableColumn } from './formatTableColumn'
@@ -267,9 +280,13 @@ export default {
       fields: [],
       fixedFields: [],
       fixedLists: [],
+      // 发布版本（历史答卷与当前题目分版本展示）
+      versions: [],
+      currentVersion: null,
       queryParams: {
         authGroupId: null,
         formKey: '',
+        versionNo: null,
         filter: {}
       },
       // 选择数据Id
@@ -278,16 +295,42 @@ export default {
   },
   created() {
     this.formKey = this.$route.query.key || this.$route.params.key
-    // 获取表单字段并且初始化相关权限 修改删除等
-    this.handleQueryFields().then((res) => {
-      this.initPerms()
-    })
+    // 先确定发布版本（默认最新），字段与数据按该版本题目渲染
+    this.loadVersions()
+      .then(() => this.handleQueryFields())
+      .then(() => {
+        this.initPerms()
+        // 版本号在异步加载后才写入 queryParams，表格初始查询未带版本，需补一次刷新
+        if (this.currentVersion !== null) {
+          this.handleReloadTable()
+        }
+      })
     // 查询详情固定字段
     listFixedFormFieldsRequest(this.formKey).then((res) => {
       this.fixedFields = res.data
     })
   },
   methods: {
+    // 加载发布版本列表，默认选中最新版本；从未发布的问卷不显示版本栏
+    loadVersions() {
+      return listFormVersionsRequest(this.formKey)
+        .then((res) => {
+          this.versions = res.data || []
+          if (this.versions.length > 0 && this.currentVersion === null) {
+            this.currentVersion = this.versions[0].versionNo
+          }
+          this.queryParams.versionNo = this.currentVersion
+        })
+        .catch(() => {
+          this.versions = []
+        })
+    },
+    // 切换版本：字段、表格、导出口径同步切换
+    handleVersionChange() {
+      this.queryParams.versionNo = this.currentVersion
+      this.handleQueryFields().then(() => this.initPerms())
+      this.handleReloadTable()
+    },
     /**
      * 检查按钮是否有权限
      * @param btn
@@ -328,12 +371,12 @@ export default {
     handleQueryFields() {
       return new Promise((resolve, reject) => {
         if (this.mode === 1) {
-          listFormFieldsRequest(this.formKey).then((res) => {
+          listFormFieldsRequest(this.formKey, this.currentVersion).then((res) => {
             this.handleTableColumns(res.data)
             resolve(this.fields)
           })
         } else {
-          listFormFieldsRequest(this.formKey).then((res) => {
+          listFormFieldsRequest(this.formKey, this.currentVersion).then((res) => {
             let haveFieldIds = this.authGroup.fieldVisiblePerms
             this.fields = res.data.filter((item) => haveFieldIds.includes(item.value))
             this.handleTableColumns(this.fields)

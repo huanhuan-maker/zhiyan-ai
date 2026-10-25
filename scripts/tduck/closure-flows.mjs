@@ -73,10 +73,11 @@ try{
  await respondent.goto('http://127.0.0.1:5180/s/'+key)
  await respondent.locator('.native-form textarea').fill('Synthetic browser session answer')
  await respondent.getByRole('button',{name:'提交',exact:true}).click();await respondent.getByText('提交成功',{exact:true}).waitFor()
- const sessionBefore=await respondent.evaluate(key=>sessionStorage.getItem(`tdSubmission:${key}`),key);assert.ok(sessionBefore)
+ // 提交幂等键自版本机制修复起带发布版本后缀（tdSubmission:{key}:v{version}），按前缀读取避免耦合具体版本号
+ const sessionBefore=await respondent.evaluate(()=>{const k=Object.keys(sessionStorage).find(x=>x&&x.startsWith('tdSubmission:'));return k?sessionStorage.getItem(k):null});assert.ok(sessionBefore)
  await respondent.reload();await respondent.locator('.native-form textarea').fill('Synthetic changed browser retry')
  await respondent.getByRole('button',{name:'提交',exact:true}).click();await respondent.getByText('提交成功',{exact:true}).waitFor()
- assert.equal(await respondent.evaluate(key=>sessionStorage.getItem(`tdSubmission:${key}`),key),sessionBefore)
+ assert.equal(await respondent.evaluate(()=>{const k=Object.keys(sessionStorage).find(x=>x&&x.startsWith('tdSubmission:'));return k?sessionStorage.getItem(k):null}),sessionBefore)
  rows=await api('/user/form/data/query',{formKey:key,current:0,size:10,filter:{}});assert.equal(rows.total,4)
  const browserRecords=await Promise.all(rows.rows.map(row=>api('/user/form/data/details/'+row.id)))
  assert.equal(browserRecords.filter(row=>row.formData[ids.TEXTAREA]==='Synthetic browser session answer').length,1)
