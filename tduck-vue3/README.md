@@ -1,5 +1,17 @@
 # TDuck Vue 3 本地迁移版
 
+**当前交付 M5-B（2026-10-25）**：进入系统配置 → AI配置，实际服务端模型已导入，可维护自定义供应商及多个模型。协议支持OpenAI Chat Completions / OpenAI Responses / Anthropic Messages；每模型配置思考强度、上下文窗口、最大输出Token、助手历史提问轮数。设为默认后保存，助手、建卷、报告立即共用此模型；参数是否兼容以具体模型及连接测试为准。真实Key不回显，空白保持，变更地址/协议须重新填写Key。
+
+本机已安装。其他已有版本环境从根目录升级（此前分析/助手迁移为前置）：
+
+```powershell
+.\scripts\tduck\Build-FullBackend.ps1 -BuildName tduck-ai-settings-build
+.\scripts\tduck\Apply-AiSettingsMigration.ps1
+.\scripts\tduck\Install-AnalysisBackend.ps1 -BuildName tduck-ai-settings-build
+```
+
+新增一表与服务端私有`.local/tduck-dev/ai-config.key`，迁移可重复，不覆盖主密钥。数据库备份须同时私下备份该文件，不能提交或共享。日常仍用根目录`Start-FullBackend.ps1`和前端目录`npm.cmd run dev`；本机5180/8997已运行时无需重启。范围与实现见 [AI_SETTINGS_STAGE.md](../docs/AI_SETTINGS_STAGE.md)、[后端说明](../backend-extensions/ai-config/README.md)，测试命令及验收见 [M5-B.md](../evidence/M5-B.md)。下文各旧阶段已由本轮统一Provider接管；旧版独立AI配置文件仅作为首次导入来源，旧DeepSeek开关不控制现有三项AI功能。
+
 **当前交付 M5-A（2026-10-25）**：在“我的问卷”下增加“问卷助手”，直接访问 `http://localhost:5180/home/assistant`。普通用户两项菜单，管理员另有用户管理、系统配置。助手可以搜索自己的问卷、读取指定发布版本统计、查找提到某关键词的核心开放回答、读取已审核且数据未变化的报告。每次结果保留版本、查询时间及来源；历史是查询时快照，新提问读取当前数据。
 
 站内页面实际调用 `/assistant-mcp` 的初始化、工具发现和只读工具，不允许自由 SQL 或业务写入。真实 AI 仅理解提问并选择工具，需勾选提问传输确认；统计及引文由后端生成，答卷原文不发给规划模型。本地规则明确标注非模型。当前检索是字面关键词，尚无向量索引或语义 RAG。范围、协议与限制见 [ASSISTANT_STAGE.md](../docs/ASSISTANT_STAGE.md) 和 [后端说明](../backend-extensions/assistant/README.md)。

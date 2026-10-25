@@ -10,7 +10,7 @@
         <el-select v-model="version" aria-label="查询版本" :disabled="busy || !formKey"><el-option :value="0" label="最新发布版本" /><el-option v-for="v in versions" :key="v.versionNo" :value="v.versionNo" :label="`V${v.versionNo}${v.status === 1 ? '（收集中）' : '（已停止）'}`" /></el-select>
       </div>
       <div class="mode-row"><el-radio-group v-model="mode" :disabled="busy" aria-label="提问理解方式"><el-radio-button value="LOCAL">本地规则</el-radio-button><el-radio-button value="REAL" :disabled="!provider.configured">AI 理解问题</el-radio-button></el-radio-group><span>{{ mode === 'REAL' ? `${provider.provider} · ${provider.model}` : '不调用模型，适合明确的查询表达' }}</span></div>
-      <el-checkbox v-if="mode === 'REAL'" v-model="allowTransfer" :disabled="busy" class="assistant-consent">允许将本对话的提问及所选问卷编号发送给上述模型理解；答卷原文不发送</el-checkbox>
+      <el-checkbox v-if="mode === 'REAL'" v-model="allowTransfer" :disabled="busy" class="assistant-consent">允许将本次及配置轮数内的同范围历史提问、所选问卷编号发送给上述模型理解；答卷原文和工具结果不发送</el-checkbox>
     </div>
     <div class="assistant-scope-note">{{ formKey ? '当前范围：所选问卷，按所选发布版本查询。' : '尚未选择问卷，可先问“列出我的问卷”，再从结果中选择。' }}开放回答采用关键词检索，不是向量语义搜索；助手只读，不修改或发布问卷。</div>
 

@@ -310,3 +310,6 @@ export default {
   }
 }
 </style>
+<style scoped>
+@media(max-width:700px){.app-container{padding:10px!important;min-width:0}.config-card{padding:12px!important;min-width:0}.modern-tabs{min-width:0}.modern-tabs :deep(.el-tabs__header){max-width:100%}}
+</style>

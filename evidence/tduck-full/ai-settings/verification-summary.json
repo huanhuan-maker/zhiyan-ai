@@ -1,0 +1,54 @@
+{
+  "frontendBuild": "success",
+  "failed": 0.0,
+  "date": "2026-10-25T12:23:20.6078401Z",
+  "backendBuild": "success",
+  "passed": 187,
+  "checks": [
+    {
+      "name": "JUnit",
+      "failed": 0,
+      "passed": 86
+    },
+    {
+      "name": "Vitest",
+      "failed": 0,
+      "passed": 31
+    },
+    {
+      "name": "ai-settings-api",
+      "failed": 0,
+      "passed": 14
+    },
+    {
+      "name": "ai-settings-ui",
+      "failed": 0,
+      "passed": 9
+    },
+    {
+      "name": "restart",
+      "failed": 0,
+      "passed": 2
+    },
+    {
+      "name": "assistant",
+      "failed": 0,
+      "passed": 15
+    },
+    {
+      "name": "analysis",
+      "failed": 0,
+      "passed": 14
+    },
+    {
+      "name": "core",
+      "failed": 0,
+      "passed": 10
+    },
+    {
+      "name": "retirement",
+      "failed": 0,
+      "passed": 6
+    }
+  ]
+}

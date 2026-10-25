@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-25T12:14:29.613Z",
+  "source": "Synthetic UI response fixture; real Spring Boot/MySQL import, publish and submission",
+  "formKey": "rdUkEAU9",
+  "checks": [
+    {
+      "name": "question count is readable and editable with buttons/keyboard",
+      "passed": true,
+      "detail": {
+        "value": "8",
+        "width": 27,
+        "padding": 0,
+        "fontSize": "13px"
+      }
+    },
+    {
+      "name": "generated questions and bottom actions can be reached by scrolling",
+      "passed": true
+    },
+    {
+      "name": "AI draft has a working answer preview before importing",
+      "passed": true
+    },
+    {
+      "name": "AI page does not expose project-only publish/template/navigation actions",
+      "passed": true
+    },
+    {
+      "name": "imported draft opens four editable questions and survives reload",
+      "passed": true
+    },
+    {
+      "name": "AI description survives import",
+      "passed": true
+    },
+    {
+      "name": "editor preview shows the imported questions",
+      "passed": true
+    },
+    {
+      "name": "stop then reopen editor permits drafting the next version",
+      "passed": true
+    },
+    {
+      "name": "public submit and backend statistics match real four-type answers",
+      "passed": true
+    },
+    {
+      "name": "browser has no uncaught errors",
+      "passed": true
+    }
+  ],
+  "passed": 10,
+  "failed": 0
+}

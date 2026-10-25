@@ -1,0 +1,17 @@
+(node:19580) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS published version statistics use true valid/missing denominators and backend means
+PASS anonymous, other owner and nonexistent versions cannot read report inputs
+PASS local grouping saves a labelled report without invoking AI
+PASS every reference resolves to an exact persisted core answer with provenance
+PASS report detail, history, generation, review and both exports reject other owners
+PASS real model transfer requires explicit authorization before calling provider
+PASS review validates status and note, then persists an audit event
+PASS concurrent reviews do not overwrite an accepted revision
+PASS Markdown and JSON exports include source, version, denominators, evidence and review status
+PASS new answer marks saved report stale without rewriting its original snapshot
+PASS changed generation inputs cannot be sent to model under an earlier preview acknowledgment
+PASS republished versions isolate answers, statistics and report history
+PASS actual configured model returns validated citations for synthetic answers
+PASS local mode stays available alongside configured real provider
+{"passed":14,"failed":0}

@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-25T12:21:50.290Z",
+  "source": "Real admin authentication, Spring/MyBatis/MySQL; local three-protocol fixture; actual provider only when --real/--replay",
+  "checks": [
+    {
+      "name": "only a real administrator can read/save/test model settings",
+      "passed": true
+    },
+    {
+      "name": "persisted provider/models/default and encrypted credential survive actual backend restart",
+      "passed": false,
+      "error": "模型没有返回可用文本，请检查模型与思考/输出设置\n\n500 !== 200\n"
+    }
+  ],
+  "passed": 1,
+  "failed": 1
+}

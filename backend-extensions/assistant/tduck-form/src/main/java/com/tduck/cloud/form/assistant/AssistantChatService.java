@@ -53,7 +53,18 @@ public class AssistantChatService {
         AssistantTurnEntity t=new AssistantTurnEntity();t.setId(id);t.setConversationId(conversation);t.setOwnerId(owner);t.setQuestion(question.trim());t.setScopeFormKey(key);t.setScopeVersion(version);t.setState("PLANNING");t.setMode(real?"REAL":"LOCAL");t.setProvider("");t.setModel("");t.setWarning("");t.setCreatedAt(Instant.now().toString());
         try{turns.insert(t);}catch(DuplicateKeyException e){return replay(turns.selectById(id),owner,conversation,question,key,version);}
         Map<String,Object> p;
-        try {p=planner.plan(question,key,version,real,consent);}
+        try {
+            List<String> prior=new ArrayList<>();
+            if(real&&consent){
+                com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<AssistantTurnEntity> query=Wrappers.<AssistantTurnEntity>lambdaQuery()
+                    .eq(AssistantTurnEntity::getConversationId,conversation).eq(AssistantTurnEntity::getOwnerId,owner).ne(AssistantTurnEntity::getId,id).eq(AssistantTurnEntity::getState,"SUCCEEDED");
+                if(key==null)query.isNull(AssistantTurnEntity::getScopeFormKey);else query.eq(AssistantTurnEntity::getScopeFormKey,key);
+                if(version==null)query.isNull(AssistantTurnEntity::getScopeVersion);else query.eq(AssistantTurnEntity::getScopeVersion,version);
+                for(AssistantTurnEntity row:turns.selectList(query.orderByDesc(AssistantTurnEntity::getCreatedAt).last("limit 20")))prior.add(row.getQuestion());
+                Collections.reverse(prior);
+            }
+            p=planner.plan(question,key,version,real,consent,prior);
+        }
         catch(Exception e){turns.update(null,Wrappers.<AssistantTurnEntity>lambdaUpdate().eq(AssistantTurnEntity::getId,id).set(AssistantTurnEntity::getState,"FAILED").set(AssistantTurnEntity::getWarning,"问题理解失败，可重新提问；普通答题不受影响"));throw new BaseException("问题理解失败，可重新提问");}
         String tool=(String)p.get("tool");t.setPlanJson(write(map("tool",tool,"arguments",p.get("arguments"))));t.setMode((String)p.get("mode"));t.setProvider((String)p.get("provider"));t.setModel((String)p.get("model"));t.setWarning((String)p.get("warning"));t.setState("READY");
         if("none".equals(tool)){t.setState("SUCCEEDED");t.setResultJson(write(map("kind","notice","message","当前助手只支持查找问卷、版本统计、开放回答关键词检索和已审核报告。请明确查询范围；不会修改、发布或删除问卷。","citations",Collections.emptyList())));}

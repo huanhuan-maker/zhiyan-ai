@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-25T12:14:27.378Z",
+  "source": "Real Spring Boot/MyBatis-Plus/MySQL; synthetic survey and answers",
+  "formKey": "zneoBp36",
+  "reportId": "a6e51558-0d9a-48fc-9f96-3132ec6d807b",
+  "checks": [
+    {
+      "name": "published version statistics use true valid/missing denominators and backend means",
+      "passed": true,
+      "detail": {
+        "answers": 3,
+        "validScale": 2,
+        "missingScale": 1,
+        "mean": 3,
+        "multiPercentages": {
+          "A": 50,
+          "B": 100
+        }
+      }
+    },
+    {
+      "name": "anonymous, other owner and nonexistent versions cannot read report inputs",
+      "passed": true
+    },
+    {
+      "name": "local grouping saves a labelled report without invoking AI",
+      "passed": true,
+      "detail": {
+        "reportId": "968c47d1-49c5-4bf0-b2c1-1b1074ccc4fd",
+        "supportAnswerCount": 2,
+        "mode": "LOCAL"
+      }
+    },
+    {
+      "name": "every reference resolves to an exact persisted core answer with provenance",
+      "passed": true
+    },
+    {
+      "name": "report detail, history, generation, review and both exports reject other owners",
+      "passed": true
+    },
+    {
+      "name": "real model transfer requires explicit authorization before calling provider",
+      "passed": true
+    },
+    {
+      "name": "review validates status and note, then persists an audit event",
+      "passed": true
+    },
+    {
+      "name": "concurrent reviews do not overwrite an accepted revision",
+      "passed": true
+    },
+    {
+      "name": "Markdown and JSON exports include source, version, denominators, evidence and review status",
+      "passed": true
+    },
+    {
+      "name": "new answer marks saved report stale without rewriting its original snapshot",
+      "passed": true
+    },
+    {
+      "name": "changed generation inputs cannot be sent to model under an earlier preview acknowledgment",
+      "passed": true
+    },
+    {
+      "name": "republished versions isolate answers, statistics and report history",
+      "passed": true
+    },
+    {
+      "name": "actual configured model returns validated citations for synthetic answers",
+      "passed": true,
+      "detail": {
+        "provider": "本机推理网关",
+        "model": "group/group",
+        "reportId": "72f17525-7198-40f4-af81-c3f44dc40065"
+      }
+    },
+    {
+      "name": "local mode stays available alongside configured real provider",
+      "passed": true
+    }
+  ],
+  "passed": 14,
+  "failed": 0
+}

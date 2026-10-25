@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-25T12:11:29.067Z",
+  "source": "Actual administrator session and real persisted model settings; synthetic custom profile removed after test",
+  "checks": [
+    {
+      "name": "regression: AI settings shows the actual model suppliers instead of the disconnected DeepSeek switch",
+      "passed": true
+    },
+    {
+      "name": "imported live provider is visible without any API key value",
+      "passed": true
+    },
+    {
+      "name": "protocol picker offers all three requested APIs",
+      "passed": true
+    },
+    {
+      "name": "one supplier can add two custom model profiles with individual budgets and effort",
+      "passed": true
+    },
+    {
+      "name": "saved settings survive reload and removing only the synthetic profile is persisted",
+      "passed": true
+    },
+    {
+      "name": "a custom Responses supplier can be saved and removed in the real interface",
+      "passed": false,
+      "error": "expect(locator).toBeVisible() failed\n\nLocator: getByText('模型配置已保存', { exact: true })\nExpected: visible\nError: strict mode violation: getByText('模型配置已保存', { exact: true }) resolved to 2 elements:\n    1) <p class=\"el-message__content\">模型配置已保存</p> aka locator('#message_1').getByText('模型配置已保存')\n    2) <p class=\"el-message__content\">模型配置已保存</p> aka locator('#message_2').getByText('模型配置已保存')\n\nCall log:\n"
+    },
+    {
+      "name": "saved live model connection can be tested in the interface",
+      "passed": true
+    },
+    {
+      "name": "desktop actual settings and mobile controls render without horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "passed": 8,
+  "failed": 1
+}

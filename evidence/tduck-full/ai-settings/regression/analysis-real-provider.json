@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-25T12:14:27.347Z",
+  "reportId": "72f17525-7198-40f4-af81-c3f44dc40065",
+  "provider": "本机推理网关",
+  "model": "group/group",
+  "mode": "REAL",
+  "themes": [
+    {
+      "label": "图书馆插座不足",
+      "evidenceIds": [
+        "E1"
+      ],
+      "classification": "MODEL_INFERRED_UNCONFIRMED",
+      "supportAnswerCount": 1
+    }
+  ],
+  "source": "Actual provider; synthetic answers only; references validated server-side"
+}

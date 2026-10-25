@@ -1,0 +1,13 @@
+(node:27488) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS question count is readable and editable with buttons/keyboard
+PASS generated questions and bottom actions can be reached by scrolling
+PASS AI draft has a working answer preview before importing
+PASS AI page does not expose project-only publish/template/navigation actions
+PASS imported draft opens four editable questions and survives reload
+PASS AI description survives import
+PASS editor preview shows the imported questions
+PASS stop then reopen editor permits drafting the next version
+PASS public submit and backend statistics match real four-type answers
+PASS browser has no uncaught errors
+{"passed":10,"failed":0,"formKey":"rdUkEAU9"}

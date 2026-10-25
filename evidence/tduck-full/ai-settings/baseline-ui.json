@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-25T12:02:30.054Z",
+  "source": "Actual administrator session and real persisted model settings; synthetic custom profile removed after test",
+  "checks": [
+    {
+      "name": "regression: AI settings shows the actual model suppliers instead of the disconnected DeepSeek switch",
+      "passed": false,
+      "error": "expect(locator).toBeVisible() failed\n\nLocator: getByRole('heading', { name: '模型供应商', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('heading', { name: '模型供应商', exact: true }) with timeout 5000ms\n  - waiting for getByRole('heading', { name: '模型供应商', exact: true })\n"
+    }
+  ],
+  "passed": 0,
+  "failed": 1
+}

@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-25T12:10:21.698Z",
+  "source": "Real admin authentication, Spring/MyBatis/MySQL; local three-protocol fixture; actual provider only when --real/--replay",
+  "checks": [
+    {
+      "name": "only a real administrator can read/save/test model settings",
+      "passed": true
+    },
+    {
+      "name": "legacy live provider is imported once and secrets are absent from admin reads",
+      "passed": true
+    },
+    {
+      "name": "actual existing model connection succeeds through the new managed settings",
+      "passed": true
+    },
+    {
+      "name": "three suppliers and two distinct model profiles per supplier persist in MySQL",
+      "passed": true
+    },
+    {
+      "name": "all three real HTTP adapters send the chosen model, effort and output limit with correct auth",
+      "passed": true
+    },
+    {
+      "name": "default model switches immediately for assistant, draft and report status without restart",
+      "passed": true
+    },
+    {
+      "name": "blank API key preserves ciphertext and does not break the selected model",
+      "passed": true
+    },
+    {
+      "name": "stale revision cannot overwrite newer persisted settings",
+      "passed": true
+    },
+    {
+      "name": "invalid budgets, duplicate IDs and unknown default are rejected without persistence",
+      "passed": true
+    },
+    {
+      "name": "changing endpoint/protocol requires key reconfirmation and rejects embedded URL credentials",
+      "passed": true
+    },
+    {
+      "name": "bounded same-scope question history is transmitted without answer text or tool results",
+      "passed": true
+    },
+    {
+      "name": "context budget is enforced before network and planner degrades visibly",
+      "passed": true
+    },
+    {
+      "name": "disabling real AI is not undone by the old local file configuration",
+      "passed": true
+    },
+    {
+      "name": "restore original live provider/default and remove only synthetic test configuration",
+      "passed": true
+    }
+  ],
+  "passed": 14,
+  "failed": 0
+}

@@ -1,0 +1,18 @@
+(node:26892) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS assistant entry follows My Questionnaires and is active after in-app navigation
+PASS owner can search a real questionnaire and explicitly choose the old published version
+PASS chat executes HTTP MCP statistics and renders authoritative old-version facts
+PASS statistics citation shows the same version and source coordinate
+PASS keyword answer contains literal matching scope and escaped original evidence
+PASS report question uses an approved versioned report instead of pending model output
+PASS actual AI question planning requires consent then still uses backend statistics
+PASS conversation and source-backed answer recover after a browser refresh
+PASS lost MCP response recovers persisted output without duplicating a turn
+PASS a failed tool request resumes the saved plan through real MCP without regenerating it
+PASS unsupported write question returns a read-only notice and leaves the survey intact
+PASS 390px assistant retains usable input, scope controls and source dialog without overflow
+PASS source navigation honors V1 even though the latest published version is V2
+PASS administrator presentation places the assistant second and preserves the two management entries
+PASS no uncaught browser exceptions
+{"passed":15,"failed":0}

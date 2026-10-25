@@ -69,7 +69,7 @@ try{
  & git apply "--directory=.local/$BuildName" (Join-Path $build 'followup.patch')
  if($LASTEXITCODE -ne 0){throw 'Apply follow-up patch failed'}
  # Tracked additive Java sources; no changes to the upstream checkout or its data.
- foreach($extension in @('analysis','assistant')){
+ foreach($extension in @('analysis','assistant','ai-config')){
  $analysisSources=Join-Path $root "backend-extensions\$extension"
  if(Test-Path -LiteralPath $analysisSources){
   foreach($sourceFile in Get-ChildItem -LiteralPath $analysisSources -Recurse -File -Filter '*.java'){

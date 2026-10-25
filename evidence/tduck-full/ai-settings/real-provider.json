@@ -1,0 +1,8 @@
+{
+  "date": "2026-10-25T12:10:20.548Z",
+  "source": "Actual configured provider; fixed OK probe; no questionnaire data sent",
+  "success": true,
+  "model": "group/group",
+  "protocol": "OPENAI_CHAT",
+  "elapsedMs": 1972
+}

@@ -1,0 +1,19 @@
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running com.tduck.cloud.api.ai.AiDraftServiceTest
+08:21:29.299 [main] WARN com.tduck.cloud.form.ai.AiDraftService - AI draft rejected by validator: ���� 1 ���������� 4 ����; �� 1 ��ѡ�A���ظ�
+08:21:29.308 [main] WARN com.tduck.cloud.form.ai.AiDraftService - AI provider degraded: AI ��������ʧ�ܣ���ʱ�������쳣�������Ժ����ԣ��ֹ���������Ӱ��
+Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.28 sec
+Running com.tduck.cloud.api.ai.AiSettingsTest
+08:21:29.940 [main] INFO com.tduck.cloud.api.web.filter.HttpTraceLogFilter - HTTP POST /user/ai-settings status=200 elapsedMs=0
+Tests run: 25, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.652 sec
+Running com.tduck.cloud.api.ai.AnalysisReportTest
+Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.155 sec
+Running com.tduck.cloud.api.ai.AssistantQueryTest
+Tests run: 24, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.045 sec
+
+Results :
+
+Tests run: 86, Failures: 0, Errors: 0, Skipped: 0
