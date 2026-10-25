@@ -11,6 +11,11 @@
           <span v-if="isAiDraft" class="ai-header-title">知研 AI</span>
         </div>
       </div>
+      <div v-if="isAiDraft" class="header-right">
+        <el-button class="ai-theme-toggle" @click="toggleTheme" :aria-label="isDark ? '切换浅色模式' : '切换深色模式'">
+          <i :class="isDark ? 'el-icon-sunny' : 'el-icon-moon'" />{{ isDark ? '浅色模式' : '深色模式' }}
+        </el-button>
+      </div>
       <div v-if="!isAiDraft" class="header-right">
         <el-button
           round
@@ -61,12 +66,14 @@
 
 <script>
 import PreView from '@/views/form/preview'
+import { toggleWorkbenchTheme } from '@/utils/workbenchTheme'
 
 export default {
   name: 'NewIndex',
   components: { PreView },
   data() {
     return {
+      isDark: document.documentElement.classList.contains('zy-dark'),
       previewKey: +new Date(),
       previewDialogVisible: false,
       defaultActiveMenu: 'editor',
@@ -120,6 +127,9 @@ export default {
     }
   },
   methods: {
+    toggleTheme() {
+      this.isDark = toggleWorkbenchTheme()
+    },
     menuSelectHandle(index) {
       this.defaultActiveMenu = index
       this.$router.replace({ path: index, query: { key: this.projectKey } })
@@ -212,6 +222,14 @@ export default {
     display: flex;
     align-items: center;
     gap: 12px;
+
+    .ai-theme-toggle {
+      color: var(--zy-text-regular);
+      background: var(--zy-surface-subtle);
+      border: 1px solid var(--zy-border);
+      border-radius: var(--zy-radius-sm);
+    }
+    .ai-theme-toggle i { margin-right: 6px; }
 
     .action-btn {
       border-radius: 8px;

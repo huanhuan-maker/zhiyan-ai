@@ -19,6 +19,8 @@ import VxeTable from 'vxe-table'
 import VxeUI from 'vxe-pc-ui'
 import 'vxe-pc-ui/lib/style.css'
 import 'vxe-table/lib/style.css'
+import {initializeWorkbenchTheme} from './utils/workbenchTheme'
+initializeWorkbenchTheme()
 const app=createApp(App)
 app.use(pinia).use(router).use(ElementPlus,{locale:zhCn,zIndex:3000}).use(VxeUI).use(VxeTable)
 Object.assign(app.config.globalProperties,{$api:api,$store:store,$dayjs:dayjs,$cookies:Cookies,$message:ElMessage,$confirm:ElMessageBox.confirm,$prompt:ElMessageBox.prompt,$alert:ElMessageBox.alert,$notify:ElNotification,$process:Process,parseTime,resetForm,download,

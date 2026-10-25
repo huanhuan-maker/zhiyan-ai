@@ -27,6 +27,10 @@
             <i class="el-icon-info" />
             <span>本地研究数据<br />安全保存在当前环境</span>
           </div>
+          <button class="theme-toggle-btn" :aria-label="isDark ? '切换浅色模式' : '切换深色模式'" @click="toggleTheme">
+            <i :class="isDark ? 'el-icon-sunny' : 'el-icon-moon'" />
+            <span>{{ isDark ? '浅色模式' : '深色模式' }}</span>
+          </button>
           <button class="logout-action-btn" @click="logoutHandle">
             <i class="el-icon-switch-button" />
             <span>退出登录</span>
@@ -41,6 +45,10 @@
             <p>{{ headerSubtitle }}</p>
           </div>
           <div class="right-header">
+            <button class="header-theme-btn" :aria-label="isDark ? '切换浅色模式' : '切换深色模式'" @click="toggleTheme">
+              <i :class="isDark ? 'el-icon-sunny' : 'el-icon-moon'" />
+              <span>{{ isDark ? '浅色模式' : '深色模式' }}</span>
+            </button>
             <el-popover placement="bottom-end" trigger="click" width="220" popper-class="workbench-user-popover">
               <div class="user-person-menu">
                 <div v-if="getUserInfo" class="user-profile-summary">
@@ -83,12 +91,14 @@
 <script>
 import store from '@/store'
 import router from '@/router'
+import { toggleWorkbenchTheme } from '@/utils/workbenchTheme'
 
 export default {
   name: 'NewIndex',
   components: {},
   data() {
     return {
+      isDark: document.documentElement.classList.contains('zy-dark'),
       defaultActiveMenu: '/home',
       menuList: [
         { route: '/home', name: '我的问卷', icon: 'fa-pencil-square' },
@@ -136,6 +146,9 @@ export default {
     }
   },
   methods: {
+    toggleTheme() {
+      this.isDark = toggleWorkbenchTheme()
+    },
     menuClickHandle(menu) {
       this.$router.replace({ path: menu.route })
     },

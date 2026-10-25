@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-25T13:10:07.270Z",
+  "source": "Real Vue UI and local backend login; synthetic AI fixture with no model call",
+  "checks": [
+    {
+      "name": "light theme is the default and survey data is visible",
+      "passed": true
+    },
+    {
+      "name": "dark theme survives reload and uses navy surface tokens",
+      "passed": true
+    },
+    {
+      "name": "light theme can be restored from the sidebar",
+      "passed": true
+    },
+    {
+      "name": "dark AI form keeps visible values and generates a draft",
+      "passed": true
+    },
+    {
+      "name": "dark preview, answer widgets and modal are usable",
+      "passed": true
+    },
+    {
+      "name": "390px dark home has no overflow and retains theme toggle",
+      "passed": true
+    },
+    {
+      "name": "390px dark AI draft preserves restored inputs and reachable actions",
+      "passed": true
+    }
+  ],
+  "passed": 7,
+  "failed": 0
+}

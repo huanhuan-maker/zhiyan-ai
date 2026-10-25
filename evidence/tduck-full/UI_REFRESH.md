@@ -49,3 +49,34 @@
 - 构建输出仍提示 Sass `@import` 未来弃用和主 chunk 超 1MB；这是既有前端结构警告，不影响本轮功能。
 - 本轮生成内容用于 UI 证据的 AI 响应为 `fixture-no-model-call` 合成响应；真实模型本轮未额外计费调用。
 - 8997 后端在首次回归前意外退出，已按 `scripts/tduck/Start-FullBackend.ps1 -Background` 原配置恢复并完成全部验证。
+
+## 藏蓝深色模式补充（2026-10-25）
+
+新增文件：
+
+- `tduck-vue3/src/td/utils/workbenchTheme.js`：初始化浅色/深色主题，按用户选择保存至本机 localStorage；不可用时只影响持久化，不阻塞切换。
+- `tduck-vue3/src/td/assets/styles/workbench-dark.scss`：藏蓝深色变量对应的局部组件样式，仅覆盖本轮工作台与 AI 建卷范围。
+- `scripts/tduck/workbench-dark-mode.mjs`：主题持久化、真实计算样式、AI 表单、预览及 390px 回归。
+
+变更：`main.js` 初始化主题；`workbench.scss` 增加深色令牌；`index.scss` 引入深色皮肤；工作台侧栏/手机顶部和 AI 建卷右上角新增切换按钮。AI 答题预览保留原有白色问卷阅读面，不改动公共问卷组件。
+
+验证：
+
+- `node scripts/tduck/workbench-dark-mode.mjs`：7/7 通过。包含浅色默认、深色刷新保持、卡片与导航实际背景色、输入值、AI 生成、预览、手机无横向溢出。
+- `node scripts/tduck/m2-usability.mjs`：10/10 通过，真实后端闭环未受主题影响。
+- `node scripts/tduck/m2-import-recovery.mjs`：10/10 通过。
+- `node scripts/tduck/m2-slow-request.mjs`：通过，32.7 秒受控响应。
+- `node scripts/tduck/capture-ui-refresh.mjs`：5/5 浅色回归通过。
+- `npm.cmd --prefix D:/LcProject/tduck-vue3 run build`：通过；保留既有 Sass 与 chunk 警告。
+- `node scripts/tduck/credential-scan.mjs`：3/3 通过，本轮无凭据泄漏。
+
+深色截图：
+
+- `evidence/tduck-full/dark-mode/01-home-dark-desktop.png`
+- `evidence/tduck-full/dark-mode/02-ai-dark-form-desktop.png`
+- `evidence/tduck-full/dark-mode/03-ai-dark-draft-desktop.png`
+- `evidence/tduck-full/dark-mode/04-ai-dark-preview-desktop.png`
+- `evidence/tduck-full/dark-mode/05-home-dark-mobile.png`
+- `evidence/tduck-full/dark-mode/06-ai-dark-mobile.png`
+
+边界：本轮未给编辑器、统计页和其他页面统一换肤；深色模式只覆盖本轮改造范围。测试 AI 响应为合成 fixture，不是实际模型调用。
