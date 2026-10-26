@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-26T04:00:53.102Z",
+  "source": "Real Spring Boot/MyBatis/MySQL and HTTP MCP; isolated synthetic accounts and questionnaires. No existing real questionnaires changed.",
+  "checks": [
+    {
+      "name": "MCP exposes all ten scoped query and preview tools, with no model confirmation tool",
+      "passed": false,
+      "error": "survey_details missing"
+    }
+  ],
+  "passed": 0,
+  "failed": 1
+}

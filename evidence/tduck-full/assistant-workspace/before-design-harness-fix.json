@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-26T04:27:45.173Z",
+  "source": "Actual configured model draft, browser-confirmed save/publication, real MySQL submission and statistics; synthetic account only",
+  "checks": [
+    {
+      "name": "a persisted real-model design preview saves its four complete editor questions after confirmation",
+      "passed": false,
+      "error": "expect(locator).toHaveCount(expected) failed\n\nLocator:  locator('.drawing-item')\nExpected: 4\nReceived: 0\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveCount\" locator('.drawing-item') with timeout 5000ms\n  - waiting for locator('.drawing-item')\n    14 × locator resolved to 0 elements\n       - unexpected value \"0\"\n"
+    },
+    {
+      "name": "confirmed design publishes through the assistant and the public form renders its real frozen questions",
+      "passed": true,
+      "detail": {
+        "version": 1
+      }
+    },
+    {
+      "name": "the newly generated public questionnaire accepts a real answer and its backend chart count increases",
+      "passed": false,
+      "error": "The expression evaluated to a falsy value:\n\n  assert.ok(stats.result.structuredContent.statistics.every(q=>q.validCount===1))\n"
+    },
+    {
+      "name": "generated editor and public questionnaire have no uncaught exceptions",
+      "passed": true
+    }
+  ],
+  "passed": 2,
+  "failed": 2
+}

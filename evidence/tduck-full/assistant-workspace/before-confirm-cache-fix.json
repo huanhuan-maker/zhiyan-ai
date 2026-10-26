@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-26T04:13:55.842Z",
+  "source": "Real Spring Boot/MyBatis/MySQL and HTTP MCP; isolated synthetic accounts and questionnaires. No existing real questionnaires changed.",
+  "checks": [
+    {
+      "name": "MCP exposes all ten scoped query and preview tools, with no model confirmation tool",
+      "passed": true,
+      "detail": {
+        "tools": [
+          "search_surveys",
+          "survey_stats",
+          "search_answers",
+          "survey_report",
+          "survey_details",
+          "survey_versions",
+          "survey_share",
+          "survey_export",
+          "manage_survey",
+          "design_survey"
+        ]
+      }
+    },
+    {
+      "name": "hello and permissions work without selecting a questionnaire",
+      "passed": true
+    },
+    {
+      "name": "CREATE returns a persisted preview, and a model-level confirmed flag is rejected",
+      "passed": true
+    },
+    {
+      "name": "another owner cannot confirm the preview",
+      "passed": true
+    },
+    {
+      "name": "concurrent confirmation creates one questionnaire and replays one result",
+      "passed": false,
+      "error": "数据库中已存在该记录\n\n500 !== 200\n"
+    },
+    {
+      "name": "cancelled rename is durable and cannot later be confirmed",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'surveys'\n- 'action_proposal'\n"
+    },
+    {
+      "name": "confirmed rename and description persist in MySQL",
+      "passed": false,
+      "error": "这条消息没有可确认的操作\n\n500 !== 200\n"
+    },
+    {
+      "name": "a stale preview is rejected rather than overwriting newer edits",
+      "passed": false,
+      "error": "The input did not match the regular expression /变化/. Input:\n\n'这条消息没有可确认的操作'\n"
+    },
+    {
+      "name": "setup/completion",
+      "passed": false,
+      "error": "key请求异常\n\n500 !== 200\n"
+    }
+  ],
+  "passed": 4,
+  "failed": 5
+}

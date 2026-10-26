@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-26T04:25:47.086Z",
+  "java": {
+    "passed": 76,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "frontend": {
+    "passed": 44,
+    "failed": 0
+  },
+  "frontendBuild": "Passed; existing Sass deprecation and bundle-size warnings",
+  "backendCleanBuild": "Passed using Build-FullBackend.ps1 -BuildName tduck-workspace-build",
+  "installedJarSha256": "d2aef091919585ce3c60fc14201cd6e371d381561c3f5ddd2f41be6939a115ef",
+  "sourceBuildJarSha256": "d2aef091919585ce3c60fc14201cd6e371d381561c3f5ddd2f41be6939a115ef",
+  "earlierFailures": {
+    "chartRegressions": {
+      "tests": 13,
+      "failed": 3
+    },
+    "renameRegression": {
+      "tests": 15,
+      "failed": 1
+    },
+    "staleDiscoveryExpectation": {
+      "tests": 74,
+      "failed": 1
+    },
+    "concurrentConfirmationApi": "before-confirm-cache-fix.json",
+    "renameRoutingUi": "before-rename-routing-fix.json"
+  },
+  "upstream": "Untouched D:/tduck-survey-form-master",
+  "database": "tduck_vue3_dev",
+  "model": {
+    "provider": "本机推理网关",
+    "model": "group/group"
+  }
+}

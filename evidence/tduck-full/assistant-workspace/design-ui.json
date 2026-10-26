@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-26T04:30:54.215Z",
+  "source": "Actual configured model draft, browser-confirmed save/publication, real MySQL submission and statistics; synthetic account only",
+  "checks": [
+    {
+      "name": "a persisted real-model design preview saves its four complete editor questions after confirmation",
+      "passed": true,
+      "detail": {
+        "formKey": "9YnucWy5",
+        "questions": 4
+      }
+    },
+    {
+      "name": "assistant publication links the confirmed design to its frozen public questionnaire",
+      "passed": true,
+      "detail": {
+        "version": 1
+      }
+    },
+    {
+      "name": "the generated public form submits in the browser and each backend valid count increases by one",
+      "passed": true,
+      "detail": {
+        "before": 1,
+        "after": 2,
+        "validQuestions": 4
+      }
+    },
+    {
+      "name": "generated editor and public questionnaire have no uncaught exceptions",
+      "passed": true
+    }
+  ],
+  "passed": 4,
+  "failed": 0
+}

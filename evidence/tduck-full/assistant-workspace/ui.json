@@ -1,0 +1,78 @@
+{
+  "date": "2026-10-26T04:22:06.967Z",
+  "source": "Real Edge browser / local Spring Boot / MySQL synthetic fixture / configured actual AI planner",
+  "checks": [
+    {
+      "name": "ordinary conversation uses the configured real model without requiring questionnaire selection",
+      "passed": true,
+      "detail": {
+        "provider": "本机推理网关",
+        "model": "group/group"
+      }
+    },
+    {
+      "name": "global catalogue selection runs once and an unpublished draft gives a normal persisted explanation",
+      "passed": true
+    },
+    {
+      "name": "named natural-language chart request resolves the owned questionnaire and draws real V1 data",
+      "passed": true,
+      "detail": {
+        "turnId": "9737173e-4337-4b17-b4d3-c903705c4892",
+        "version": 1,
+        "answers": 4
+      }
+    },
+    {
+      "name": "follow-up requests select a categorical question and render its donut without creating a survey",
+      "passed": true,
+      "detail": {
+        "field": "RADIO体验"
+      }
+    },
+    {
+      "name": "charts can be downloaded as PNG and real analysis data as JSON",
+      "passed": true,
+      "detail": {
+        "image": {
+          "filename": "问卷-pSQ6Zet3-V1-distribution.png",
+          "bytes": 55726
+        },
+        "json": {
+          "filename": "问卷分析-pSQ6Zet3-V1.json",
+          "bytes": 2801
+        }
+      }
+    },
+    {
+      "name": "CSV export remains in the simple conversation and downloads the selected frozen version",
+      "passed": true,
+      "detail": {
+        "filename": "问卷-pSQ6Zet3-V1.csv",
+        "bytes": 371
+      }
+    },
+    {
+      "name": "rename preview is persisted and cancellation does not modify the questionnaire",
+      "passed": true
+    },
+    {
+      "name": "confirmed rename persists once and the assistant continues with the resulting survey",
+      "passed": true
+    },
+    {
+      "name": "390px chart conversation has no horizontal overflow and keeps sending available",
+      "passed": true
+    },
+    {
+      "name": "chart messages survive refresh and render all three charts again",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "passed": 11,
+  "failed": 0
+}

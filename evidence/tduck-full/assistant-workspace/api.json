@@ -1,0 +1,138 @@
+{
+  "date": "2026-10-26T04:21:51.673Z",
+  "source": "Real Spring Boot/MyBatis/MySQL and HTTP MCP; isolated synthetic accounts and questionnaires. No existing real questionnaires changed.",
+  "checks": [
+    {
+      "name": "MCP exposes all ten scoped query and preview tools, with no model confirmation tool",
+      "passed": true,
+      "detail": {
+        "tools": [
+          "search_surveys",
+          "survey_stats",
+          "search_answers",
+          "survey_report",
+          "survey_details",
+          "survey_versions",
+          "survey_share",
+          "survey_export",
+          "manage_survey",
+          "design_survey"
+        ]
+      }
+    },
+    {
+      "name": "hello and permissions work without selecting a questionnaire",
+      "passed": true
+    },
+    {
+      "name": "CREATE returns a persisted preview, and a model-level confirmed flag is rejected",
+      "passed": true
+    },
+    {
+      "name": "another owner cannot confirm the preview",
+      "passed": true
+    },
+    {
+      "name": "concurrent confirmation creates one questionnaire and replays one result",
+      "passed": true,
+      "detail": {
+        "formKey": "tZV4y2Ea",
+        "turnId": "80c9b813-b8b4-43d5-8942-3155e6ca3831"
+      }
+    },
+    {
+      "name": "cancelled rename is durable and cannot later be confirmed",
+      "passed": true
+    },
+    {
+      "name": "confirmed rename and description persist in MySQL",
+      "passed": true
+    },
+    {
+      "name": "a stale preview is rejected rather than overwriting newer edits",
+      "passed": true
+    },
+    {
+      "name": "details read real draft question content without requiring publication",
+      "passed": true
+    },
+    {
+      "name": "single-question chat edit prepares a preview and preserves other question fields",
+      "passed": true,
+      "detail": {
+        "provider": "后端只读查询",
+        "model": "query-rules-v1"
+      }
+    },
+    {
+      "name": "actual model adds a validated optional question through a confirmed action",
+      "passed": true
+    },
+    {
+      "name": "chat moves a question and removes only the selected draft question",
+      "passed": true
+    },
+    {
+      "name": "COPY preview creates a draft with identical questions, no versions or answers",
+      "passed": true,
+      "detail": {
+        "formKey": "0jRqUWDS"
+      }
+    },
+    {
+      "name": "PUBLISH confirmation creates one immutable version even under concurrent clicks",
+      "passed": true
+    },
+    {
+      "name": "active collection rejects editing previews and does not alter the published version",
+      "passed": true
+    },
+    {
+      "name": "STOP closes the published version and sharing reports its stopped state",
+      "passed": true
+    },
+    {
+      "name": "editing a stopped draft keeps the historical snapshot unchanged",
+      "passed": true
+    },
+    {
+      "name": "version statistics and daily chart series match the known synthetic four-response fixture",
+      "passed": true,
+      "detail": {
+        "version": 1,
+        "answerCount": 4,
+        "daily": {
+          "2026-10-25": 4
+        }
+      }
+    },
+    {
+      "name": "CSV export returns all selected-version answers without IP, browser or account metadata",
+      "passed": true
+    },
+    {
+      "name": "all new tools enforce ownership, including drafts, share links, exports and proposals",
+      "passed": true
+    },
+    {
+      "name": "MCP cannot execute a proposal by adding a pretend confirmation argument or tool",
+      "passed": true
+    },
+    {
+      "name": "ARCHIVE requires confirmation, preserves versions and removes the form from active searches",
+      "passed": true
+    },
+    {
+      "name": "actual design model returns a validated unsaved draft and records its model identity",
+      "passed": true,
+      "detail": {
+        "mode": "REAL",
+        "model": "group/group",
+        "provider": "本机推理网关",
+        "warnings": []
+      }
+    }
+  ],
+  "passed": 23,
+  "failed": 0
+}

@@ -1,5 +1,7 @@
 # 知研 AI｜分阶段开发与验收计划书 V2.0
 
+> **当前授权轮次 M5-D（2026-10-26）**：用户要求扩大助手的问卷管理能力，并明确修复“基于某份问卷生成数据图”无法完成的问题。本轮按 [ASSISTANT_WORKSPACE_STAGE.md](ASSISTANT_WORKSPACE_STAGE.md) 交付简单对话内的真实 ECharts、10 个查询/预览工具、12 类需确认的管理操作与审计。以 [M5-D.md](../evidence/M5-D.md) 验收；本轮取代旧版助手“只读”范围，完成后停下等待反馈。
+
 > **当前修复与交互调整 M5-C（2026-10-25）**：用户要求助手简化为聊天窗口，同时支持普通聊天和自动问卷查询。按 [SIMPLE_ASSISTANT_STAGE.md](SIMPLE_ASSISTANT_STAGE.md) 取代前置模式/选择/勾选流程；保留数据来源与权限，完成后按 [M5-C.md](../evidence/M5-C.md) 验收，不推进其他阶段。
 
 > **当前修复轮次 M5-B（2026-10-25）**：用户指出AI配置页未展示实际模型，要求三协议、自定义供应商/多模型、思考强度、上下文与输出上限。本轮范围见 [AI_SETTINGS_STAGE.md](AI_SETTINGS_STAGE.md)，交付与复验见 [M5-B.md](../evidence/M5-B.md)。本轮交付后等待验收，追问继续停用。
