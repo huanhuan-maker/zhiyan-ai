@@ -6,3 +6,4 @@ export const createAssistantConversation = () => request.post(root + '/conversat
 export const assistantHistory = id => request.get(root + '/conversations/' + id)
 export const assistantVersions = formKey => request.get(root + '/versions', { params: { formKey } })
 export const planAssistantQuery = data => request.post(root + '/plan', data, { timeout: 120000 })
+export const decideAssistantAction = (id,confirm) => request.post(root + '/actions/' + id + '/decision', { confirm }, { timeout: 120000 })

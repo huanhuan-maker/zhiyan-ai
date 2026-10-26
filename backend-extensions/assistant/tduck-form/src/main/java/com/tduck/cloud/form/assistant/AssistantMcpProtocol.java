@@ -20,7 +20,7 @@ public class AssistantMcpProtocol {
         params=request.get("params")==null?Collections.emptyMap():(Map<String,Object>)request.get("params");
         if("initialize".equals(method)) {
             if(!request.containsKey("id")||!(params.get("protocolVersion") instanceof String)||!(params.get("capabilities") instanceof Map)||!(params.get("clientInfo") instanceof Map))return error(id,-32602,"Initialization parameters missing");
-            return result(id,map("protocolVersion",VERSION,"capabilities",map("tools",map("listChanged",false)),"serverInfo",map("name","zhiyan-survey-readonly","version","1.0.0"),"instructions","Only owner-scoped read tools; keyword evidence is not population prevalence. Application authentication, local deployment only."));
+            return result(id,map("protocolVersion",VERSION,"capabilities",map("tools",map("listChanged",false)),"serverInfo",map("name","zhiyan-survey-workspace","version","2.0.0"),"instructions","Owner-scoped queries and management previews. Writes require a separate authenticated user confirmation; no confirmation tool is exposed to the model. Keyword evidence is not population prevalence."));
         }
         if(!VERSION.equals(protocolVersion))return error(id,-32602,"Unsupported or missing MCP-Protocol-Version");
         if(!request.containsKey("id")) {

@@ -16,7 +16,10 @@ try{
  $sql=(Join-Path $root 'db\tduck\007_assistant.sql').Replace('\','/')
  & $mysql @mysqlArgs ('--execute=source '+$sql)
  if($LASTEXITCODE -ne 0){throw 'Assistant migration failed'}
- $tables=& $mysql @mysqlArgs '-N' '-B' "--execute=SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='tduck_vue3_dev' AND table_name IN ('fm_assistant_conversation','fm_assistant_turn')"
- if($LASTEXITCODE -ne 0 -or [int]$tables -ne 2){throw 'Assistant tables missing'}
- Write-Output 'M5-A assistant history tables ready (2). Existing surveys and answers unchanged.'
+ $actionsSql=(Join-Path $root 'db\tduck\009_assistant_actions.sql').Replace('\','/')
+ & $mysql @mysqlArgs ('--execute=source '+$actionsSql)
+ if($LASTEXITCODE -ne 0){throw 'Assistant action audit migration failed'}
+ $tables=& $mysql @mysqlArgs '-N' '-B' "--execute=SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='tduck_vue3_dev' AND table_name IN ('fm_assistant_conversation','fm_assistant_turn','fm_assistant_action')"
+ if($LASTEXITCODE -ne 0 -or [int]$tables -ne 3){throw 'Assistant tables missing'}
+ Write-Output 'Assistant history and action audit tables ready (3). Existing surveys and answers unchanged.'
 }finally{$env:MYSQL_PWD=$priorPassword}

@@ -24,6 +24,7 @@ public class AssistantTools {
     private final UserFormVersionService versions;
     private final AnalysisSnapshotService snapshots;
     private final AnalysisReportMapper reports;
+    @org.springframework.beans.factory.annotation.Autowired private AssistantWorkspace workspace;
     public static class UnpublishedSurvey extends BaseException {public UnpublishedSurvey(){super("问卷尚未发布，暂无发布版本统计");}}
 
     public UserFormEntity requireOwned(String key,Long owner) {
@@ -47,19 +48,28 @@ public class AssistantTools {
     public static Set<String> argumentsFor(String tool) {
         switch(tool) {
             case "search_surveys":return new HashSet<>(Arrays.asList("query","limit","status","fromDate","untilDate"));
-            case "survey_stats":case "survey_report":return new HashSet<>(Arrays.asList("formKey","version"));
+            case "survey_stats":return new HashSet<>(Arrays.asList("formKey","version","chartType","fieldQuery"));
+            case "survey_report":return new HashSet<>(Arrays.asList("formKey","version"));
+            case "survey_details":case "survey_share":case "survey_export":return new HashSet<>(Arrays.asList("formKey","version"));
+            case "survey_versions":return Collections.singleton("formKey");
+            case "manage_survey":return new HashSet<>(Arrays.asList("formKey","action","title","description","questions","question","questionNo","toPosition"));
+            case "design_survey":return new HashSet<>(Arrays.asList("goal","audience","questionCount"));
             case "search_answers":return new HashSet<>(Arrays.asList("formKey","version","keywords","fieldId","limit"));
-            default:throw new BaseException("仅允许四个只读问卷工具，不能修改、发布或删除数据");
+            default:throw new BaseException("工具不在问卷助手的授权范围内");
         }
     }
     public static void validateArguments(String tool,Map<String,Object> args) {
         if(args==null||!argumentsFor(tool).containsAll(args.keySet()))throw new BaseException("工具参数不在允许范围内");
+        if("manage_survey".equals(tool)){AssistantWorkspace.validate(args);return;}
+        if("design_survey".equals(tool)){str(args.get("goal"),500,"调查目标");if(((String)args.get("goal")).trim().isEmpty())throw new BaseException("调查目标不能为空");if(args.containsKey("audience"))str(args.get("audience"),100,"调查对象");if(args.containsKey("questionCount"))integer(args.get("questionCount"),1,30,"题数");return;}
         if(!"search_surveys".equals(tool)&&(!(args.get("formKey") instanceof String)||!((String)args.get("formKey")).matches("[A-Za-z0-9_-]{1,64}")))throw new BaseException("请先选择问卷");
         if(args.containsKey("version"))integer(args.get("version"),1,100000,"版本");
         if(args.containsKey("limit"))integer(args.get("limit"),1,10,"条数");
         if(args.containsKey("status"))integer(args.get("status"),1,3,"状态");
         if(args.containsKey("query"))str(args.get("query"),100,"搜索词");
         if(args.containsKey("fieldId"))str(args.get("fieldId"),100,"题目编号");
+        if(args.containsKey("fieldQuery"))str(args.get("fieldQuery"),100,"题目名称");
+        if(args.containsKey("chartType")&&!Arrays.asList("all","bar","donut","line").contains(args.get("chartType")))throw new BaseException("图表类型不支持");
         for(String date:Arrays.asList("fromDate","untilDate"))if(args.containsKey(date))try{LocalDate.parse(str(args.get(date),10,"日期"));}catch(Exception e){throw new BaseException("日期必须为YYYY-MM-DD");}
         if("search_answers".equals(tool)) {
             if(!(args.get("keywords") instanceof List))throw new BaseException("请提供关键词列表");
@@ -69,18 +79,24 @@ public class AssistantTools {
     }
     public static Map<String,Object> normalizedArguments(String tool,Map<String,Object> args) {
         validateArguments(tool,args);Map<String,Object> normalized=new LinkedHashMap<>(args);
-        for(String numeric:Arrays.asList("version","limit","status"))if(normalized.get(numeric)!=null)normalized.put(numeric,((Number)normalized.get(numeric)).intValue());
+        for(String numeric:Arrays.asList("version","limit","status","questionCount","questionNo","toPosition"))if(normalized.get(numeric)!=null)normalized.put(numeric,((Number)normalized.get(numeric)).intValue());
         return normalized;
     }
-    @Transactional(readOnly=true)
+    @Transactional
     public Map<String,Object> call(String tool,Map<String,Object> args,Long owner) {
         validateArguments(tool,args);
         Map<String,Object> result;
-        if("search_surveys".equals(tool)) result=search(args,owner);
+        if("manage_survey".equals(tool))result=workspace.propose(args,owner);
+        else if("design_survey".equals(tool))result=workspace.design(args,owner);
+        else if("survey_details".equals(tool))result=workspace.details((String)args.get("formKey"),(Integer)args.get("version"),owner);
+        else if("survey_versions".equals(tool))result=workspace.versionList((String)args.get("formKey"),owner);
+        else if("survey_share".equals(tool))result=workspace.share((String)args.get("formKey"),(Integer)args.get("version"),owner);
+        else if("survey_export".equals(tool))result=workspace.export((String)args.get("formKey"),(Integer)args.get("version"),owner);
+        else if("search_surveys".equals(tool)) result=search(args,owner);
         else {
             String key=(String)args.get("formKey");UserFormEntity selected=requireOwned(key,owner);
             UserFormVersionEntity version=resolve(key,args.get("version"));
-            if("survey_stats".equals(tool))result=stats(key,version);
+            if("survey_stats".equals(tool)){result=stats(key,version);result.put("chartRequest",map("chartType",args.getOrDefault("chartType","all"),"fieldQuery",args.getOrDefault("fieldQuery","")));}
             else if("search_answers".equals(tool))result=evidence(key,version,args);
             else result=report(key,version);
             result.put("formKey",key);result.put("version",version.getVersionNo());
@@ -108,7 +124,7 @@ public class AssistantTools {
         Map<String,Object> snap=snapshots.capture(key,v.getVersionNo());
         List<Map<String,Object>> data=JSON.convertValue(snap.get("statistics"),List.class);data.forEach(q->q.remove("responses"));
         return map("kind","statistics","message","V"+v.getVersionNo()+" 共收到 "+snap.get("answerCount")+" 份答卷。下方有效数、缺失、比例及均值由后端计算，分母按每题有效回答人数。",
-            "title",snap.get("title"),"answerCount",snap.get("answerCount"),"statistics",data,"citations",Collections.singletonList(map("id","S1","kind","statistics","formKey",key,"version",v.getVersionNo(),"text","发布版本V"+v.getVersionNo()+"的全量后端统计","answerCount",snap.get("answerCount"))));
+            "title",snap.get("title"),"answerCount",snap.get("answerCount"),"statistics",data,"daily",snap.get("daily"),"openResponseCount",snap.get("openResponseCount"),"citations",Collections.singletonList(map("id","S1","kind","statistics","formKey",key,"version",v.getVersionNo(),"text","发布版本V"+v.getVersionNo()+"的全量后端统计","answerCount",snap.get("answerCount"))));
     }
     private Map<String,Object> evidence(String key,UserFormVersionEntity v,Map<String,Object> args) {
         List<String> keywords=((List<?>)args.get("keywords")).stream().map(x->((String)x).trim()).distinct().collect(Collectors.toList());
@@ -140,11 +156,18 @@ public class AssistantTools {
     }
     public static List<Map<String,Object>> definitions() {
         Map<String,Object> key=map("type","string","maxLength",64),version=map("type","integer","minimum",1),limit=map("type","integer","minimum",1,"maximum",10);
+        Map<String,Object> question=map("type","object","properties",map("type",map("type","string","enum",Arrays.asList("RADIO","CHECKBOX","RATE","TEXT")),"label",map("type","string"),"required",map("type","boolean"),"options",map("type","array","items",map("type","string")),"rateMax",map("type","integer"),"placeholder",map("type","string")),"additionalProperties",false);
         List<Map<String,Object>> list=new ArrayList<>();
         list.add(def("search_surveys","查找当前账号自己的问卷，按名称、创建日期与状态过滤",map("query",map("type","string","maxLength",100),"limit",limit,"status",map("type","integer","minimum",1,"maximum",3),"fromDate",map("type","string","format","date"),"untilDate",map("type","string","format","date")),Collections.emptyList()));
-        list.add(def("survey_stats","读取指定发布版本全量后端统计、每题分母和量表均值",map("formKey",key,"version",version),Collections.singletonList("formKey")));
+        list.add(def("survey_stats","根据真实答卷生成数据图和分析面板；包含选项分布、评分、缺失及每日趋势。用户要求画图时必须调用，不要声称无法画图。可用fieldQuery指定题干关键词，chartType指定图形",map("formKey",key,"version",version,"chartType",map("type","string","enum",Arrays.asList("all","bar","donut","line")),"fieldQuery",map("type","string","maxLength",100)),Collections.singletonList("formKey")));
         list.add(def("search_answers","对本版本核心开放回答进行字面关键词检索；不是向量语义搜索或总体观点统计",map("formKey",key,"version",version,"keywords",map("type","array","items",map("type","string","maxLength",30),"minItems",1,"maxItems",6),"fieldId",map("type","string","maxLength",100),"limit",limit),Arrays.asList("formKey","keywords")));
         list.add(def("survey_report","读取本版本已人工审核且当前数据未变化的报告；不返回未审核候选结论",map("formKey",key,"version",version),Collections.singletonList("formKey")));
+        list.add(def("survey_details","读取问卷草稿题目、简介；指定version则读取冻结版本",map("formKey",key,"version",version),Collections.singletonList("formKey")));
+        list.add(def("survey_versions","查看发布版本及各版本答卷数",map("formKey",key),Collections.singletonList("formKey")));
+        list.add(def("survey_share","获取指定或最新版本分享链接",map("formKey",key,"version",version),Collections.singletonList("formKey")));
+        list.add(def("survey_export","准备本账号问卷的单版本答卷导出，最多5000份，原文不发送模型",map("formKey",key,"version",version),Collections.singletonList("formKey")));
+        list.add(def("manage_survey","仅准备管理预览，用户点击确认后执行。CREATE新建/RENAME标题/DESCRIBE简介/REPLACE_QUESTIONS完整题目/ADD_QUESTION追加question/EDIT_QUESTION修改questionNo题的question部分字段/REMOVE_QUESTION删除questionNo题/MOVE_QUESTION从questionNo移动至toPosition/COPY复制/PUBLISH发布/STOP停收/ARCHIVE回收站。新建不指定formKey，其余必须为selectedFormKey",map("formKey",key,"action",map("type","string","enum",new ArrayList<>(AssistantWorkspace.ACTIONS)),"title",map("type","string","maxLength",100),"description",map("type","string","maxLength",2000),"questions",map("type","array","maxItems",30,"items",question),"question",question,"questionNo",map("type","integer","minimum",1),"toPosition",map("type","integer","minimum",1)),Collections.singletonList("action")));
+        list.add(def("design_survey","根据目标设计问卷，返回完整题目预览，确认后保存草稿。模型未配置时明确标注Mock",map("goal",map("type","string","maxLength",500),"audience",map("type","string","maxLength",100),"questionCount",map("type","integer","minimum",1,"maximum",30)),Collections.singletonList("goal")));
         return list;
     }
     private static Map<String,Object> def(String name,String description,Map<String,Object> properties,List<String> required) {

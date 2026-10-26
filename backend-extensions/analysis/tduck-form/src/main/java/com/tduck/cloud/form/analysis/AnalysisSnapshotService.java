@@ -50,9 +50,11 @@ public class AnalysisSnapshotService {
             }
         }
         List<FormReportVO.Analysis> stats=statistics.formReportAnalysis(formKey,versionNo);
+        Map<String,Long> daily=new TreeMap<>();
+        for(UserFormDataEntity row:rows){String date=row.getCreateTime()==null?"日期未知":row.getCreateTime().toLocalDate().toString();daily.merge(date,1L,Long::sum);}
         Map<String,Object> snap=map("formKey",formKey,"versionNo",versionNo,
             "title",HtmlUtils.cleanHtmlTag(String.valueOf(version.getFormSnapshot()==null?"问卷":version.getFormSnapshot().getOrDefault("name","问卷"))),
-            "answerCount",rows.size(),"statistics",stats,"evidence",evidence,"openResponseCount",totalOpen,
+            "answerCount",rows.size(),"statistics",stats,"daily",daily,"evidence",evidence,"openResponseCount",totalOpen,
             "includedEvidenceCount",evidence.size(),"excludedEvidenceCount",totalOpen-evidence.size(),
             "coveredAnswerCount",covered.size(),"evidenceLimit",200,"characterLimit",60000);
         snap.put("fingerprint",fingerprint(write(map("form",version.getFormSnapshot(),"items",version.getItemsSnapshot(),"rows",source))));
