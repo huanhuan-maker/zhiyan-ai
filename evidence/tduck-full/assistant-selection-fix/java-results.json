@@ -1,0 +1,44 @@
+[
+  {
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suite": "com.tduck.cloud.api.ai.AiDraftServiceTest",
+    "tests": 18
+  },
+  {
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suite": "com.tduck.cloud.api.ai.AiSettingsTest",
+    "tests": 25
+  },
+  {
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suite": "com.tduck.cloud.api.ai.AnalysisReportTest",
+    "tests": 19
+  },
+  {
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suite": "com.tduck.cloud.api.ai.AssistantQueryTest",
+    "tests": 24
+  },
+  {
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suite": "com.tduck.cloud.api.ai.AssistantSelectionTest",
+    "tests": 4
+  },
+  {
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suite": "com.tduck.cloud.api.ai.AssistantSimpleTest",
+    "tests": 14
+  }
+]

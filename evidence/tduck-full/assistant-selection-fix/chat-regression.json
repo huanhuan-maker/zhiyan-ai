@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-26T01:19:38.679Z",
+  "source": "Real Spring/MyBatis/MySQL and configured model; real browser-style MCP execution; synthetic owner and questionnaire data",
+  "checks": [
+    {
+      "name": "hello sends with AUTO and no checkbox or survey selection",
+      "passed": true
+    },
+    {
+      "name": "ordinary chat is answered by the actual configured model",
+      "passed": true,
+      "detail": {
+        "provider": "本机推理网关",
+        "model": "group/group"
+      }
+    },
+    {
+      "name": "ordinary follow-up uses the prior chat without requiring questionnaire controls",
+      "passed": true
+    },
+    {
+      "name": "questionnaire search and inline selection share the same conversation",
+      "passed": true
+    },
+    {
+      "name": "a uniquely named survey is found then queried automatically through two real MCP calls",
+      "passed": true,
+      "detail": {
+        "tools": [
+          "search_surveys",
+          "survey_stats"
+        ],
+        "version": 1,
+        "answerCount": 4
+      }
+    },
+    {
+      "name": "continued questionnaire context reads backend mean instead of inventing an answer",
+      "passed": true
+    },
+    {
+      "name": "latest version is not accidentally pinned by the previous historical question",
+      "passed": true
+    },
+    {
+      "name": "original answer evidence still has exact source coordinates",
+      "passed": true
+    },
+    {
+      "name": "chat mode cannot access another owners survey",
+      "passed": true
+    },
+    {
+      "name": "write requests cannot be answered as a successful deletion",
+      "passed": true
+    },
+    {
+      "name": "hello, general chat and query results persist together after refresh reads",
+      "passed": true
+    }
+  ],
+  "passed": 11,
+  "failed": 0
+}

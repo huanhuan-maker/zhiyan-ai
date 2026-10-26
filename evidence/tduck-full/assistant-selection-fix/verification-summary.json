@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-26T01:27:16.4083687Z",
+  "frontendBuild": "success",
+  "failed": 0.0,
+  "backendBuild": "success",
+  "checks": [
+    {
+      "failed": 0,
+      "name": "JUnit",
+      "passed": 104
+    },
+    {
+      "failed": 0,
+      "name": "Vitest",
+      "passed": 39
+    },
+    {
+      "failed": 0,
+      "name": "selection browser",
+      "passed": 7
+    },
+    {
+      "failed": 0,
+      "name": "MCP regression",
+      "passed": 19
+    },
+    {
+      "failed": 0,
+      "name": "chat regression",
+      "passed": 11
+    },
+    {
+      "failed": 0,
+      "name": "actual restart",
+      "passed": 1
+    }
+  ],
+  "passed": 181.0
+}

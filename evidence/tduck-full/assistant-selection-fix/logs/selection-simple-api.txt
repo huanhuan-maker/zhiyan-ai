@@ -1,0 +1,14 @@
+(node:34724) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS hello sends with AUTO and no checkbox or survey selection
+PASS ordinary chat is answered by the actual configured model
+PASS ordinary follow-up uses the prior chat without requiring questionnaire controls
+PASS questionnaire search and inline selection share the same conversation
+PASS a uniquely named survey is found then queried automatically through two real MCP calls
+PASS continued questionnaire context reads backend mean instead of inventing an answer
+PASS latest version is not accidentally pinned by the previous historical question
+PASS original answer evidence still has exact source coordinates
+PASS chat mode cannot access another owners survey
+PASS write requests cannot be answered as a successful deletion
+PASS hello, general chat and query results persist together after refresh reads
+{"passed":11,"failed":0}

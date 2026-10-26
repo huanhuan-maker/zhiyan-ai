@@ -1,0 +1,105 @@
+{
+  "date": "2026-10-26T01:21:55.900Z",
+  "source": "Real browser / actual configured planner / real MCP and MySQL; isolated synthetic account and questionnaires; no real answers sent to model",
+  "checks": [
+    {
+      "name": "exact screenshot path: global survey count then Query This returns selected statistics rather than another list",
+      "passed": true,
+      "detail": {
+        "question": "查一下这份问卷的回收统计",
+        "formKey": "pSQ6Zet3"
+      }
+    },
+    {
+      "name": "rapid repeated selection sends one query and leaves no duplicate message in the input",
+      "passed": true
+    },
+    {
+      "name": "selecting an unpublished questionnaire gives a persisted explanation instead of a failed query",
+      "passed": true
+    },
+    {
+      "name": "switching away from an unpublished questionnaire returns the correct published source",
+      "passed": true
+    },
+    {
+      "name": "390px selection keeps the selected reply and send action usable",
+      "passed": true
+    },
+    {
+      "name": "new conversation creation blocks sends until its ID and questionnaire scope are ready",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "planRequests": [
+    {
+      "id": "fb9ce1a8-a974-4ce4-9d4c-2c16a1f0f174",
+      "conversationId": "34838f82-56ed-4b66-96ee-886261081d3b",
+      "question": "我现在有多少份问卷",
+      "formKey": null,
+      "version": null
+    },
+    {
+      "id": "e51a3e8d-eb94-46dd-b8e1-b8ca1f40899e",
+      "conversationId": "34838f82-56ed-4b66-96ee-886261081d3b",
+      "question": "查一下这份问卷的回收统计",
+      "formKey": "pSQ6Zet3",
+      "version": null
+    },
+    {
+      "id": "d6347c50-5920-47d5-91dc-25a300a848d5",
+      "conversationId": "bf2b2b94-b605-422f-a53f-23137668e8db",
+      "question": "列出我的问卷",
+      "formKey": null,
+      "version": null
+    },
+    {
+      "id": "bc19a62b-1a48-4966-9060-0b6752e48d16",
+      "conversationId": "bf2b2b94-b605-422f-a53f-23137668e8db",
+      "question": "查一下这份问卷的回收统计",
+      "formKey": "pSQ6Zet3",
+      "version": null
+    },
+    {
+      "id": "ac77e7a2-1a72-48e0-ae9f-f09d39b5480a",
+      "conversationId": "880c423c-b9be-433e-8f8f-cce094fd14ee",
+      "question": "列出我的问卷",
+      "formKey": null,
+      "version": null
+    },
+    {
+      "id": "b6d8f8d1-83de-493c-9651-6efc043b022d",
+      "conversationId": "880c423c-b9be-433e-8f8f-cce094fd14ee",
+      "question": "查一下这份问卷的回收统计",
+      "formKey": "YTk8zmh6",
+      "version": null
+    },
+    {
+      "id": "b19848e7-7fc7-45f5-8a30-e032380751b2",
+      "conversationId": "f864e4a5-4c46-4158-af06-3dd079f82404",
+      "question": "我现在有多少份问卷",
+      "formKey": null,
+      "version": null
+    },
+    {
+      "id": "404f3d30-7a1e-4228-ade2-2d7f8de2a395",
+      "conversationId": "f864e4a5-4c46-4158-af06-3dd079f82404",
+      "question": "查一下这份问卷的回收统计",
+      "formKey": "pSQ6Zet3",
+      "version": null
+    },
+    {
+      "id": "76cd6635-4fc1-41c6-b6ed-134190699c2b",
+      "conversationId": "61a12691-d40d-4681-8f4b-d0e560f5ff15",
+      "question": "我现在有多少份问卷",
+      "formKey": null,
+      "version": null
+    }
+  ],
+  "passed": 7,
+  "failed": 0
+}

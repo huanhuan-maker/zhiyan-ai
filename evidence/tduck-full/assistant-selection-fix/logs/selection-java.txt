@@ -1,0 +1,25 @@
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running com.tduck.cloud.api.ai.AiDraftServiceTest
+21:17:03.380 [main] WARN com.tduck.cloud.form.ai.AiDraftService - AI draft rejected by validator: ���� 1 ���������� 4 ����; �� 1 ��ѡ�A���ظ�
+21:17:03.387 [main] WARN com.tduck.cloud.form.ai.AiDraftService - AI provider degraded: AI ��������ʧ�ܣ���ʱ�������쳣�������Ժ����ԣ��ֹ���������Ӱ��
+Tests run: 18, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.333 sec
+Running com.tduck.cloud.api.ai.AiSettingsTest
+21:17:04.205 [main] INFO com.tduck.cloud.api.web.filter.HttpTraceLogFilter - HTTP POST /user/ai-settings status=200 elapsedMs=0
+Tests run: 25, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.824 sec
+Running com.tduck.cloud.api.ai.AnalysisReportTest
+Tests run: 19, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.207 sec
+Running com.tduck.cloud.api.ai.AssistantQueryTest
+Tests run: 24, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.061 sec
+Running com.tduck.cloud.api.ai.AssistantSelectionTest
+21:17:04.539 [main] DEBUG org.apache.ibatis.logging.LogFactory - Logging initialized using 'class org.apache.ibatis.logging.slf4j.Slf4jImpl' adapter.
+21:17:04.654 [main] WARN com.baomidou.mybatisplus.core.toolkit.support.ReflectLambdaMeta - Unable to make field private final java.lang.Class java.lang.invoke.SerializedLambda.capturingClass accessible: module java.base does not "opens java.lang.invoke" to unnamed module @668bc3d5
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.116 sec
+Running com.tduck.cloud.api.ai.AssistantSimpleTest
+Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 sec
+
+Results :
+
+Tests run: 104, Failures: 0, Errors: 0, Skipped: 0

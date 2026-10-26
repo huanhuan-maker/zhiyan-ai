@@ -1,0 +1,81 @@
+{
+  "date": "2026-10-26T01:18:22.466Z",
+  "source": "Real browser / actual configured planner / real MCP and MySQL; isolated synthetic account and questionnaires; no real answers sent to model",
+  "checks": [
+    {
+      "name": "exact screenshot path: global survey count then Query This returns selected statistics rather than another list",
+      "passed": true,
+      "detail": {
+        "question": "查一下这份问卷的回收统计",
+        "formKey": "pSQ6Zet3"
+      }
+    },
+    {
+      "name": "rapid repeated selection sends one query and leaves no duplicate message in the input",
+      "passed": false,
+      "error": "expect(locator).toBeVisible() failed\n\nLocator: locator('[data-turn-id=\"049e48f6-eea3-4880-a457-2ebc06eb570a\"]').locator('.survey-results')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" locator('[data-turn-id=\"049e48f6-eea3-4880-a457-2ebc06eb570a\"]').locator('.survey-results') with timeout 5000ms\n  - waiting for locator('[data-turn-id=\"049e48f6-eea3-4880-a457-2ebc06eb570a\"]').locator('.survey-results')\n"
+    },
+    {
+      "name": "selecting an unpublished questionnaire gives a persisted explanation instead of a failed query",
+      "passed": true
+    },
+    {
+      "name": "switching away from an unpublished questionnaire returns the correct published source",
+      "passed": true
+    },
+    {
+      "name": "390px selection keeps the selected reply and send action usable",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "planRequests": [
+    {
+      "id": "ee5dea35-1a48-4b3d-b1b4-a89dffc9cf05",
+      "question": "我现在有多少份问卷",
+      "formKey": null,
+      "version": null
+    },
+    {
+      "id": "6cfba329-2a5f-48cc-8dd5-3982314fa769",
+      "question": "查一下这份问卷的回收统计",
+      "formKey": "pSQ6Zet3",
+      "version": null
+    },
+    {
+      "id": "049e48f6-eea3-4880-a457-2ebc06eb570a",
+      "question": "列出我的问卷",
+      "formKey": "pSQ6Zet3",
+      "version": null
+    },
+    {
+      "id": "74a63318-f04b-40cc-ab9f-dbb568d150a2",
+      "question": "列出我的问卷",
+      "formKey": null,
+      "version": null
+    },
+    {
+      "id": "842fd6e9-210c-4d20-9c27-390bd9939a45",
+      "question": "查一下这份问卷的回收统计",
+      "formKey": "YTk8zmh6",
+      "version": null
+    },
+    {
+      "id": "c2e29f73-4c19-44eb-ab78-3ed6764306ef",
+      "question": "我现在有多少份问卷",
+      "formKey": null,
+      "version": null
+    },
+    {
+      "id": "a3ef0376-d18d-45f0-a0d5-b21f53eaf246",
+      "question": "查一下这份问卷的回收统计",
+      "formKey": "pSQ6Zet3",
+      "version": null
+    }
+  ],
+  "passed": 5,
+  "failed": 1
+}

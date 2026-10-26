@@ -24,6 +24,7 @@ public class AssistantTools {
     private final UserFormVersionService versions;
     private final AnalysisSnapshotService snapshots;
     private final AnalysisReportMapper reports;
+    public static class UnpublishedSurvey extends BaseException {public UnpublishedSurvey(){super("问卷尚未发布，暂无发布版本统计");}}
 
     public UserFormEntity requireOwned(String key,Long owner) {
         if(key==null||!key.matches("[A-Za-z0-9_-]{1,64}")) throw new BaseException("请先选择自己的问卷");
@@ -34,7 +35,7 @@ public class AssistantTools {
     private UserFormVersionEntity resolve(String key,Object requested) {
         Integer number=requested==null?null:integer(requested,1,100000,"版本");
         UserFormVersionEntity version=number==null?versions.latest(key):versions.byNo(key,number);
-        if(version==null) throw new BaseException("问卷尚未发布或该版本不存在，请选择已发布版本");return version;
+        if(version==null){if(number==null)throw new UnpublishedSurvey();throw new BaseException("问卷尚未发布或该版本不存在，请选择已发布版本");}return version;
     }
     public static int integer(Object value,int min,int max,String name) {
         if(!(value instanceof Number)||((Number)value).doubleValue()!=((Number)value).intValue()) throw new BaseException(name+"必须是整数");

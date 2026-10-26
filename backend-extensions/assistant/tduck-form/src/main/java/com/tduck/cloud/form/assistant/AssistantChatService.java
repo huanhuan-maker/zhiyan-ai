@@ -111,6 +111,12 @@ public class AssistantChatService {
             turns.update(null,Wrappers.<AssistantTurnEntity>lambdaUpdate().eq(AssistantTurnEntity::getId,turnId).set(AssistantTurnEntity::getState,"SUCCEEDED").set(AssistantTurnEntity::getResultJson,write(result)));
             return result;
         } catch(Exception e) {
+            if(e instanceof AssistantTools.UnpublishedSurvey){
+                UserFormEntity source=tools.requireOwned((String)args.get("formKey"),owner);
+                Map<String,Object> notice=map("kind","notice","reason","UNPUBLISHED","message","这份问卷尚未发布，暂时没有发布版本的统计、回答原文或审核报告。你可以查询其他问卷；如需发布，请到问卷管理页操作。","formKey",source.getFormKey(),"title",source.getTextName(),"asOf",Instant.now().toString(),"citations",Collections.emptyList());
+                turns.update(null,Wrappers.<AssistantTurnEntity>lambdaUpdate().eq(AssistantTurnEntity::getId,turnId).set(AssistantTurnEntity::getState,"SUCCEEDED").set(AssistantTurnEntity::getResultJson,write(notice)));
+                return notice;
+            }
             String message=e instanceof BaseException?e.getMessage():"工具查询失败，请稍后重试";
             turns.update(null,Wrappers.<AssistantTurnEntity>lambdaUpdate().eq(AssistantTurnEntity::getId,turnId).set(AssistantTurnEntity::getState,"FAILED").set(AssistantTurnEntity::getWarning,message));throw new BaseException(message);
         }

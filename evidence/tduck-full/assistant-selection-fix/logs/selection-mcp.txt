@@ -1,0 +1,22 @@
+(node:31948) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS real MCP initialization, initialized notification and tools discovery complete
+PASS MCP transport rejects anonymous and forged credentials with HTTP 401
+PASS MCP Origin, Accept, method, JSON and protocol boundaries are enforced
+PASS survey search filters ownership before returning any records
+PASS statistics tool reads true version totals, valid/missing denominators and mean
+PASS cross-owner scopes, arbitrary owner arguments and unavailable versions are denied
+PASS keyword retrieval returns exact source text and separates matches from returned evidence
+PASS write tools, SQL arguments and out-of-range limits cannot execute
+PASS report tool excludes pending candidates and returns only fresh approved reports
+PASS a saved local plan executes through HTTP MCP and appears in owner history
+PASS plan and tool retries are idempotent and cannot overwrite question or arguments
+PASS other users cannot read conversations, plan in them or replay private turn IDs
+PASS real planner requires question-transfer acknowledgment
+PASS actual configured model plans a read tool and authoritative results remain backend facts
+PASS unsupported write request remains a notice without invoking a write tool
+PASS read-only tool and dialogue operations do not alter original answer rows
+PASS new queries read changed data while earlier chat answers remain labelled snapshots
+PASS archiving a source hides stored answer text on subsequent history reads
+PASS default latest version and explicitly selected historical version never mix answers
+{"passed":19,"failed":0}
