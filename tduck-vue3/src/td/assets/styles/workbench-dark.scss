@@ -138,6 +138,57 @@
   .ai-draft-container .el-alert--warning.is-light { --el-alert-bg-color: #332b20; color: #e5bb65; }
   .ai-draft-container .draft-answer-preview { color: #202938; background: #fff; padding: 16px; border-radius: 8px; }
 }
+// —— 过渡页（登录 / 注册 / 忘记密码 / 账户校验）深色覆盖：原先整页保持浅色，深色模式下闪白。 ——
+.zy-dark {
+  body { color: var(--zy-text-regular); }
+
+  .login-container { color: var(--zy-text); background: var(--zy-page) !important; }
+  .login-container .bg-glowing-blob { opacity: 0.35; }
+  .login-card-wrapper { color: var(--zy-text); background: var(--zy-surface) !important; border: 1px solid var(--zy-border); box-shadow: var(--zy-shadow-popup); }
+  .login-container .logo-banner { color: var(--zy-text); background: #101c2e; }
+  .login-container .brand-title,
+  .login-container .banner-header { color: var(--zy-text); }
+  .login-container .brand-badge { color: #9bbcff; background: #203758; }
+  .login-container .brand-description { color: var(--zy-text-secondary); }
+  .login-container .el-input__wrapper,
+  .login-container .el-textarea__inner { background: var(--zy-surface-subtle) !important; box-shadow: 0 0 0 1px var(--zy-border) inset; }
+  .login-container .el-input__inner { color: var(--zy-text); background: transparent !important; }
+  .login-container .el-input__inner::placeholder { color: var(--zy-text-placeholder); }
+  .login-container .el-form-item__label { color: var(--zy-text-regular); }
+  .login-container .el-checkbox__label { color: var(--zy-text-regular); }
+  .login-container .login-options,
+  .login-container .switch-tip,
+  .login-container .legal-note { color: var(--zy-text-secondary); }
+
+  .forget-pwd-wrapper { color: var(--zy-text); background: var(--zy-page); }
+  .forget-card { color: var(--zy-text); background: var(--zy-surface) !important; border: 1px solid var(--zy-border); box-shadow: var(--zy-shadow-popup); }
+  .forget-pwd-wrapper .el-input__wrapper { background: var(--zy-surface-subtle) !important; box-shadow: 0 0 0 1px var(--zy-border) inset; }
+  .forget-pwd-wrapper .el-input__inner { color: var(--zy-text); background: transparent !important; }
+  .forget-pwd-wrapper .steps-indicator,
+  .forget-pwd-wrapper .brand-sub,
+  .forget-pwd-wrapper .step-label { color: var(--zy-text-secondary); }
+
+  .account-validate-container,
+  .status-container { color: var(--zy-text); background: var(--zy-page) !important; }
+  .glass-card { color: var(--zy-text-regular); background: var(--zy-surface) !important; border: 1px solid var(--zy-border) !important; box-shadow: var(--zy-shadow-popup) !important; }
+  .status-container .status-title,
+  .glass-card .card-title { color: var(--zy-text) !important; }
+  .status-container .status-desc,
+  .glass-card .card-desc { color: var(--zy-text-secondary) !important; }
+  .btn-action { color: var(--zy-text-regular); background: var(--zy-surface-subtle) !important; border-color: var(--zy-border) !important; }
+  .btn-action.btn-back:hover { color: #9bbcff; background: #1b2a3d !important; }
+
+  // 问卷助手页遗漏：上下文条与表格区域原先保持浅色。
+  .assistant-page { background: var(--zy-page) !important; }
+  .context-chip { color: #75dfbd; background: #193e3d !important; border-color: #2b5b53 !important; }
+  .assistant-page .el-table { --el-table-bg-color: transparent; --el-table-tr-bg-color: transparent; --el-table-header-bg-color: #111e30; }
+  .assistant-page .el-table th.el-table__cell { background: #111e30 !important; color: var(--zy-text-regular); }
+  .assistant-page .el-table tr,
+  .assistant-page .el-table td.el-table__cell { background: transparent !important; color: var(--zy-text-regular); border-color: var(--zy-border-light); }
+  .assistant-composer { background: var(--zy-surface) !important; }
+  .answer-bubble { background: var(--zy-surface) !important; }
+}
+
 @media (max-width: 767px) {
   .zy-dark .header-theme-btn { display: inline-flex; }
 }
