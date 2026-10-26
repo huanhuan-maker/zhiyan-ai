@@ -1,0 +1,47 @@
+{
+  "generatedAt": "2026-10-26T02:26:05.196Z",
+  "fixture": ".local/assistant-simple/acceptance.json",
+  "steps": [
+    {
+      "step": "open statistics page",
+      "pageErrors": [],
+      "consoleErrors": [],
+      "charts": 0
+    },
+    {
+      "step": "open collection tab",
+      "pageErrors": [
+        "this.getThemedOption is not a function",
+        "this.getThemedOption is not a function"
+      ],
+      "consoleErrors": [],
+      "state": {
+        "charts": 4,
+        "svgOrCanvas": [
+          {
+            "tag": "DIV",
+            "w": 1222,
+            "h": 400
+          },
+          {
+            "tag": null,
+            "w": 600,
+            "h": 430
+          },
+          {
+            "tag": null,
+            "w": 600,
+            "h": 400
+          },
+          {
+            "tag": null,
+            "w": 600,
+            "h": 400
+          }
+        ],
+        "text": "深色模式 预览 编辑 逻辑 外观 设置 发布 数据 统计 统计与分析 查看真实回收结果，沿原文核查归纳与解释。 刷新版本 题目统计 主题与报告 访问与收集概览 此处保留历史概览：回收量按最新发布版本；访问、趋势、设备与来源为问卷全版本口径，不用于所选版本的报告。 最新版本已提交答卷 0 总浏览量 0 答卷统计版本 历史未版本化 平均完成时间 0 周收集趋势 表单提交地域分布图 常用设备 "
+      }
+    }
+  ],
+  "verdict": "BROKEN: chart init throws"
+}

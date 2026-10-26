@@ -17,6 +17,9 @@
         </el-button>
       </div>
       <div v-if="!isAiDraft" class="header-right">
+        <el-button class="ai-theme-toggle" @click="toggleTheme" :aria-label="isDark ? '切换浅色模式' : '切换深色模式'">
+          <i :class="isDark ? 'el-icon-sunny' : 'el-icon-moon'" />{{ isDark ? '浅色模式' : '深色模式' }}
+        </el-button>
         <el-button
           round
           class="action-btn"

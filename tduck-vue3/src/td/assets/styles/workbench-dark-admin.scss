@@ -295,7 +295,7 @@
 
   // 统计与研究报告，图表数据不变。
   .statistics-workspace,
-  .dashboard-container { color: var(--zy-text); background: var(--zy-page); }
+  .dashboard-container { color: var(--zy-text); background: var(--zy-page) !important; }
   .statistics-heading p,
   .statistics-version span,
   .analysis-scope { color: var(--zy-text-secondary); }
@@ -319,9 +319,18 @@
   .interpretation-card { color: var(--zy-text-regular); background: #203758; }
   .evidence-detail blockquote { color: var(--zy-text-regular); background: var(--zy-surface-subtle); }
   .input-evidence-list article { border-color: var(--zy-border-light); }
-  .card-panel { color: var(--zy-text-regular); background: var(--zy-surface); border: 1px solid var(--zy-border); box-shadow: none; }
+  // 统计页容器自带 scoped 浅色底，与这里的特异性相同；不加深就无法覆盖。
+  .statistics-workspace { color: var(--zy-text); background: var(--zy-page) !important; }
+  .statistics-heading h2 { color: var(--zy-text) !important; }
+  .statistics-heading p { color: var(--zy-text-secondary) !important; }
+  .statistics-version { color: var(--zy-text-regular); background: var(--zy-surface) !important; border: 1px solid var(--zy-border); }
+  .statistics-version span { color: var(--zy-text-secondary) !important; }
+  .statistics-content .el-tabs__nav-wrap { background: var(--zy-surface) !important; }
+  .statistics-content .el-tabs__item { color: var(--zy-text-regular) !important; }
+  .statistics-content .el-tabs__item.is-active { color: var(--zy-primary) !important; }
+  .card-panel { color: var(--zy-text-regular); background: var(--zy-surface) !important; border: 1px solid var(--zy-border); box-shadow: none; }
   .card-panel .card-panel-text { color: var(--zy-text-secondary) !important; }
-  .card-panel .card-panel-num { color: var(--zy-text); }
+  .card-panel .card-panel-num { color: var(--zy-text) !important; }
   .situation,
   .device,
   .source { color: var(--zy-text-regular); background: var(--zy-surface); border-color: var(--zy-border); }

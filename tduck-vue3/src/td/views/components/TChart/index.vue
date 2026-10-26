@@ -11,6 +11,82 @@ import { addListener, removeListener } from 'resize-detector'
 
 const INIT_TRIGGERS = ['theme', 'initOptions', 'autoResize']
 const REWATCH_TRIGGERS = ['manualUpdate', 'watchShallow']
+const THEME_EVENT = 'zhiyan:theme-change'
+const DARK_CLASS = 'zy-dark'
+
+// 深色模式只替换图表里的浅色中性色，品牌色与数据驱动色不动。
+const NEUTRAL_COLOR_TOKENS = {
+  '#fff': '--zy-surface',
+  '#ffffff': '--zy-surface',
+  '#666': '--zy-text-regular',
+  '#333': '--zy-text',
+  '#d9d9d9': '--zy-border',
+  '#e8e8e8': '--zy-border',
+  '#f5f5f5': '--zy-surface-subtle',
+  '#e6f7ff': '--zy-primary-soft',
+  'rgba(180, 180, 180, 0.1)': '--zy-surface-subtle',
+  '#e5e6eb': '--zy-border',
+  '#e4e7ec': '--zy-border',
+  '#86909c': '--zy-text-secondary',
+  '#667085': '--zy-text-secondary'
+}
+
+// 令牌读取失败时的深色兜底值，与 workbench.scss 的 .zy-dark 保持一致。
+const DARK_FALLBACK = {
+  '--zy-surface': '#142235',
+  '--zy-surface-subtle': '#111e30',
+  '--zy-primary-soft': '#203758',
+  '--zy-text': '#edf2f8',
+  '--zy-text-regular': '#b8c4d4',
+  '--zy-text-secondary': '#8391a5',
+  '--zy-border': '#26374b'
+}
+
+function isPlainObject(value) {
+  if (value === null || typeof value !== 'object') {
+    return false
+  }
+  const proto = Object.getPrototypeOf(value)
+  return proto === Object.prototype || proto === null
+}
+
+// 只深拷贝普通对象/数组；函数与 echarts 图形对象（如 LinearGradient）按引用保留。
+function cloneChartOption(value) {
+  if (Array.isArray(value)) {
+    return value.map(cloneChartOption)
+  }
+  if (!isPlainObject(value)) {
+    return value
+  }
+  const copy = {}
+  Object.keys(value).forEach((key) => {
+    copy[key] = cloneChartOption(value[key])
+  })
+  return copy
+}
+
+function readToken(style, name, fallback) {
+  const value = (style.getPropertyValue(name) || '').trim()
+  return value || fallback
+}
+
+function applyDarkNeutralColors(value, resolve) {
+  if (Array.isArray(value)) {
+    return value.map((item) => applyDarkNeutralColors(item, resolve))
+  }
+  if (isPlainObject(value)) {
+    const copy = {}
+    Object.keys(value).forEach((key) => {
+      copy[key] = applyDarkNeutralColors(value[key], resolve)
+    })
+    return copy
+  }
+  if (typeof value === 'string') {
+    const token = NEUTRAL_COLOR_TOKENS[value.toLowerCase()]
+    return token ? resolve(token) : value
+  }
+  return value
+}
 
 export default {
   props: {
@@ -72,6 +148,8 @@ export default {
     })
   },
   mounted() {
+    this.__themeHandler = () => this.refresh()
+    document.addEventListener(THEME_EVENT, this.__themeHandler)
     if (this.option) {
       echarts.registerTheme('vab-echarts-theme', theme)
       this.init()
@@ -83,11 +161,34 @@ export default {
     }
   },
   unmounted() {
+    if (this.__themeHandler) {
+      document.removeEventListener(THEME_EVENT, this.__themeHandler)
+      this.__themeHandler = null
+    }
     if (this.chart) {
       this.destroy()
     }
   },
   methods: {
+    // 浅色保持调用方传入的原始配置；深色把浅色中性色换成本轮工作台的深色令牌。
+    getThemedOption(option) {
+      const source = option || {}
+      if (!document.documentElement.classList.contains(DARK_CLASS)) {
+        return source
+      }
+      const style = getComputedStyle(document.documentElement)
+      const darkColor = (token) => readToken(style, token, DARK_FALLBACK[token] || '#8391a5')
+      const themed = applyDarkNeutralColors(cloneChartOption(source), darkColor)
+      themed.textStyle = Object.assign({ color: darkColor('--zy-text-regular') }, themed.textStyle)
+      if (themed.tooltip && typeof themed.tooltip === 'object') {
+        themed.tooltip = Object.assign({}, themed.tooltip, {
+          backgroundColor: '#1b2a3d',
+          borderColor: '#26374b',
+          textStyle: Object.assign({}, themed.tooltip.textStyle, { color: '#edf2f8' })
+        })
+      }
+      return themed
+    },
     mergeOptions(option, notMerge, lazyUpdate) {
       if (this.manualUpdate) {
         this.manualOptions = option
@@ -95,7 +196,7 @@ export default {
       if (!this.chart) {
         this.init(option)
       } else {
-        this.delegateMethod('setOption', option, notMerge, lazyUpdate)
+        this.delegateMethod('setOption', this.getThemedOption(option), notMerge, lazyUpdate)
       }
     },
     appendData(params) {
@@ -157,7 +258,7 @@ export default {
       if (this.group) {
         chart.group = this.group
       }
-      chart.setOption(option || this.manualOptions || this.option || {}, true)
+      chart.setOption(this.getThemedOption(option || this.manualOptions || this.option || {}), true)
       Object.keys(this.$attrs).filter(key=>key.startsWith("on")).forEach((key) => {
 const event=key.slice(2).toLowerCase(); const handler = this.$attrs[key]
         if (event.indexOf('zr:') === 0) {
@@ -224,7 +325,7 @@ const event=key.slice(2).toLowerCase(); const handler = this.$attrs[key]
             if (!this.chart && val) {
               this.init()
             } else {
-              this.chart.setOption(val, val !== oldVal)
+              this.chart.setOption(this.getThemedOption(val), val !== oldVal)
             }
           },
           { deep: !this.watchShallow }

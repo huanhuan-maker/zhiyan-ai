@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-26T03:54:42.253Z",
+  "source": "Real browser on 5180, isolated backend 8997, acceptance fixture .local/assistant-simple/acceptance.json (read-only navigation)",
+  "checks": [
+    {
+      "name": "light theme renders every statistics chart without a runtime error",
+      "passed": true,
+      "detail": {
+        "count": 4,
+        "rendered": 4,
+        "dark": false,
+        "fills": [
+          "rgb(102, 102, 102)"
+        ]
+      }
+    },
+    {
+      "name": "light theme keeps the existing light chart text colours",
+      "passed": true
+    },
+    {
+      "name": "toggling dark repaints charts with dark tokens",
+      "passed": true,
+      "detail": {
+        "count": 4,
+        "rendered": 4,
+        "dark": true,
+        "fills": [
+          "rgb(184, 196, 212)"
+        ]
+      }
+    },
+    {
+      "name": "dark theme survives a reload and keeps charts rendered",
+      "passed": true,
+      "detail": {
+        "count": 4,
+        "rendered": 4,
+        "dark": true,
+        "fills": [
+          "rgb(184, 196, 212)"
+        ]
+      }
+    },
+    {
+      "name": "switching back to light restores light chart colours",
+      "passed": true,
+      "detail": {
+        "count": 4,
+        "rendered": 4,
+        "dark": false,
+        "fills": [
+          "rgb(102, 102, 102)"
+        ]
+      }
+    },
+    {
+      "name": "dark collection tab has no light container blocks left",
+      "passed": true,
+      "detail": {
+        "lightBlocks": 0
+      }
+    },
+    {
+      "name": "console has no getThemedOption error",
+      "passed": true
+    }
+  ],
+  "passed": 7,
+  "failed": 0
+}

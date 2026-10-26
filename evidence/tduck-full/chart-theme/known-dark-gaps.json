@@ -1,0 +1,85 @@
+{
+  "formKey": "VbzEJAuc",
+  "题目统计": [
+    {
+      "tag": "div",
+      "cls": "el-card__header",
+      "bg": "rgb(250, 251, 252)",
+      "w": 1302,
+      "h": 53
+    },
+    {
+      "tag": "th",
+      "cls": "el-table_1_column_2 is-leaf el-table__cell",
+      "bg": "rgb(250, 251, 252)",
+      "w": 1020,
+      "h": 42
+    },
+    {
+      "tag": "th",
+      "cls": "el-table_1_column_1 is-leaf el-table__cell",
+      "bg": "rgb(250, 251, 252)",
+      "w": 210,
+      "h": 42
+    }
+  ],
+  "主题与报告": [
+    {
+      "tag": "div",
+      "cls": "research-panel generation-panel",
+      "bg": "rgb(255, 255, 255)",
+      "w": 1302,
+      "h": 259
+    },
+    {
+      "tag": "div",
+      "cls": "research-panel evidence-panel",
+      "bg": "rgb(255, 255, 255)",
+      "w": 1302,
+      "h": 215
+    },
+    {
+      "tag": "div",
+      "cls": "research-panel report-selector",
+      "bg": "rgb(255, 255, 255)",
+      "w": 1302,
+      "h": 74
+    },
+    {
+      "tag": "th",
+      "cls": "el-table_2_column_5 is-leaf el-table__cell",
+      "bg": "rgb(250, 251, 252)",
+      "w": 630,
+      "h": 42
+    },
+    {
+      "tag": "th",
+      "cls": "el-table_2_column_4 is-leaf el-table__cell",
+      "bg": "rgb(250, 251, 252)",
+      "w": 495,
+      "h": 42
+    },
+    {
+      "tag": "span",
+      "cls": "el-radio-button__inner",
+      "bg": "rgb(235, 242, 255)",
+      "w": 154,
+      "h": 36
+    },
+    {
+      "tag": "th",
+      "cls": "el-table_2_column_6 is-leaf el-table__cell",
+      "bg": "rgb(250, 251, 252)",
+      "w": 70,
+      "h": 42
+    },
+    {
+      "tag": "th",
+      "cls": "el-table_2_column_3 is-leaf el-table__cell",
+      "bg": "rgb(250, 251, 252)",
+      "w": 65,
+      "h": 42
+    }
+  ],
+  "访问与收集概览": []
+}
