@@ -43,6 +43,12 @@ public class AssistantChatService {
         return map("id",t.getId(),"question",t.getQuestion(),"formKey",t.getScopeFormKey(),"version",t.getScopeVersion(),"state",t.getState(),"mode",t.getMode(),"provider",t.getProvider(),"model",t.getModel(),"warning",t.getWarning(),"createdAt",t.getCreatedAt(),"plan",hidden?null:t.getPlanJson()==null?null:read(t.getPlanJson()),"result",result);
     }
     public Map<String,Object> plan(Long owner,String conversation,String id,String question,String key,Integer version,boolean real,boolean consent) {
+        return planInternal(owner,conversation,id,question,key,version,real,consent,false);
+    }
+    public Map<String,Object> autoPlan(Long owner,String conversation,String id,String question,String key,Integer version) {
+        return planInternal(owner,conversation,id,question,key,version,true,true,true);
+    }
+    private Map<String,Object> planInternal(Long owner,String conversation,String id,String question,String key,Integer version,boolean real,boolean consent,boolean automatic) {
         AssistantConversationEntity c=requireConversation(conversation,owner);uuid(id);
         if(question==null||question.trim().isEmpty()||question.length()>1000)throw new BaseException("请填写1-1000字的查询问题");
         if(key!=null&&!key.isEmpty())tools.requireOwned(key,owner);else key=null;
@@ -54,20 +60,23 @@ public class AssistantChatService {
         try{turns.insert(t);}catch(DuplicateKeyException e){return replay(turns.selectById(id),owner,conversation,question,key,version);}
         Map<String,Object> p;
         try {
-            List<String> prior=new ArrayList<>();
+            List<String> prior=new ArrayList<>();List<Map<String,Object>> messages=new ArrayList<>();
             if(real&&consent){
                 com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<AssistantTurnEntity> query=Wrappers.<AssistantTurnEntity>lambdaQuery()
                     .eq(AssistantTurnEntity::getConversationId,conversation).eq(AssistantTurnEntity::getOwnerId,owner).ne(AssistantTurnEntity::getId,id).eq(AssistantTurnEntity::getState,"SUCCEEDED");
-                if(key==null)query.isNull(AssistantTurnEntity::getScopeFormKey);else query.eq(AssistantTurnEntity::getScopeFormKey,key);
-                if(version==null)query.isNull(AssistantTurnEntity::getScopeVersion);else query.eq(AssistantTurnEntity::getScopeVersion,version);
-                for(AssistantTurnEntity row:turns.selectList(query.orderByDesc(AssistantTurnEntity::getCreatedAt).last("limit 20")))prior.add(row.getQuestion());
-                Collections.reverse(prior);
+                if(!automatic){if(key==null)query.isNull(AssistantTurnEntity::getScopeFormKey);else query.eq(AssistantTurnEntity::getScopeFormKey,key);if(version==null)query.isNull(AssistantTurnEntity::getScopeVersion);else query.eq(AssistantTurnEntity::getScopeVersion,version);}
+                List<AssistantTurnEntity> history=turns.selectList(query.orderByDesc(AssistantTurnEntity::getCreatedAt).last("limit 20"));
+                Collections.reverse(history);
+                for(AssistantTurnEntity row:history){prior.add(row.getQuestion());Map<String,Object> exchange=map("user",row.getQuestion());
+                    if(row.getResultJson()!=null){Map<String,Object> old=read(row.getResultJson());if("chat".equals(old.get("kind")))exchange.put("assistant",old.get("message"));}messages.add(exchange);}
             }
-            p=planner.plan(question,key,version,real,consent,prior);
+            p=automatic?planner.automatic(question,key,version,messages):planner.plan(question,key,version,real,consent,prior);
         }
         catch(Exception e){turns.update(null,Wrappers.<AssistantTurnEntity>lambdaUpdate().eq(AssistantTurnEntity::getId,id).set(AssistantTurnEntity::getState,"FAILED").set(AssistantTurnEntity::getWarning,"问题理解失败，可重新提问；普通答题不受影响"));throw new BaseException("问题理解失败，可重新提问");}
-        String tool=(String)p.get("tool");t.setPlanJson(write(map("tool",tool,"arguments",p.get("arguments"))));t.setMode((String)p.get("mode"));t.setProvider((String)p.get("provider"));t.setModel((String)p.get("model"));t.setWarning((String)p.get("warning"));t.setState("READY");
-        if("none".equals(tool)){t.setState("SUCCEEDED");t.setResultJson(write(map("kind","notice","message","当前助手只支持查找问卷、版本统计、开放回答关键词检索和已审核报告。请明确查询范围；不会修改、发布或删除问卷。","citations",Collections.emptyList())));}
+        String tool=(String)p.get("tool");t.setPlanJson(write(map("tool",tool,"arguments",p.get("arguments"),"automatic",automatic,"stage",0)));t.setMode((String)p.get("mode"));t.setProvider((String)p.get("provider"));t.setModel((String)p.get("model"));t.setWarning((String)p.get("warning"));t.setState("READY");
+        if("chat".equals(tool)){t.setState("SUCCEEDED");t.setResultJson(write(map("kind","chat","message",((Map<?,?>)p.get("arguments")).get("message"),"citations",Collections.emptyList())));}
+        if(automatic&&Arrays.asList("survey_stats","search_answers","survey_report").contains(tool))t.setScopeVersion((Integer)((Map<?,?>)p.get("arguments")).get("version"));
+        if("none".equals(tool)){t.setState("SUCCEEDED");t.setResultJson(write(map("kind","notice","message",automatic?"我可以陪你聊天，也能查询你的问卷。修改、发布或删除问卷请到问卷管理页操作，我不会直接执行这些操作。":"当前助手只支持查找问卷、版本统计、开放回答关键词检索和已审核报告。请明确查询范围；不会修改、发布或删除问卷。","citations",Collections.emptyList())));}
         turns.updateById(t);
         conversations.update(null,Wrappers.<AssistantConversationEntity>lambdaUpdate().eq(AssistantConversationEntity::getId,c.getId()).eq(AssistantConversationEntity::getOwnerId,owner).set(AssistantConversationEntity::getTitle,question.trim().substring(0,Math.min(36,question.trim().length()))).set(AssistantConversationEntity::getUpdatedAt,Instant.now().toString()));
         return view(t,owner);
@@ -87,6 +96,18 @@ public class AssistantChatService {
         if(changed!=1)throw new BaseException("查询正在处理或已失败，请刷新历史或重新提问");
         try {
             Map<String,Object> result=tools.call(name,args,owner);
+            if("search_surveys".equals(name)&&Boolean.TRUE.equals(p.get("automatic"))&&AssistantPlanner.needsData(t.getQuestion())&&((Number)p.getOrDefault("stage",0)).intValue()==0&&((Number)result.get("total")).longValue()==1) {
+                List<Map<String,Object>> found=(List<Map<String,Object>>)result.get("surveys");
+                if(found.size()==1){String selected=(String)found.get(0).get("formKey");tools.requireOwned(selected,owner);
+                    Map<String,Object> next=AssistantPlanner.resolvedQuery(t.getQuestion(),selected,t.getScopeVersion(),(String)found.get(0).get("title"));String nextTool=(String)next.get("tool");
+                    if(Arrays.asList("survey_stats","search_answers","survey_report").contains(nextTool)){
+                        Map<String,Object> nextArgs=(Map<String,Object>)next.get("arguments");
+                        turns.update(null,Wrappers.<AssistantTurnEntity>lambdaUpdate().eq(AssistantTurnEntity::getId,turnId).set(AssistantTurnEntity::getScopeFormKey,selected).set(AssistantTurnEntity::getScopeVersion,nextArgs.get("version"))
+                            .set(AssistantTurnEntity::getPlanJson,write(map("tool",nextTool,"arguments",nextArgs,"automatic",true,"stage",1))).set(AssistantTurnEntity::getMode,next.get("mode")).set(AssistantTurnEntity::getProvider,next.get("provider")).set(AssistantTurnEntity::getModel,next.get("model")).set(AssistantTurnEntity::getWarning,next.get("warning")).set(AssistantTurnEntity::getState,"READY"));
+                        return result;
+                    }
+                }
+            }
             turns.update(null,Wrappers.<AssistantTurnEntity>lambdaUpdate().eq(AssistantTurnEntity::getId,turnId).set(AssistantTurnEntity::getState,"SUCCEEDED").set(AssistantTurnEntity::getResultJson,write(result)));
             return result;
         } catch(Exception e) {

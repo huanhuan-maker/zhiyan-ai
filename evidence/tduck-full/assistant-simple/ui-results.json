@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-26T00:52:17.095Z",
+  "source": "Real browser, authenticated application and configured provider; synthetic acceptance account only",
+  "checks": [
+    {
+      "name": "the first hello can be sent without mode, survey selection or consent checkbox",
+      "passed": true
+    },
+    {
+      "name": "hello receives a friendly persisted answer in the same simple chat",
+      "passed": true
+    },
+    {
+      "name": "ordinary conversation produces an actual model answer",
+      "passed": true
+    },
+    {
+      "name": "questionnaire search lives in the same conversation and choices are inline",
+      "passed": true
+    },
+    {
+      "name": "search result selection queries real statistics without opening a configuration panel",
+      "passed": true
+    },
+    {
+      "name": "a natural follow-up reads the same survey mean without new selections",
+      "passed": true
+    },
+    {
+      "name": "refresh restores this chat and messages",
+      "passed": true
+    },
+    {
+      "name": "390px keeps the message input and send action visible",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser exception",
+      "passed": true
+    }
+  ],
+  "passed": 9,
+  "failed": 0
+}

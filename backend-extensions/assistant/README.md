@@ -1,5 +1,7 @@
 # 问卷助手后端增量（M5-A）
 
+> M5-C已替换站内交互：`AUTO`规划支持普通聊天和四个只读工具，发送无需前置确认控件。欢迎语本地返回，普通聊天复用真实Provider；唯一问卷搜索结果可推进同一消息的下一次MCP查询。历史按轮保留用户提问与纯聊天答复，不包含工具结果。旧REAL/LOCAL模式及下文说明为兼容历史。当前实现与实测见`docs/SIMPLE_ASSISTANT_STAGE.md`、`evidence/M5-C.md`。
+
 保持现有 Spring Boot / MyBatis-Plus / MySQL，不修改上游工程。`Build-FullBackend.ps1` 复制这些 Java 文件到私有构建目录；迁移 `db/tduck/007_assistant.sql` 新建会话与消息表，无旧业务表删改。
 
 浏览器 MCP 客户端 → `/assistant-mcp` → `AssistantMcpFilter` → `AssistantMcpProtocol` → `AssistantTools` → MyBatis-Plus/版本快照。工具为 `search_surveys`、`survey_stats`、`search_answers`、`survey_report`，均只读业务数据。对话及工具执行状态独立保存到助手表。所有者检查对管理员同样生效，归档问卷不可读，历史结果读取也重新校验当前权限。

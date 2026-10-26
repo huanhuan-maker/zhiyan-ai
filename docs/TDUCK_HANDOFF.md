@@ -55,7 +55,7 @@ evidence/                   # M5-A/B/C.md、tduck-full/ 各轮实测与截图
 - 迁移 SQL：`.local/tduck-dev/003_form_versions`、`004_version_fixes` 等，配套 `Apply-*Migration.ps1`（幂等，勿重复手跑）。
 - 已知语义：发布=生成快照，`/s/{key}?t=令牌`；重发 v2 自动关 v1；**仅"收集中"冻结**（停收后可改草稿）；旧令牌加载旧快照并拒绝提交；统计/数据接口带 `?version=`（默认最新）。
 - 公开提交 `POST /user/form/data/public/create` 服务端无必填校验=已知历史风险（补丁已加部分校验，改动提交链路时注意）。
-- 管理员：2913620982@qq.com / 134679852（id=1）。凭据只存 `.local/tduck-credentials.json`（gitignored），跟踪文件出现明文口令会被 `credential-scan.mjs` 拦下。
+- 管理员：（账号见本机私有配置） / （密码见本机私有配置）（id=1）。凭据只存 `.local/tduck-credentials.json`（gitignored），跟踪文件出现明文口令会被 `credential-scan.mjs` 拦下。
 
 ## 5. 前端设计体系与深色模式（本会话刚修完，重要）
 

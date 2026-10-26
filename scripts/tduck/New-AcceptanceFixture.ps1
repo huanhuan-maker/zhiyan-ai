@@ -1,7 +1,11 @@
-param([string]$MysqlBin = 'D:\MySQL\MySQL Server 8.0\bin')
+param([string]$MysqlBin = 'D:\MySQL\MySQL Server 8.0\bin', [string]$FixturePath = '.local\tduck-dev\acceptance.json')
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path (Split-Path $PSScriptRoot -Parent) -Parent
 $devRoot = Join-Path $projectRoot '.local\tduck-dev'
+$fixtureOutput = [IO.Path]::GetFullPath((Join-Path $projectRoot $FixturePath))
+$privateRoot = [IO.Path]::GetFullPath((Join-Path $projectRoot '.local')) + [IO.Path]::DirectorySeparatorChar
+if(!$fixtureOutput.StartsWith($privateRoot,[StringComparison]::OrdinalIgnoreCase)){throw 'Fixture credentials must remain under the ignored .local directory'}
+New-Item -ItemType Directory -Path (Split-Path $fixtureOutput -Parent) -Force | Out-Null
 $manifest = Get-Content (Join-Path $devRoot 'manifest.json') -Raw | ConvertFrom-Json
 if ($manifest.database -notmatch '^tduck_vue3_[a-z0-9_]+$' -or $manifest.backend -notin @('http://127.0.0.1:8998','http://127.0.0.1:8997')) { throw 'Fixture may only target the isolated dev database.' }
 $config = Get-Content (Join-Path $devRoot 'application-local.yml') -Raw
@@ -21,7 +25,7 @@ VALUES ('Vue3 Researcher','$owner',SHA2('$password',256),0,0,0,0,NOW(),NOW()),
 $priorPassword = $env:MYSQL_PWD
 try {
     $env:MYSQL_PWD = Read-Yaml 'password'
-    $fixtureSql = Join-Path $devRoot 'acceptance-fixture.sql'
+    $fixtureSql = Join-Path (Split-Path $fixtureOutput -Parent) 'acceptance-fixture.sql'
     [IO.File]::WriteAllText($fixtureSql, $sql, [Text.UTF8Encoding]::new($false))
     $dbPort = [regex]::Match($config, ':([0-9]+)/tduck_vue3_').Groups[1].Value
     if (!$dbPort) { $dbPort = '3306' }
@@ -52,5 +56,5 @@ Invoke-TDuck '/user/form/stop' @{ formKey = $forms[2].formKey } $login.token | O
 $folder = Invoke-TDuck '/user/form/create' @{ name = 'Archive - acceptance fixture'; type = 3; folder = $true; folderId = 0 } $login.token
 $nested = Invoke-TDuck '/user/form/create' @{ name = 'Nested survey - acceptance fixture'; type = 1; folder = $false; folderId = $folder.id } $login.token
 $fixture = @{ owner = $owner; other = $other; password = $password; forms = @($forms | ForEach-Object { @{ key = $_.formKey; name = $_.name } }); folderId = $folder.id; nestedKey = $nested.formKey; baseUrl = 'http://127.0.0.1:5180'; backend = $base; generatedAt = (Get-Date -Format o) }
-$fixture | ConvertTo-Json -Depth 10 | Set-Content (Join-Path $devRoot 'acceptance.json') -Encoding UTF8
-Write-Output 'Created synthetic accounts, three root surveys, one folder and one nested survey in isolated MySQL. Credentials are in .local\tduck-dev\acceptance.json (not committed).'
+$fixture | ConvertTo-Json -Depth 10 | Set-Content $fixtureOutput -Encoding UTF8
+Write-Output 'Created isolated synthetic accounts and surveys. Credentials were saved only to the requested private fixture file.'

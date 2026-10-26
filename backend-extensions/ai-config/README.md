@@ -1,5 +1,7 @@
 # 统一AI设置增量
 
+> M5-C的简单对话使用每模型historyTurns控制最近完整对话轮数，含用户提问与普通聊天答复；不含问卷工具结果或答卷原文。旧手动REAL查询接口仍保留原提问历史行为。站内助手交互已由`SIMPLE_ASSISTANT_STAGE.md`替换。
+
 `Build-FullBackend.ps1`在原补丁和analysis/assistant之后复制本目录Java源文件。`form/ai/OpenAiCompatibleProvider`保留原类名及测试构造器，Spring环境中改为动态读取`AiSettingsService`，使既有建卷、分析和助手共享默认配置。每次业务`available()`捕获该次调用的模型配置，后续调用及元数据使用同一快照，避免调用过程中切换默认模型导致标识变化。无新Node业务服务。
 
 管理员API：`GET/POST /user/ai-settings`，`POST /user/ai-settings/test/{modelProfileId}`。按服务端真实管理员身份校验，返回no-store；保存20次/分钟、测试6次/分钟。MyBatis-Plus读写`fm_ai_settings`单行文档，revision进行并发比较更新。最多20个供应商、每个30个模型；拒绝重复配置ID、无效默认模型、错误预算和携带凭据的URL。

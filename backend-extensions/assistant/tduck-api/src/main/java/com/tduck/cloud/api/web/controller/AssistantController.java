@@ -20,8 +20,9 @@ public class AssistantController {
     @GetMapping("/conversations/{id}") public Result history(@PathVariable String id,@RequestAttribute Long userId){rates.check(userId,"read",120);return Result.success(chat.history(id,userId));}
     @GetMapping("/versions") public Result versions(@RequestParam String formKey,@RequestAttribute Long userId){rates.check(userId,"read",120);return Result.success(tools.versionChoices(formKey,userId));}
     @PostMapping("/plan") public Result plan(@RequestBody Input input,@RequestAttribute Long userId){
-        if(!"REAL".equals(input.mode)&&!"LOCAL".equals(input.mode))throw new BaseException("请选择真实AI理解或本地规则");
-        rates.check(userId,"plan-"+input.mode,"REAL".equals(input.mode)?8:30);
+        if(!"REAL".equals(input.mode)&&!"LOCAL".equals(input.mode)&&!"AUTO".equals(input.mode))throw new BaseException("提问模式不正确");
+        rates.check(userId,"plan-"+input.mode,"AUTO".equals(input.mode)?20:"REAL".equals(input.mode)?8:30);
+        if("AUTO".equals(input.mode))return Result.success(chat.autoPlan(userId,input.conversationId,input.id,input.question,input.formKey,input.version));
         return Result.success(chat.plan(userId,input.conversationId,input.id,input.question,input.formKey,input.version,"REAL".equals(input.mode),Boolean.TRUE.equals(input.allowQuestionTransfer)));
     }
     @Data public static class Input {private String conversationId;private String id;private String question;private String formKey;private Integer version;private String mode="LOCAL";private Boolean allowQuestionTransfer;}

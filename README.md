@@ -1,5 +1,7 @@
 # 知研 AI
 
+> **当前 M5-C（2026-10-25）**：问卷助手已简化为一个聊天窗口。直接发送即可聊天或查询问卷，不再先选模式、版本或勾选确认。按名称查到唯一问卷后自动查统计，多份候选在回复中选择；统计与原文保留来源。入口 `http://localhost:5180/home/assistant`，范围见 [SIMPLE_ASSISTANT_STAGE.md](docs/SIMPLE_ASSISTANT_STAGE.md)，完整实测与验收见 [M5-C.md](evidence/M5-C.md)。下方M5-A/B的前置操作为历史。
+
 > **当前交付 M5-B（2026-10-25）**：系统配置 → AI配置已替换旧DeepSeek开关，导入实际在用模型；支持自定义供应商、同供应商多模型、Chat Completions / Responses / Anthropic三种协议，以及每模型思考强度、上下文窗口、历史提问轮数、最大输出Token。管理员保存后统一用于助手/建卷/报告，密钥加密且不回显。启动升级见 [迁移版README](tduck-vue3/README.md)，完整实测与验收见 [M5-B.md](evidence/M5-B.md)。以下M5-A及更早记录为历史。
 
 > **当前交付 M5-A（2026-10-25）**：侧栏“我的问卷”下新增“问卷助手”，入口 `http://localhost:5180/home/assistant`。通过真实只读 MCP 查询自己的问卷、指定发布版本的统计、关键词匹配原文及已审核报告；支持真实 AI 问题理解、本地规则降级与持久化对话。本轮是字面关键词检索，尚未实现向量语义 RAG。管理员现有四项菜单，普通用户两项；下方精简记录为历史。安装与启动见 [迁移版说明](tduck-vue3/README.md)，范围见 [ASSISTANT_STAGE.md](docs/ASSISTANT_STAGE.md)，测试、截图和验收步骤见 [M5-A.md](evidence/M5-A.md)。本轮交付后等待用户验收，追问继续停用。

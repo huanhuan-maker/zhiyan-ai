@@ -30,7 +30,7 @@
       </section>
       <el-button plain @click="addModel(p)">添加模型</el-button>
     </article>
-    <div class="settings-notes"><p>上下文窗口是本系统请求预算，不会扩展模型真实容量；按 UTF-8 字节加消息开销保守估算，超限会拒绝请求，不会截断题目或证据。</p><p>历史轮数仅影响问卷助手：携带同一问卷与版本的最近提问，不携带答卷原文或工具结果；0 表示每次独立提问。默认模型供三项 AI 功能共用，普通答题不受配置开关影响。</p></div>
+    <div class="settings-notes"><p>上下文窗口是本系统请求预算，不会扩展模型真实容量；按 UTF-8 字节加消息开销保守估算，超限会拒绝请求，不会截断题目或证据。</p><p>历史轮数仅影响问卷助手：携带当前对话最近几轮提问及普通聊天回复，不携带答卷原文或问卷工具结果；0 表示每次独立提问。默认模型供三项 AI 功能共用，普通答题不受配置开关影响。</p></div>
     <footer class="save-bar"><el-button type="primary" :loading="saving" :disabled="loading || !!testing" @click="save">保存全部配置</el-button><span>密钥仅提交到服务端加密保存；测试连接请先保存。</span></footer>
   </section>
 </template>

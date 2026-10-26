@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-26T00:54:55.908Z",
+  "source": "Real Spring/MyBatis/MySQL and configured model; real browser-style MCP execution; synthetic owner and questionnaire data",
+  "checks": [
+    {
+      "name": "ordinary chat and sourced questionnaire reply survive real backend restart",
+      "passed": true
+    }
+  ],
+  "passed": 1,
+  "failed": 0
+}

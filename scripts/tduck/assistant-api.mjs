@@ -4,7 +4,8 @@ import assert from 'node:assert/strict'
 import {randomUUID,createHash} from 'node:crypto'
 import {execFileSync} from 'node:child_process'
 import {allComponents} from '../../tduck-vue3/src/td/generator/config.js'
-const f=JSON.parse(fs.readFileSync('.local/tduck-dev/acceptance.json','utf8').replace(/^\uFEFF/,'')),base='http://127.0.0.1:8997',out='evidence/tduck-full/assistant',checks=[]
+const f=JSON.parse(fs.readFileSync(process.env.TDUCK_ASSISTANT_FIXTURE||'.local/tduck-dev/acceptance.json','utf8').replace(/^\uFEFF/,'')),base='http://127.0.0.1:8997',out=process.env.TDUCK_ASSISTANT_OUTPUT||'evidence/tduck-full/assistant',checks=[]
+const savedRunPath=process.env.TDUCK_ASSISTANT_RUN||'.local/assistant-review/run.json'
 fs.mkdirSync(out,{recursive:true});let owner,other,key,foreign,version,ids={},conversation,turn,seq=0
 async function raw(url,data,token=owner,headers={}){return fetch(base+url,{method:data===undefined?'GET':'POST',headers:{'Content-Type':'application/json',...(token?{token}:{}),...headers},...(data===undefined?{}:{body:JSON.stringify(data)})}).then(r=>r.json())}
 async function api(url,data,token,headers){const r=await raw(url,data,token,headers);assert.equal(r.code,200,url+': '+r.msg);return r.data}
@@ -23,7 +24,7 @@ function coreHash(form){assert.match(form,/^[A-Za-z0-9]+$/);const c=JSON.parse(f
 try{
  owner=(await api('/login/account',{account:f.owner,password:f.password},null)).token;other=(await api('/login/account',{account:f.other,password:f.password},null)).token
  if(process.argv.includes('--replay')){
-  const saved=JSON.parse(fs.readFileSync('.local/assistant-review/run.json','utf8'));key=saved.key
+  const saved=JSON.parse(fs.readFileSync(savedRunPath,'utf8'));key=saved.key
   await check('conversation and sourced tool result survive a real backend restart',async()=>{const h=await api(rest+'/conversations/'+saved.conversationId);const found=h.turns.find(t=>t.id===saved.turnId);assert.ok(found);assert.equal(found.state,'SUCCEEDED');assert.deepEqual(found.result,saved.result);return{conversationId:saved.conversationId,turnId:saved.turnId,tool:found.plan.tool}})
   await check('browser-created dialogue and citations also persist across backend restart',async()=>{const ui=JSON.parse(fs.readFileSync('.local/assistant-review/ui-run.json','utf8'));const h=await api(rest+'/conversations/'+ui.conversationId);const found=h.turns.find(t=>t.id===ui.turnId);assert.equal(found.state,'SUCCEEDED');assert.deepEqual(found.result,ui.result);assert.ok(found.result.citations.length);return{conversationId:ui.conversationId,turnId:ui.turnId}})
   await check('stateless MCP can reinitialize after restart and read the current version',async()=>{const init=await rpc('initialize',{protocolVersion:'2025-06-18',capabilities:{},clientInfo:{name:'restart-test',version:'1'}});assert.equal(init.body.result.protocolVersion,'2025-06-18');assert.equal((await rpc('notifications/initialized',{}, {notification:true})).status,202);const current=await tool('survey_stats',{formKey:key});assert.equal(current.version,2);assert.equal(current.answerCount,1)})
@@ -110,7 +111,7 @@ try{
    assert.equal((await tool('survey_report',{formKey:key,version:1})).available,true)
   })
   const history=await api(rest+'/conversations/'+conversation.id),saved=history.turns.find(t=>t.id===turn.id)
-  fs.writeFileSync('.local/assistant-review/run.json',JSON.stringify({key,foreign,version:version.versionNo,ids,conversationId:conversation.id,turnId:turn.id,result:saved.result,reportId:latestReport.id},null,2))
+  fs.writeFileSync(savedRunPath,JSON.stringify({key,foreign,version:version.versionNo,ids,conversationId:conversation.id,turnId:turn.id,result:saved.result,reportId:latestReport.id},null,2))
  }
 }catch(e){checks.push({name:'setup and completion',passed:false,error:e.message.slice(0,450)});console.log('FAIL '+e.message.slice(0,180))}
 finally{const result={date:new Date().toISOString(),source:'Real HTTP MCP and Spring Boot/MyBatis-Plus/MySQL; synthetic inputs only',formKey:key,checks,passed:checks.filter(c=>c.passed).length,failed:checks.filter(c=>!c.passed).length};fs.writeFileSync(out+(process.argv.includes('--replay')?'/restart-results.json':'/api-results.json'),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify({passed:result.passed,failed:result.failed}));if(result.failed)process.exitCode=1}

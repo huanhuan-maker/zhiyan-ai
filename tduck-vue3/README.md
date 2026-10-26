@@ -1,5 +1,9 @@
 # TDuck Vue 3 本地迁移版
 
+**当前 M5-C（2026-10-25）**：问卷助手只保留简单聊天。直接发“你好”、普通问题，或“查询××问卷的回收数”；无需模式、版本和确认复选框。唯一匹配会自动查询，多份候选在回复中选。继续问均值、原文时沿用当前问卷；可直接说V1或最新版本。发送的消息由所配置模型处理，统计和引文仍由后端及只读MCP工具提供，助手不修改或发布问卷。
+
+本机已安装；已有版本升级从根目录执行`Build-FullBackend.ps1 -BuildName tduck-simple-chat-build`和`Install-AnalysisBackend.ps1 -BuildName tduck-simple-chat-build`（均在`scripts/tduck/`），无需新增SQL。日常仍为根目录`Start-FullBackend.ps1`、前端目录`npm.cmd run dev`，5180→8997。专项测试先用根目录`New-SimpleChatFixture.ps1`准备独立Synthetic账号/问卷，再运行`node scripts/tduck/assistant-simple-api.mjs`与`node scripts/tduck/assistant-simple-ui.mjs`；旧assistant-ui脚本记录旧面板，不代表新交互。步骤、命令、截图及限制见 [M5-C.md](../evidence/M5-C.md)。
+
 **当前交付 M5-B（2026-10-25）**：进入系统配置 → AI配置，实际服务端模型已导入，可维护自定义供应商及多个模型。协议支持OpenAI Chat Completions / OpenAI Responses / Anthropic Messages；每模型配置思考强度、上下文窗口、最大输出Token、助手历史提问轮数。设为默认后保存，助手、建卷、报告立即共用此模型；参数是否兼容以具体模型及连接测试为准。真实Key不回显，空白保持，变更地址/协议须重新填写Key。
 
 本机已安装。其他已有版本环境从根目录升级（此前分析/助手迁移为前置）：

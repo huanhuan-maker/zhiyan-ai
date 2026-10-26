@@ -1,0 +1,39 @@
+{
+  "backendBuild": "success",
+  "frontendBuild": "success",
+  "date": "2026-10-26T00:55:58.3533921Z",
+  "checks": [
+    {
+      "failed": 0,
+      "passed": 100,
+      "name": "JUnit"
+    },
+    {
+      "failed": 0,
+      "passed": 31,
+      "name": "Vitest"
+    },
+    {
+      "failed": 0,
+      "passed": 19,
+      "name": "legacy MCP"
+    },
+    {
+      "failed": 0,
+      "passed": 11,
+      "name": "simple HTTP"
+    },
+    {
+      "failed": 0,
+      "passed": 9,
+      "name": "simple browser"
+    },
+    {
+      "failed": 0,
+      "passed": 1,
+      "name": "actual restart"
+    }
+  ],
+  "passed": 171.0,
+  "failed": 0.0
+}

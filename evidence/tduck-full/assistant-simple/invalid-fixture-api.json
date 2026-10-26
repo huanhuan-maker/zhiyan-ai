@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-26T00:35:50.505Z",
+  "source": "Real Spring/MyBatis/MySQL and configured model; real browser-style MCP execution; synthetic owner and questionnaire data",
+  "checks": [
+    {
+      "name": "setup/completion",
+      "passed": false,
+      "error": "账号或密码错误\n\n500 !== 200\n"
+    }
+  ],
+  "passed": 0,
+  "failed": 1
+}
