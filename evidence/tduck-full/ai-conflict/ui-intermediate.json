@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-27T11:29:04.756Z",
+  "source": "Actual browser and isolated backend/MySQL. AI generation was an explicitly labelled synthetic response; all saved drafts are synthetic and removed after the test.",
+  "checks": [
+    {
+      "name": "two saved drafts are individually visible on the overview",
+      "passed": true
+    },
+    {
+      "name": "identical content with different object key order does not trigger a conflict",
+      "passed": true
+    },
+    {
+      "name": "the earlier browser backup remains recoverable after reopening the saved first draft",
+      "passed": true
+    },
+    {
+      "name": "pre-migration local edits of the original draft remain recoverable",
+      "passed": true
+    },
+    {
+      "name": "AI create starts with an empty page while existing drafts remain saved",
+      "passed": true
+    },
+    {
+      "name": "a new AI-generated questionnaire is saved as a third separate draft",
+      "passed": true
+    },
+    {
+      "name": "opening and editing one draft updates only that draft",
+      "passed": true
+    },
+    {
+      "name": "unsaved local changes are preserved when a saved draft is reopened",
+      "passed": false,
+      "error": "expect(locator).toBeVisible() failed\n\nLocator: getByRole('button', { name: '查看切换前的内容' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('button', { name: '查看切换前的内容' }) with timeout 5000ms\n  - waiting for getByRole('button', { name: '查看切换前的内容' })\n"
+    },
+    {
+      "name": "clearing the editor does not delete the saved draft",
+      "passed": true
+    },
+    {
+      "name": "at capacity a fourth new draft keeps its input and explains the limit",
+      "passed": true
+    },
+    {
+      "name": "removing a chosen draft after confirmation frees a slot",
+      "passed": true
+    },
+    {
+      "name": "three entries remain usable at 390px viewport width",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "passed": 12,
+  "failed": 1
+}
