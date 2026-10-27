@@ -28,11 +28,15 @@
         </div>
       </template>
       <el-alert v-if="workspaceError" :title="workspaceError" type="warning" :closable="false" class="workspace-error" />
-      <el-alert v-if="pendingSavedSnapshot" type="warning" :closable="false" class="workspace-error" title="本浏览器中有不同的未暂存内容，当前先保留这些内容。">
-        <el-button size="small" @click="openSavedSnapshot">打开账号暂存版本</el-button>
+      <el-alert v-if="pendingSavedSnapshot" type="warning" :closable="false" class="workspace-error draft-version-notice" title="发现两份不同的草稿">
+        <p v-if="pendingIsAccount">当前显示的是这个浏览器里的内容，可能还没有暂时保存。账号里也有一份不同的暂存内容。</p>
+        <p v-else>当前显示的是这个浏览器里的内容，还可以切回刚才查看的另一份内容。</p>
+        <p>切换只改变当前显示；点击右上角“暂时保存”后，才会更新账号里的暂存。</p>
+        <el-button size="small" :disabled="saving || generating || importing || restoring" @click="openSavedSnapshot">{{ pendingIsAccount ? '查看账号暂存的内容' : '查看切换前的内容' }}</el-button>
       </el-alert>
-      <el-alert v-if="previousLocalSnapshot" type="info" :closable="false" class="workspace-error" title="已打开账号暂存版本；先前的本浏览器内容已保留。">
-        <el-button size="small" @click="restorePreviousLocal">恢复之前的本浏览器内容</el-button>
+      <el-alert v-if="previousLocalSnapshot" type="info" :closable="false" class="workspace-error draft-version-notice" :title="showingAccount ? '当前内容来自账号暂存' : '当前显示的是切换前的内容'">
+        <p>切换前这个浏览器里的内容还在，可以在当前页面切回。点击“暂时保存”会用当前内容更新账号暂存。</p>
+        <el-button size="small" :disabled="saving || generating || importing || restoring" @click="restorePreviousLocal">切回浏览器里的内容</el-button>
       </el-alert>
       <p v-if="restoring" class="field-help">正在读取暂存内容…</p>
       <el-form v-if="!restoring" ref="form" :model="form" label-position="top" :disabled="saving || generating || importing" @submit.prevent>
@@ -171,6 +175,7 @@ import '@/generator/style.css'
 import DraftQuestionEditor from '@/generator/DraftQuestionEditor.vue'
 import SurveyDesignAssistant from '@/generator/SurveyDesignAssistant.vue'
 import DraftGenerationProgress from '@/generator/DraftGenerationProgress.vue'
+import { sameDraftSnapshot } from '@/generator/draft-version'
 
 export default {
   name: 'AiDraft',
@@ -203,6 +208,9 @@ export default {
       draftCacheKey: '',
       pendingSavedSnapshot: null,
       previousLocalSnapshot: null,
+      accountSnapshot: null,
+      pendingIsAccount: true,
+      showingAccount: true,
       draftDisposed: false,
       result: null
     }
@@ -259,6 +267,7 @@ export default {
         if (!this.workspaceId) return
         const res = await getAiDraftSlotRequest(this.workspaceId)
         if (this.draftDisposed) return
+        this.accountSnapshot = res.data?.snapshot ? JSON.parse(JSON.stringify(res.data.snapshot)) : null
         // Preserve pre-migration browser-only edits for the original first draft.
         if (!this.localDraftRestored && res.data?.slot === 1 && res.data?.snapshot) {
           try {
@@ -273,14 +282,16 @@ export default {
           } catch (e) { /* 缓存损坏时仍可读取账号暂存 */ }
         }
         if (this.localDraftRestored && res.data?.snapshot &&
-            JSON.stringify({ form: this.form, result: this.result }) !== JSON.stringify(res.data.snapshot)) {
+            !sameDraftSnapshot({ form: this.form, result: this.result }, res.data.snapshot)) {
           this.pendingSavedSnapshot = res.data.snapshot
+          this.pendingIsAccount = true
         } else if (!this.localDraftRestored && res.data?.snapshot) {
           const form = res.data.snapshot.form
           this.form = { goal: form.goal || '', audience: form.audience || '', extra: form.extra || '', questionCount: form.questionCount }
           this.result = res.data.snapshot.result || null
           this.persistDraft()
         }
+        if (!this.pendingSavedSnapshot && this.accountSnapshot) this.restoreConflictBackup(res.data.slot)
       } catch (e) {
         if (!this.draftDisposed) this.workspaceError = '暂存内容暂时无法读取，当前内容已保留。可继续编辑，稍后再点右上角暂时保存。'
       } finally { if (!this.draftDisposed) { this.restoring = false; this.syncWorkspaceButton() } }
@@ -288,20 +299,39 @@ export default {
     openSavedSnapshot() {
       if (!this.pendingSavedSnapshot) return
       this.previousLocalSnapshot = { form: JSON.parse(JSON.stringify(this.form)), result: JSON.parse(JSON.stringify(this.result)) }
-      try { sessionStorage.setItem('aiDraft:conflict-backup', JSON.stringify({ ownerKey: this.cacheOwner(), ...this.previousLocalSnapshot })) } catch (e) { /* 页面内仍保留副本 */ }
+      try { sessionStorage.setItem(this.draftCacheKey + ':conflict-backup', JSON.stringify({ ownerKey: this.cacheOwner(), workspaceId: this.workspaceId, ...this.previousLocalSnapshot })) } catch (e) { /* 页面内仍保留副本 */ }
       const snapshot = this.pendingSavedSnapshot
+      this.showingAccount = this.pendingIsAccount
       this.form = { ...snapshot.form }
-      this.result = snapshot.result
+      this.result = JSON.parse(JSON.stringify(snapshot.result))
       this.pendingSavedSnapshot = null
       this.persistDraft()
     },
     restorePreviousLocal() {
       if (!this.previousLocalSnapshot) return
       this.pendingSavedSnapshot = { form: JSON.parse(JSON.stringify(this.form)), result: JSON.parse(JSON.stringify(this.result)) }
+      this.pendingIsAccount = sameDraftSnapshot(this.pendingSavedSnapshot, this.accountSnapshot)
       this.form = this.previousLocalSnapshot.form
       this.result = this.previousLocalSnapshot.result
       this.previousLocalSnapshot = null
       this.persistDraft()
+    },
+    restoreConflictBackup(slot) {
+      try {
+        const scoped = sessionStorage.getItem(this.draftCacheKey + ':conflict-backup')
+        const backup = JSON.parse(scoped || (slot === 1 ? sessionStorage.getItem('aiDraft:conflict-backup') : null) || 'null')
+        if (!backup?.form || backup.ownerKey !== this.cacheOwner() || (backup.workspaceId && backup.workspaceId !== this.workspaceId)) return
+        if (!scoped) {
+          const sameTitle = backup.result?.title && backup.result.title === this.accountSnapshot.result?.title
+          const sameGoal = backup.form.goal && backup.form.goal === this.accountSnapshot.form?.goal
+          if (!sameTitle && !sameGoal) return
+        }
+        const candidate = { form: backup.form, result: backup.result || null }
+        if (!sameDraftSnapshot(candidate, { form: this.form, result: this.result })) {
+          this.previousLocalSnapshot = candidate
+          this.showingAccount = sameDraftSnapshot({ form: this.form, result: this.result }, this.accountSnapshot)
+        }
+      } catch (e) { /* 无法读取浏览器备份时仍显示当前草稿 */ }
     },
     async saveWorkspace() {
       if (this.generating || this.importing || this.restoring || this.saving) return
@@ -315,6 +345,8 @@ export default {
           await this.$router.replace({ path: '/project/form/ai-draft', query: { draft: this.workspaceId } })
         }
         this.persistDraft()
+        this.accountSnapshot = JSON.parse(JSON.stringify(payload))
+        this.pendingSavedSnapshot = null
         this.workspaceError = ''
         this.$message.success('已暂时保存到当前账号，下次打开 AI 建卷可继续编辑')
       } catch (e) {
@@ -562,6 +594,9 @@ export default {
   font-family: var(--zy-font-family);
 }
 .workspace-error { margin-bottom: 16px; }
+.draft-version-notice p { margin: 5px 0; font-size: 12px; line-height: 1.7; }
+.draft-version-notice :deep(.el-alert__title), .draft-version-notice :deep(.el-alert__description) { color: var(--zy-text); }
+.draft-version-notice :deep(.el-button) { margin-top: 5px; }
 .draft-page-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 18px; }
 .page-eyebrow { margin-bottom: 4px; color: var(--zy-purple); font-size: 11px; font-weight: 500; }
 .draft-page-header h1 { margin: 0 0 5px; font-size: 18px; font-weight: 600; }
