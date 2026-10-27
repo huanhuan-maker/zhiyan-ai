@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-27T10:58:04.460Z",
+  "source": "Actual browser and isolated backend; explicitly synthetic generated questionnaire, actual preview and import.",
+  "checks": [
+    {
+      "name": "three actions are absent until a questionnaire draft exists",
+      "passed": true
+    },
+    {
+      "name": "generated draft puts all three actions beside temporary save",
+      "passed": true
+    },
+    {
+      "name": "the fixed header remains visible while scrolling through questions",
+      "passed": true
+    },
+    {
+      "name": "header preview opens the real preview dialog and closes normally",
+      "passed": true
+    },
+    {
+      "name": "regeneration runs and keeps the other actions disabled while pending",
+      "passed": true
+    },
+    {
+      "name": "at 390px the header actions can be reached and temporary save stays visible",
+      "passed": true
+    },
+    {
+      "name": "header import creates an editable unpublished survey using the actual backend",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "passed": 8,
+  "failed": 0
+}
