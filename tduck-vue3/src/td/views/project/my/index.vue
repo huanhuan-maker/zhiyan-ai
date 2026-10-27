@@ -4,7 +4,7 @@
       <div class="project-header">
         <div class="header-left">
           <h2 class="page-title">问卷概览</h2>
-          <p class="page-subtitle">共 {{ total || 0 }} 份问卷，按创建时间排列</p>
+          <p class="page-subtitle">共 {{ total || 0 }} 份问卷<span v-if="savedDraft">，另有 1 份 AI 暂存</span></p>
         </div>
         <div class="header-right">
           <el-button class="ai-create-btn" aria-label="AI 建卷" @click="$router.push('/project/form/ai-draft')">
@@ -102,6 +102,17 @@
       </section>
 
       <div class="content-view">
+        <el-alert v-if="savedDraftError" class="saved-draft-error" type="warning" :closable="false" title="AI 暂存暂时无法读取，问卷列表仍可使用">
+          <el-button size="small" @click="loadSavedDraft">重试</el-button>
+        </el-alert>
+        <article v-if="visibleSavedDraft" class="saved-draft-card" data-testid="saved-ai-draft">
+          <div class="saved-draft-content">
+            <div class="saved-draft-meta"><span class="saved-draft-badge">AI 暂存</span><span>未发布 · {{ savedDraftQuestionCount }} 题</span></div>
+            <h3>{{ savedDraftTitle }}</h3>
+            <p>上次暂存：{{ savedDraftTime }}</p>
+          </div>
+          <el-button type="primary" @click="$router.push({ path: '/project/form/ai-draft', query: { saved: '1' } })">继续编辑</el-button>
+        </article>
         <el-alert
           v-if="projectListError"
           class="project-list-error"
@@ -114,13 +125,13 @@
           </template>
         </el-alert>
         <form-card-list
-          v-if="dataShowType == 'card'"
+          v-if="dataShowType == 'card' && (projectList.length || !visibleSavedDraft)"
           v-loading="projectListLoading"
           v-model:project-list="projectList"
           @refresh="queryProjectPage"
         />
         <my-form-table
-          v-if="dataShowType == 'table'"
+          v-if="dataShowType == 'table' && (projectList.length || !visibleSavedDraft)"
           v-loading="projectListLoading"
           v-model:project-list="projectList"
           @refresh="queryProjectPage"
@@ -178,6 +189,8 @@
 
 <script>
 import { createFormRequest, pageFormRequest, updateFormRequest } from '@/api/project/form'
+import { getAiDraftWorkspaceRequest } from '@/api/project/ai'
+import dayjs from 'dayjs'
 import FormCardList from './card'
 import mixin from './mixin'
 import MyFormTable from './table'
@@ -200,6 +213,8 @@ export default {
       projectList: [],
       projectListLoading: true,
       projectListError: false,
+      savedDraft: null,
+      savedDraftError: false,
       pageCurrent: '',
       requestLoading: { pushFormData: false, pushFolderData: false }
     }
@@ -207,6 +222,18 @@ export default {
   computed: {
     paginationLayout() {
       return this.isMobile ? 'prev, pager, next' : 'total, sizes, prev, pager, next, jumper'
+    },
+    savedDraftTitle() { return this.savedDraft?.snapshot?.result?.title || 'AI 建卷暂存' },
+    savedDraftQuestionCount() { return this.savedDraft?.snapshot?.result?.questions?.length || 0 },
+    savedDraftTime() { return this.savedDraft?.updatedAt ? dayjs(this.savedDraft.updatedAt).format('YYYY/MM/DD HH:mm') : '时间未知' },
+    visibleSavedDraft() {
+      if (!this.savedDraft || (this.queryParams.status && Number(this.queryParams.status) !== 1)) return false
+      const name = (this.queryParams.name || '').trim().toLowerCase()
+      if (name && !this.savedDraftTitle.toLowerCase().includes(name)) return false
+      const time = dayjs(this.savedDraft.updatedAt).valueOf()
+      if (this.queryParams.beginDateTime && time < dayjs(this.queryParams.beginDateTime).valueOf()) return false
+      if (this.queryParams.endDateTime && time > dayjs(this.queryParams.endDateTime).valueOf()) return false
+      return true
     }
   },
   created() {
@@ -214,6 +241,7 @@ export default {
     this.queryParams.current = 1
   },
   mounted() {
+    this.loadSavedDraft()
     this.initResizeObserver()
   },
   beforeUnmount() {
@@ -221,6 +249,13 @@ export default {
     if (this.resizeHandler) window.removeEventListener('resize', this.resizeHandler)
   },
   methods: {
+    async loadSavedDraft() {
+      try {
+        const res = await getAiDraftWorkspaceRequest()
+        this.savedDraft = res.data?.snapshot ? res.data : null
+        this.savedDraftError = false
+      } catch (e) { this.savedDraftError = true }
+    },
     initResizeObserver() {
       let timer = null
       const container = this.$el.querySelector('.form-container')
@@ -389,6 +424,14 @@ export default {
   &.active { color: var(--zy-primary); background: var(--zy-primary-soft); }
 }
 .content-view { min-height: 240px; margin-top: 16px; }
+.saved-draft-error { margin-bottom: 12px; }
+.saved-draft-card { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 18px 20px; margin-bottom: 16px; background: var(--zy-surface); border: 1px solid var(--zy-border); border-left: 3px solid var(--zy-purple); border-radius: var(--zy-radius-md); }
+.saved-draft-content { min-width: 0; }
+.saved-draft-content h3 { margin: 9px 0 5px; font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
+.saved-draft-content p, .saved-draft-meta { margin: 0; color: var(--zy-text-secondary); font-size: 12px; }
+.saved-draft-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.saved-draft-badge { padding: 2px 8px; color: var(--zy-purple); background: var(--zy-surface-subtle); border-radius: 4px; font-weight: 600; }
+.saved-draft-card > .el-button { flex-shrink: 0; }
 .project-page-view { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 28px; }
 @media (max-width: 1100px) and (min-width: 768px) {
   .project-page { padding: 24px; }
@@ -413,6 +456,7 @@ export default {
   .view-switch { gap: 0; padding-left: 7px; }
   .switch-btn { width: 30px; }
   .content-view { margin-top: 12px; }
+  .saved-draft-card { align-items: flex-start; flex-direction: column; padding: 16px; }
   .project-page-view { justify-content: flex-start; overflow-x: auto; }
 }
 </style>

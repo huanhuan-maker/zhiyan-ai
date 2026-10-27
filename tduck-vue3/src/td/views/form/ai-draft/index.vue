@@ -28,6 +28,12 @@
         </div>
       </template>
       <el-alert v-if="workspaceError" :title="workspaceError" type="warning" :closable="false" class="workspace-error" />
+      <el-alert v-if="pendingSavedSnapshot" type="warning" :closable="false" class="workspace-error" title="本浏览器中有不同的未暂存内容，当前先保留这些内容。">
+        <el-button size="small" @click="openSavedSnapshot">打开账号暂存版本</el-button>
+      </el-alert>
+      <el-alert v-if="previousLocalSnapshot" type="info" :closable="false" class="workspace-error" title="已打开账号暂存版本；先前的本浏览器内容已保留。">
+        <el-button size="small" @click="restorePreviousLocal">恢复之前的本浏览器内容</el-button>
+      </el-alert>
       <p v-if="restoring" class="field-help">正在读取暂存内容…</p>
       <el-form v-if="!restoring" ref="form" :model="form" label-position="top" :disabled="saving" @submit.prevent>
         <el-form-item label="调查目标" required>
@@ -179,6 +185,8 @@ export default {
       saving: false,
       workspaceError: '',
       localDraftRestored: false,
+      pendingSavedSnapshot: null,
+      previousLocalSnapshot: null,
       draftDisposed: false,
       result: null
     }
@@ -215,7 +223,10 @@ export default {
       try {
         const res = await getAiDraftWorkspaceRequest()
         if (this.draftDisposed) return
-        if (!this.localDraftRestored && res.data?.snapshot) {
+        if (this.$route.query.saved === '1' && this.localDraftRestored && res.data?.snapshot &&
+            JSON.stringify({ form: this.form, result: this.result }) !== JSON.stringify(res.data.snapshot)) {
+          this.pendingSavedSnapshot = res.data.snapshot
+        } else if (!this.localDraftRestored && res.data?.snapshot) {
           const form = res.data.snapshot.form
           this.form = { goal: form.goal || '', audience: form.audience || '', extra: form.extra || '', questionCount: form.questionCount }
           this.result = res.data.snapshot.result || null
@@ -224,6 +235,24 @@ export default {
       } catch (e) {
         if (!this.draftDisposed) this.workspaceError = '暂存内容暂时无法读取，当前内容已保留。可继续编辑，稍后再点右上角暂时保存。'
       } finally { if (!this.draftDisposed) { this.restoring = false; this.syncWorkspaceButton() } }
+    },
+    openSavedSnapshot() {
+      if (!this.pendingSavedSnapshot) return
+      this.previousLocalSnapshot = { form: JSON.parse(JSON.stringify(this.form)), result: JSON.parse(JSON.stringify(this.result)) }
+      try { sessionStorage.setItem('aiDraft:conflict-backup', JSON.stringify({ ownerKey: this.cacheOwner(), ...this.previousLocalSnapshot })) } catch (e) { /* 页面内仍保留副本 */ }
+      const snapshot = this.pendingSavedSnapshot
+      this.form = { ...snapshot.form }
+      this.result = snapshot.result
+      this.pendingSavedSnapshot = null
+      this.persistDraft()
+    },
+    restorePreviousLocal() {
+      if (!this.previousLocalSnapshot) return
+      this.pendingSavedSnapshot = { form: JSON.parse(JSON.stringify(this.form)), result: JSON.parse(JSON.stringify(this.result)) }
+      this.form = this.previousLocalSnapshot.form
+      this.result = this.previousLocalSnapshot.result
+      this.previousLocalSnapshot = null
+      this.persistDraft()
     },
     async saveWorkspace() {
       if (this.generating || this.importing || this.restoring || this.saving) return
