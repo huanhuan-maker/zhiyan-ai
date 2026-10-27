@@ -13,7 +13,7 @@
           <p v-else class="assistant-hint">{{ turn.state === 'FAILED' ? '本次没能完成，可以重新发送。' : turn.state === 'READY' && !busy ? '查询已准备好，点击下方继续。' : '正在回复…' }}</p>
           <el-button v-if="turn.state === 'READY' && !busy" @click="resume(turn)">继续查询</el-button>
           <template v-if="turn.result">
-            <SurveyAction v-if="turn.result.kind === 'action_proposal'" :result="turn.result" :busy="busy" @decide="confirmAction(turn,$event)" />
+            <SurveyAction v-if="turn.result.kind === 'action_proposal'" :result="turn.result" :busy="busy" @decide="confirmAction(turn,$event)" @edit="confirmAndEdit(turn)" />
             <div v-if="turn.result.kind === 'action_result'" class="management-result"><el-tag type="success">已完成</el-tag><el-button v-if="turn.result.action !== 'ARCHIVE'" text @click="useResultContext(turn.result)">继续聊这份问卷</el-button><el-button v-if="turn.result.action !== 'ARCHIVE'" text @click="openEditor(turn.result)">打开问卷</el-button></div>
             <SurveyAnalysis v-if="turn.result.kind === 'statistics'" :result="turn.result" />
             <div v-if="turn.result.kind === 'details'" class="survey-details"><h4>{{ turn.result.title }}</h4><p>{{ turn.result.description }}</p><ol><li v-for="q in turn.result.questions" :key="q.id"><strong>{{ q.label }}</strong><span> · {{ q.type }} · {{ q.required ? '必填' : '选填' }}</span><p v-if="q.scheme?.config?.options">{{ q.scheme.config.options.map(o=>o.label).join(' / ') }}</p></li></ol><el-button size="small" @click="openEditor(turn.result)">打开编辑器</el-button></div>
@@ -73,6 +73,7 @@ function openStatistics(r){if(/^[A-Za-z0-9_-]{1,64}$/.test(r.formKey)&&Number.is
 function openEditor(r){if(/^[A-Za-z0-9_-]{1,64}$/.test(r.formKey))router.push({path:'/project/form/editor',query:{key:r.formKey}})}
 function useResultContext(r){formKey.value=r.formKey;version.value=r.version||null;selectedTitle.value=r.title||r.formKey}
 async function confirmAction(turn,confirm){if(busy.value)return;busy.value=true;error.value='';try{await decideAssistantAction(turn.id,confirm);await loadHistory()}catch(e){error.value=message(e);try{await loadHistory()}catch{}}finally{busy.value=false}}
+async function confirmAndEdit(turn){if(busy.value)return;busy.value=true;error.value='';try{const response=await decideAssistantAction(turn.id,true);await loadHistory();if(!disposed&&response.data?.kind==='action_result')openEditor(response.data)}catch(e){error.value=message(e);try{await loadHistory()}catch{}}finally{busy.value=false}}
 function shareUrl(path){return /^\/s\/[A-Za-z0-9_-]+\?t=[A-Za-z0-9]+$/.test(path)?location.origin+path:''}
 async function copyShare(path){try{const url=shareUrl(path);if(!url)throw new Error('分享链接格式不正确');await navigator.clipboard.writeText(url);copyStatus.value='已复制'}catch{error.value='复制失败，请选择链接文本手动复制。'}}
 onMounted(init)

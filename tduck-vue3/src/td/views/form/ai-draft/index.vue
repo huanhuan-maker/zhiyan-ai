@@ -79,7 +79,7 @@
         <div class="card-header result-header">
           <div class="section-heading">
             <span class="section-number">02</span>
-            <div><h2>审核草稿 <span class="question-total">{{ result.questions.length }} 题</span></h2><p>确认内容后可预览答题效果，或导入编辑器继续修改</p></div>
+            <div><h2>审核草稿 <span class="question-total">{{ result.questions.length }} 题</span></h2><p>点击每道题的“编辑题目”单独调整，再预览或导入编辑器</p></div>
           </div>
           <span class="status-text">{{ result.provider }} · {{ result.model }} · 用时 {{ result.elapsedMs }}ms</span>
         </div>
@@ -108,6 +108,7 @@
             <span class="question-index">{{ i + 1 }}</span>
             <strong class="question-label">{{ q.label }}<span v-if="q.required" class="required-mark">*</span></strong>
             <el-tag size="small" :type="typeTag(q.type).type" effect="plain">{{ typeTag(q.type).label }}</el-tag>
+            <el-button class="edit-question-button" size="small" :disabled="generating || importing" @click="editQuestion(i)">编辑题目</el-button>
           </div>
           <div v-if="q.type === 'RADIO' || q.type === 'CHECKBOX'" class="option-list">
             <span v-for="(o, j) in q.options" :key="j" class="option-chip"><span class="option-mark" />{{ o }}</span>
@@ -133,9 +134,10 @@
         <el-button type="primary" :loading="importing" :disabled="generating" aria-label="导入编辑器继续编辑" @click="importToEditor"><i v-if="!importing" class="el-icon-edit" />导入编辑器继续编辑</el-button>
         <el-button :disabled="generating || importing" @click="generate">重新生成</el-button>
       </div>
-      <p class="result-note">导入后仍是未发布草稿，不会影响已有问卷、答卷或统计。</p>
+      <p class="result-note">{{ result.manuallyEdited ? '含手动调整：请重新核对题目与 AI 设计说明是否一致。' : '' }}导入后仍是未发布草稿，不会影响已有问卷、答卷或统计。</p>
     </el-card>
 
+    <DraftQuestionEditor v-model="questionEditorVisible" :question="result?.questions?.[editingIndex]" :questions="result?.questions || []" :index="editingIndex" @save="saveQuestion" />
     <el-dialog v-model="previewVisible" title="问卷答题预览（不会保存答卷）" width="min(900px, 96vw)" destroy-on-close custom-class="draft-preview-dialog">
       <div v-if="result && result.kind === 'draft'" class="draft-answer-preview">
         <h2>{{ result.title }}</h2>
@@ -152,10 +154,11 @@ import { createFormRequest } from '@/api/project/form'
 import { getRequest, postRequest } from '@/api/baseRequest'
 import { convert, GenerateForm } from '@/generator'
 import '@/generator/style.css'
+import DraftQuestionEditor from '@/generator/DraftQuestionEditor.vue'
 
 export default {
   name: 'AiDraft',
-  components: { GenerateForm },
+  components: { GenerateForm, DraftQuestionEditor },
   data() {
     return {
       status: null,
@@ -163,6 +166,8 @@ export default {
       generating: false,
       importing: false,
       previewVisible: false,
+      questionEditorVisible: false,
+      editingIndex: 0,
       result: null
     }
   },
@@ -176,6 +181,18 @@ export default {
     }
   },
   methods: {
+    editQuestion(index) {
+      if (this.generating || this.importing) return
+      this.editingIndex = index
+      this.questionEditorVisible = true
+    },
+    saveQuestion(question) {
+      if (this.generating || this.importing || this.result?.kind !== 'draft') return
+      this.result.questions.splice(this.editingIndex, 1, question)
+      this.result.manuallyEdited = true
+      this.persistDraft()
+      this.$message.success('已保存这道题的修改，其他题目保持原样')
+    },
     createDraftField(q) {
       const field = convert.createField(q.type)
       field.config.label = q.label
@@ -380,6 +397,7 @@ export default {
 .metric-label { color: var(--zy-text-secondary); font-size: 11px; }
 .question-item { padding: 16px 0; border-bottom: 1px solid var(--zy-border-light); }
 .question-line { display: flex; gap: 10px; align-items: flex-start; }
+.edit-question-button { flex-shrink: 0; margin: 0; }
 .question-index { flex-shrink: 0; min-width: 22px; padding-top: 2px; color: var(--zy-purple); font-family: var(--zy-font-number); font-size: 12px; font-weight: 600; }
 .question-label { flex: 1; min-width: 0; font-size: 14px; font-weight: 500; line-height: 1.7; word-break: break-word; }
 .required-mark { margin-left: 4px; color: var(--zy-danger); }
@@ -417,6 +435,9 @@ export default {
   .result-actions { align-items: stretch; flex-direction: column; }
   .result-actions :deep(.el-button) { width: 100%; }
   .option-list { gap: 7px 14px; }
+  .question-line { flex-wrap: wrap; }
+  .question-line .question-label { flex-basis: calc(100% - 34px); }
+  .question-line > .el-tag { margin-left: 32px; }
 }
 </style>
 
