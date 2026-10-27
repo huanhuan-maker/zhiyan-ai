@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-27T13:46:52.066Z",
+  "source": "真实浏览器 5180 + 真实后端 8997（管理员账号），新建/删除的是本轮临时对话",
+  "checks": [
+    {
+      "name": "后端：新建对话后出现在历史列表",
+      "passed": true
+    },
+    {
+      "name": "后端：删除后从历史列表消失",
+      "passed": true
+    },
+    {
+      "name": "后端：重复删除与非法编号被拒绝",
+      "passed": true
+    },
+    {
+      "name": "抽屉：深色底、标题可读、每条都有删除按钮",
+      "passed": true,
+      "detail": {
+        "drawerBg": "rgb(20, 34, 53)",
+        "bodyBg": "rgb(20, 34, 53)",
+        "titleColor": "rgb(237, 242, 248)",
+        "items": 11,
+        "deletes": 11,
+        "titleColors": [
+          "rgb(56, 232, 255)",
+          "rgb(237, 242, 248)",
+          "rgb(237, 242, 248)"
+        ]
+      }
+    },
+    {
+      "name": "抽屉：删除前有二次确认",
+      "passed": true
+    },
+    {
+      "name": "抽屉：确认后条目从列表移除",
+      "passed": true
+    },
+    {
+      "name": "抽屉：UI 删除的新对话确实已从后端删除",
+      "passed": true
+    },
+    {
+      "name": "抽屉：操作过程无运行时报错",
+      "passed": true
+    }
+  ],
+  "createdForApi": "687ab83e-2452-4b85-ab08-1364fb3ea652",
+  "createdForUi": "433d235e-85fd-49a0-b18e-19e5af08defa",
+  "passed": 8,
+  "failed": 0
+}

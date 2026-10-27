@@ -50,7 +50,18 @@
       </article>
     </div>
     <form class="assistant-composer" @submit.prevent="send"><el-input v-model="question" aria-label="给问卷助手发消息" type="textarea" :rows="2" maxlength="1000" :disabled="busy" placeholder="说点什么，例如：分析这份问卷并出图…" @keydown.enter="handleEnter" /><div class="composer-footer"><span>{{ provider.configured ? `${provider.model} · 仅操作自己的问卷；管理操作确认后执行，答卷原文不发送模型。` : '模型暂未启用，本地查询与管理预览仍可用。' }}</span><el-button native-type="submit" type="primary" :loading="busy" :disabled="!connected || !question.trim() || busy">发送</el-button></div></form>
-    <el-drawer v-model="historyVisible" title="对话历史" size="min(340px, 92vw)" append-to-body><div class="conversation-list"><el-button v-for="c in conversations" :key="c.id" text :disabled="busy" @click="changeConversation(c.id)">{{ c.title }}</el-button><p v-if="!conversations.length">暂无历史对话</p></div></el-drawer>
+    <el-drawer v-model="historyVisible" title="对话历史" size="min(380px, 92vw)" append-to-body class="assistant-history-drawer">
+      <div class="conversation-list">
+        <div v-for="c in conversations" :key="c.id" class="conversation-item" :class="{ 'is-active': c.id === conversationId }">
+          <button class="conversation-main" :disabled="busy" @click="changeConversation(c.id)">
+            <span class="conversation-title">{{ c.title }}</span>
+            <span class="conversation-time">{{ shortDate(c.updatedAt) }}</span>
+          </button>
+          <el-button class="conversation-delete" text :disabled="busy" aria-label="删除对话" @click.stop="removeConversation(c)"><i class="el-icon-delete" /></el-button>
+        </div>
+        <p v-if="!conversations.length" class="conversation-empty">暂无历史对话</p>
+      </div>
+    </el-drawer>
     <el-dialog v-model="citationVisible" title="查询来源" width="min(720px, 94vw)" append-to-body><div v-if="citation" class="assistant-citation"><el-tag>{{ citation.id }} · {{ citation.kind === 'statistics' ? '后端统计' : '核心开放回答' }}</el-tag><p>问卷 {{ citation.formKey || citationContext.formKey }} · V{{ citation.version || citationContext.version }}</p><p v-if="citation.answerId">答卷 {{ citation.answerId }} · 题目 {{ citation.fieldId }}</p><h4 v-if="citation.question">{{ citation.question }}</h4><blockquote>{{ citation.text }}</blockquote><p class="assistant-hint">原文与数值来自后端。核心开放回答的自发性未经判定；查询时间 {{ date(citationContext.asOf) }}。</p></div></el-dialog>
     <el-dialog v-model="allVisible" title="全部来源" width="min(760px, 94vw)" append-to-body><el-table :data="allCitations" size="small"><el-table-column prop="id" label="来源" width="100" /><el-table-column prop="text" label="原文/说明" min-width="150" show-overflow-tooltip /><el-table-column label="查看" width="70"><template #default="s"><el-button text @click="openCitation(s.row,citationContext)">打开</el-button></template></el-table-column></el-table></el-dialog>
   </section>
@@ -59,7 +70,8 @@
 <script setup>
 import {ref,onMounted,onBeforeUnmount,nextTick} from 'vue'
 import {useRouter} from 'vue-router'
-import {assistantStatus,assistantConversations,createAssistantConversation,assistantHistory,planAssistantQuery,decideAssistantAction} from '@/api/project/assistant'
+import {ElMessageBox} from 'element-plus'
+import {assistantStatus,assistantConversations,createAssistantConversation,assistantHistory,deleteAssistantConversation,planAssistantQuery,decideAssistantAction} from '@/api/project/assistant'
 import SurveyAction from '@/assistant/SurveyAction.vue'
 import SurveyAnalysis from '@/assistant/SurveyAnalysis.vue'
 import {downloadAnswers} from '@/assistant/download'
@@ -78,6 +90,21 @@ async function init(){loading.value=true;error.value='';connected.value=false;cl
 async function loadHistory(restore=false){if(!conversationId.value)return;const id=conversationId.value,r=await assistantHistory(id);if(disposed||id!==conversationId.value)return;turns.value=r.data.turns;sessionStorage.setItem('assistant-conversation',id);const last=turns.value[turns.value.length-1];if(last?.result?.kind==='action_result'){if(last.result.action==='ARCHIVE')clearContext();else useResultContext(last.result)}else if(last?.formKey&&(last.result?.kind!=='notice'||last.result?.reason==='UNPUBLISHED')){formKey.value=last.formKey;version.value=last.version||null;selectedTitle.value=last.result?.title||last.formKey}else if(restore)clearContext();await scrollBottom()}
 async function newConversation(){if(busy.value)return;busy.value=true;error.value='';try{const r=await createAssistantConversation();if(disposed)return;conversationId.value=r.data.id;sessionStorage.setItem('assistant-conversation',r.data.id);conversations.value=[r.data,...conversations.value].slice(0,20);turns.value=[];clearContext()}catch(e){error.value=message(e)}finally{if(!disposed)busy.value=false}}
 async function changeConversation(id){if(busy.value)return;busy.value=true;conversationId.value=id;historyVisible.value=false;try{await loadHistory(true)}catch(e){error.value=message(e)}finally{if(!disposed)busy.value=false}}
+const shortDate=v=>{if(!v)return '';const d=new Date(v);return isNaN(d.getTime())?'':d.toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false})}
+async function removeConversation(c){
+  if(busy.value)return
+  try{await ElMessageBox.confirm(`删除「${c.title}」？该对话下的消息会一并删除，且不可恢复。`,'删除对话',{type:'warning',confirmButtonText:'删除',cancelButtonText:'取消'})}catch{return}
+  busy.value=true;error.value=''
+  try{
+    await deleteAssistantConversation(c.id)
+    conversations.value=conversations.value.filter(x=>x.id!==c.id)
+    if(c.id===conversationId.value){
+      const next=conversations.value[0]
+      if(next){conversationId.value=next.id;sessionStorage.setItem('assistant-conversation',next.id);await loadHistory(true)}
+      else{conversationId.value='';turns.value=[];clearContext();sessionStorage.removeItem('assistant-conversation')}
+    }
+  }catch(e){error.value=message(e)}finally{if(!disposed)busy.value=false}
+}
 async function recover(){if(!connected.value)return init();error.value='';try{await loadHistory()}catch(e){error.value=message(e)}}
 function handleEnter(e){if(e.shiftKey||e.isComposing||e.keyCode===229)return;e.preventDefault();send()}
 async function sendExample(q){question.value=q;await send()}
@@ -608,5 +635,79 @@ onMounted(init)
   .question-examples {
     grid-template-columns: 1fr !important;
   }
+}
+
+/* ===== 对话历史列表 ===== */
+.conversation-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.conversation-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: background-color 0.16s ease, border-color 0.16s ease;
+}
+.conversation-item:hover {
+  background-color: #1b2a3d;
+  border-color: var(--zy-border);
+}
+.conversation-item.is-active {
+  background-color: var(--zy-tint);
+  border-color: rgba(56, 189, 248, 0.34);
+}
+.conversation-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+}
+.conversation-main:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.conversation-title {
+  font-size: 13.5px;
+  color: var(--zy-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.conversation-item.is-active .conversation-title {
+  color: var(--zy-accent-cyan);
+  font-weight: 600;
+}
+.conversation-time {
+  font-size: 11px;
+  color: var(--zy-text-secondary);
+}
+.conversation-delete {
+  flex: none;
+  color: var(--zy-text-secondary) !important;
+  border-radius: 8px !important;
+  padding: 6px !important;
+}
+.conversation-delete:hover {
+  color: var(--zy-danger) !important;
+  background-color: rgba(231, 138, 149, 0.14) !important;
+}
+.conversation-empty {
+  margin: 0;
+  padding: 20px 0;
+  text-align: center;
+  color: var(--zy-text-secondary);
+  font-size: 12.5px;
 }
 </style>

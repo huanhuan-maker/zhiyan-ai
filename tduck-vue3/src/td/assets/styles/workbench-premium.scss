@@ -1595,3 +1595,52 @@ h1.page-title,
   border-color: var(--zy-border-light);
 }
 
+
+/* ================= 30. 对话历史抽屉深色 ================= */
+.zy-dark .el-overlay {
+  background-color: rgba(4, 10, 20, 0.66) !important;
+}
+.zy-dark .el-drawer {
+  background-color: var(--zy-surface) !important;
+  color: var(--zy-text-regular) !important;
+  border-left: 1px solid var(--zy-border);
+}
+.zy-dark .el-drawer__header {
+  margin-bottom: 0 !important;
+  padding: 18px 20px !important;
+  border-bottom: 1px solid var(--zy-border-light);
+  color: var(--zy-text) !important;
+}
+.zy-dark .el-drawer__title {
+  color: var(--zy-text) !important;
+  font-size: 15px;
+  font-weight: 600;
+}
+.zy-dark .el-drawer__close-btn {
+  color: var(--zy-text-secondary) !important;
+}
+.zy-dark .el-drawer__close-btn:hover {
+  color: var(--zy-accent-cyan) !important;
+}
+.zy-dark .el-drawer__body {
+  padding: 12px 12px 16px !important;
+}
+
+
+/* 抽屉主体：Element Plus 默认给 body 白底，需要单独压深 */
+.zy-dark .el-drawer {
+  --el-drawer-bg-color: var(--zy-surface);
+  --el-drawer-padding-primary: 16px;
+}
+.zy-dark .el-drawer__body {
+  background-color: var(--zy-surface) !important;
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark .el-drawer__container,
+.zy-dark .el-drawer__wrapper {
+  background-color: transparent !important;
+}
+.zy-dark .el-drawer__header {
+  background-color: var(--zy-surface) !important;
+}
+

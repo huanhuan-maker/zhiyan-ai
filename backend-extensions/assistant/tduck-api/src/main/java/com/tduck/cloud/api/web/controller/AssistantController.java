@@ -19,6 +19,7 @@ public class AssistantController {
     @GetMapping("/conversations") public Result list(@RequestAttribute Long userId){rates.check(userId,"read",120);return Result.success(chat.list(userId));}
     @PostMapping("/conversations") public Result create(@RequestAttribute Long userId){rates.check(userId,"conversation",15);return Result.success(chat.create(userId));}
     @GetMapping("/conversations/{id}") public Result history(@PathVariable String id,@RequestAttribute Long userId){rates.check(userId,"read",120);return Result.success(chat.history(id,userId));}
+    @PostMapping("/conversations/{id}/delete") public Result delete(@PathVariable String id,@RequestAttribute Long userId){rates.check(userId,"conversation",15);return Result.success(chat.delete(id,userId));}
     @GetMapping("/versions") public Result versions(@RequestParam String formKey,@RequestAttribute Long userId){rates.check(userId,"read",120);return Result.success(tools.versionChoices(formKey,userId));}
     @PostMapping("/plan") public Result plan(@RequestBody Input input,@RequestAttribute Long userId){
         if(!"REAL".equals(input.mode)&&!"LOCAL".equals(input.mode)&&!"AUTO".equals(input.mode))throw new BaseException("提问模式不正确");

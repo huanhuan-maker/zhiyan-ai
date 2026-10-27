@@ -27,6 +27,12 @@ public class AssistantChatService {
     public Map<String,Object> create(Long owner) {
         AssistantConversationEntity c=new AssistantConversationEntity();c.setId(UUID.randomUUID().toString());c.setOwnerId(owner);c.setTitle("新对话");c.setCreatedAt(Instant.now().toString());c.setUpdatedAt(c.getCreatedAt());conversations.insert(c);return map("id",c.getId(),"title",c.getTitle());
     }
+    public Map<String,Object> delete(String id,Long owner) {
+        requireConversation(id,owner);
+        turns.delete(Wrappers.<AssistantTurnEntity>lambdaQuery().eq(AssistantTurnEntity::getConversationId,id).eq(AssistantTurnEntity::getOwnerId,owner));
+        conversations.delete(Wrappers.<AssistantConversationEntity>lambdaQuery().eq(AssistantConversationEntity::getId,id).eq(AssistantConversationEntity::getOwnerId,owner));
+        return map("id",id,"deleted",true);
+    }
     public Map<String,Object> history(String id,Long owner) {
         AssistantConversationEntity c=requireConversation(id,owner);
         List<AssistantTurnEntity> rows=turns.selectList(Wrappers.<AssistantTurnEntity>lambdaQuery().eq(AssistantTurnEntity::getConversationId,id).eq(AssistantTurnEntity::getOwnerId,owner).orderByDesc(AssistantTurnEntity::getCreatedAt).last("limit 40"));
