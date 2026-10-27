@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-27T10:49:55.473Z",
+  "source": "Authenticated real backend/MySQL, synthetic accounts and snapshots, test-created entries removed.",
+  "checks": [
+    {
+      "name": "anonymous calls cannot list or create drafts",
+      "passed": true
+    },
+    {
+      "name": "outdated single-draft clients cannot silently overwrite the old workspace",
+      "passed": true
+    },
+    {
+      "name": "two distinct drafts persist independently",
+      "passed": true
+    },
+    {
+      "name": "simultaneous creates cannot exceed the three-draft limit",
+      "passed": true,
+      "detail": {
+        "successful": 1,
+        "rejected": 1
+      }
+    },
+    {
+      "name": "saving one existing draft does not alter the other two",
+      "passed": true
+    },
+    {
+      "name": "other account cannot read, update or remove a draft",
+      "passed": true
+    },
+    {
+      "name": "removing a slot and reusing its position cannot let a stale ID overwrite the new draft",
+      "passed": true
+    }
+  ],
+  "passed": 7,
+  "failed": 0
+}
