@@ -104,12 +104,14 @@
       >
         <div v-for="(w, i) in result.warnings" :key="i">· {{ w }}</div>
       </el-alert>
+      <SurveyDesignAssistant ref="designAssistant" :questions="result.questions" :title="result.title" :goal="form.goal" :audience="form.audience" :disabled="generating || importing || restoring || saving" @apply="applyOptimization" @locate="locateQuestion" />
       <div class="question-list">
         <div v-for="(q, i) in result.questions" :key="i" class="question-item">
           <div class="question-line">
             <span class="question-index">{{ i + 1 }}</span>
             <strong class="question-label">{{ q.label }}<span v-if="q.required" class="required-mark">*</span></strong>
             <el-tag size="small" :type="typeTag(q.type).type" effect="plain">{{ typeTag(q.type).label }}</el-tag>
+            <el-button size="small" :disabled="generating || importing || restoring || saving" @click="$refs.designAssistant.openOptimize(i)">AI 优化</el-button>
             <el-button class="edit-question-button" size="small" :disabled="generating || importing || restoring || saving" @click="editQuestion(i)">编辑题目</el-button>
           </div>
           <div v-if="q.type === 'RADIO' || q.type === 'CHECKBOX'" class="option-list">
@@ -158,10 +160,11 @@ import { getRequest, postRequest } from '@/api/baseRequest'
 import { convert, GenerateForm } from '@/generator'
 import '@/generator/style.css'
 import DraftQuestionEditor from '@/generator/DraftQuestionEditor.vue'
+import SurveyDesignAssistant from '@/generator/SurveyDesignAssistant.vue'
 
 export default {
   name: 'AiDraft',
-  components: { GenerateForm, DraftQuestionEditor },
+  components: { GenerateForm, DraftQuestionEditor, SurveyDesignAssistant },
   inject: { aiDraftWorkspace: { default: null } },
   data() {
     return {
@@ -235,6 +238,15 @@ export default {
         // Application errors already have a toast from the shared HTTP interceptor.
         if (!e?.msg) this.$message.error(e?.message || this.workspaceError)
       } finally { if (!this.draftDisposed) this.saving = false }
+    },
+    applyOptimization({ index, question }) {
+      if (this.generating || this.importing || this.saving || this.restoring || this.result?.kind !== 'draft') return
+      this.result.questions.splice(index, 1, question)
+      this.result.manuallyEdited = true
+      this.persistDraft()
+    },
+    locateQuestion(index) {
+      this.$nextTick(() => this.$el.querySelectorAll('.question-item')[index]?.scrollIntoView({ behavior: 'smooth', block: 'center' }))
     },
     editQuestion(index) {
       if (this.generating || this.importing || this.restoring || this.saving) return
