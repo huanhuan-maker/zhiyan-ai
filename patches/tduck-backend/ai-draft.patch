@@ -290,7 +290,7 @@ index 0000000..693dcdb693dd5ab407c875846d1af545b19c558b
 +    /** 可选补充信息（≤500 字） */
 +    private String extra;
 +
-+    /** 期望题数（必填，1-30） */
++    /** 期望题数（必填，1-100） */
 +    private Integer questionCount;
 +}
 
@@ -363,7 +363,7 @@ index 0000000..b66cad2a0d72d8c7f256c398ebfa90a83fc69bf2
 + */
 +public final class AiDraftValidator {
 +
-+    public static final int MAX_QUESTIONS = 30;
++    public static final int MAX_QUESTIONS = 100;
 +    public static final int MIN_OPTIONS = 2;
 +    public static final int MAX_OPTIONS = 20;
 +    public static final int MIN_RATE_MAX = 2;

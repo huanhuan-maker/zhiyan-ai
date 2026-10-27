@@ -33,8 +33,8 @@ const blank=await draft({goal:'   ',audience:'大学生',questionCount:5},token)
 check('M2-5: 空白目标被拒绝且提示可恢复',blank.code!==200&&String(blank.msg).includes('调查目标'),'msg='+blank.msg)
 const badCount=await draft({goal:'调查学习习惯',audience:'大学生',questionCount:0},token)
 check('M2-6: 非法题数被拒绝',badCount.code!==200&&String(badCount.msg).includes('题数'),'msg='+badCount.msg)
-const tooMany=await draft({goal:'调查学习习惯',audience:'大学生',questionCount:31},token)
-check('M2-7: 题数超上限(30)被拒绝',tooMany.code!==200,'msg='+tooMany.msg)
+const tooMany=await draft({goal:'调查学习习惯',audience:'大学生',questionCount:101},token)
+check('M2-7: 题数超上限(100)被拒绝',tooMany.code!==200,'msg='+tooMany.msg)
 
 // ===== 3. 真实模型生成（验收剧本输入） =====
 const goal='我想研究大学生为什么不想参加社团，包含没参加过和已经退出两类人'

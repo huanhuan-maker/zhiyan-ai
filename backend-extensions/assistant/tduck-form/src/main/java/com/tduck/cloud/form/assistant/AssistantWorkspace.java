@@ -56,7 +56,7 @@ public class AssistantWorkspace {
         if("CREATE".equals(action)&&args.containsKey("formKey"))throw new BaseException("新建操作不能指定已有问卷");
     }
     public static List<Map<String,Object>> normalizedQuestions(Object raw) {
-        if(!(raw instanceof List)||((List<?>)raw).isEmpty()||((List<?>)raw).size()>30)throw new BaseException("题目数量需为1-30");
+        if(!(raw instanceof List)||((List<?>)raw).isEmpty()||((List<?>)raw).size()>AiDraftValidator.MAX_QUESTIONS)throw new BaseException("题目数量需为1-"+AiDraftValidator.MAX_QUESTIONS+"");
         List<Map<String,Object>> out=new ArrayList<>();Set<String> labels=new HashSet<>();
         for(Object entry:(List<?>)raw){
             if(!(entry instanceof Map))throw new BaseException("题目格式不正确");Map<?,?> q=(Map<?,?>)entry;

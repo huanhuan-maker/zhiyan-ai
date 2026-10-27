@@ -24,10 +24,12 @@
             <span class="section-number">01</span>
             <div><h2>填写调查需求</h2><p>信息越具体，草稿越贴合你的研究目标</p></div>
           </div>
-          <span class="section-caption">支持 1–30 题</span>
+          <span class="section-caption">支持 1–100 题</span>
         </div>
       </template>
-      <el-form ref="form" :model="form" label-position="top" @submit.prevent>
+      <el-alert v-if="workspaceError" :title="workspaceError" type="warning" :closable="false" class="workspace-error" />
+      <p v-if="restoring" class="field-help">正在读取暂存内容…</p>
+      <el-form v-if="!restoring" ref="form" :model="form" label-position="top" :disabled="saving" @submit.prevent>
         <el-form-item label="调查目标" required>
           <el-input
             v-model="form.goal"
@@ -45,7 +47,7 @@
           </el-form-item>
           <el-form-item label="期望题数" required class="question-count-field">
             <div class="question-count-control">
-              <el-input-number v-model="form.questionCount" :min="1" :max="30" aria-label="期望题数" />
+              <el-input-number v-model="form.questionCount" :min="1" :max="100" aria-label="期望题数" />
               <span>题</span>
             </div>
           </el-form-item>
@@ -55,10 +57,10 @@
         </el-form-item>
       </el-form>
       <div class="actions input-actions">
-        <el-button type="primary" :loading="generating" :disabled="importing" aria-label="生成草稿" @click="generate">
+        <el-button type="primary" :loading="generating" :disabled="importing || restoring || saving" aria-label="生成草稿" @click="generate">
           <i v-if="!generating" class="el-icon-magic-stick" />{{ generating ? '正在生成' : '生成草稿' }}
         </el-button>
-        <el-button v-if="result" :disabled="generating || importing" @click="reset">清空结果</el-button>
+        <el-button v-if="result" :disabled="generating || importing || restoring || saving" @click="reset">清空结果</el-button>
         <span class="hint">AI 仅生成可编辑草稿，不写库、不发布；发布由你在编辑器里手动完成。</span>
       </div>
     </el-card>
@@ -108,7 +110,7 @@
             <span class="question-index">{{ i + 1 }}</span>
             <strong class="question-label">{{ q.label }}<span v-if="q.required" class="required-mark">*</span></strong>
             <el-tag size="small" :type="typeTag(q.type).type" effect="plain">{{ typeTag(q.type).label }}</el-tag>
-            <el-button class="edit-question-button" size="small" :disabled="generating || importing" @click="editQuestion(i)">编辑题目</el-button>
+            <el-button class="edit-question-button" size="small" :disabled="generating || importing || restoring || saving" @click="editQuestion(i)">编辑题目</el-button>
           </div>
           <div v-if="q.type === 'RADIO' || q.type === 'CHECKBOX'" class="option-list">
             <span v-for="(o, j) in q.options" :key="j" class="option-chip"><span class="option-mark" />{{ o }}</span>
@@ -130,9 +132,9 @@
         </el-collapse-item>
       </el-collapse>
       <div class="actions result-actions">
-        <el-button :disabled="generating || importing" aria-label="预览答题效果" @click="previewVisible = true"><i class="el-icon-view" />预览答题效果</el-button>
-        <el-button type="primary" :loading="importing" :disabled="generating" aria-label="导入编辑器继续编辑" @click="importToEditor"><i v-if="!importing" class="el-icon-edit" />导入编辑器继续编辑</el-button>
-        <el-button :disabled="generating || importing" @click="generate">重新生成</el-button>
+        <el-button :disabled="generating || importing || restoring || saving" aria-label="预览答题效果" @click="previewVisible = true"><i class="el-icon-view" />预览答题效果</el-button>
+        <el-button type="primary" :loading="importing" :disabled="generating || restoring || saving" aria-label="导入编辑器继续编辑" @click="importToEditor"><i v-if="!importing" class="el-icon-edit" />导入编辑器继续编辑</el-button>
+        <el-button :disabled="generating || importing || restoring || saving" @click="generate">重新生成</el-button>
       </div>
       <p class="result-note">{{ result.manuallyEdited ? '含手动调整：请重新核对题目与 AI 设计说明是否一致。' : '' }}导入后仍是未发布草稿，不会影响已有问卷、答卷或统计。</p>
     </el-card>
@@ -149,7 +151,8 @@
 </template>
 
 <script>
-import { generateAiDraftRequest, getAiStatusRequest } from '@/api/project/ai'
+import { generateAiDraftRequest, getAiStatusRequest, getAiDraftWorkspaceRequest, saveAiDraftWorkspaceRequest, clearAiDraftWorkspaceRequest } from '@/api/project/ai'
+import sha256 from 'crypto-js/sha256'
 import { createFormRequest } from '@/api/project/form'
 import { getRequest, postRequest } from '@/api/baseRequest'
 import { convert, GenerateForm } from '@/generator'
@@ -159,6 +162,7 @@ import DraftQuestionEditor from '@/generator/DraftQuestionEditor.vue'
 export default {
   name: 'AiDraft',
   components: { GenerateForm, DraftQuestionEditor },
+  inject: { aiDraftWorkspace: { default: null } },
   data() {
     return {
       status: null,
@@ -168,12 +172,29 @@ export default {
       previewVisible: false,
       questionEditorVisible: false,
       editingIndex: 0,
+      restoring: true,
+      saving: false,
+      workspaceError: '',
+      localDraftRestored: false,
+      draftDisposed: false,
       result: null
     }
   },
   created() {
     this.restoreDraft()
     this.loadStatus()
+    if (this.aiDraftWorkspace) this.aiDraftWorkspace.handler = this.saveWorkspace
+    this.loadWorkspace()
+  },
+  beforeUnmount() {
+    this.draftDisposed = true
+    if (this.aiDraftWorkspace) { this.aiDraftWorkspace.handler = null; this.aiDraftWorkspace.disabled = true }
+  },
+  watch: {
+    generating() { this.syncWorkspaceButton() },
+    importing() { this.syncWorkspaceButton() },
+    saving() { this.syncWorkspaceButton() },
+    restoring() { this.syncWorkspaceButton() }
   },
   computed: {
     previewForm() {
@@ -181,8 +202,42 @@ export default {
     }
   },
   methods: {
+    cacheOwner() { return sha256(localStorage.getItem('token') || '').toString() },
+    syncWorkspaceButton() {
+      if (!this.aiDraftWorkspace) return
+      this.aiDraftWorkspace.saving = this.saving
+      this.aiDraftWorkspace.disabled = this.generating || this.importing || this.restoring || this.saving
+    },
+    async loadWorkspace() {
+      try {
+        const res = await getAiDraftWorkspaceRequest()
+        if (this.draftDisposed) return
+        if (!this.localDraftRestored && res.data?.snapshot) {
+          const form = res.data.snapshot.form
+          this.form = { goal: form.goal || '', audience: form.audience || '', extra: form.extra || '', questionCount: form.questionCount }
+          this.result = res.data.snapshot.result || null
+          this.persistDraft()
+        }
+      } catch (e) {
+        if (!this.draftDisposed) this.workspaceError = '暂存内容暂时无法读取，当前内容已保留。可继续编辑，稍后再点右上角暂时保存。'
+      } finally { if (!this.draftDisposed) { this.restoring = false; this.syncWorkspaceButton() } }
+    },
+    async saveWorkspace() {
+      if (this.generating || this.importing || this.restoring || this.saving) return
+      this.saving = true
+      try {
+        await saveAiDraftWorkspaceRequest({ form: { ...this.form }, result: this.result })
+        this.persistDraft()
+        this.workspaceError = ''
+        this.$message.success('已暂时保存到当前账号，下次打开 AI 建卷可继续编辑')
+      } catch (e) {
+        this.workspaceError = '暂时保存失败，当前内容已保留，请重试。'
+        // Application errors already have a toast from the shared HTTP interceptor.
+        if (!e?.msg) this.$message.error(e?.message || this.workspaceError)
+      } finally { if (!this.draftDisposed) this.saving = false }
+    },
     editQuestion(index) {
-      if (this.generating || this.importing) return
+      if (this.generating || this.importing || this.restoring || this.saving) return
       this.editingIndex = index
       this.questionEditorVisible = true
     },
@@ -214,13 +269,14 @@ export default {
     restoreDraft() {
       try {
         const saved = JSON.parse(sessionStorage.getItem('aiDraft:last') || 'null')
-        if (saved && saved.form) this.form = saved.form
+        if (saved && saved.ownerKey && saved.ownerKey !== this.cacheOwner()) return
+        if (saved && saved.form) { this.form = saved.form; this.localDraftRestored = true }
         if (saved && saved.result && Array.isArray(saved.result.questions)) this.result = saved.result
       } catch (e) { /* 本地缓存损坏时忽略，回到空白页 */ }
     },
     persistDraft() {
       try {
-        sessionStorage.setItem('aiDraft:last', JSON.stringify({ form: this.form, result: this.result }))
+        sessionStorage.setItem('aiDraft:last', JSON.stringify({ ownerKey: this.cacheOwner(), form: this.form, result: this.result }))
       } catch (e) { /* 存储不可用时静默降级：仅失去刷新保留能力 */ }
     },
     loadStatus() {
@@ -236,7 +292,7 @@ export default {
       return map[type] || { label: type, type: 'info' }
     },
     generate() {
-      if (this.generating || this.importing) return
+      if (this.generating || this.importing || this.restoring || this.saving) return
       if (!this.form.goal.trim()) {
         this.$message.warning('请先填写调查目标')
         return
@@ -255,12 +311,19 @@ export default {
         this.$message.error((err && err.message) || '生成失败，可重试或改用手工建卷')
       }).finally(() => { this.generating = false })
     },
-    reset() {
-      if (this.generating || this.importing) return
-      this.result = null
-      this.form = { goal: '', audience: '', extra: '', questionCount: 8 }
-      sessionStorage.removeItem('aiDraft:last')
-      sessionStorage.removeItem('aiDraft:import')
+    async reset() {
+      if (this.generating || this.importing || this.restoring || this.saving) return
+      this.saving = true
+      try {
+        await clearAiDraftWorkspaceRequest()
+        this.result = null
+        this.form = { goal: '', audience: '', extra: '', questionCount: 8 }
+        sessionStorage.removeItem('aiDraft:last')
+        sessionStorage.removeItem('aiDraft:import')
+        this.localDraftRestored = false
+        this.workspaceError = ''
+      } catch (e) { this.$message.error('清空暂存失败，当前内容已保留，请重试') }
+      finally { this.saving = false }
     },
     focusGoal() {
       this.$el.querySelector('.input-card textarea')?.focus()
@@ -345,6 +408,7 @@ export default {
   color: var(--zy-text);
   font-family: var(--zy-font-family);
 }
+.workspace-error { margin-bottom: 16px; }
 .draft-page-header { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 18px; }
 .page-eyebrow { margin-bottom: 4px; color: var(--zy-purple); font-size: 11px; font-weight: 500; }
 .draft-page-header h1 { margin: 0 0 5px; font-size: 18px; font-weight: 600; }

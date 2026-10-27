@@ -1,5 +1,5 @@
 <template>
-  <div class="form-index-container" :class="{ 'results-page': /\/form\/(statistics|data)$/.test($route.path) }">
+  <div class="form-index-container" :class="{ 'results-page': /\/form\/(statistics|data)$/.test($route.path), 'ai-draft-page': isAiDraft }">
     <header class="form-editor-header">
       <div class="header-left">
         <div class="back-btn" @click="$router.back(-1)" title="返回">
@@ -12,8 +12,8 @@
         </div>
       </div>
       <div v-if="isAiDraft" class="header-right">
-        <el-button class="ai-theme-toggle" @click="toggleTheme" :aria-label="isDark ? '切换浅色模式' : '切换深色模式'">
-          <i :class="isDark ? 'el-icon-sunny' : 'el-icon-moon'" />{{ isDark ? '浅色模式' : '深色模式' }}
+        <el-button class="ai-draft-save" type="primary" :loading="draftWorkspace.saving" :disabled="!draftWorkspace.handler || draftWorkspace.disabled" @click="draftWorkspace.handler?.()" aria-label="暂时保存">
+          暂时保存
         </el-button>
       </div>
       <div v-if="!isAiDraft" class="header-right">
@@ -77,6 +77,7 @@ export default {
   data() {
     return {
       isDark: document.documentElement.classList.contains('zy-dark'),
+      draftWorkspace: { handler: null, saving: false, disabled: true },
       previewKey: +new Date(),
       previewDialogVisible: false,
       defaultActiveMenu: 'editor',
@@ -119,6 +120,9 @@ export default {
         }
       ]
     }
+  },
+  provide() {
+    return { aiDraftWorkspace: this.draftWorkspace }
   },
   created() {
     this.projectKey = this.$route.query.key
@@ -411,5 +415,7 @@ export default {
 </style>
 
 <style scoped>
+.ai-draft-page .ai-header-title { white-space: nowrap; }
+@media(max-width:600px){.ai-draft-page .form-editor-header{padding:0 12px;gap:10px}.ai-draft-page .form-editor-header .header-left{min-width:0}.ai-draft-page .form-editor-header .header-right{flex-shrink:0}.ai-draft-page .form-logo-img{max-width:140px;height:auto}.ai-draft-page .ai-header-title,.ai-draft-page .ai-header-divider{display:none}}
 @media(max-width:600px){.results-page .form-editor-header{padding:10px 12px;gap:8px}.results-page .form-editor-header .header-left{gap:8px;min-width:0}.results-page .form-editor-header .form-logo-img{max-width:105px;height:auto}.results-page .form-editor-header .header-right{gap:6px;flex-shrink:0}.results-page .form-editor-header .action-btn{font-size:0;width:34px;height:34px;padding:6px;margin:0}.results-page .form-editor-header .action-btn :deep(.el-icon){font-size:16px}.results-page .form-editor-header .action-btn :deep(svg){width:16px;height:16px}}
 </style>

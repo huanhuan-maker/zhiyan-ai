@@ -61,7 +61,7 @@ public class AssistantTools {
     public static void validateArguments(String tool,Map<String,Object> args) {
         if(args==null||!argumentsFor(tool).containsAll(args.keySet()))throw new BaseException("工具参数不在允许范围内");
         if("manage_survey".equals(tool)){AssistantWorkspace.validate(args);return;}
-        if("design_survey".equals(tool)){str(args.get("goal"),500,"调查目标");if(((String)args.get("goal")).trim().isEmpty())throw new BaseException("调查目标不能为空");if(args.containsKey("audience"))str(args.get("audience"),100,"调查对象");if(args.containsKey("questionCount"))integer(args.get("questionCount"),1,30,"题数");return;}
+        if("design_survey".equals(tool)){str(args.get("goal"),500,"调查目标");if(((String)args.get("goal")).trim().isEmpty())throw new BaseException("调查目标不能为空");if(args.containsKey("audience"))str(args.get("audience"),100,"调查对象");if(args.containsKey("questionCount"))integer(args.get("questionCount"),1,com.tduck.cloud.form.ai.AiDraftValidator.MAX_QUESTIONS,"题数");return;}
         if(!"search_surveys".equals(tool)&&(!(args.get("formKey") instanceof String)||!((String)args.get("formKey")).matches("[A-Za-z0-9_-]{1,64}")))throw new BaseException("请先选择问卷");
         if(args.containsKey("version"))integer(args.get("version"),1,100000,"版本");
         if(args.containsKey("limit"))integer(args.get("limit"),1,10,"条数");
@@ -167,7 +167,7 @@ public class AssistantTools {
         list.add(def("survey_share","获取指定或最新版本分享链接",map("formKey",key,"version",version),Collections.singletonList("formKey")));
         list.add(def("survey_export","准备本账号问卷的单版本答卷导出，最多5000份，原文不发送模型",map("formKey",key,"version",version),Collections.singletonList("formKey")));
         list.add(def("manage_survey","仅准备管理预览，用户点击确认后执行。CREATE新建/RENAME标题/DESCRIBE简介/REPLACE_QUESTIONS完整题目/ADD_QUESTION追加question/EDIT_QUESTION修改questionNo题的question部分字段/REMOVE_QUESTION删除questionNo题/MOVE_QUESTION从questionNo移动至toPosition/COPY复制/PUBLISH发布/STOP停收/ARCHIVE回收站。新建不指定formKey，其余必须为selectedFormKey",map("formKey",key,"action",map("type","string","enum",new ArrayList<>(AssistantWorkspace.ACTIONS)),"title",map("type","string","maxLength",100),"description",map("type","string","maxLength",2000),"questions",map("type","array","maxItems",30,"items",question),"question",question,"questionNo",map("type","integer","minimum",1),"toPosition",map("type","integer","minimum",1)),Collections.singletonList("action")));
-        list.add(def("design_survey","根据目标设计问卷，返回完整题目预览，确认后保存草稿。模型未配置时明确标注Mock",map("goal",map("type","string","maxLength",500),"audience",map("type","string","maxLength",100),"questionCount",map("type","integer","minimum",1,"maximum",30)),Collections.singletonList("goal")));
+        list.add(def("design_survey","根据目标设计问卷，返回完整题目预览，确认后保存草稿。模型未配置时明确标注Mock",map("goal",map("type","string","maxLength",500),"audience",map("type","string","maxLength",100),"questionCount",map("type","integer","minimum",1,"maximum",com.tduck.cloud.form.ai.AiDraftValidator.MAX_QUESTIONS)),Collections.singletonList("goal")));
         return list;
     }
     private static Map<String,Object> def(String name,String description,Map<String,Object> properties,List<String> required) {

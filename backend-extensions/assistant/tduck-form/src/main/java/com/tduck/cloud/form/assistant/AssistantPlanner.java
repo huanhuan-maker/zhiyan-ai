@@ -130,7 +130,7 @@ public class AssistantPlanner {
             Matcher name=Pattern.compile("[“\"]([^”\"]{1,100})[”\"]").matcher(q);return map("tool","search_surveys","arguments",map("query",name.find()?name.group(1):"","limit",6));
         }
         if(q.matches("(?s).*(生成|设计|创建).*(问卷|调查).*" )&&!q.matches("(?s).*(如何|怎么|什么|空白).*")){
-            Matcher count=Pattern.compile("([1-9][0-9]?)\\s*(?:道|个)题").matcher(q);return map("tool","design_survey","arguments",map("goal",q.length()>500?q.substring(0,500):q,"audience","调查对象","questionCount",count.find()?Integer.valueOf(count.group(1)):6));
+            Matcher count=Pattern.compile("(?<![0-9])([1-9][0-9]{0,3})\\s*(?:道|个)?题").matcher(q);return map("tool","design_survey","arguments",map("goal",q.length()>500?q.substring(0,500):q,"audience","调查对象","questionCount",count.find()?Integer.valueOf(count.group(1)):6));
         }
         if(q.matches("(?s).*(新建|创建).*空白.*")){
             Matcher title=Pattern.compile("[“\"]([^”\"]{1,100})[”\"]").matcher(q);return map("tool","manage_survey","arguments",map("action","CREATE","title",title.find()?title.group(1):"新问卷"));

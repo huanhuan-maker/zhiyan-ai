@@ -5,3 +5,6 @@ import request from '../index'
 export const getAiStatusRequest = () => getRequest('/user/form/ai/status')
 
 export const generateAiDraftRequest = (data) => request.post('/user/form/ai/draft', data, { timeout: 120000 })
+export const getAiDraftWorkspaceRequest = () => request.get('/user/form/ai/workspace')
+export const saveAiDraftWorkspaceRequest = (data) => request.post('/user/form/ai/workspace', data)
+export const clearAiDraftWorkspaceRequest = () => request.post('/user/form/ai/workspace/clear')
