@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-27T09:28:01.008Z",
+  "source": "Actual configured AI in assistant, browser confirmation, existing editor and actual Spring Boot/MyBatis/MySQL persistence using synthetic questionnaire",
+  "checks": [
+    {
+      "name": "real assistant-generated questions expose a direct save-and-edit entry before confirmation",
+      "passed": true,
+      "detail": {
+        "mode": "REAL",
+        "model": "group/group",
+        "provider": "本机推理网关",
+        "warnings": []
+      }
+    },
+    {
+      "name": "save-and-edit confirms the proposal once and opens all four questions as an unpublished draft",
+      "passed": true,
+      "detail": {
+        "formKey": "vfqV0Jl7",
+        "status": 1,
+        "questions": 4
+      }
+    },
+    {
+      "name": "manual single-question editor save persists through reload and preserves the other AI questions",
+      "passed": true,
+      "detail": {
+        "formKey": "vfqV0Jl7",
+        "untouchedQuestions": 3
+      }
+    },
+    {
+      "name": "no uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "passed": 4,
+  "failed": 0
+}

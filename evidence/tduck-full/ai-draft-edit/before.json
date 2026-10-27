@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-27T09:22:08.584Z",
+  "source": "Explicit synthetic AI fixture; actual browser and isolated backend/MySQL import",
+  "checks": [
+    {
+      "name": "AI generated preview exposes an edit action beside every individual question",
+      "passed": false,
+      "error": "expect(locator).toBeVisible() failed\n\nLocator: locator('.question-item').first().getByRole('button', { name: '编辑题目', exact: true })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" locator('.question-item').first().getByRole('button', { name: '编辑题目', exact: true }) with timeout 5000ms\n  - waiting for locator('.question-item').first().getByRole('button', { name: '编辑题目', exact: true })\n"
+    }
+  ],
+  "passed": 0,
+  "failed": 1
+}

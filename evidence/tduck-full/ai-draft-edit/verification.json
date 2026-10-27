@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-27T09:30:23.023Z",
+  "frontendUnit": {
+    "passed": 50,
+    "failed": 0
+  },
+  "frontendProductionBuild": {
+    "passed": true,
+    "notes": "Existing Sass deprecation and large-chunk warnings"
+  },
+  "browser": {
+    "synthetic": 11,
+    "realAiDraft": 6,
+    "realAssistant": 4,
+    "importRecovery": 10,
+    "failed": 0
+  },
+  "database": "Existing isolated tduck_vue3_dev via existing Spring Boot/MyBatis-Plus APIs",
+  "schemaMigration": "Not needed; no backend or schema changes",
+  "model": {
+    "provider": "本机推理网关",
+    "model": "group/group"
+  },
+  "baseline": {
+    "passed": 0,
+    "failed": 1,
+    "source": "before.json"
+  }
+}
