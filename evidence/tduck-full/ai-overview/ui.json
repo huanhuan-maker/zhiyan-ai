@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-27T10:34:47.182Z",
+  "source": "Real browser, isolated backend and database; synthetic accounts and questions; original snapshots restored.",
+  "checks": [
+    {
+      "name": "saved edited draft is shown with its own status and actual question count",
+      "passed": true
+    },
+    {
+      "name": "continue editing opens the saved draft including the edited question",
+      "passed": true
+    },
+    {
+      "name": "refresh and returning to overview preserves the saved draft",
+      "passed": true
+    },
+    {
+      "name": "the draft respects status and search filters in both overview views",
+      "passed": true
+    },
+    {
+      "name": "a different account cannot see this account’s saved draft",
+      "passed": true
+    },
+    {
+      "name": "different unsaved browser content is preserved and the saved version can be opened and reversed",
+      "passed": true
+    },
+    {
+      "name": "a temporary-load failure is visible and does not block the survey list",
+      "passed": true
+    },
+    {
+      "name": "the entry remains usable on a 390px viewport",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "passed": 9,
+  "failed": 0
+}
