@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-27T09:43:45.483Z",
+  "source": "Actual browser, authenticated Spring Boot/MyBatis/MySQL persistence and isolated synthetic accounts. 100-question rendering uses an explicitly labelled synthetic AI response.",
+  "checks": [
+    {
+      "name": "the upper-right AI page action is Save Temporarily and its theme switch is removed",
+      "passed": true
+    },
+    {
+      "name": "incomplete requirements save to MySQL and restore in an entirely new browser context",
+      "passed": false,
+      "error": "locator.fill: Timeout 10000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('spinbutton')\u001b[22m\n\u001b[2m    - locator resolved to <input min=\"1\" step=\"1\" max=\"100\" tabindex=\"0\" type=\"number\" aria-label=\"期望题数\" role=\"spinbutton\" aria-valuemin=\"1\" aria-valuenow=\"8\" autocomplete=\"off\" id=\"el-id-7547-12\" aria-valuemax=\"100\" aria-disabled=\"true\" class=\"el-input__inner\"/>\u001b[22m\n\u001b[2m    - fill(\"100\")\u001b[22m\n\u001b[2m  - attempting fill action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying fill action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and editable\u001b[22m\n\u001b[2m      - element is not enabled\u001b[22m\n\u001b[2m    - retrying fill a"
+    },
+    {
+      "name": "a 100-question generated and manually revised draft saves and reopens without generating or publishing",
+      "passed": true,
+      "detail": {
+        "questions": 100,
+        "manualRevisionPreserved": true
+      }
+    },
+    {
+      "name": "different accounts cannot read, overwrite or clear this owners temporary draft",
+      "passed": true,
+      "detail": {
+        "ownerScoped": true
+      }
+    },
+    {
+      "name": "anonymous users and counts above 100 are rejected",
+      "passed": true,
+      "detail": {
+        "rejectedAbove": 100
+      }
+    },
+    {
+      "name": "temporary save failure preserves the current work and permits a successful retry",
+      "passed": false,
+      "error": "expect(locator).toBeVisible() failed\n\nLocator: locator('.el-message--error').filter({ hasText: '合成暂存失败' })\nExpected: visible\nError: strict mode violation: locator('.el-message--error').filter({ hasText: '合成暂存失败' }) resolved to 2 elements:\n    1) <div role=\"alert\" id=\"message_1\" class=\"el-message el-message--error is-center el-message-fade-enter-active el-message-fade-enter-to\">…</div> aka locator('#message_1')\n    2) <div role=\"alert\" id=\"message_2\" class=\"el-message el-message--error is-center el-message-fade-enter-active el-message-fade-enter-to\">…</div> aka locator('#message_2')\n\nCall log:\n  - Expect \"toBeVisible\" locator('.el-message--error').filter({ hasText: '合成暂存失败' }) with timeout 5000ms\n  - waiting for locator('.el-message--error')"
+    },
+    {
+      "name": "loading failure gives a recoverable warning instead of clearing work or blocking generation",
+      "passed": true
+    },
+    {
+      "name": "the save action remains visible at the upper right on a 390px screen",
+      "passed": true
+    },
+    {
+      "name": "clear results also removes the saved account snapshot and new contexts open blank",
+      "passed": true
+    },
+    {
+      "name": "ordinary editor retains its existing theme switch",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "passed": 9,
+  "failed": 2
+}

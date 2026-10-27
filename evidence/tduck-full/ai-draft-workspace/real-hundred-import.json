@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-27T09:45:58.252Z",
+  "source": "Previously captured actual model response, authenticated SQL-backed workspace restore, real browser import through existing Spring Boot/MyBatis-Plus APIs; isolated synthetic account only",
+  "checks": [
+    {
+      "name": "all 100 actual-model questions restore from the authenticated saved workspace",
+      "passed": true,
+      "detail": {
+        "mode": "REAL",
+        "provider": "本机推理网关",
+        "model": "group/group",
+        "questions": 100
+      }
+    },
+    {
+      "name": "the entire real 100-question draft imports once into MySQL and remains unpublished after editor refresh",
+      "passed": true,
+      "detail": {
+        "formKey": "1LwvbN3b",
+        "questions": 100,
+        "status": 1
+      }
+    }
+  ],
+  "passed": 2,
+  "failed": 0
+}

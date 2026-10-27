@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-27T09:43:56.476Z",
+  "source": "Actual configured provider, authenticated generation endpoint; no fabricated question response",
+  "elapsedMs": 19593,
+  "code": 200,
+  "message": null,
+  "mode": "REAL",
+  "provider": "本机推理网关",
+  "model": "group/group",
+  "questionCount": 100
+}

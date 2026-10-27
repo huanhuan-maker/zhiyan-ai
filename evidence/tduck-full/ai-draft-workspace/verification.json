@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-27T09:51:19.521Z",
+  "java": {
+    "passed": 106,
+    "failed": 0,
+    "errors": 0
+  },
+  "frontendUnit": {
+    "passed": 50,
+    "failed": 0
+  },
+  "frontendProductionBuild": "Passed; existing Sass deprecation and chunk-size warnings",
+  "workspaceBrowser": {
+    "passed": 11,
+    "failed": 0
+  },
+  "real100QuestionImport": {
+    "passed": 2,
+    "failed": 0
+  },
+  "manualEditRegression": {
+    "passed": 11,
+    "failed": 0,
+    "log": ".local/ai-draft-workspace-edit-regression.log"
+  },
+  "realGeneration": {
+    "date": "2026-10-27T09:43:56.476Z",
+    "source": "Actual configured provider, authenticated generation endpoint; no fabricated question response",
+    "elapsedMs": 19593,
+    "code": 200,
+    "message": null,
+    "mode": "REAL",
+    "provider": "本机推理网关",
+    "model": "group/group",
+    "questionCount": 100
+  },
+  "beforeLimitFix": {
+    "tests": 5,
+    "failures": 3,
+    "errors": 1
+  },
+  "schemaMigration": "010_ai_draft_workspace.sql applied successfully; four assistant/workspace tables confirmed",
+  "installedJarSha256": "9bee683f9747771bfb4e10ee3bbe85b737155660413927005388e0fc5e929b25",
+  "sourceBuildJarSha256": "9bee683f9747771bfb4e10ee3bbe85b737155660413927005388e0fc5e929b25"
+}

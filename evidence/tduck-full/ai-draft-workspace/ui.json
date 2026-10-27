@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-27T09:49:02.775Z",
+  "source": "Actual browser, authenticated Spring Boot/MyBatis/MySQL persistence and isolated synthetic accounts. 100-question rendering uses an explicitly labelled synthetic AI response.",
+  "checks": [
+    {
+      "name": "the upper-right AI page action is Save Temporarily and its theme switch is removed",
+      "passed": true
+    },
+    {
+      "name": "incomplete requirements save to MySQL and restore in an entirely new browser context",
+      "passed": true,
+      "detail": {
+        "updatedAt": "2026-10-27T09:48:56.793532900Z"
+      }
+    },
+    {
+      "name": "a 100-question generated and manually revised draft saves and reopens without generating or publishing",
+      "passed": true,
+      "detail": {
+        "questions": 100,
+        "manualRevisionPreserved": true
+      }
+    },
+    {
+      "name": "different accounts cannot read, overwrite or clear this owners temporary draft",
+      "passed": true,
+      "detail": {
+        "ownerScoped": true
+      }
+    },
+    {
+      "name": "anonymous users and counts above 100 are rejected",
+      "passed": true,
+      "detail": {
+        "rejectedAbove": 100
+      }
+    },
+    {
+      "name": "temporary save failure preserves the current work and permits a successful retry",
+      "passed": true
+    },
+    {
+      "name": "loading failure gives a recoverable warning instead of clearing work or blocking generation",
+      "passed": true
+    },
+    {
+      "name": "the save action remains visible at the upper right on a 390px screen",
+      "passed": true
+    },
+    {
+      "name": "clear results also removes the saved account snapshot and new contexts open blank",
+      "passed": true
+    },
+    {
+      "name": "ordinary editor retains its existing theme switch",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "passed": 11,
+  "failed": 0
+}

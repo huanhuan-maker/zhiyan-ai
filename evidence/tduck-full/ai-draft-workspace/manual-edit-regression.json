@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-27T09:46:39.872Z",
+  "source": "Explicit synthetic AI fixture; actual browser and isolated backend/MySQL import",
+  "checks": [
+    {
+      "name": "AI generated preview exposes an edit action beside every individual question",
+      "passed": true
+    },
+    {
+      "name": "cancelling a single-question change preserves all original questions",
+      "passed": true
+    },
+    {
+      "name": "manual wording and required edits change only the selected question without calling the model or saving a form",
+      "passed": true,
+      "detail": {
+        "provider": "明确标注的合成编辑回归数据",
+        "model": "synthetic-no-model",
+        "mode": "MOCK"
+      }
+    },
+    {
+      "name": "blank and duplicate question labels cannot replace the valid saved question",
+      "passed": true
+    },
+    {
+      "name": "options can be edited, added and removed while blank and duplicate values are rejected",
+      "passed": true
+    },
+    {
+      "name": "rating range and text placeholder changes survive local draft refresh",
+      "passed": true
+    },
+    {
+      "name": "changing an unpublished draft question type yields the matching preview schema",
+      "passed": true
+    },
+    {
+      "name": "mobile and dark-mode question editing remains readable and fits the screen",
+      "passed": true
+    },
+    {
+      "name": "answer preview renders the manually changed wording and closes without writing any answers",
+      "passed": true
+    },
+    {
+      "name": "import and editor refresh persist the manual revision and all untouched questions through the real backend",
+      "passed": true,
+      "detail": {
+        "formKey": "ucly5UM0",
+        "questions": 4,
+        "status": 1
+      }
+    },
+    {
+      "name": "no uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "passed": 11,
+  "failed": 0
+}
