@@ -1,0 +1,104 @@
+{
+  "date": "2026-10-27T12:03:54.161Z",
+  "source": "真实浏览器 5180 + 隔离后端 8997 + 管理员账号（.local/tduck-credentials.json），只读浏览",
+  "checks": [
+    {
+      "name": "light / home：无运行时报错",
+      "passed": true
+    },
+    {
+      "name": "light / home：正文文字对比度 >= 4.5",
+      "passed": true
+    },
+    {
+      "name": "light / home：画布有分层渐变与标题强调条",
+      "passed": true
+    },
+    {
+      "name": "light / manage-user：无运行时报错",
+      "passed": true
+    },
+    {
+      "name": "light / manage-user：正文文字对比度 >= 4.5",
+      "passed": true
+    },
+    {
+      "name": "light / manage-system：无运行时报错",
+      "passed": true
+    },
+    {
+      "name": "light / manage-system：正文文字对比度 >= 4.5",
+      "passed": true
+    },
+    {
+      "name": "light / assistant：无运行时报错",
+      "passed": true
+    },
+    {
+      "name": "light / assistant：正文文字对比度 >= 4.5",
+      "passed": true
+    },
+    {
+      "name": "dark / home：无运行时报错",
+      "passed": true
+    },
+    {
+      "name": "dark / home：没有浅色残留块",
+      "passed": true
+    },
+    {
+      "name": "dark / home：正文文字对比度 >= 4.5",
+      "passed": true
+    },
+    {
+      "name": "dark / home：既有深色底值未被改坏",
+      "passed": true
+    },
+    {
+      "name": "dark / manage-user：无运行时报错",
+      "passed": true
+    },
+    {
+      "name": "dark / manage-user：没有浅色残留块",
+      "passed": true
+    },
+    {
+      "name": "dark / manage-user：正文文字对比度 >= 4.5",
+      "passed": true
+    },
+    {
+      "name": "dark / manage-user：表头是深色令牌而不是白底",
+      "passed": true
+    },
+    {
+      "name": "dark / manage-system：无运行时报错",
+      "passed": true
+    },
+    {
+      "name": "dark / manage-system：没有浅色残留块",
+      "passed": true
+    },
+    {
+      "name": "dark / manage-system：正文文字对比度 >= 4.5",
+      "passed": true
+    },
+    {
+      "name": "dark / assistant：无运行时报错",
+      "passed": true
+    },
+    {
+      "name": "dark / assistant：没有浅色残留块",
+      "passed": true
+    },
+    {
+      "name": "dark / assistant：正文文字对比度 >= 4.5",
+      "passed": true
+    },
+    {
+      "name": "dark / assistant：页面底色保持既有深色",
+      "passed": true
+    }
+  ],
+  "passed": 24,
+  "failed": 0
+}

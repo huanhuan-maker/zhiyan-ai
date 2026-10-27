@@ -30,6 +30,19 @@
   --zy-shadow-popup: 0 10px 25px rgba(31, 41, 55, 0.08);
   --zy-font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
   --zy-font-number: Inter, 'SF Pro Text', system-ui, sans-serif;
+  --zy-accent-cyan: #0891b2;
+  --zy-shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04), 0 12px 28px -18px rgba(16, 24, 40, 0.28);
+  --zy-shadow-card-hover: 0 2px 4px rgba(16, 24, 40, 0.05), 0 18px 38px -18px rgba(16, 24, 40, 0.3);
+  --zy-shadow-panel: 0 1px 2px rgba(16, 24, 40, 0.05), 0 20px 45px -28px rgba(16, 24, 40, 0.35);
+  --zy-ring: 0 0 0 1px rgba(37, 99, 235, 0.12), 0 0 26px -10px rgba(37, 99, 235, 0.45);
+  --zy-page-glow: radial-gradient(70% 55% at 12% 0%, rgba(37, 99, 235, 0.1) 0%, rgba(37, 99, 235, 0) 62%), radial-gradient(60% 50% at 100% 0%, rgba(14, 165, 165, 0.08) 0%, rgba(14, 165, 165, 0) 60%), linear-gradient(180deg, #f6f9fe 0%, #eef3fb 52%, #e9eff8 100%);
+  --zy-grid-line: rgba(37, 99, 235, 0.045);
+  --zy-sidebar: linear-gradient(180deg, #ffffff 0%, #fbfdff 58%, #f5f9ff 100%);
+  --zy-sidebar-border: #e2eaf6;
+  --zy-header: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+  --zy-accent-line: linear-gradient(180deg, #2563eb 0%, #38bdf8 100%);
+  --zy-tint: #eef4ff;
+  --zy-tint-strong: #e3edff;
 }
 
 // 深色模式仅应用于本轮改造的工作台与 AI 建卷容器，避免污染其他页面。
@@ -52,4 +65,17 @@
   --zy-danger: #e78a95;
   --zy-purple: #c29af0;
   --zy-shadow-popup: 0 10px 30px rgba(0, 0, 0, 0.3);
+  --zy-accent-cyan: #38e8ff;
+  --zy-shadow-card: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 14px 34px -20px rgba(0, 0, 0, 0.75);
+  --zy-shadow-card-hover: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 20px 44px -20px rgba(0, 0, 0, 0.85);
+  --zy-shadow-panel: 0 24px 60px -34px rgba(0, 0, 0, 0.9);
+  --zy-ring: 0 0 0 1px rgba(56, 189, 248, 0.22), 0 0 28px -10px rgba(56, 189, 248, 0.5);
+  --zy-page-glow: radial-gradient(65% 48% at 10% 0%, rgba(56, 189, 248, 0.12) 0%, rgba(56, 189, 248, 0) 62%), radial-gradient(55% 46% at 100% 4%, rgba(75, 214, 177, 0.08) 0%, rgba(75, 214, 177, 0) 58%), linear-gradient(180deg, #0e1c2f 0%, #0c1829 55%, #0a1424 100%);
+  --zy-grid-line: rgba(56, 189, 248, 0.05);
+  --zy-sidebar: linear-gradient(180deg, #101c2e 0%, #0e1a2c 60%, #0b1626 100%);
+  --zy-sidebar-border: #223246;
+  --zy-header: linear-gradient(180deg, #111e31 0%, #0f1b2c 100%);
+  --zy-accent-line: linear-gradient(180deg, #38bdf8 0%, #4bd6b1 100%);
+  --zy-tint: #17313a;
+  --zy-tint-strong: #1b3b45;
 }
