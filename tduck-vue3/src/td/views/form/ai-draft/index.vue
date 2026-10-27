@@ -139,11 +139,6 @@
           </div>
         </el-collapse-item>
       </el-collapse>
-      <div class="actions result-actions">
-        <el-button :disabled="generating || importing || restoring || saving" aria-label="预览答题效果" @click="previewVisible = true"><i class="el-icon-view" />预览答题效果</el-button>
-        <el-button type="primary" :loading="importing" :disabled="generating || restoring || saving" aria-label="导入编辑器继续编辑" @click="importToEditor"><i v-if="!importing" class="el-icon-edit" />导入编辑器继续编辑</el-button>
-        <el-button :disabled="generating || importing || restoring || saving" @click="generate">重新生成</el-button>
-      </div>
       <p class="result-note">{{ result.manuallyEdited ? '含手动调整：请重新核对题目与 AI 设计说明是否一致。' : '' }}导入后仍是未发布草稿，不会影响已有问卷、答卷或统计。</p>
     </el-card>
 
@@ -198,18 +193,25 @@ export default {
     this.draftCacheKey = this.workspaceId ? 'aiDraft:slot:' + this.workspaceId : 'aiDraft:new:' + String(this.$route.query.fresh || 'direct')
     this.restoreDraft()
     this.loadStatus()
-    if (this.aiDraftWorkspace) this.aiDraftWorkspace.handler = this.saveWorkspace
+    if (this.aiDraftWorkspace) {
+      this.aiDraftWorkspace.handler = this.saveWorkspace
+      this.aiDraftWorkspace.preview = () => { this.previewVisible = true }
+      this.aiDraftWorkspace.importDraft = this.importToEditor
+      this.aiDraftWorkspace.regenerate = this.generate
+      this.syncWorkspaceButton()
+    }
     this.loadWorkspace()
   },
   beforeUnmount() {
     this.draftDisposed = true
-    if (this.aiDraftWorkspace) { this.aiDraftWorkspace.handler = null; this.aiDraftWorkspace.disabled = true }
+    if (this.aiDraftWorkspace) { Object.assign(this.aiDraftWorkspace, { handler: null, preview: null, importDraft: null, regenerate: null, hasDraft: false, importing: false, disabled: true }) }
   },
   watch: {
     generating() { this.syncWorkspaceButton() },
     importing() { this.syncWorkspaceButton() },
     saving() { this.syncWorkspaceButton() },
-    restoring() { this.syncWorkspaceButton() }
+    restoring() { this.syncWorkspaceButton() },
+    result() { this.syncWorkspaceButton() }
   },
   computed: {
     previewForm() {
@@ -221,6 +223,8 @@ export default {
     syncWorkspaceButton() {
       if (!this.aiDraftWorkspace) return
       this.aiDraftWorkspace.saving = this.saving
+      this.aiDraftWorkspace.importing = this.importing
+      this.aiDraftWorkspace.hasDraft = this.result?.kind === 'draft'
       this.aiDraftWorkspace.disabled = this.generating || this.importing || this.restoring || this.saving
     },
     async loadWorkspace() {
@@ -535,7 +539,6 @@ export default {
 .assumptions { color: var(--zy-text-regular); font-size: 13px; line-height: 1.7; }
 .assumptions ul { padding-left: 18px; margin: 8px 0 16px; }
 .dimension-chip { margin: 8px 6px 0 0; }
-.result-actions { padding-top: 18px; margin-top: 4px; border-top: 1px solid var(--zy-border-light); }
 .result-note { margin: 11px 0 0; color: var(--zy-text-secondary); font-size: 11px; line-height: 1.7; }
 .clarify-list { padding-left: 20px; line-height: 1.8; }
 .clarify-list li { margin-bottom: 8px; }
@@ -556,8 +559,6 @@ export default {
   .input-actions .hint { flex-basis: 100%; min-width: 0; }
   .result-header { flex-direction: column; }
   .result-header > .status-text { max-width: 100%; text-align: left; }
-  .result-actions { align-items: stretch; flex-direction: column; }
-  .result-actions :deep(.el-button) { width: 100%; }
   .option-list { gap: 7px 14px; }
   .question-line { flex-wrap: wrap; }
   .question-line .question-label { flex-basis: calc(100% - 34px); }
