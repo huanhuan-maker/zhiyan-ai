@@ -35,7 +35,7 @@
         <el-button size="small" @click="restorePreviousLocal">恢复之前的本浏览器内容</el-button>
       </el-alert>
       <p v-if="restoring" class="field-help">正在读取暂存内容…</p>
-      <el-form v-if="!restoring" ref="form" :model="form" label-position="top" :disabled="saving" @submit.prevent>
+      <el-form v-if="!restoring" ref="form" :model="form" label-position="top" :disabled="saving || generating || importing" @submit.prevent>
         <el-form-item label="调查目标" required>
           <el-input
             v-model="form.goal"
@@ -71,6 +71,8 @@
       </div>
     </el-card>
 
+    <DraftGenerationProgress ref="generationProgress" :state="generationState" :input="generationInput" :events="generationEvents" :elapsed="generationElapsed" :unavailable="progressUnavailable" :error="generationError" @retry="generate" />
+
     <el-card v-if="result && result.kind === 'clarification'" shadow="never" class="result-card">
       <template #header><div class="card-header"><div class="section-heading"><span class="section-number">02</span><h2>目标需要澄清</h2></div></div></template>
       <el-alert type="warning" :closable="false" title="AI 认为当前调查目标过于含糊，建议先澄清以下问题再生成" />
@@ -101,6 +103,12 @@
           <div class="draft-metric"><span class="metric-value elapsed-value">{{ (result.elapsedMs / 1000).toFixed(1) }}s</span><span class="metric-label">生成用时</span></div>
           <div class="draft-metric"><span class="metric-value warning-value">{{ result.warnings ? result.warnings.length : 0 }}</span><span class="metric-label">审核提示</span></div>
         </div>
+        <section class="draft-design-summary" aria-label="问卷设计说明">
+          <h4>这份问卷的设计</h4>
+          <p>{{ questionStructure }}</p>
+          <p v-if="result.dimensions?.length"><span>AI 提出的调查维度：</span>{{ result.dimensions.join('、') }}</p>
+          <p class="design-summary-note">{{ result.manuallyEdited ? '题目已有调整，请结合当前内容核对原设计说明。' : '请结合研究目标审核题目，AI 设计说明不代表问卷效度已经得到验证。' }}</p>
+        </section>
       </div>
       <el-alert
         v-if="result.warnings && result.warnings.length"
@@ -154,7 +162,7 @@
 </template>
 
 <script>
-import { generateAiDraftRequest, getAiStatusRequest, getAiDraftSlotRequest, createAiDraftSlotRequest, updateAiDraftSlotRequest } from '@/api/project/ai'
+import { generateAiDraftRequest, startAiDraftProgressRequest, getAiDraftProgressRequest, getAiStatusRequest, getAiDraftSlotRequest, createAiDraftSlotRequest, updateAiDraftSlotRequest } from '@/api/project/ai'
 import sha256 from 'crypto-js/sha256'
 import { createFormRequest } from '@/api/project/form'
 import { getRequest, postRequest } from '@/api/baseRequest'
@@ -162,16 +170,27 @@ import { convert, GenerateForm } from '@/generator'
 import '@/generator/style.css'
 import DraftQuestionEditor from '@/generator/DraftQuestionEditor.vue'
 import SurveyDesignAssistant from '@/generator/SurveyDesignAssistant.vue'
+import DraftGenerationProgress from '@/generator/DraftGenerationProgress.vue'
 
 export default {
   name: 'AiDraft',
-  components: { GenerateForm, DraftQuestionEditor, SurveyDesignAssistant },
+  components: { GenerateForm, DraftQuestionEditor, SurveyDesignAssistant, DraftGenerationProgress },
   inject: { aiDraftWorkspace: { default: null } },
   data() {
     return {
       status: null,
       form: { goal: '', audience: '', extra: '', questionCount: 8 },
       generating: false,
+      generationState: 'idle',
+      generationInput: {},
+      generationEvents: [],
+      generationElapsed: 0,
+      generationError: '',
+      progressUnavailable: false,
+      generationRun: 0,
+      generationStartedAt: 0,
+      generationTimer: null,
+      progressPoll: null,
       importing: false,
       previewVisible: false,
       questionEditorVisible: false,
@@ -204,6 +223,8 @@ export default {
   },
   beforeUnmount() {
     this.draftDisposed = true
+    this.generationRun++
+    this.stopGenerationTracking()
     if (this.aiDraftWorkspace) { Object.assign(this.aiDraftWorkspace, { handler: null, preview: null, importDraft: null, regenerate: null, hasDraft: false, importing: false, disabled: true }) }
   },
   watch: {
@@ -214,6 +235,12 @@ export default {
     result() { this.syncWorkspaceButton() }
   },
   computed: {
+    questionStructure() {
+      const counts = {}
+      for (const q of this.result?.questions || []) counts[q.type] = (counts[q.type] || 0) + 1
+      const names = { RADIO: '单选题', CHECKBOX: '多选题', RATE: '评分题', TEXTAREA: '开放题', INPUT: '单行文本题' }
+      return Object.entries(counts).map(([type,count]) => count + ' 道' + (names[type] || type)).join('，') + '。'
+    },
     previewForm() {
       return { fields: (this.result?.questions || []).map(this.createDraftField), formBtns: true, theme: { showNumber: true } }
     }
@@ -360,7 +387,30 @@ export default {
       }
       return map[type] || { label: type, type: 'info' }
     },
-    generate() {
+    stopGenerationTracking() {
+      clearInterval(this.generationTimer)
+      clearTimeout(this.progressPoll)
+      this.generationTimer = null
+      this.progressPoll = null
+    },
+    async pollGenerationProgress(id, run, repeat = true) {
+      if (this.draftDisposed || run !== this.generationRun || (repeat && !this.generating)) return
+      try {
+        const res = await getAiDraftProgressRequest(id)
+        if (this.draftDisposed || run !== this.generationRun) return
+        const events = res.data?.events || []
+        if (events.length >= this.generationEvents.length) this.generationEvents = events
+        this.progressUnavailable = false
+      } catch (e) {
+        if (!this.draftDisposed && run === this.generationRun) this.progressUnavailable = true
+      } finally {
+        if (repeat && !this.draftDisposed && this.generating && run === this.generationRun) {
+          clearTimeout(this.progressPoll)
+          this.progressPoll = setTimeout(() => this.pollGenerationProgress(id, run), 1800)
+        }
+      }
+    },
+    async generate() {
       if (this.generating || this.importing || this.restoring || this.saving) return
       if (!this.form.goal.trim()) {
         this.$message.warning('请先填写调查目标')
@@ -371,14 +421,52 @@ export default {
         return
       }
       this.generating = true
-      generateAiDraftRequest({ ...this.form }).then((res) => {
+      this.generationState = 'running'
+      this.generationInput = { ...this.form }
+      this.generationEvents = []
+      this.generationError = ''
+      this.progressUnavailable = false
+      this.generationStartedAt = Date.now()
+      this.generationElapsed = 0
+      const run = ++this.generationRun
+      this.stopGenerationTracking()
+      this.generationTimer = setInterval(() => { this.generationElapsed = Date.now() - this.generationStartedAt }, 1000)
+      this.persistDraft()
+      this.$nextTick(() => this.$refs.generationProgress?.$el?.scrollIntoView?.({ behavior: 'smooth', block: 'center' }))
+      let progressId
+      try {
+        try {
+          const started = await startAiDraftProgressRequest()
+          progressId = started.data?.id
+        } catch (e) { this.progressUnavailable = true }
+        if (this.draftDisposed || run !== this.generationRun) return
+        if (progressId) this.pollGenerationProgress(progressId, run)
+        const res = await generateAiDraftRequest({ ...this.generationInput }, progressId)
+        if (this.draftDisposed || run !== this.generationRun) return
         this.result = res.data
+        this.generationState = res.data.kind === 'draft' ? 'succeeded' : 'clarification'
         this.persistDraft()
         this.$message.success(res.data.kind === 'draft' ? '草稿已生成，请人工审核' : 'AI 请求澄清，请补充信息')
-      }).catch((err) => {
+        this.generating = false
+        this.generationElapsed = Date.now() - this.generationStartedAt
+        this.stopGenerationTracking()
+        if (progressId) await this.pollGenerationProgress(progressId, run, false)
+      } catch (err) {
+        if (this.draftDisposed || run !== this.generationRun) return
+        this.generationState = 'failed'
+        this.generationError = err?.msg || err?.message || '生成失败，可重试或改用手工建卷'
         // 超时/网络/服务端校验失败：保留已填表单，可调整后重试或改用手工建卷
-        this.$message.error((err && err.message) || '生成失败，可重试或改用手工建卷')
-      }).finally(() => { this.generating = false })
+        this.generating = false
+        this.generationElapsed = Date.now() - this.generationStartedAt
+        this.stopGenerationTracking()
+        if (progressId) await this.pollGenerationProgress(progressId, run, false)
+      } finally {
+        if (!this.draftDisposed && run === this.generationRun) {
+          this.generating = false
+          this.generationElapsed = Date.now() - this.generationStartedAt
+          this.stopGenerationTracking()
+        }
+      }
     },
     async reset() {
       if (this.generating || this.importing || this.restoring || this.saving) return
@@ -386,6 +474,7 @@ export default {
       this.form = { goal: '', audience: '', extra: '', questionCount: 8 }
       this.pendingSavedSnapshot = null
       this.previousLocalSnapshot = null
+      this.generationState = 'idle'
       this.workspaceError = ''
       this.persistDraft()
     },
@@ -523,6 +612,10 @@ export default {
 .elapsed-value { color: var(--zy-purple); }
 .warning-value { color: var(--zy-warning); }
 .metric-label { color: var(--zy-text-secondary); font-size: 11px; }
+.draft-design-summary { padding: 15px 16px; margin-top: 16px; background: var(--zy-surface-subtle); border: 1px solid var(--zy-border-light); border-radius: 8px; }
+.draft-design-summary h4 { margin: 0 0 8px; font-size: 13px; font-weight: 600; }
+.draft-design-summary p { margin: 5px 0; font-size: 12px; line-height: 1.8; color: var(--zy-text-regular); }
+.draft-design-summary .design-summary-note { color: var(--zy-text-secondary); font-size: 11px; }
 .question-item { padding: 16px 0; border-bottom: 1px solid var(--zy-border-light); }
 .question-line { display: flex; gap: 10px; align-items: flex-start; }
 .edit-question-button { flex-shrink: 0; margin: 0; }

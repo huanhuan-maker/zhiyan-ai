@@ -77,7 +77,7 @@ api.interceptors.response.use(
       return Promise.resolve(res)
     } else if (errCodes.includes(res.code)) {
       // 这里做错误提示，如果使用了 element ui 则可以使用 Message 进行提示
-      Message({
+      if (!response.config.silentError) Message({
         message: res.msg || 'Error',
         type: 'error',
         duration: 5 * 1000
@@ -118,11 +118,11 @@ api.interceptors.response.use(
       })
       return Promise.resolve(result)
     }
-    Message({ message: res.msg || '请求失败，请重试', type: 'error' })
+    if (!response.config.silentError) Message({ message: res.msg || '请求失败，请重试', type: 'error' })
     return Promise.reject(res)
   },
   (error) => {
-    Message({
+    if (!error.config?.silentError) Message({
       message: '服务开小差了，请稍后再试',
       type: 'error',
       duration: 5 * 1000
