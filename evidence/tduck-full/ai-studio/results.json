@@ -1,0 +1,56 @@
+{
+  "checks": [
+    {
+      "name": "首页出现 AI 建卷横幅并指向工作室",
+      "passed": true
+    },
+    {
+      "name": "侧栏把 AI 建卷放在第一位并高亮",
+      "passed": true
+    },
+    {
+      "name": "工作室默认是深色且没有浅色块或横向溢出",
+      "passed": true
+    },
+    {
+      "name": "点击灵感示例会填好目标、人群与题量",
+      "passed": true
+    },
+    {
+      "name": "三个候选并排展示并自动选中最新一份",
+      "passed": true
+    },
+    {
+      "name": "点击候选卡片切换题目预览",
+      "passed": true
+    },
+    {
+      "name": "丢弃候选后数量与选中项同步更新",
+      "passed": true
+    },
+    {
+      "name": "草稿箱区块可读，无草稿时给出说明",
+      "passed": true
+    },
+    {
+      "name": "移动端窄屏单列排布且不横向溢出",
+      "passed": true
+    },
+    {
+      "name": "候选可直接导入为未发布问卷并进入编辑器",
+      "passed": true
+    },
+    {
+      "name": "真实网关生成一份草稿并落到候选区",
+      "passed": true
+    },
+    {
+      "name": "页面没有运行时错误",
+      "passed": true
+    }
+  ],
+  "total": 12,
+  "passed": 12,
+  "failed": 0,
+  "errors": []
+}

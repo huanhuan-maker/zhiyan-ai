@@ -35,6 +35,11 @@ export default [
         component: () => import(/* webpackChunkName: 'root' */ '@/views/project/my/index')
       },
       {
+        path: 'ai',
+        meta: { requireLogin: true, title: 'AI 建卷' },
+        component: () => import('@/views/ai-create/index.vue')
+      },
+      {
         path: 'member',
         meta: { requireLogin: true },
         component: () => import(/* webpackChunkName: 'root' */ '@/views/account/member')

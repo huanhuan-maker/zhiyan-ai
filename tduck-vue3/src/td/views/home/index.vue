@@ -91,6 +91,7 @@ export default {
     return {
       defaultActiveMenu: '/home',
       menuList: [
+        { route: '/home/ai', name: 'AI 建卷', icon: 'el-icon-magic-stick' },
         { route: '/home', name: '我的问卷', icon: 'fa-pencil-square' },
         { route: '/home/assistant', name: '问卷助手', icon: 'el-icon-chat-dot-round' },
         { route: '/manage/user', name: '用户管理', icon: 'fa-user', admin: true },
@@ -118,6 +119,7 @@ export default {
       return active ? active.name : '问卷工作台'
     },
     headerSubtitle() {
+      if (this.defaultActiveMenu === '/home/ai') return '描述研究目标，生成可编辑问卷，再逐题精修导入。'
       if (this.defaultActiveMenu === '/home') return '管理、发布并持续收集你的调查问卷。'
       if (this.defaultActiveMenu === '/home/assistant') return '用自然语言查询自己的问卷、统计和原文证据。'
       return '知研 AI 学术调查工作台。'
@@ -129,7 +131,7 @@ export default {
     if (!user) {
       this.$router.push({ path: '/login', query: { redirect: router.currentRoute.value.fullPath } })
     } else if (this.$route.path == '/') {
-      this.$router.push({ path: this.menuList[0].route })
+      this.$router.push({ path: '/home' })
     }
     if (this.$route.path) {
       this.defaultActiveMenu = this.$route.path

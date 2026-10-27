@@ -1,6 +1,20 @@
 <template>
   <div class="app-container project-page">
     <div class="form-container">
+      <section class="ai-strip" aria-label="AI 建卷入口">
+        <div class="ai-strip-copy">
+          <span class="ai-strip-tag"><i class="el-icon-magic-stick" /> AI 建卷</span>
+          <h2>用一句话生成一份可编辑问卷</h2>
+          <p>描述研究目标与人群，AI 给出题型、选项和量表；对比候选后逐题精修，再导入编辑器发布。</p>
+        </div>
+        <div class="ai-strip-actions">
+          <el-button type="primary" class="ai-strip-btn" aria-label="进入 AI 建卷" @click="$router.push({ path: '/home/ai' })">
+            开始 AI 建卷
+            <i class="el-icon-right" />
+          </el-button>
+        </div>
+      </section>
+
       <div class="project-header">
         <div class="header-left">
           <h2 class="page-title">问卷概览</h2>
@@ -256,7 +270,7 @@ export default {
       } catch (e) { this.savedDraftError = true }
     },
     formatSavedTime(value) { return dayjs(value).format('YYYY/MM/DD HH:mm') },
-    newAiDraft() { this.$router.push({ path: '/project/form/ai-draft', query: { fresh: String(Date.now()) + '-' + Math.random().toString(36).slice(2) } }) },
+    newAiDraft() { this.$router.push({ path: '/home/ai' }) },
     async removeSavedDraft(draft) {
       try { await this.$confirm('移除后这份暂存将无法恢复，确定移除吗？已导入的问卷不受影响。', '移除暂存', { type: 'warning', confirmButtonText: '移除', cancelButtonText: '取消' }) } catch (e) { return }
       try { await removeAiDraftSlotRequest(draft.id); await this.loadSavedDraft(); this.$message.success('已移除暂存') } catch (e) { this.$message.error('移除失败，请重试') }
@@ -361,6 +375,56 @@ export default {
   font-family: var(--zy-font-family);
 }
 .form-container { width: 100%; }
+.ai-strip {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  margin-bottom: 18px;
+  overflow: hidden;
+  background:
+    radial-gradient(110% 150% at 0% 0%, rgba(56, 189, 248, 0.15), transparent 58%),
+    radial-gradient(80% 130% at 100% 0%, rgba(124, 58, 237, 0.16), transparent 62%),
+    var(--zy-surface);
+  border: 1px solid var(--zy-border);
+  border-radius: var(--zy-radius-lg);
+  box-shadow: var(--zy-shadow-card);
+  &::after {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    content: '';
+    background-image: linear-gradient(var(--zy-grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--zy-grid-line) 1px, transparent 1px);
+    background-size: 44px 44px;
+    mask-image: radial-gradient(80% 130% at 0% 0%, #000 0%, transparent 74%);
+  }
+}
+.ai-strip-copy { position: relative; z-index: 1; min-width: 0;
+  h2 { margin: 8px 0 6px; font-size: 17px; font-weight: 600; }
+  p { max-width: 640px; margin: 0; color: var(--zy-text-secondary); font-size: 12px; line-height: 1.75; }
+}
+.ai-strip-tag {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 3px 10px;
+  color: var(--zy-accent-cyan);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  border-radius: 999px;
+}
+.ai-strip-actions { position: relative; z-index: 1; display: flex; flex-shrink: 0; gap: 10px; align-items: center; }
+.header-right :deep(.ai-strip-btn) { height: 38px; padding: 0 18px; color: #fff; background: var(--zy-primary-solid); border-color: var(--zy-primary-solid); box-shadow: var(--zy-ring); }
+.header-right :deep(.ai-strip-btn:hover) { background: var(--zy-primary); border-color: var(--zy-primary); }
+.ai-strip :deep(.ai-strip-btn) { height: 38px; padding: 0 18px; margin: 0; font-weight: 600; color: #fff; background: var(--zy-primary-solid); border-color: var(--zy-primary-solid); border-radius: var(--zy-radius-sm); box-shadow: var(--zy-ring); }
+.ai-strip :deep(.ai-strip-btn:hover) { background: var(--zy-primary); border-color: var(--zy-primary); }
+.ai-strip :deep(.ai-strip-btn i) { margin-left: 6px; }
 .project-header {
   display: flex;
   align-items: center;
