@@ -159,7 +159,7 @@
 </template>
 
 <script>
-import { generateAiDraftRequest, getAiStatusRequest, getAiDraftWorkspaceRequest, saveAiDraftWorkspaceRequest, clearAiDraftWorkspaceRequest } from '@/api/project/ai'
+import { generateAiDraftRequest, getAiStatusRequest, getAiDraftSlotRequest, createAiDraftSlotRequest, updateAiDraftSlotRequest } from '@/api/project/ai'
 import sha256 from 'crypto-js/sha256'
 import { createFormRequest } from '@/api/project/form'
 import { getRequest, postRequest } from '@/api/baseRequest'
@@ -185,6 +185,8 @@ export default {
       saving: false,
       workspaceError: '',
       localDraftRestored: false,
+      workspaceId: null,
+      draftCacheKey: '',
       pendingSavedSnapshot: null,
       previousLocalSnapshot: null,
       draftDisposed: false,
@@ -192,6 +194,8 @@ export default {
     }
   },
   created() {
+    this.workspaceId = typeof this.$route.query.draft === 'string' ? this.$route.query.draft : null
+    this.draftCacheKey = this.workspaceId ? 'aiDraft:slot:' + this.workspaceId : 'aiDraft:new:' + String(this.$route.query.fresh || 'direct')
     this.restoreDraft()
     this.loadStatus()
     if (this.aiDraftWorkspace) this.aiDraftWorkspace.handler = this.saveWorkspace
@@ -221,9 +225,23 @@ export default {
     },
     async loadWorkspace() {
       try {
-        const res = await getAiDraftWorkspaceRequest()
+        if (!this.workspaceId) return
+        const res = await getAiDraftSlotRequest(this.workspaceId)
         if (this.draftDisposed) return
-        if (this.$route.query.saved === '1' && this.localDraftRestored && res.data?.snapshot &&
+        // Preserve pre-migration browser-only edits for the original first draft.
+        if (!this.localDraftRestored && res.data?.slot === 1 && res.data?.snapshot) {
+          try {
+            const legacy = JSON.parse(sessionStorage.getItem('aiDraft:last') || 'null')
+            const sameTitle = legacy?.result?.title && legacy.result.title === res.data.snapshot.result?.title
+            const sameGoal = legacy?.form?.goal && legacy.form.goal === res.data.snapshot.form?.goal
+            if (legacy?.ownerKey === this.cacheOwner() && (sameTitle || sameGoal)) {
+              this.form = legacy.form
+              this.result = legacy.result || null
+              this.localDraftRestored = true
+            }
+          } catch (e) { /* 缓存损坏时仍可读取账号暂存 */ }
+        }
+        if (this.localDraftRestored && res.data?.snapshot &&
             JSON.stringify({ form: this.form, result: this.result }) !== JSON.stringify(res.data.snapshot)) {
           this.pendingSavedSnapshot = res.data.snapshot
         } else if (!this.localDraftRestored && res.data?.snapshot) {
@@ -258,12 +276,18 @@ export default {
       if (this.generating || this.importing || this.restoring || this.saving) return
       this.saving = true
       try {
-        await saveAiDraftWorkspaceRequest({ form: { ...this.form }, result: this.result })
+        const payload = { form: { ...this.form }, result: this.result }
+        const res = this.workspaceId ? await updateAiDraftSlotRequest(this.workspaceId, payload) : await createAiDraftSlotRequest(payload)
+        if (!this.workspaceId) {
+          this.workspaceId = res.data.id
+          this.draftCacheKey = 'aiDraft:slot:' + this.workspaceId
+          await this.$router.replace({ path: '/project/form/ai-draft', query: { draft: this.workspaceId } })
+        }
         this.persistDraft()
         this.workspaceError = ''
         this.$message.success('已暂时保存到当前账号，下次打开 AI 建卷可继续编辑')
       } catch (e) {
-        this.workspaceError = '暂时保存失败，当前内容已保留，请重试。'
+        this.workspaceError = e?.msg || '暂时保存失败，当前内容已保留，请重试。'
         // Application errors already have a toast from the shared HTTP interceptor.
         if (!e?.msg) this.$message.error(e?.message || this.workspaceError)
       } finally { if (!this.draftDisposed) this.saving = false }
@@ -309,7 +333,7 @@ export default {
     // 草稿与生成时的输入保存在本标签页 sessionStorage，刷新可恢复。
     restoreDraft() {
       try {
-        const saved = JSON.parse(sessionStorage.getItem('aiDraft:last') || 'null')
+        const saved = JSON.parse(sessionStorage.getItem(this.draftCacheKey) || 'null')
         if (saved && saved.ownerKey && saved.ownerKey !== this.cacheOwner()) return
         if (saved && saved.form) { this.form = saved.form; this.localDraftRestored = true }
         if (saved && saved.result && Array.isArray(saved.result.questions)) this.result = saved.result
@@ -317,7 +341,7 @@ export default {
     },
     persistDraft() {
       try {
-        sessionStorage.setItem('aiDraft:last', JSON.stringify({ ownerKey: this.cacheOwner(), form: this.form, result: this.result }))
+        sessionStorage.setItem(this.draftCacheKey, JSON.stringify({ ownerKey: this.cacheOwner(), form: this.form, result: this.result }))
       } catch (e) { /* 存储不可用时静默降级：仅失去刷新保留能力 */ }
     },
     loadStatus() {
@@ -354,17 +378,12 @@ export default {
     },
     async reset() {
       if (this.generating || this.importing || this.restoring || this.saving) return
-      this.saving = true
-      try {
-        await clearAiDraftWorkspaceRequest()
-        this.result = null
-        this.form = { goal: '', audience: '', extra: '', questionCount: 8 }
-        sessionStorage.removeItem('aiDraft:last')
-        sessionStorage.removeItem('aiDraft:import')
-        this.localDraftRestored = false
-        this.workspaceError = ''
-      } catch (e) { this.$message.error('清空暂存失败，当前内容已保留，请重试') }
-      finally { this.saving = false }
+      this.result = null
+      this.form = { goal: '', audience: '', extra: '', questionCount: 8 }
+      this.pendingSavedSnapshot = null
+      this.previousLocalSnapshot = null
+      this.workspaceError = ''
+      this.persistDraft()
     },
     focusGoal() {
       this.$el.querySelector('.input-card textarea')?.focus()
@@ -382,7 +401,7 @@ export default {
       const key = this.draftKey()
       let session = null
       try {
-        session = JSON.parse(sessionStorage.getItem('aiDraft:import') || 'null')
+        session = JSON.parse(sessionStorage.getItem(this.draftCacheKey + ':import') || 'null')
       } catch (e) { session = null }
       if (session && session.draftKey !== key) {
         const legacyKey = JSON.stringify([this.result.title, questions.map((q) => [q.type, q.label])])
@@ -412,7 +431,7 @@ export default {
         if (!formKey) {
           const res = await createFormRequest({ name: title, description: this.result.description || '', type: 0, folderId: 0 })
           formKey = typeof res.data === 'string' ? res.data : res.data.formKey
-          sessionStorage.setItem('aiDraft:import', JSON.stringify({ draftKey: key, formKey }))
+          sessionStorage.setItem(this.draftCacheKey + ':import', JSON.stringify({ draftKey: key, formKey }))
         }
         const list = await getRequest('/user/form/item/list', { key: formKey })
         const done = new Set((list.data || []).map((x) => x.type + '|' + x.label))

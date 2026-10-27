@@ -4,10 +4,10 @@
       <div class="project-header">
         <div class="header-left">
           <h2 class="page-title">问卷概览</h2>
-          <p class="page-subtitle">共 {{ total || 0 }} 份问卷<span v-if="savedDraft">，另有 1 份 AI 暂存</span></p>
+          <p class="page-subtitle">共 {{ total || 0 }} 份问卷<span v-if="savedDrafts.length">，另有 {{ savedDrafts.length }} 份 AI 暂存</span></p>
         </div>
         <div class="header-right">
-          <el-button class="ai-create-btn" aria-label="AI 建卷" @click="$router.push('/project/form/ai-draft')">
+          <el-button class="ai-create-btn" aria-label="AI 建卷" @click="newAiDraft">
             <i class="el-icon-magic-stick" />
             AI 建卷
           </el-button>
@@ -105,13 +105,13 @@
         <el-alert v-if="savedDraftError" class="saved-draft-error" type="warning" :closable="false" title="AI 暂存暂时无法读取，问卷列表仍可使用">
           <el-button size="small" @click="loadSavedDraft">重试</el-button>
         </el-alert>
-        <article v-if="visibleSavedDraft" class="saved-draft-card" data-testid="saved-ai-draft">
+        <article v-for="draft in visibleSavedDrafts" :key="draft.id" class="saved-draft-card" data-testid="saved-ai-draft">
           <div class="saved-draft-content">
-            <div class="saved-draft-meta"><span class="saved-draft-badge">AI 暂存</span><span>未发布 · {{ savedDraftQuestionCount }} 题</span></div>
-            <h3>{{ savedDraftTitle }}</h3>
-            <p>上次暂存：{{ savedDraftTime }}</p>
+            <div class="saved-draft-meta"><span class="saved-draft-badge">AI 暂存</span><span>未发布 · {{ draft.snapshot?.result?.questions?.length || 0 }} 题</span></div>
+            <h3>{{ draft.snapshot?.result?.title || 'AI 建卷暂存' }}</h3>
+            <p>上次暂存：{{ draft.updatedAt ? formatSavedTime(draft.updatedAt) : '时间未知' }}</p>
           </div>
-          <el-button type="primary" @click="$router.push({ path: '/project/form/ai-draft', query: { saved: '1' } })">继续编辑</el-button>
+          <div class="saved-draft-actions"><el-button @click="removeSavedDraft(draft)">移除暂存</el-button><el-button type="primary" @click="$router.push({ path: '/project/form/ai-draft', query: { draft: draft.id } })">继续编辑</el-button></div>
         </article>
         <el-alert
           v-if="projectListError"
@@ -125,13 +125,13 @@
           </template>
         </el-alert>
         <form-card-list
-          v-if="dataShowType == 'card' && (projectList.length || !visibleSavedDraft)"
+          v-if="dataShowType == 'card' && (projectList.length || !visibleSavedDrafts.length)"
           v-loading="projectListLoading"
           v-model:project-list="projectList"
           @refresh="queryProjectPage"
         />
         <my-form-table
-          v-if="dataShowType == 'table' && (projectList.length || !visibleSavedDraft)"
+          v-if="dataShowType == 'table' && (projectList.length || !visibleSavedDrafts.length)"
           v-loading="projectListLoading"
           v-model:project-list="projectList"
           @refresh="queryProjectPage"
@@ -189,7 +189,7 @@
 
 <script>
 import { createFormRequest, pageFormRequest, updateFormRequest } from '@/api/project/form'
-import { getAiDraftWorkspaceRequest } from '@/api/project/ai'
+import { listAiDraftSlotsRequest, removeAiDraftSlotRequest } from '@/api/project/ai'
 import dayjs from 'dayjs'
 import FormCardList from './card'
 import mixin from './mixin'
@@ -213,7 +213,7 @@ export default {
       projectList: [],
       projectListLoading: true,
       projectListError: false,
-      savedDraft: null,
+      savedDrafts: [],
       savedDraftError: false,
       pageCurrent: '',
       requestLoading: { pushFormData: false, pushFolderData: false }
@@ -223,17 +223,16 @@ export default {
     paginationLayout() {
       return this.isMobile ? 'prev, pager, next' : 'total, sizes, prev, pager, next, jumper'
     },
-    savedDraftTitle() { return this.savedDraft?.snapshot?.result?.title || 'AI 建卷暂存' },
-    savedDraftQuestionCount() { return this.savedDraft?.snapshot?.result?.questions?.length || 0 },
-    savedDraftTime() { return this.savedDraft?.updatedAt ? dayjs(this.savedDraft.updatedAt).format('YYYY/MM/DD HH:mm') : '时间未知' },
-    visibleSavedDraft() {
-      if (!this.savedDraft || (this.queryParams.status && Number(this.queryParams.status) !== 1)) return false
+    visibleSavedDrafts() {
+      if (this.queryParams.status && Number(this.queryParams.status) !== 1) return []
       const name = (this.queryParams.name || '').trim().toLowerCase()
-      if (name && !this.savedDraftTitle.toLowerCase().includes(name)) return false
-      const time = dayjs(this.savedDraft.updatedAt).valueOf()
-      if (this.queryParams.beginDateTime && time < dayjs(this.queryParams.beginDateTime).valueOf()) return false
-      if (this.queryParams.endDateTime && time > dayjs(this.queryParams.endDateTime).valueOf()) return false
-      return true
+      return this.savedDrafts.filter(draft => {
+        if (name && !(draft.snapshot?.result?.title || 'AI 建卷暂存').toLowerCase().includes(name)) return false
+        const time = dayjs(draft.updatedAt).valueOf()
+        if (this.queryParams.beginDateTime && time < dayjs(this.queryParams.beginDateTime).valueOf()) return false
+        if (this.queryParams.endDateTime && time > dayjs(this.queryParams.endDateTime).valueOf()) return false
+        return true
+      })
     }
   },
   created() {
@@ -251,10 +250,16 @@ export default {
   methods: {
     async loadSavedDraft() {
       try {
-        const res = await getAiDraftWorkspaceRequest()
-        this.savedDraft = res.data?.snapshot ? res.data : null
+        const res = await listAiDraftSlotsRequest()
+        this.savedDrafts = res.data || []
         this.savedDraftError = false
       } catch (e) { this.savedDraftError = true }
+    },
+    formatSavedTime(value) { return dayjs(value).format('YYYY/MM/DD HH:mm') },
+    newAiDraft() { this.$router.push({ path: '/project/form/ai-draft', query: { fresh: String(Date.now()) + '-' + Math.random().toString(36).slice(2) } }) },
+    async removeSavedDraft(draft) {
+      try { await this.$confirm('移除后这份暂存将无法恢复，确定移除吗？已导入的问卷不受影响。', '移除暂存', { type: 'warning', confirmButtonText: '移除', cancelButtonText: '取消' }) } catch (e) { return }
+      try { await removeAiDraftSlotRequest(draft.id); await this.loadSavedDraft(); this.$message.success('已移除暂存') } catch (e) { this.$message.error('移除失败，请重试') }
     },
     initResizeObserver() {
       let timer = null
@@ -432,6 +437,8 @@ export default {
 .saved-draft-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .saved-draft-badge { padding: 2px 8px; color: var(--zy-purple); background: var(--zy-surface-subtle); border-radius: 4px; font-weight: 600; }
 .saved-draft-card > .el-button { flex-shrink: 0; }
+.saved-draft-actions { display: flex; flex-shrink: 0; gap: 8px; }
+.saved-draft-actions :deep(.el-button) { margin: 0; }
 .project-page-view { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 28px; }
 @media (max-width: 1100px) and (min-width: 768px) {
   .project-page { padding: 24px; }
