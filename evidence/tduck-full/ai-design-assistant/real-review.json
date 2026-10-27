@@ -1,0 +1,129 @@
+{
+  "kind": "survey_review",
+  "questionCount": 4,
+  "sourceHash": "6165daa67cc322e6e9014ba03094ae6ed00da73f3815df33d455ecdbd764eed7",
+  "asOf": "2026-10-27T10:10:43.152654900Z",
+  "issues": [
+    {
+      "questionNos": [
+        1
+      ],
+      "category": "LEADING",
+      "severity": "warning",
+      "problem": "题干包含可能引导回答的措辞“大家都认为”。",
+      "suggestion": "改为中性表达，保留正向、中性和负向回答空间。",
+      "evidence": [
+        {
+          "questionNo": 1,
+          "field": "label",
+          "quote": "大家都认为"
+        }
+      ],
+      "origin": "RULE"
+    },
+    {
+      "questionNos": [
+        2
+      ],
+      "category": "OPTION_OVERLAP",
+      "severity": "warning",
+      "problem": "数字区间可能在边界或范围上重叠。",
+      "suggestion": "核对区间单位和包含关系，明确边界，使单选选项互斥。",
+      "evidence": [
+        {
+          "questionNo": 2,
+          "field": "options",
+          "quote": "1-3次"
+        },
+        {
+          "questionNo": 2,
+          "field": "options",
+          "quote": "3-5次"
+        }
+      ],
+      "origin": "RULE"
+    },
+    {
+      "questionNos": [
+        3,
+        4
+      ],
+      "category": "DUPLICATE",
+      "severity": "warning",
+      "problem": "两道题的题干完全相同。",
+      "suggestion": "核对是否重复测量，可合并或明确区分调查目的。",
+      "evidence": [
+        {
+          "questionNo": 3,
+          "field": "label",
+          "quote": "你使用AI时有哪些顾虑？"
+        },
+        {
+          "questionNo": 4,
+          "field": "label",
+          "quote": "你使用AI时有哪些顾虑？"
+        }
+      ],
+      "origin": "RULE"
+    },
+    {
+      "questionNos": [
+        1
+      ],
+      "category": "OPTION_MISMATCH",
+      "severity": "warning",
+      "problem": "题干询问是否认同，但选项只有“非常认同”和“认同”，无法表达不认同、中立或无法判断，题干与选项不匹配。",
+      "suggestion": "补充完整且平衡的认同程度选项，如非常不认同、不认同、中立、认同、非常认同。",
+      "evidence": [
+        {
+          "questionNo": 1,
+          "field": "label",
+          "quote": "你认同吗？"
+        },
+        {
+          "questionNo": 1,
+          "field": "options",
+          "quote": "非常认同"
+        },
+        {
+          "questionNo": 1,
+          "field": "options",
+          "quote": "认同"
+        }
+      ],
+      "origin": "AI"
+    },
+    {
+      "questionNos": [
+        2
+      ],
+      "category": "MISSING_OPTION",
+      "severity": "warning",
+      "problem": "最低选项从“1-3次”开始，缺少“0次”或“未使用”等选项，过去一个月未使用AI的受访者无合适选项。",
+      "suggestion": "增加“0次”或“过去一个月未使用AI”选项，并保持各区间互斥。",
+      "evidence": [
+        {
+          "questionNo": 2,
+          "field": "options",
+          "quote": "1-3次"
+        },
+        {
+          "questionNo": 2,
+          "field": "options",
+          "quote": "3-5次"
+        },
+        {
+          "questionNo": 2,
+          "field": "options",
+          "quote": "5次以上"
+        }
+      ],
+      "origin": "AI"
+    }
+  ],
+  "summary": "发现诱导性表述、选项覆盖不完整与数值区间重叠，以及两道开放题完全重复。",
+  "mode": "REAL",
+  "provider": "本机推理网关",
+  "model": "group/group",
+  "warning": ""
+}

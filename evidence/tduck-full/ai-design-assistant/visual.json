@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-27T10:24:26.367Z",
+  "source": "Actual Edge rendering, replayed validated real model candidates/review, local session fixture only. No survey or account workspace writes. Titles/tags require contrast >=4.5 and dialog has no horizontal overflow.",
+  "checks": [
+    {
+      "name": "dark desktop optimization",
+      "passed": true,
+      "titleContrast": 14.24
+    },
+    {
+      "name": "dark desktop review",
+      "passed": true,
+      "titleContrast": 14.24,
+      "tagContrast": 8.67
+    },
+    {
+      "name": "dark 390px optimization",
+      "passed": true,
+      "titleContrast": 14.24
+    },
+    {
+      "name": "dark 390px review",
+      "passed": true,
+      "titleContrast": 14.24,
+      "tagContrast": 8.67
+    },
+    {
+      "name": "light desktop optimization",
+      "passed": true,
+      "titleContrast": 14.68
+    },
+    {
+      "name": "light desktop review",
+      "passed": true,
+      "titleContrast": 14.68,
+      "tagContrast": 5.64
+    },
+    {
+      "name": "light 390px optimization",
+      "passed": true,
+      "titleContrast": 14.68
+    },
+    {
+      "name": "light 390px review",
+      "passed": true,
+      "titleContrast": 14.68,
+      "tagContrast": 5.64
+    }
+  ],
+  "passed": 8,
+  "failed": 0,
+  "notRun": 0
+}

@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-27T10:22:09.707Z",
+  "source": "Actual Edge rendering, replayed validated real model candidates/review, local session fixture only. No survey or account workspace writes. Titles/tags require contrast >=4.5 and dialog has no horizontal overflow.",
+  "checks": [
+    {
+      "name": "dark desktop optimization",
+      "passed": true,
+      "titleContrast": 14.24
+    },
+    {
+      "name": "dark desktop review",
+      "passed": true,
+      "titleContrast": 14.24,
+      "tagContrast": 8.67
+    },
+    {
+      "name": "dark 390px optimization",
+      "passed": true,
+      "titleContrast": 14.24
+    },
+    {
+      "name": "dark 390px review",
+      "passed": true,
+      "titleContrast": 14.24,
+      "tagContrast": 8.67
+    },
+    {
+      "name": "light desktop optimization",
+      "passed": true,
+      "titleContrast": 14.68
+    },
+    {
+      "name": "light desktop review tag contrast",
+      "passed": false,
+      "error": "Measured 4.14106604204702, required >=4.5"
+    }
+  ],
+  "passed": 5,
+  "failed": 1,
+  "notRun": 2,
+  "note": "Initial runner stopped at the first assertion; two remaining cases were not executed. Counts corrected from the original runner log, no successful checks inferred."
+}

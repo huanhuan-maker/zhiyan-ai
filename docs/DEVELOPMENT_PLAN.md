@@ -1,5 +1,7 @@
 # 知研 AI｜分阶段开发与验收计划书 V2.0
 
+> **当前授权 M5-D-DESIGN（2026-10-27）**：实现用户选定的“AI 单题优化”和“问卷体检”。AI 建卷页与普通编辑器共用预览、逐项采用和原文证据；保留已发布版本冻结和既有保存流程。范围见 [AI_DESIGN_ASSISTANT_STAGE.md](AI_DESIGN_ASSISTANT_STAGE.md)，实测见 [M5-D-DESIGN.md](../evidence/M5-D-DESIGN.md)。交付后等待本轮 PASS/FAIL，不推进其他功能。
+
 > **当前修复 M5-D-SAVE（2026-10-27）**：用户要求 AI 出题上限提升至 100，并把 AI 建卷页右上角的主题切换替换为“暂时保存”。按 [AI_DRAFT_WORKSPACE.md](AI_DRAFT_WORKSPACE.md) 交付前后端一致的上限与当前账号数据库暂存；实测见 [M5-D-SAVE.md](../evidence/M5-D-SAVE.md)。完成后等待本轮验收，不推进其他阶段。
 
 > **当前缺陷修复 M5-D-EDIT（2026-10-27）**：用户反馈 AI 生成后无法方便地手动调整个别题目。本轮在审核草稿页加入单题编辑，聊天生成预览增加“保存草稿并编辑”；范围见 [AI_DRAFT_MANUAL_EDIT.md](AI_DRAFT_MANUAL_EDIT.md)，交付与复验见 [M5-D-EDIT.md](../evidence/M5-D-EDIT.md)。属于现有问卷系统修复，完成后等待验收。

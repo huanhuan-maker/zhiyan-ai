@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-27T10:11:03.902Z",
+  "source": "Authenticated real Spring Boot/MyBatis/MySQL endpoints; real configured model; synthetic questions only. Preview endpoints do not persist edits.",
+  "checks": [
+    {
+      "name": "anonymous calls cannot optimize or review",
+      "passed": true
+    },
+    {
+      "name": "foreign survey scope is denied for both features before model use",
+      "passed": true
+    },
+    {
+      "name": "out of range questions, privilege injection and over 100 questions are rejected",
+      "passed": true
+    },
+    {
+      "name": "real provider returns a validated single-question candidate, without saving it",
+      "passed": true,
+      "detail": {
+        "provider": "本机推理网关",
+        "model": "group/group",
+        "questionNo": 1
+      }
+    },
+    {
+      "name": "real review validates every literal quote and locates deterministic design issues",
+      "passed": true,
+      "detail": {
+        "provider": "本机推理网关",
+        "model": "group/group",
+        "issues": 5
+      }
+    },
+    {
+      "name": "published core questions reject optimization and snapshots remain unchanged",
+      "passed": true
+    }
+  ],
+  "passed": 6,
+  "failed": 0
+}

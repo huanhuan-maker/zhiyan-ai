@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-27T10:19:06.531Z",
+  "source": "Real Edge browser and Spring Boot/MyBatis/MySQL. Three browser requests use the configured real model. Repeated cancellation/adoption/staleness/mobile checks replay a recorded real candidate/report; one deliberate network failure. Synthetic survey only; prior account workspace restored.",
+  "checks": [
+    {
+      "name": "AI creation page performs a real single-question optimization and cancellation leaves every question intact",
+      "passed": true,
+      "detail": {
+        "provider": "本机推理网关",
+        "model": "group/group"
+      }
+    },
+    {
+      "name": "explicit adoption changes one question, then temporary save restores in a new browser context",
+      "passed": true
+    },
+    {
+      "name": "real browser health review renders validated evidence and locates the matching question",
+      "passed": true,
+      "detail": {
+        "issues": 4,
+        "provider": "本机推理网关",
+        "model": "group/group"
+      }
+    },
+    {
+      "name": "review suggestions open optimization without applying or silently saving them",
+      "passed": true
+    },
+    {
+      "name": "an optimization arriving after manual changes cannot overwrite them",
+      "passed": true
+    },
+    {
+      "name": "a network failure preserves manual editing and save, with a visible retry message",
+      "passed": true
+    },
+    {
+      "name": "the real editor adopts one question and its standard Save persists unchanged field identities",
+      "passed": false,
+      "error": "Expected values to be strictly deep-equal:\n+ actual - expected\n... Skipped lines\n\n  [\n    {\n      createTime: '2026-10-27 06:10:43',\n      defaultValue: 'null',\n      displayType: false,\n...\n        formItemId: 'RADIO_740cb8fc5978458b8d51d3e69e782952',\n+       placeholder: '',\n        sort: 131072,\n        style: {},\n        typeId: 'RADIO',\n        vModel: 'RADIO_740cb8fc5978458b8d51d3e69e782952'\n      },\n...\n      type: 'RADIO',\n+     updateTime: '2026-10-27 06:19:00'\n-     updateTime: '2026-10-27 06:18:05'\n    },\n    {\n      createTime: '2026-10-27 06:10:43',\n      defaultValue: 'null',\n      displayType: false,\n...\n        formItemId: 'TEXTAREA_d94aba1616424563a4bd35e7a0eaaf73',\n+       placeholder: '',\n        sort: 196608,\n        style: {},\n        typeId: 'TEXTAREA',\n        vModel: 'TEXTAREA_d94aba1616424563a4bd35e7a0eaaf73'\n    "
+    },
+    {
+      "name": "changes to editor configuration invalidate an already rendered candidate",
+      "passed": true
+    },
+    {
+      "name": "an active published survey exposes read-only review and disables optimization",
+      "passed": true
+    },
+    {
+      "name": "the review and comparison dialogs fit a 390px viewport in dark and light themes",
+      "passed": true
+    },
+    {
+      "name": "no uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "passed": 10,
+  "failed": 1
+}

@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-27T10:18:13.576Z",
+  "source": "Real Edge browser and Spring Boot/MyBatis/MySQL. Three browser requests use the configured real model. Repeated cancellation/adoption/staleness/mobile checks replay a recorded real candidate/report; one deliberate network failure. Synthetic survey only; prior account workspace restored.",
+  "checks": [
+    {
+      "name": "AI creation page performs a real single-question optimization and cancellation leaves every question intact",
+      "passed": false,
+      "error": "page.waitForResponse: Timeout 120000ms exceeded while waiting for event \"response\""
+    },
+    {
+      "name": "explicit adoption changes one question, then temporary save restores in a new browser context",
+      "passed": false,
+      "error": "locator.click: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.question-item').first().getByRole('button', { name: 'AI 优化', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" data-v-0ebd7150=\"\" aria-disabled=\"false\" class=\"el-button el-button--small\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <section class=\"after\" data-testid=\"optimization-after\">…</section> from <div class=\"el-overlay el-modal-dialog\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabl"
+    },
+    {
+      "name": "real browser health review renders validated evidence and locates the matching question",
+      "passed": false,
+      "error": "locator.click: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '问卷体检', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" class=\"el-button\" aria-disabled=\"false\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div role=\"dialog\" aria-modal=\"true\" aria-label=\"AI 单题优化\" class=\"el-overlay-dialog\" aria-describedby=\"el-id-7144-7\">…</div> from <div class=\"el-overlay el-modal-dialog\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    "
+    },
+    {
+      "name": "review suggestions open optimization without applying or silently saving them",
+      "passed": false,
+      "error": "locator.click: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByRole('button', { name: '问卷体检', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" class=\"el-button\" aria-disabled=\"false\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is visible, enabled and stable\u001b[22m\n\u001b[2m      - scrolling into view if needed\u001b[22m\n\u001b[2m      - done scrolling\u001b[22m\n\u001b[2m      - <div role=\"dialog\" aria-modal=\"true\" aria-label=\"AI 单题优化\" class=\"el-overlay-dialog\" aria-describedby=\"el-id-7144-7\">…</div> from <div class=\"el-overlay el-modal-dialog\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    "
+    },
+    {
+      "name": "an optimization arriving after manual changes cannot overwrite them",
+      "passed": false,
+      "error": "locator.click: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.question-item').first().getByRole('button', { name: 'AI 优化', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" data-v-0ebd7150=\"\" aria-disabled=\"false\" class=\"el-button el-button--small\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <section class=\"after\" data-testid=\"optimization-after\">…</section> from <div class=\"el-overlay el-modal-dialog\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabl"
+    },
+    {
+      "name": "a network failure preserves manual editing and save, with a visible retry message",
+      "passed": false,
+      "error": "locator.click: Timeout 12000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.question-item').first().getByRole('button', { name: 'AI 优化', exact: true })\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" data-v-0ebd7150=\"\" aria-disabled=\"false\" class=\"el-button el-button--small\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabled and stable\u001b[22m\n\u001b[2m    - scrolling into view if needed\u001b[22m\n\u001b[2m    - done scrolling\u001b[22m\n\u001b[2m    - <section class=\"after\" data-testid=\"optimization-after\">…</section> from <div class=\"el-overlay el-modal-dialog\">…</div> subtree intercepts pointer events\u001b[22m\n\u001b[2m  - retrying click action\u001b[22m\n\u001b[2m    - waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m    - element is visible, enabl"
+    },
+    {
+      "name": "the real editor adopts one question and its standard Save persists unchanged field identities",
+      "passed": false,
+      "error": "page.waitForResponse: Timeout 120000ms exceeded while waiting for event \"response\""
+    },
+    {
+      "name": "changes to editor configuration invalidate an already rendered candidate",
+      "passed": true
+    },
+    {
+      "name": "an active published survey exposes read-only review and disables optimization",
+      "passed": true
+    },
+    {
+      "name": "the review and comparison dialogs fit a 390px viewport in dark and light themes",
+      "passed": false,
+      "error": "expect(locator).toBeVisible() failed\n\nLocator: getByRole('dialog', { name: '问卷体检', exact: true }).getByTestId('review-issue').first()\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" getByRole('dialog', { name: '问卷体检', exact: true }).getByTestId('review-issue').first() with timeout 5000ms\n  - waiting for getByRole('dialog', { name: '问卷体检', exact: true }).getByTestId('review-issue').first()\n"
+    },
+    {
+      "name": "no uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "passed": 3,
+  "failed": 8
+}

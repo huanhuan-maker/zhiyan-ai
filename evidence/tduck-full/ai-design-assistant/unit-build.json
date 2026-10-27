@@ -1,0 +1,36 @@
+{
+  "sourceCommit": "632477063ac2e01d3d7459f799b6b68036bbb032",
+  "java": {
+    "command": "mvn -q -f .local/tduck-workspace-build/pom.xml -Dtest=Ai*Test,Assistant*Test,Analysis*Test -Dsurefire.failIfNoSpecifiedTests=false test",
+    "run": 148,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "newDesignTests": 17,
+    "initialRun": {
+      "run": 148,
+      "failures": 0,
+      "errors": 1,
+      "cause": "Mockito exception restubbing; fixed using doReturn"
+    }
+  },
+  "frontend": {
+    "command": "npm run test -- --reporter=dot",
+    "filesPassed": 8,
+    "passed": 57,
+    "failed": 0,
+    "newDesignTests": 7
+  },
+  "backendCleanPackage": {
+    "passed": true,
+    "buildName": "tduck-workspace-build"
+  },
+  "frontendBuild": {
+    "command": "npm run build",
+    "passed": true,
+    "warnings": [
+      "Existing Sass deprecations",
+      "Existing chunk size warning"
+    ]
+  }
+}

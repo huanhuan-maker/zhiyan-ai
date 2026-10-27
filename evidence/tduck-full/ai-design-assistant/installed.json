@@ -1,0 +1,12 @@
+{
+  "checkedAt": "2026-10-27T10:25:27.9123622Z",
+  "builtJarSha256": "34D323DC62C739E8D8C7D248CDBF4DC17E13F03AD9E9E01660D49168F10DD28F",
+  "installedJarSha256": "34D323DC62C739E8D8C7D248CDBF4DC17E13F03AD9E9E01660D49168F10DD28F",
+  "backendPort8997": true,
+  "frontendPort5180": true,
+  "sourceMatchesBuild": true,
+  "workspace": {
+    "workspaceRestored": true,
+    "snapshotHash": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+  }
+}

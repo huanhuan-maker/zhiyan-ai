@@ -1,0 +1,41 @@
+{
+  "kind": "question_optimization",
+  "questionNo": 1,
+  "before": {
+    "type": "RADIO",
+    "label": "大家都认为AI非常有助于提高学习效率，你认同吗？",
+    "required": true,
+    "optionsLocked": false,
+    "options": [
+      "非常认同",
+      "认同"
+    ]
+  },
+  "after": {
+    "type": "RADIO",
+    "label": "你认为AI在多大程度上有助于提高学习效率？",
+    "required": true,
+    "options": [
+      "非常有帮助",
+      "比较有帮助",
+      "一般/说不清",
+      "帮助较小",
+      "完全没有帮助"
+    ]
+  },
+  "reasons": [
+    "原题干“大家都认为AI非常有助于提高学习效率”带有群体压力和诱导性预设，改为中性询问个人判断，保留“AI对学习效率影响”的研究含义。",
+    "原选项仅“非常认同”“认同”为单向同意项，缺乏否定与中立选项，改为五级平衡量表，覆盖有帮助到无帮助的合理情形且互斥。",
+    "题干与选项均围绕“学习效率帮助程度”一致表述，避免认同类措辞与程度类选项混用。"
+  ],
+  "warnings": [
+    "原题型为RADIO且required=true，已保持不变；但需人工确认五级选项是否符合后续统计口径。",
+    "本题仅优化第1题，其他题目未改动。"
+  ],
+  "available": true,
+  "sourceHash": "6165daa67cc322e6e9014ba03094ae6ed00da73f3815df33d455ecdbd764eed7",
+  "asOf": "2026-10-27T10:10:43.159781Z",
+  "mode": "REAL",
+  "provider": "本机推理网关",
+  "model": "group/group"
+}
