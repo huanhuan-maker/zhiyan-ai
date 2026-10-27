@@ -1359,3 +1359,239 @@ h1.page-title,
   border-radius: 28px !important;
 }
 
+
+/* ================= 26. 登录 / 找回密码 / 校验 / 404 / 会员 / 公开页深色 ================= */
+.zy-dark .login-container,
+.zy-dark .forget-pwd-wrapper,
+.zy-dark .account-validate-container,
+.zy-dark .status-container,
+.zy-dark .member-container {
+  background-color: var(--zy-page) !important;
+  background-image: var(--zy-page-glow) !important;
+  color: var(--zy-text-regular) !important;
+}
+/* 标题与说明文字 */
+.zy-dark .login-container [class*='title'],
+.zy-dark .forget-pwd-wrapper [class*='title'],
+.zy-dark .status-container [class*='title'],
+.zy-dark .member-container [class*='title'],
+.zy-dark .member-container .profile-meta h2,
+.zy-dark .login-container .hello {
+  color: var(--zy-text) !important;
+}
+.zy-dark .login-container [class*='desc'],
+.zy-dark .login-container [class*='tips'],
+.zy-dark .forget-pwd-wrapper [class*='subtitle'],
+.zy-dark .forget-pwd-wrapper [class*='desc'],
+.zy-dark .account-validate-container [class*='desc'],
+.zy-dark .status-container [class*='desc'],
+.zy-dark .status-container .footer-link,
+.zy-dark .member-container [class*='subtitle'],
+.zy-dark .member-container .user-email,
+.zy-dark .member-container .section-title,
+.zy-dark .member-container .row-subtitle,
+.zy-dark .member-container .row-value {
+  color: var(--zy-text-secondary) !important;
+}
+.zy-dark .member-container .row-title,
+.zy-dark .member-container .row-label {
+  color: var(--zy-text-regular) !important;
+}
+/* 404 大号数字与按钮 */
+.zy-dark .status-container .error-code-bg {
+  color: rgba(56, 189, 248, 0.16) !important;
+}
+.zy-dark .status-container .btn-action {
+  background-color: var(--zy-surface) !important;
+  border: 1px solid var(--zy-border) !important;
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark .status-container .btn-action:hover {
+  border-color: var(--zy-accent-cyan) !important;
+  color: var(--zy-accent-cyan) !important;
+}
+.zy-dark .status-container .btn-primary {
+  background-color: var(--zy-primary-solid) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+}
+/* 登录页表单卡片与标签 */
+.zy-dark .login-container .el-card,
+.zy-dark .login-container .login-card,
+.zy-dark .forget-pwd-wrapper .el-card {
+  background-color: var(--zy-surface) !important;
+  border-color: var(--zy-border) !important;
+}
+.zy-dark .login-container .el-form-item__label,
+.zy-dark .login-container .el-checkbox__label,
+.zy-dark .forget-pwd-wrapper .el-form-item__label {
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark .login-container .el-tabs__item {
+  color: var(--zy-text-secondary) !important;
+}
+.zy-dark .login-container .el-tabs__item.is-active {
+  color: var(--zy-accent-cyan) !important;
+}
+.zy-dark .account-validate-container .el-button.is-link,
+.zy-dark .member-container .login-link {
+  color: var(--zy-accent-cyan) !important;
+}
+/* 会员页卡片与分隔 */
+.zy-dark .member-container .member-box-card,
+.zy-dark .member-container .settings-section,
+.zy-dark .member-container .settings-group,
+.zy-dark .member-container .settings-row,
+.zy-dark .member-container .third-party-card,
+.zy-dark .member-container .profile-banner {
+  background-color: var(--zy-surface) !important;
+  border-color: var(--zy-border) !important;
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark .member-container .settings-row:hover {
+  background-color: #1b2a3d !important;
+}
+/* 公开填写页 / 公开结果页 */
+.zy-dark .write-container,
+.zy-dark .write-container .form-container {
+  background-color: var(--zy-page) !important;
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark .write-container .el-card {
+  background-color: var(--zy-surface) !important;
+  border-color: var(--zy-border) !important;
+}
+.zy-dark .write-container .title-icon-view,
+.zy-dark .write-container .write-tips,
+.zy-dark .write-container .version-stopped-alert {
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark .write-container .qrcode-canvas-wrapper {
+  background-color: transparent !important;
+}
+.zy-dark .write-container .qrcode-canvas-wrapper canvas,
+.zy-dark .write-container .qrcode-canvas-wrapper img {
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+.zy-dark .el-container,
+.zy-dark .el-main {
+  background-color: var(--zy-page) !important;
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark .el-page-header,
+.zy-dark .el-page-header h5 {
+  color: var(--zy-text) !important;
+  background-color: transparent !important;
+}
+
+
+/* ================= 27. 收尾：TinyMCE iframe、会员页 h4、登录链接、公开填写提示 ================= */
+.zy-dark .tox-edit-area__iframe {
+  background-color: var(--zy-surface) !important;
+}
+.zy-dark .member-container h3,
+.zy-dark .member-container h4,
+.zy-dark .member-container .bound-text {
+  color: var(--zy-text) !important;
+}
+.zy-dark .member-container .unbound-text {
+  color: #9fb0c6 !important;
+}
+.zy-dark .login-container .link-item,
+.zy-dark .forget-pwd-wrapper .login-link {
+  color: var(--zy-accent-cyan) !important;
+}
+.zy-dark .login-container .el-tabs__item.is-active {
+  color: var(--zy-accent-cyan) !important;
+}
+.zy-dark .account-validate-container a,
+.zy-dark .account-validate-container .el-button.is-link,
+.zy-dark .account-validate-container .el-button--text {
+  color: var(--zy-accent-cyan) !important;
+}
+.zy-dark .write-container .el-alert__title,
+.zy-dark .write-container .el-alert__description,
+.zy-dark .write-container .el-result__title p,
+.zy-dark .write-container .el-result__subtitle p,
+.zy-dark .write-container .el-empty__description p,
+.zy-dark .write-container .write-status-text {
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark .write-container .el-alert {
+  background-color: var(--zy-surface-subtle) !important;
+  border: 1px solid var(--zy-border) !important;
+}
+
+
+/* ================= 28. 最后两处：登录页签选中色、校验页按钮 ================= */
+.zy-dark.zy-dark .login-container .logo-content .el-tabs__item.is-active,
+.zy-dark.zy-dark .login-container .el-tabs__item.is-active {
+  color: var(--zy-accent-cyan) !important;
+}
+.zy-dark.zy-dark .account-validate-container .el-button {
+  background-color: var(--zy-surface) !important;
+  border: 1px solid var(--zy-border) !important;
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark.zy-dark .account-validate-container .el-button:hover {
+  border-color: var(--zy-accent-cyan) !important;
+  color: var(--zy-accent-cyan) !important;
+}
+
+
+/* ================= 29. 公开填写页问卷正文深色（与编辑器预览同一套渲染） ================= */
+.zy-dark .write-container .biz-form-wrapper {
+  background-color: var(--zy-page) !important;
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark .write-container .project-form {
+  background-color: transparent !important;
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark .write-container .project-form .form-title,
+.zy-dark .write-container .project-form .question-title,
+.zy-dark .write-container .project-form h1,
+.zy-dark .write-container .project-form h2,
+.zy-dark .write-container .project-form h3,
+.zy-dark .write-container .project-form h4,
+.zy-dark .write-container .project-form [class*='title'],
+.zy-dark .write-container .project-form [class*='Title'],
+.zy-dark .write-container .project-form label,
+.zy-dark .write-container .project-form .el-radio__label,
+.zy-dark .write-container .project-form .el-checkbox__label {
+  color: var(--zy-text) !important;
+}
+.zy-dark .write-container .project-form .form-description,
+.zy-dark .write-container .project-form .question-desc,
+.zy-dark .write-container .project-form [class*='desc'],
+.zy-dark .write-container .project-form [class*='hint'],
+.zy-dark .write-container .project-form p {
+  color: var(--zy-text-secondary) !important;
+}
+.zy-dark .write-container .project-form .el-input__inner,
+.zy-dark .write-container .project-form .el-textarea__inner {
+  background-color: var(--zy-surface-subtle) !important;
+  color: var(--zy-text) !important;
+}
+.zy-dark .write-container .project-form .el-card,
+.zy-dark .write-container .project-form .question-item,
+.zy-dark .write-container .project-form .form-item-card {
+  background-color: var(--zy-surface) !important;
+  border-color: var(--zy-border) !important;
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark .write-container .project-form .el-radio__inner,
+.zy-dark .write-container .project-form .el-checkbox__inner {
+  border-color: var(--zy-border) !important;
+  background-color: var(--zy-surface-subtle) !important;
+}
+.zy-dark .write-container .project-form .el-radio.is-checked .el-radio__inner,
+.zy-dark .write-container .project-form .el-checkbox.is-checked .el-checkbox__inner {
+  background-color: var(--zy-primary-solid) !important;
+  border-color: var(--zy-primary-solid) !important;
+}
+.zy-dark .write-container .biz-form-wrapper * {
+  border-color: var(--zy-border-light);
+}
+
