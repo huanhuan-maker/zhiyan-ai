@@ -840,3 +840,522 @@ h1.page-title,
 .zy-dark .chat-toolbar p {
   color: #9fb0c6 !important;
 }
+
+/* ================= 19. 预览页 Element Plus 组件深色 ================= */
+.zy-dark .preview-html {
+  background-color: var(--zy-page) !important;
+}
+.zy-dark .project-form-preview .project-form .el-radio__label,
+.zy-dark .project-form-preview .project-form .el-checkbox__label,
+.zy-dark .project-form-preview .project-form .el-radio,
+.zy-dark .project-form-preview .project-form .el-checkbox {
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark .project-form-preview .project-form .el-radio__inner,
+.zy-dark .project-form-preview .project-form .el-checkbox__inner {
+  border-color: var(--zy-border) !important;
+  background-color: var(--zy-surface-subtle) !important;
+}
+.zy-dark .project-form-preview .project-form .el-radio.is-checked .el-radio__inner,
+.zy-dark .project-form-preview .project-form .el-checkbox.is-checked .el-checkbox__inner {
+  background-color: var(--zy-primary) !important;
+  border-color: var(--zy-primary) !important;
+}
+.zy-dark .project-form-preview .project-form .el-input__inner,
+.zy-dark .project-form-preview .project-form .el-textarea__inner {
+  color: var(--zy-text) !important;
+  background-color: var(--zy-surface-subtle) !important;
+}
+.zy-dark .project-form-preview .project-form .el-button--primary {
+  color: #ffffff !important;
+}
+.zy-dark .project-form-preview .project-form [class*='title'],
+.zy-dark .project-form-preview .project-form [class*='Title'] {
+  color: var(--zy-text) !important;
+}
+.zy-dark .project-form-preview .project-form [class*='desc'],
+.zy-dark .project-form-preview .project-form [class*='hint'],
+.zy-dark .project-form-preview .project-form [class*='tip'] {
+  color: var(--zy-text-secondary) !important;
+}
+
+/* ================= 18. 研究报告指标卡 / 预览页 ================= */
+/* research.vue 的 .research-metrics > div 带 scoped 白底，需同类名提高特异性 */
+.zy-dark.zy-dark .research-metrics > div {
+  background-color: var(--zy-surface) !important;
+  border-color: var(--zy-border) !important;
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark.zy-dark .research-metrics span,
+.zy-dark.zy-dark .research-metrics small,
+.zy-dark.zy-dark .coverage-note,
+.zy-dark.zy-dark .research-hint {
+  color: var(--zy-text-secondary) !important;
+}
+.zy-dark.zy-dark .research-metrics b,
+.zy-dark.zy-dark .research-metrics strong {
+  color: var(--zy-text) !important;
+}
+
+/* 编辑器内问卷预览（/project/form/view）：受访者端公开填写页仍保持浅色，
+   这里只覆盖编辑器 iframe 预览，避免编辑界面出现白色 */
+.project-form-preview {
+  min-height: 100vh;
+  background-color: var(--zy-page);
+}
+.zy-dark .project-form-preview .biz-form-wrapper {
+  background-color: var(--zy-page) !important;
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark .project-form-preview .project-form {
+  background-color: transparent !important;
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark .project-form-preview .project-form .form-title,
+.zy-dark .project-form-preview .project-form .question-title,
+.zy-dark .project-form-preview .project-form h1,
+.zy-dark .project-form-preview .project-form h2,
+.zy-dark .project-form-preview .project-form h3,
+.zy-dark .project-form-preview .project-form label,
+.zy-dark .project-form-preview .project-form .el-radio__label,
+.zy-dark .project-form-preview .project-form .el-checkbox__label {
+  color: var(--zy-text) !important;
+}
+.zy-dark .project-form-preview .project-form .form-description,
+.zy-dark .project-form-preview .project-form .question-desc,
+.zy-dark .project-form-preview .project-form p {
+  color: var(--zy-text-secondary) !important;
+}
+.zy-dark .project-form-preview .project-form .el-input__inner,
+.zy-dark .project-form-preview .project-form .el-textarea__inner {
+  background-color: var(--zy-surface-subtle) !important;
+  color: var(--zy-text) !important;
+}
+.zy-dark .project-form-preview .project-form .el-card,
+.zy-dark .project-form-preview .project-form .question-item,
+.zy-dark .project-form-preview .project-form .form-item-card {
+  background-color: var(--zy-surface) !important;
+  border-color: var(--zy-border) !important;
+  color: var(--zy-text-regular) !important;
+}
+
+/* ================= 17. 统计页组件内 !important 的对抗 ================= */
+/* analysis.vue 的 scoped ::v-deep 规则带 !important 且特异性更高，
+   这里用重复类名提高特异性压过去（统计页表头/卡片头/图表底）。 */
+.zy-dark.zy-dark .analysis-card .el-table th.el-table__cell,
+.zy-dark.zy-dark .analysis-card .el-table th {
+  background-color: #111e30 !important;
+  color: #b8c4d4 !important;
+  border-bottom: 1px solid var(--zy-border) !important;
+}
+.zy-dark.zy-dark .analysis-card .el-table td.el-table__cell,
+.zy-dark.zy-dark .analysis-card .el-table td {
+  border-bottom: 1px solid var(--zy-border-light) !important;
+  color: #d7e2f0 !important;
+}
+.zy-dark.zy-dark .analysis-card .el-table {
+  border-color: var(--zy-border) !important;
+  background-color: var(--zy-surface) !important;
+}
+.zy-dark.zy-dark .analysis-card .chart-wrapper,
+.zy-dark.zy-dark .analysis-card .table-wrapper {
+  background: var(--zy-surface) !important;
+}
+.zy-dark.zy-dark .analysis-card .el-card__header {
+  background-color: var(--zy-surface-subtle) !important;
+}
+.zy-dark.zy-dark .analysis-card .title-text,
+.zy-dark.zy-dark .analysis-card .field-name,
+.zy-dark.zy-dark .analysis-card .card-header .title {
+  color: var(--zy-text) !important;
+}
+.zy-dark.zy-dark .analysis-card .select-label,
+.zy-dark.zy-dark .analysis-card .data-num + span {
+  color: var(--zy-text-secondary) !important;
+}
+
+/* ================= 16. 编辑器子页面深色全覆盖 ================= */
+/* 工作台固定深色后，问卷编辑器内部页面（逻辑/外观/设置/发布/数据/统计/预览）
+   仍有大量 Element Plus 浅色卡片与面板，这里统一压到深色令牌。 */
+.zy-dark {
+  .form-index-container,
+  .form-editor-body,
+  .form-editor-content,
+  .setting-container,
+  .preview-container,
+  .statistics-workspace {
+    background-color: var(--zy-page) !important;
+    color: var(--zy-text) !important;
+  }
+
+  /* Element Plus 卡片：统计、逻辑、设置、发布页大量使用 */
+  .el-card {
+    --el-card-bg-color: var(--zy-surface);
+    background-color: var(--zy-surface) !important;
+    border-color: var(--zy-border) !important;
+    color: var(--zy-text-regular) !important;
+  }
+  .el-card__header {
+    background-color: var(--zy-surface-subtle) !important;
+    border-bottom: 1px solid var(--zy-border-light) !important;
+    color: var(--zy-text) !important;
+  }
+  .el-card__body {
+    background-color: transparent !important;
+    color: var(--zy-text-regular) !important;
+  }
+  .chart-wrapper {
+    background-color: var(--zy-surface) !important;
+    border-radius: 12px;
+  }
+
+  /* 逻辑页 */
+  .show-logic-container {
+    background-color: var(--zy-surface) !important;
+    border-color: var(--zy-border) !important;
+    color: var(--zy-text-regular) !important;
+  }
+  .empty-icon-box {
+    background-color: var(--zy-surface-subtle) !important;
+    color: var(--zy-text-secondary) !important;
+  }
+  .el-empty__description p,
+  .el-empty__description {
+    color: var(--zy-text-secondary) !important;
+  }
+  .empty-logic-tips {
+    color: var(--zy-text-secondary) !important;
+  }
+
+  /* 外观主题页 */
+  .left-container,
+  .right-container {
+    background-color: var(--zy-surface) !important;
+    border-color: var(--zy-border) !important;
+    color: var(--zy-text-regular) !important;
+  }
+  .option-line-view {
+    background-color: var(--zy-surface-subtle) !important;
+    border: 1px solid var(--zy-border-light) !important;
+    border-radius: 10px;
+  }
+  .el-tabs__nav-wrap,
+  .el-tabs__nav-scroll,
+  .el-tabs__nav {
+    background-color: transparent !important;
+  }
+  .el-tabs__item {
+    background-color: transparent !important;
+    color: var(--zy-text-secondary) !important;
+  }
+  .el-tabs__item.is-active {
+    background-color: var(--zy-tint) !important;
+    color: var(--zy-accent-cyan) !important;
+    border-radius: 8px;
+  }
+  .el-tabs__active-bar {
+    background-color: var(--zy-accent-cyan) !important;
+  }
+
+  /* 设置页 */
+  .setting-tabs,
+  .setting-tabs .el-tabs__header,
+  .setting-tabs .el-tabs__content,
+  .setting-tabs .el-tab-pane {
+    background-color: transparent !important;
+  }
+  .el-tabs--left .el-tabs__item {
+    color: var(--zy-text-secondary) !important;
+    border-radius: 8px;
+  }
+  .el-tabs--left .el-tabs__item.is-active {
+    background-color: var(--zy-tint) !important;
+    color: var(--zy-accent-cyan) !important;
+  }
+  .segmented-control {
+    background-color: var(--zy-surface-subtle) !important;
+    border: 1px solid var(--zy-border) !important;
+  }
+  .el-radio-button__inner {
+    background-color: transparent !important;
+    border-color: var(--zy-border) !important;
+    color: var(--zy-text-regular) !important;
+    box-shadow: none !important;
+  }
+  .el-radio-button__original-radio:checked + .el-radio-button__inner {
+    background-color: var(--zy-primary) !important;
+    border-color: transparent !important;
+    color: #ffffff !important;
+    box-shadow: none !important;
+  }
+
+  /* 发布页 */
+  .publish-ready-view {
+    background-color: var(--zy-surface) !important;
+    border-color: var(--zy-border) !important;
+    color: var(--zy-text-regular) !important;
+  }
+  .feature-icon {
+    background-color: var(--zy-surface-subtle) !important;
+    color: var(--zy-accent-cyan) !important;
+  }
+  .publish-ready-view .el-divider,
+  .el-divider {
+    border-color: var(--zy-border-light) !important;
+  }
+  .el-alert {
+    --el-alert-bg-color: var(--zy-surface-subtle);
+    border: 1px solid var(--zy-border) !important;
+    border-radius: 10px;
+  }
+  .el-alert .el-alert__title,
+  .el-alert .el-alert__description {
+    color: var(--zy-text-regular) !important;
+  }
+
+  /* 数据页 vxe-table */
+  .vxe-table,
+  .vxe-table--layout-wrapper,
+  .vxe-table--body-wrapper,
+  .vxe-table--header-wrapper,
+  .vxe-table--footer-wrapper,
+  .vxe-toolbar,
+  .vxe-pager {
+    background-color: var(--zy-surface) !important;
+    color: var(--zy-text-regular) !important;
+    border-color: var(--zy-border) !important;
+  }
+  .vxe-table .vxe-header--column {
+    background-color: #111e30 !important;
+    color: #b8c4d4 !important;
+    border-color: var(--zy-border) !important;
+  }
+  .vxe-table .vxe-body--column {
+    background-color: var(--zy-surface) !important;
+    color: #d7e2f0 !important;
+    border-color: var(--zy-border-light) !important;
+  }
+  .vxe-table .vxe-body--row:hover .vxe-body--column {
+    background-color: #1b2a3d !important;
+  }
+  .vxe-input,
+  .vxe-input--inner,
+  .vxe-number-input,
+  .vxe-number-input--input,
+  .vxe-input input {
+    background-color: var(--zy-surface-subtle) !important;
+    color: var(--zy-text) !important;
+    border-color: var(--zy-border) !important;
+  }
+  .vxe-pager .vxe-pager--sizes,
+  .vxe-pager .vxe-pager--num-btn {
+    background-color: var(--zy-surface) !important;
+    color: var(--zy-text-regular) !important;
+    border-color: var(--zy-border) !important;
+  }
+  .vxe-pager .vxe-pager--num-btn.is--active {
+    background-color: var(--zy-primary) !important;
+    color: #ffffff !important;
+  }
+}
+
+/* ================= 20. 编辑器页面文字对比度（深色底上的深色字） ================= */
+.zy-dark .form-index-container {
+  color: var(--zy-text-regular);
+}
+.zy-dark .form-index-container h1,
+.zy-dark .form-index-container h2,
+.zy-dark .form-index-container h3,
+.zy-dark .form-index-container h4,
+.zy-dark .form-index-container h5,
+.zy-dark .form-index-container [class*='title'],
+.zy-dark .form-index-container [class*='Title'],
+.zy-dark .form-index-container .el-card__header {
+  color: var(--zy-text) !important;
+}
+.zy-dark .form-index-container [class*='desc'],
+.zy-dark .form-index-container [class*='Desc'],
+.zy-dark .form-index-container [class*='hint'],
+.zy-dark .form-index-container [class*='Hint'],
+.zy-dark .form-index-container [class*='tip'],
+.zy-dark .form-index-container [class*='Tip'],
+.zy-dark .form-index-container [class*='subtitle'],
+.zy-dark .form-index-container .analysis-scope,
+.zy-dark .form-index-container .el-radio__label,
+.zy-dark .form-index-container .el-checkbox__label,
+.zy-dark .form-index-container .el-form-item__label,
+.zy-dark .form-index-container .el-empty__description {
+  color: var(--zy-text-secondary) !important;
+}
+.zy-dark .form-index-container p,
+.zy-dark .form-index-container label,
+.zy-dark .form-index-container li,
+.zy-dark .form-index-container dt,
+.zy-dark .form-index-container dd {
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark .logic_title,
+.zy-dark .theme-title,
+.zy-dark .right-title,
+.zy-dark .project-setting-title,
+.zy-dark .ready-title {
+  color: var(--zy-text) !important;
+}
+.zy-dark .text-desc,
+.zy-dark .empty-text,
+.zy-dark .title-desc,
+.zy-dark .ready-desc,
+.zy-dark .option-line-title,
+.zy-dark .option-line-view .el-form-item__label {
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark .preview-close-btn {
+  background-color: var(--zy-surface) !important;
+  color: var(--zy-text) !important;
+  border-color: var(--zy-border) !important;
+}
+.zy-dark .assistant-composer .el-button.is-disabled,
+.zy-dark .assistant-composer .el-button.is-disabled:hover {
+  background-color: #274a86 !important;
+  color: #e8f0fb !important;
+}
+
+
+/* ================= 21. 残余对比度收尾（提高特异性） ================= */
+.zy-dark.zy-dark .assistant-composer .el-button.is-disabled,
+.zy-dark.zy-dark .assistant-composer .el-button.is-disabled:hover {
+  background-color: #274a86 !important;
+  color: #eaf1fb !important;
+}
+.zy-dark.zy-dark .feature-item span {
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark.zy-dark .form-index-container .label,
+.zy-dark.zy-dark .form-index-container .el-form-item__label {
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark.zy-dark .form-index-container .el-radio-button__inner,
+.zy-dark.zy-dark .form-index-container .el-radio-button__original-radio:not(:checked) + .el-radio-button__inner {
+  background-color: transparent !important;
+  border-color: var(--zy-border) !important;
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark.zy-dark .form-index-container .el-radio-button__original-radio:checked + .el-radio-button__inner {
+  background-color: var(--zy-primary) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+}
+
+
+/* ================= 22. 实心主色按钮/单选组（深色下浅蓝底 + 白字对比不足） ================= */
+.zy-dark.zy-dark .el-radio-button.is-active .el-radio-button__inner,
+.zy-dark.zy-dark .el-radio-button__original-radio:checked + .el-radio-button__inner {
+  background-color: var(--zy-primary-solid) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+}
+.zy-dark.zy-dark .el-radio-button__inner {
+  background-color: transparent !important;
+  border-color: var(--zy-border) !important;
+  color: var(--zy-text-regular) !important;
+}
+/* 助手页底部说明 span 不能覆盖按钮内文字 */
+.zy-dark.zy-dark .assistant-composer .el-button span,
+.zy-dark.zy-dark .assistant-composer .el-button.is-disabled span {
+  color: inherit !important;
+}
+.zy-dark.zy-dark .assistant-composer .el-button.is-disabled,
+.zy-dark.zy-dark .assistant-composer .el-button.is-disabled span {
+  color: #eaf1fb !important;
+}
+.zy-dark.zy-dark .assistant-composer .el-button.is-disabled {
+  background-color: #2f6fed !important;
+  opacity: 0.85;
+}
+
+
+/* ================= 23. 单选组实心态（压过 section 21 的更高特异性规则） ================= */
+.zy-dark.zy-dark.zy-dark .form-index-container .el-radio-button.is-active .el-radio-button__inner,
+.zy-dark.zy-dark.zy-dark .form-index-container .el-radio-button__original-radio:checked + .el-radio-button__inner,
+.zy-dark.zy-dark.zy-dark .el-radio-button.is-active .el-radio-button__inner,
+.zy-dark.zy-dark.zy-dark .el-radio-button__original-radio:checked + .el-radio-button__inner {
+  background-color: var(--zy-primary-solid) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+}
+.zy-dark.zy-dark.zy-dark .assistant-composer .el-button.is-disabled,
+.zy-dark.zy-dark.zy-dark .assistant-composer .el-button.is-disabled span {
+  background-color: #21488f !important;
+  color: #edf3fd !important;
+}
+
+
+/* ================= 24. 预览手机外壳与二维码卡片（图片白底） ================= */
+.zy-dark .preview-phone {
+  background: transparent !important;
+  border: 14px solid #0b1524;
+  border-radius: 42px;
+  box-sizing: border-box;
+  box-shadow: 0 30px 70px -36px rgba(0, 0, 0, 0.95), inset 0 0 0 1px #26374b;
+}
+.zy-dark .preview-phone .preview-html {
+  border-radius: 12px !important;
+  background-color: var(--zy-page) !important;
+}
+.zy-dark .preview-container {
+  background-color: var(--zy-page) !important;
+}
+.zy-dark .preview-layer {
+  background-color: transparent !important;
+}
+.zy-dark .qrcode-card {
+  background-color: var(--zy-surface) !important;
+  color: var(--zy-text-regular) !important;
+  border: 1px solid var(--zy-border) !important;
+  box-shadow: var(--zy-shadow-card) !important;
+}
+.zy-dark .qrcode-card .qrcode-title {
+  color: var(--zy-text) !important;
+}
+.zy-dark .qrcode-wrapper {
+  background-color: var(--zy-surface-subtle) !important;
+  border-color: var(--zy-border) !important;
+}
+.zy-dark .qrcode-wrapper img {
+  background-color: #ffffff;
+  border-radius: 8px;
+}
+.zy-dark .qrcode-card .tips-text,
+.zy-dark .qrcode-card .tips-text i {
+  color: var(--zy-text-secondary) !important;
+}
+
+
+/* ================= 25. 外观主题选择按钮 + 手机屏幕填充 ================= */
+.zy-dark .style-btn {
+  background-color: var(--zy-surface-subtle) !important;
+  color: var(--zy-text-regular) !important;
+  border-color: var(--zy-border) !important;
+}
+.zy-dark .style-btn:hover {
+  background-color: #1b2a3d !important;
+  color: var(--zy-text) !important;
+}
+.zy-dark .style-btn-active {
+  background-color: var(--zy-tint) !important;
+  color: var(--zy-accent-cyan) !important;
+  border-color: rgba(56, 189, 248, 0.4) !important;
+}
+/* 手机屏幕填满深色外壳，避免外壳内出现白色留边 */
+.zy-dark .preview-phone {
+  border-width: 10px;
+  border-radius: 38px;
+  overflow: hidden;
+}
+.zy-dark .preview-phone .preview-html {
+  width: calc(100% - 6px) !important;
+  height: calc(100% - 6px) !important;
+  margin: 3px auto 0 !important;
+  border-radius: 28px !important;
+}
+

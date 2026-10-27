@@ -1,41 +1,10 @@
 {
-  "date": "2026-10-27T12:03:54.161Z",
-  "source": "真实浏览器 5180 + 隔离后端 8997 + 管理员账号（.local/tduck-credentials.json），只读浏览",
+  "date": "2026-10-27T12:51:24.021Z",
+  "source": "真实浏览器 5180 + 隔离后端 8997 + 管理员账号（.local/tduck-credentials.json），只读浏览，不提交答卷",
+  "theme": "dark only（不再提供浅色切换）",
   "checks": [
     {
-      "name": "light / home：无运行时报错",
-      "passed": true
-    },
-    {
-      "name": "light / home：正文文字对比度 >= 4.5",
-      "passed": true
-    },
-    {
-      "name": "light / home：画布有分层渐变与标题强调条",
-      "passed": true
-    },
-    {
-      "name": "light / manage-user：无运行时报错",
-      "passed": true
-    },
-    {
-      "name": "light / manage-user：正文文字对比度 >= 4.5",
-      "passed": true
-    },
-    {
-      "name": "light / manage-system：无运行时报错",
-      "passed": true
-    },
-    {
-      "name": "light / manage-system：正文文字对比度 >= 4.5",
-      "passed": true
-    },
-    {
-      "name": "light / assistant：无运行时报错",
-      "passed": true
-    },
-    {
-      "name": "light / assistant：正文文字对比度 >= 4.5",
+      "name": "dark / home：深色类生效且无主题切换入口",
       "passed": true
     },
     {
@@ -51,7 +20,7 @@
       "passed": true
     },
     {
-      "name": "dark / home：既有深色底值未被改坏",
+      "name": "dark / manage-user：深色类生效且无主题切换入口",
       "passed": true
     },
     {
@@ -67,7 +36,7 @@
       "passed": true
     },
     {
-      "name": "dark / manage-user：表头是深色令牌而不是白底",
+      "name": "dark / manage-system：深色类生效且无主题切换入口",
       "passed": true
     },
     {
@@ -83,6 +52,10 @@
       "passed": true
     },
     {
+      "name": "dark / assistant：深色类生效且无主题切换入口",
+      "passed": true
+    },
+    {
       "name": "dark / assistant：无运行时报错",
       "passed": true
     },
@@ -95,10 +68,158 @@
       "passed": true
     },
     {
-      "name": "dark / assistant：页面底色保持既有深色",
+      "name": "dark / form-editor：深色类生效且无主题切换入口",
+      "passed": true
+    },
+    {
+      "name": "dark / form-editor：无运行时报错",
+      "passed": true
+    },
+    {
+      "name": "dark / form-editor：没有浅色残留块",
+      "passed": true
+    },
+    {
+      "name": "dark / form-editor：正文文字对比度 >= 4.5",
+      "passed": true
+    },
+    {
+      "name": "dark / form-logic：深色类生效且无主题切换入口",
+      "passed": true
+    },
+    {
+      "name": "dark / form-logic：无运行时报错",
+      "passed": true
+    },
+    {
+      "name": "dark / form-logic：没有浅色残留块",
+      "passed": true
+    },
+    {
+      "name": "dark / form-logic：正文文字对比度 >= 4.5",
+      "passed": true
+    },
+    {
+      "name": "dark / form-theme：深色类生效且无主题切换入口",
+      "passed": true
+    },
+    {
+      "name": "dark / form-theme：无运行时报错",
+      "passed": true
+    },
+    {
+      "name": "dark / form-theme：没有浅色残留块",
+      "passed": true
+    },
+    {
+      "name": "dark / form-theme：正文文字对比度 >= 4.5",
+      "passed": true
+    },
+    {
+      "name": "dark / form-setting：深色类生效且无主题切换入口",
+      "passed": true
+    },
+    {
+      "name": "dark / form-setting：无运行时报错",
+      "passed": true
+    },
+    {
+      "name": "dark / form-setting：没有浅色残留块",
+      "passed": true
+    },
+    {
+      "name": "dark / form-setting：正文文字对比度 >= 4.5",
+      "passed": true
+    },
+    {
+      "name": "dark / form-publish：深色类生效且无主题切换入口",
+      "passed": true
+    },
+    {
+      "name": "dark / form-publish：无运行时报错",
+      "passed": true
+    },
+    {
+      "name": "dark / form-publish：没有浅色残留块",
+      "passed": true
+    },
+    {
+      "name": "dark / form-publish：正文文字对比度 >= 4.5",
+      "passed": true
+    },
+    {
+      "name": "dark / form-data：深色类生效且无主题切换入口",
+      "passed": true
+    },
+    {
+      "name": "dark / form-data：无运行时报错",
+      "passed": true
+    },
+    {
+      "name": "dark / form-data：没有浅色残留块",
+      "passed": true
+    },
+    {
+      "name": "dark / form-data：正文文字对比度 >= 4.5",
+      "passed": true
+    },
+    {
+      "name": "dark / form-statistics：深色类生效且无主题切换入口",
+      "passed": true
+    },
+    {
+      "name": "dark / form-statistics：无运行时报错",
+      "passed": true
+    },
+    {
+      "name": "dark / form-statistics：没有浅色残留块",
+      "passed": true
+    },
+    {
+      "name": "dark / form-statistics：正文文字对比度 >= 4.5",
+      "passed": true
+    },
+    {
+      "name": "dark / form-preview：深色类生效且无主题切换入口",
+      "passed": true
+    },
+    {
+      "name": "dark / form-preview：无运行时报错",
+      "passed": true
+    },
+    {
+      "name": "dark / form-preview：没有浅色残留块",
+      "passed": true
+    },
+    {
+      "name": "dark / form-preview：正文文字对比度 >= 4.5",
+      "passed": true
+    },
+    {
+      "name": "dark / form-ai-draft：深色类生效且无主题切换入口",
+      "passed": true
+    },
+    {
+      "name": "dark / form-ai-draft：无运行时报错",
+      "passed": true
+    },
+    {
+      "name": "dark / form-ai-draft：没有浅色残留块",
+      "passed": true
+    },
+    {
+      "name": "dark / form-ai-draft：正文文字对比度 >= 4.5",
+      "passed": true
+    },
+    {
+      "name": "dark / home：既有深色底值未被改坏",
+      "passed": true
+    },
+    {
+      "name": "dark / manage-user：表头为深色令牌而非白底",
       "passed": true
     }
   ],
-  "passed": 24,
+  "passed": 54,
   "failed": 0
 }

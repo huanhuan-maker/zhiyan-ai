@@ -1,5 +1,7 @@
 <template>
-  <biz-project-form v-if="formConfig.formKey" :form-config="formConfig" @submit="submitForm" />
+  <div class="project-form-preview">
+    <biz-project-form v-if="formConfig.formKey" :form-config="formConfig" @submit="submitForm" />
+  </div>
 </template>
 
 <script>

@@ -22,9 +22,6 @@
         </el-button>
       </div>
       <div v-if="!isAiDraft" class="header-right">
-        <el-button class="ai-theme-toggle" @click="toggleTheme" :aria-label="isDark ? '切换浅色模式' : '切换深色模式'">
-          <i :class="isDark ? 'el-icon-sunny' : 'el-icon-moon'" />{{ isDark ? '浅色模式' : '深色模式' }}
-        </el-button>
         <el-button
           round
           class="action-btn"
@@ -74,14 +71,12 @@
 
 <script>
 import PreView from '@/views/form/preview'
-import { toggleWorkbenchTheme } from '@/utils/workbenchTheme'
 
 export default {
   name: 'NewIndex',
   components: { PreView },
   data() {
     return {
-      isDark: document.documentElement.classList.contains('zy-dark'),
       draftWorkspace: { handler: null, preview: null, importDraft: null, regenerate: null, hasDraft: false, importing: false, saving: false, disabled: true },
       previewKey: +new Date(),
       previewDialogVisible: false,
@@ -139,9 +134,6 @@ export default {
     }
   },
   methods: {
-    toggleTheme() {
-      this.isDark = toggleWorkbenchTheme()
-    },
     menuSelectHandle(index) {
       this.defaultActiveMenu = index
       this.$router.replace({ path: index, query: { key: this.projectKey } })

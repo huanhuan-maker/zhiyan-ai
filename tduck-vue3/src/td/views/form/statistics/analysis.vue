@@ -45,7 +45,7 @@
                       style="width: 100%"
                       stripe
                       size="default"
-                      :header-cell-style="{ background: '#f7f9fc', color: '#333', fontWeight: 'bold' }"
+                      :header-cell-style="{ fontWeight: 'bold' }"
                     >
                       <el-table-column prop="fieldName" label="选项内容" min-width="150" show-overflow-tooltip>
                         <template #default="scope" >
@@ -345,9 +345,9 @@ export default {
     }
 
     ::v-deep .el-card__header {
-      border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+      border-bottom: 1px solid var(--zy-border-light);
       padding: 16px 24px;
-      background-color: #fafbfc;
+      background-color: var(--zy-surface-subtle);
       border-radius: 12px 12px 0 0;
     }
 
@@ -396,7 +396,7 @@ export default {
         height: 380px;
         width: 100%;
         padding: 10px;
-        background: #fff;
+        background: var(--zy-surface);
         border-radius: 8px;
       }
 
@@ -405,21 +405,25 @@ export default {
 
         ::v-deep .el-table {
           border-radius: 8px;
-          border: 1px solid #e5e6eb;
+          border: 1px solid var(--zy-border);
           overflow: hidden;
+          background-color: var(--zy-surface);
 
           th.el-table__cell {
-            background-color: #f7f8fa !important;
-            border-bottom: 1px solid #e5e6eb;
+            background-color: var(--zy-surface-subtle) !important;
+            color: var(--zy-text-regular) !important;
+            border-bottom: 1px solid var(--zy-border);
           }
 
           td.el-table__cell {
-            border-bottom: 1px solid #f2f3f5;
+            background-color: var(--zy-surface);
+            color: var(--zy-text-regular);
+            border-bottom: 1px solid var(--zy-border-light);
           }
         }
 
         .field-name {
-          color: #1d2129;
+          color: var(--zy-text);
           font-weight: 500;
         }
 

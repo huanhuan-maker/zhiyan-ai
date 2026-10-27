@@ -1,71 +1,40 @@
 {
-  "date": "2026-10-27T12:04:25.979Z",
-  "source": "Real browser on 5180, isolated backend 8997, acceptance fixture .local/assistant-simple/acceptance.json (read-only navigation)",
+  "date": "2026-10-27T12:51:34.736Z",
+  "source": "真实浏览器 5180 + 隔离后端 8997 + 只读验收账号 fixture",
+  "theme": "dark only",
   "checks": [
     {
-      "name": "light theme renders every statistics chart without a runtime error",
+      "name": "深色下统计图表全部渲染且无运行时报错",
       "passed": true,
       "detail": {
         "count": 4,
         "rendered": 4,
-        "dark": false,
+        "dark": true,
+        "toggles": 0,
         "fills": [
-          "rgb(102, 102, 102)"
-        ]
+          "rgb(184, 196, 212)"
+        ],
+        "lightBlocks": [],
+        "lightBlockCount": 0
       }
     },
     {
-      "name": "light theme keeps the existing light chart text colours",
+      "name": "图表文字使用深色令牌且画布无浅色残留",
       "passed": true
     },
     {
-      "name": "toggling dark repaints charts with dark tokens",
-      "passed": true,
-      "detail": {
-        "count": 4,
-        "rendered": 4,
-        "dark": true,
-        "fills": [
-          "rgb(184, 196, 212)"
-        ]
-      }
+      "name": "页面固定深色，且没有主题切换入口",
+      "passed": true
     },
     {
-      "name": "dark theme survives a reload and keeps charts rendered",
-      "passed": true,
-      "detail": {
-        "count": 4,
-        "rendered": 4,
-        "dark": true,
-        "fills": [
-          "rgb(184, 196, 212)"
-        ]
-      }
+      "name": "控制台没有 getThemedOption 报错",
+      "passed": true
     },
     {
-      "name": "switching back to light restores light chart colours",
-      "passed": true,
-      "detail": {
-        "count": 4,
-        "rendered": 4,
-        "dark": false,
-        "fills": [
-          "rgb(102, 102, 102)"
-        ]
-      }
-    },
-    {
-      "name": "dark collection tab has no light container blocks left",
-      "passed": true,
-      "detail": {
-        "lightBlocks": 0
-      }
-    },
-    {
-      "name": "console has no getThemedOption error",
+      "name": "题目统计标签页也没有浅色残留",
       "passed": true
     }
   ],
-  "passed": 7,
+  "passed": 5,
   "failed": 0
 }
