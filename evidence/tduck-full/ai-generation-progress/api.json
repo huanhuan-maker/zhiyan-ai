@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-27T11:10:47.209Z",
+  "source": "Actual authenticated backend and configured real AI. Only synthetic questionnaire requirements; no questionnaire persisted.",
+  "checks": [
+    {
+      "name": "anonymous callers cannot start or read generation progress",
+      "passed": true
+    },
+    {
+      "name": "progress is owner scoped and contains no questionnaire inputs",
+      "passed": true
+    },
+    {
+      "name": "real model generation records actual input, model, validation and success events",
+      "passed": true,
+      "detail": {
+        "provider": "本机推理网关",
+        "model": "group/group",
+        "observed": [
+          "INPUT_VALIDATED",
+          "MODEL_RUNNING",
+          "MODEL_RUNNING",
+          "MODEL_RUNNING"
+        ]
+      }
+    },
+    {
+      "name": "a submitted request ID cannot trigger another model call",
+      "passed": true
+    },
+    {
+      "name": "invalid input finishes as failed without pretending to reach the model",
+      "passed": true
+    }
+  ],
+  "passed": 5,
+  "failed": 0
+}

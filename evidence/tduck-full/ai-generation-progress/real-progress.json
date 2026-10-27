@@ -1,0 +1,54 @@
+{
+  "observed": [
+    "INPUT_VALIDATED",
+    "MODEL_RUNNING",
+    "MODEL_RUNNING",
+    "MODEL_RUNNING"
+  ],
+  "finished": {
+    "id": "9e7b3b0d-4ce0-42ce-ae77-8abf6d05bf3c",
+    "phase": "SUCCEEDED",
+    "events": [
+      {
+        "phase": "REGISTERED",
+        "message": "请求已登记，准备提交调查需求",
+        "elapsedMs": 0
+      },
+      {
+        "phase": "RECEIVED",
+        "message": "服务器已接收调查需求",
+        "elapsedMs": 66
+      },
+      {
+        "phase": "INPUT_VALIDATED",
+        "message": "调查目标、人群和题数已通过输入检查",
+        "elapsedMs": 67
+      },
+      {
+        "phase": "MODEL_RUNNING",
+        "message": "模型正在设计问卷，请稍候",
+        "elapsedMs": 78
+      },
+      {
+        "phase": "VALIDATING",
+        "message": "已收到生成结果，正在检查题型、选项和题数",
+        "elapsedMs": 2400
+      },
+      {
+        "phase": "SUCCEEDED",
+        "message": "草稿检查完成，可以逐题审核",
+        "elapsedMs": 2404
+      }
+    ],
+    "elapsedMs": 2936,
+    "terminal": true
+  },
+  "provider": "本机推理网关",
+  "model": "group/group",
+  "questionCount": 3,
+  "dimensions": [
+    "使用频率",
+    "使用用途",
+    "使用顾虑"
+  ]
+}

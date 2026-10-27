@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-27T11:15:32.523Z",
+  "source": "Actual Edge browser. Controlled fixtures explicitly simulate progress/generation failures and latency; one separate browser run uses the actual configured provider and backend progress. No questionnaire saved.",
+  "checks": [
+    {
+      "name": "while the request is pending, the process panel shows the submitted requirements and real elapsed time",
+      "passed": true
+    },
+    {
+      "name": "stages advance only after actual simulated server events, including validation and completion",
+      "passed": true
+    },
+    {
+      "name": "a failed regeneration preserves the previous draft and inputs, and retry works",
+      "passed": true
+    },
+    {
+      "name": "unavailable detailed progress does not block normal generation",
+      "passed": true
+    },
+    {
+      "name": "polling failure is quiet and leaves the generated draft usable",
+      "passed": true
+    },
+    {
+      "name": "a clarification response is presented as a request for more information",
+      "passed": true
+    },
+    {
+      "name": "the active process panel fits mobile and light themes",
+      "passed": true
+    },
+    {
+      "name": "the real configured provider drives the real progress panel and returns a design summary",
+      "passed": true,
+      "detail": {
+        "model": "group/group",
+        "questionCount": 3
+      }
+    },
+    {
+      "name": "no uncaught browser exceptions",
+      "passed": true
+    }
+  ],
+  "passed": 9,
+  "failed": 0
+}
