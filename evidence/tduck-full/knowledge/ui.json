@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "four questionnaires visible in the user account are indexed with 35 responses each",
+    "knowledge page and sidebar render real owner-scoped collections",
+    "retrieval preview renders persisted sources with answer and field identifiers",
+    "knowledge-to-chat navigation preserves the selected survey, version and question",
+    "real model answers the user question after retrieval rather than listing questionnaire fields",
+    "answer citations open actual version-bound evidence",
+    "generated knowledge answer survives a full page reload",
+    "390px knowledge page has no horizontal overflow"
+  ],
+  "pageErrors": []
+}

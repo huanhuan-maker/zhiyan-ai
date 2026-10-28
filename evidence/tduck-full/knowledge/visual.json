@@ -1,0 +1,9 @@
+{
+  "checks": [
+    "existing real answer replayed without another model request",
+    "dark source dialog has readable surface contrast",
+    "desktop and mobile captures wait for entry transitions",
+    "mobile width remains within viewport"
+  ],
+  "pageErrors": []
+}

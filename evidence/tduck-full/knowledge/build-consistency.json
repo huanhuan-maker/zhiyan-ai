@@ -1,0 +1,10 @@
+{
+  "matchedPackagedClasses": [
+    "com/tduck/cloud/form/assistant/AssistantPlanner.class",
+    "com/tduck/cloud/form/assistant/SurveyKnowledgeService.class",
+    "com/tduck/cloud/form/ai/OpenAiCompatibleProvider.class",
+    "com/tduck/cloud/api/web/filter/AssistantMcpFilter.class"
+  ],
+  "installedJarMatchesTestedBuild": true,
+  "sha256": "73b2c761ce5d1bc9f68bcc3965cfe4d79b458303c095f07736cde417468680f7"
+}

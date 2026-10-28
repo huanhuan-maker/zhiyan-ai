@@ -1,0 +1,51 @@
+{
+  "checks": [
+    {
+      "name": "published responses become a persisted version-scoped knowledge corpus",
+      "passed": true,
+      "detail": {
+        "count": 3,
+        "documents": 6
+      }
+    },
+    {
+      "name": "retrieval exposes locatable redacted evidence rather than contact details",
+      "passed": true,
+      "detail": {
+        "evidenceId": "A212465-kb17931633347202"
+      }
+    },
+    {
+      "name": "other accounts cannot list, sync, or retrieve this corpus",
+      "passed": true
+    },
+    {
+      "name": "unknown and unpublished versions cannot masquerade as data",
+      "passed": true
+    },
+    {
+      "name": "actual configured LLM summarizes retrieved sources through the chat MCP flow",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'survey_report'\n- 'survey_knowledge'\n          ^\n"
+    },
+    {
+      "name": "generated answer and citations survive a fresh history request",
+      "passed": false,
+      "error": "Expected values to be strictly equal:\n+ actual - expected\n\n+ 'READY'\n- 'SUCCEEDED'\n"
+    },
+    {
+      "name": "new submissions refresh the corpus before the next retrieval",
+      "passed": true
+    },
+    {
+      "name": "published versions keep distinct corpora and statistics",
+      "passed": true
+    },
+    {
+      "name": "archiving revokes existing corpus and historical chat access",
+      "passed": true
+    }
+  ],
+  "passed": 7,
+  "failed": 2
+}

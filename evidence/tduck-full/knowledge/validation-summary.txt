@@ -1,0 +1,5 @@
+Java: Tests run: 123, Failures: 0, Errors: 0, Skipped: 0
+Frontend:       Tests  67 passed (67)
+Build: ✓ built in 17.46s
+HTTP: {"passed":9,"failed":0}
+Visual: Visual checks passed

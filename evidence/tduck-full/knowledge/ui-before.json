@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "four questionnaires visible in the user account are indexed with 35 responses each",
+    "knowledge page and sidebar render real owner-scoped collections",
+    "retrieval preview renders persisted sources with answer and field identifiers",
+    "knowledge-to-chat navigation preserves the selected survey, version and question",
+    {
+      "failed": "expect(locator).toContainText(expected) failed\n\nLocator: locator('.assistant-turn').last().locator('.knowledge-answer-scope')\nExpected substring: \"LLM 分析\"\nReceived string:    \"已检索 · 分析未完成包含模拟测试答卷V2 · 35 份答卷 · 从 229 个资料片段中选取 12 条供分析中文词片段检索＋相似内容去重；非向量检索；模型归纳可通过下方来源核对，片段数量不代表持某种观点的人数。\"\nTimeout: 150000ms\n\nCall log:\n  - Expect \"toContainText\" locator('.assistant-turn').last().locator('.knowledge-answer-scope') with timeout 150000ms\n  - waiting for locator('.assistant-turn').last().locator('.knowledge-answer-scope')\n    297 × locator resolved to <div data-v-dc734076=\"\" class=\"knowledge-answer-scope\">…</div>\n        - unexpected value \"已检索 · 分析未完成包含模拟测试答卷V2 · 35 份答卷 · 从 229 个资料片段中选取 12 条供分析中文词片段检索＋相似内容去重；非向量检索；模型归纳可通过下方来源核对，片段数量不代表持某种观点的人数。\"\n"
+    }
+  ],
+  "pageErrors": []
+}
