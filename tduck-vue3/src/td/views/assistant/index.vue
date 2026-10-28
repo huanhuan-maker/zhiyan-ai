@@ -28,7 +28,7 @@
           <div class="turn-body"><div class="answer-bubble"><div class="answer-meta"><strong>问卷助手</strong><span v-if="turn.mode === 'REAL'">{{ turn.model }}</span><span v-else-if="turn.mode === 'DEGRADED'">本地降级</span><span class="readonly-chip">只读查询</span></div>
           <p v-if="turn.warning" class="turn-warning">{{ turn.warning }}</p>
           <p v-if="turn.result" class="assistant-answer-text">{{ knowledgeMessage(turn.result) }}</p>
-          <p v-else class="assistant-hint">{{ turn.state === 'FAILED' ? '本次没能完成，可以重新发送。' : turn.state === 'READY' && !busy ? '查询已准备好，点击下方继续。' : turn.plan?.tool==='survey_knowledge' ? '正在检索知识库并请模型整理分析…' : '正在回复…' }}</p>
+          <p v-else class="assistant-hint">{{ turn.streamStatus || (turn.state === 'FAILED' ? '本次没能完成，可以重新发送。' : turn.state === 'READY' && !busy ? '查询已准备好，点击下方继续。' : turn.plan?.tool==='survey_knowledge' ? '正在检索知识库并请模型整理分析…' : '正在回复…') }}</p>
           <p v-if="turn.result?.generationWarning" class="turn-warning">{{ turn.result.generationWarning }}</p>
           <el-button v-if="turn.state === 'READY' && !busy" @click="resume(turn)">继续查询</el-button>
           <template v-if="turn.result">
@@ -70,6 +70,8 @@
 <script setup>
 import {ref,onMounted,onBeforeUnmount,nextTick} from 'vue'
 import {useRouter,useRoute} from 'vue-router'
+import store from '@/store'
+import {readAssistantEvents} from '@/assistant/stream'
 import {ElMessageBox} from 'element-plus'
 import {assistantStatus,assistantConversations,createAssistantConversation,assistantHistory,deleteAssistantConversation,planAssistantQuery,decideAssistantAction} from '@/api/project/assistant'
 import SurveyAction from '@/assistant/SurveyAction.vue'
@@ -80,10 +82,10 @@ import {knowledgeMessage,wantsInlineChart} from '@/assistant/knowledge'
 const route=useRoute(),router=useRouter(),connected=ref(false),loading=ref(false),busy=ref(false),error=ref(''),provider=ref({}),question=ref(''),conversations=ref([]),conversationId=ref(''),turns=ref([]),timeline=ref(null)
 const formKey=ref(''),version=ref(null),selectedTitle=ref(''),historyVisible=ref(false),citationVisible=ref(false),citation=ref(null),citationContext=ref({}),allVisible=ref(false),allCitations=ref([])
 const copyStatus=ref('')
-let client,disposed=false
+let client,disposed=false,streamController
 const date=v=>v?new Date(v).toLocaleString('zh-CN',{hour12:false}):''
 const message=e=>e?.msg||e?.message||'连接中断，请重试。'
-onBeforeUnmount(()=>{disposed=true;client?.close()})
+onBeforeUnmount(()=>{disposed=true;streamController?.abort();client?.close()})
 async function scrollBottom(){await nextTick();if(timeline.value)timeline.value.scrollTop=timeline.value.scrollHeight}
 function clearContext(){formKey.value='';version.value=null;selectedTitle.value=''}
 async function init(){loading.value=true;error.value='';connected.value=false;client?.close();client=createSurveyMcpClient();try{const [s,list]=await Promise.all([assistantStatus(),assistantConversations(),client.connect()]);if(disposed)return;provider.value=s.data;conversations.value=list.data;const saved=sessionStorage.getItem('assistant-conversation');conversationId.value=list.data.some(c=>c.id===saved)?saved:list.data[0]?.id||'';if(conversationId.value)await loadHistory(true);if(/^[A-Za-z0-9_-]{1,64}$/.test(String(route.query.formKey||''))){formKey.value=String(route.query.formKey);version.value=Number(route.query.version)||null;selectedTitle.value=String(route.query.title||route.query.formKey);question.value=String(route.query.question||'总结这份问卷的答卷').slice(0,1000)}connected.value=true}catch(e){if(!disposed)error.value=message(e)}finally{if(!disposed)loading.value=false}}
@@ -110,7 +112,7 @@ function handleEnter(e){if(e.shiftKey||e.isComposing||e.keyCode===229)return;e.p
 async function sendExample(q){question.value=q;await send()}
 function upsert(t){const i=turns.value.findIndex(x=>x.id===t.id);if(i<0)turns.value.push(t);else turns.value[i]=t}
 async function execute(turn){for(let stage=0;stage<3&&turn?.state==='READY';stage++){await client.call(turn.plan.tool,turn.plan.arguments,turn.id);if(disposed)return;await loadHistory();turn=turns.value.find(x=>x.id===turn.id)}}
-async function send(){if(busy.value||!connected.value||!question.value.trim())return;busy.value=true;error.value='';const q=question.value.trim(),id=crypto.randomUUID();question.value='';try{if(!conversationId.value){const c=await createAssistantConversation();if(disposed)return;conversationId.value=c.data.id}upsert({id,question:q,state:'PLANNING'});await scrollBottom();const r=await planAssistantQuery({id,conversationId:conversationId.value,question:q,formKey:formKey.value||null,version:q.includes('最新')?null:version.value,mode:'AUTO'});if(disposed)return;upsert(r.data);await execute(r.data);if(disposed)return;await loadHistory();const list=await assistantConversations();if(!disposed)conversations.value=list.data}catch(e){if(!disposed){error.value=message(e);try{await loadHistory()}catch{}if(!turns.value.some(t=>t.id===id))question.value=q}}finally{if(!disposed){busy.value=false;await scrollBottom()}}}
+async function send(){if(busy.value||!connected.value||!question.value.trim())return;busy.value=true;error.value='';const q=question.value.trim(),id=crypto.randomUUID();question.value='';try{if(!conversationId.value){const c=await createAssistantConversation();if(disposed)return;conversationId.value=c.data.id}upsert({id,question:q,state:'PLANNING'});await scrollBottom();streamController=new AbortController();const response=await fetch(process.env.VUE_APP_API_ROOT+'/user/form/assistant/chat/stream',{method:'POST',headers:{'Content-Type':'application/json',Accept:'text/event-stream',token:store.state.user.token},body:JSON.stringify({id,conversationId:conversationId.value,question:q,formKey:formKey.value||null,version:q.includes('最新')?null:version.value}),signal:streamController.signal});await readAssistantEvents(response,async(type,data)=>{if(disposed)return;const t=turns.value.find(x=>x.id===id);if(type==='status')t.streamStatus=data.message;if(type==='answer'){t.result={...data.result,message:''};t.mode=data.result.generationMode==='REAL'?'REAL':'LOCAL';t.model=data.result.model}if(type==='delta'){t.result.message+=data.text;await scrollBottom()}});if(disposed)return;await loadHistory();const list=await assistantConversations();if(!disposed)conversations.value=list.data}catch(e){if(!disposed){error.value=message(e);try{await loadHistory()}catch{}if(!turns.value.some(t=>t.id===id))question.value=q}}finally{if(!disposed){busy.value=false;await scrollBottom()}}}
 async function resume(t){if(busy.value)return;busy.value=true;error.value='';try{await execute(t);await loadHistory()}catch(e){error.value=message(e);try{await loadHistory()}catch{}}finally{busy.value=false}}
 function openCitation(c,r){citation.value=c;citationContext.value=r;citationVisible.value=true}
 function showAllCitations(r){allCitations.value=r.citations;citationContext.value=r;allVisible.value=true}
