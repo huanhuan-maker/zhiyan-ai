@@ -76,7 +76,7 @@ public class AssistantChatService {
                 for(AssistantTurnEntity row:history){prior.add(row.getQuestion());Map<String,Object> exchange=map("user",row.getQuestion());
                     if(row.getResultJson()!=null){Map<String,Object> old=read(row.getResultJson());
                         boolean accessible=true;if(row.getScopeFormKey()!=null)try{tools.requireOwned(row.getScopeFormKey(),owner);}catch(BaseException ex){accessible=false;}
-                        if(accessible&&"chat".equals(old.get("kind")))exchange.put("assistant",old.get("message"));
+                        if(accessible&&("chat".equals(old.get("kind"))||("knowledge_answer".equals(old.get("kind"))&&Objects.equals(key,row.getScopeFormKey()))))exchange.put("assistant",old.get("message"));
                         else if(accessible){
                             // Only bounded facts and operation outcomes enter model history; answer text and exports stay local.
                             Map<String,Object> summary=map("kind",old.get("kind"),"formKey",old.get("formKey"),"title",old.get("title"),"version",old.get("version"));
@@ -123,6 +123,9 @@ public class AssistantChatService {
                         return result;
                     }
                 }
+            }
+            if("knowledge_answer".equals(result.get("kind"))){
+                turns.update(null,Wrappers.<AssistantTurnEntity>lambdaUpdate().eq(AssistantTurnEntity::getId,turnId).set(AssistantTurnEntity::getMode,result.get("generationMode")).set(AssistantTurnEntity::getProvider,result.getOrDefault("provider","知识库检索")).set(AssistantTurnEntity::getModel,result.getOrDefault("model","检索结果·未生成分析")));
             }
             turns.update(null,Wrappers.<AssistantTurnEntity>lambdaUpdate().eq(AssistantTurnEntity::getId,turnId).set(AssistantTurnEntity::getState,"SUCCEEDED").set(AssistantTurnEntity::getResultJson,write(result)));
             return result;

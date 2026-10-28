@@ -48,6 +48,11 @@ export default [
         path: 'assistant',
         meta: { requireLogin: true, title: '问卷助手' },
         component: () => import('@/views/assistant/index.vue')
+      },
+      {
+        path: 'knowledge',
+        meta: { requireLogin: true, title: '问卷知识库' },
+        component: () => import('@/views/knowledge/index.vue')
       }
     ]
   },

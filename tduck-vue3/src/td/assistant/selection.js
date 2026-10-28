@@ -19,6 +19,7 @@ export function selectedSurveyQuestion(previous = '') {
   if (/导出/.test(text)) return `导出${scope}的答卷`
   if (/分享|链接/.test(text)) return `获取${scope}的分享链接`
   if (/版本历史|版本列表|所有版本/.test(text)) return '查看这份问卷的版本列表'
+  if (/总结|归纳|分析|为什么|主要发现|主要反馈|知识库/.test(text)) return `基于知识库总结${scope}的答卷，归纳主要发现并引用来源`
   if (/题目|问卷内容/.test(text)) return `查看${scope}的题目`
   if (/原文|提到|关键词|包含.*回答/.test(text)) {
     const quoted = [...text.matchAll(/[“"‘']([^”"’']{1,30})[”"’']/g)]

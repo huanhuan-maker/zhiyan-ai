@@ -25,7 +25,10 @@ try{
  $slotsSql=(Join-Path $root 'db\tduck\011_ai_draft_slots.sql').Replace('\','/')
  & $mysql @mysqlArgs ('--execute=source '+$slotsSql)
  if($LASTEXITCODE -ne 0){throw 'AI draft slots migration failed'}
- $tables=& $mysql @mysqlArgs '-N' '-B' "--execute=SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='tduck_vue3_dev' AND table_name IN ('fm_assistant_conversation','fm_assistant_turn','fm_assistant_action','fm_ai_draft_workspace','fm_ai_draft_slot','fm_ai_draft_slot_lock','fm_ai_draft_migration_marker')"
- if($LASTEXITCODE -ne 0 -or [int]$tables -ne 7){throw 'Assistant or draft tables missing'}
- Write-Output 'Assistant history, audit and AI draft tables ready (7). Existing surveys and answers unchanged.'
+ $knowledgeSql=(Join-Path $root 'db\tduck\012_survey_knowledge.sql').Replace('\','/')
+ & $mysql @mysqlArgs ('--execute=source '+$knowledgeSql)
+ if($LASTEXITCODE -ne 0){throw 'Survey knowledge migration failed'}
+ $tables=& $mysql @mysqlArgs '-N' '-B' "--execute=SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='tduck_vue3_dev' AND table_name IN ('fm_assistant_conversation','fm_assistant_turn','fm_assistant_action','fm_ai_draft_workspace','fm_ai_draft_slot','fm_ai_draft_slot_lock','fm_ai_draft_migration_marker','fm_survey_knowledge')"
+ if($LASTEXITCODE -ne 0 -or [int]$tables -ne 8){throw 'Assistant or draft tables missing'}
+ Write-Output 'Assistant history, audit, AI draft and knowledge tables ready (8). Existing surveys and answers unchanged.'
 }finally{$env:MYSQL_PWD=$priorPassword}

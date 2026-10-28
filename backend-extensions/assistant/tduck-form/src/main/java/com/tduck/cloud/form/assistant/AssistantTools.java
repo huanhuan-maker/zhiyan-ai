@@ -25,6 +25,7 @@ public class AssistantTools {
     private final AnalysisSnapshotService snapshots;
     private final AnalysisReportMapper reports;
     @org.springframework.beans.factory.annotation.Autowired private AssistantWorkspace workspace;
+    @org.springframework.beans.factory.annotation.Autowired private SurveyKnowledgeService knowledge;
     public static class UnpublishedSurvey extends BaseException {public UnpublishedSurvey(){super("问卷尚未发布，暂无发布版本统计");}}
 
     public UserFormEntity requireOwned(String key,Long owner) {
@@ -47,6 +48,7 @@ public class AssistantTools {
     }
     public static Set<String> argumentsFor(String tool) {
         switch(tool) {
+            case "survey_knowledge":return new HashSet<>(Arrays.asList("formKey","version","question"));
             case "search_surveys":return new HashSet<>(Arrays.asList("query","limit","status","fromDate","untilDate"));
             case "survey_stats":return new HashSet<>(Arrays.asList("formKey","version","chartType","fieldQuery"));
             case "survey_report":return new HashSet<>(Arrays.asList("formKey","version"));
@@ -64,6 +66,7 @@ public class AssistantTools {
         if("design_survey".equals(tool)){str(args.get("goal"),500,"调查目标");if(((String)args.get("goal")).trim().isEmpty())throw new BaseException("调查目标不能为空");if(args.containsKey("audience"))str(args.get("audience"),100,"调查对象");if(args.containsKey("questionCount"))integer(args.get("questionCount"),1,com.tduck.cloud.form.ai.AiDraftValidator.MAX_QUESTIONS,"题数");return;}
         if(!"search_surveys".equals(tool)&&(!(args.get("formKey") instanceof String)||!((String)args.get("formKey")).matches("[A-Za-z0-9_-]{1,64}")))throw new BaseException("请先选择问卷");
         if(args.containsKey("version"))integer(args.get("version"),1,100000,"版本");
+        if("survey_knowledge".equals(tool)&&str(args.get("question"),1000,"分析问题").isEmpty())throw new BaseException("分析问题不能为空");
         if(args.containsKey("limit"))integer(args.get("limit"),1,10,"条数");
         if(args.containsKey("status"))integer(args.get("status"),1,3,"状态");
         if(args.containsKey("query"))str(args.get("query"),100,"搜索词");
@@ -86,7 +89,8 @@ public class AssistantTools {
     public Map<String,Object> call(String tool,Map<String,Object> args,Long owner) {
         validateArguments(tool,args);
         Map<String,Object> result;
-        if("manage_survey".equals(tool))result=workspace.propose(args,owner);
+        if("survey_knowledge".equals(tool))result=knowledge.answer((String)args.get("formKey"),(Integer)args.get("version"),(String)args.get("question"),owner);
+        else if("manage_survey".equals(tool))result=workspace.propose(args,owner);
         else if("design_survey".equals(tool))result=workspace.design(args,owner);
         else if("survey_details".equals(tool))result=workspace.details((String)args.get("formKey"),(Integer)args.get("version"),owner);
         else if("survey_versions".equals(tool))result=workspace.versionList((String)args.get("formKey"),owner);
@@ -158,6 +162,7 @@ public class AssistantTools {
         Map<String,Object> key=map("type","string","maxLength",64),version=map("type","integer","minimum",1),limit=map("type","integer","minimum",1,"maximum",10);
         Map<String,Object> question=map("type","object","properties",map("type",map("type","string","enum",Arrays.asList("RADIO","CHECKBOX","RATE","TEXT")),"label",map("type","string"),"required",map("type","boolean"),"options",map("type","array","items",map("type","string")),"rateMax",map("type","integer"),"placeholder",map("type","string")),"additionalProperties",false);
         List<Map<String,Object>> list=new ArrayList<>();
+        list.add(def("survey_knowledge","检索当前问卷版本的知识库和真实后端统计，再由LLM综合回答。总结、原因、需求、建议、主要发现应使用此工具，不能用survey_details代替分析。question保留用户的实际问题。",map("formKey",key,"version",version,"question",map("type","string","maxLength",1000)),Arrays.asList("formKey","question")));
         list.add(def("search_surveys","查找当前账号自己的问卷，按名称、创建日期与状态过滤",map("query",map("type","string","maxLength",100),"limit",limit,"status",map("type","integer","minimum",1,"maximum",3),"fromDate",map("type","string","format","date"),"untilDate",map("type","string","format","date")),Collections.emptyList()));
         list.add(def("survey_stats","根据真实答卷生成数据图和分析面板；包含选项分布、评分、缺失及每日趋势。用户要求画图时必须调用，不要声称无法画图。可用fieldQuery指定题干关键词，chartType指定图形",map("formKey",key,"version",version,"chartType",map("type","string","enum",Arrays.asList("all","bar","donut","line")),"fieldQuery",map("type","string","maxLength",100)),Collections.singletonList("formKey")));
         list.add(def("search_answers","对本版本核心开放回答进行字面关键词检索；不是向量语义搜索或总体观点统计",map("formKey",key,"version",version,"keywords",map("type","array","items",map("type","string","maxLength",30),"minItems",1,"maxItems",6),"fieldId",map("type","string","maxLength",100),"limit",limit),Arrays.asList("formKey","keywords")));

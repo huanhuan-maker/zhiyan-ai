@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.context.request.*;
+import com.tduck.cloud.common.constant.CommonConstants;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.*;
@@ -44,8 +46,13 @@ public class AssistantMcpFilter extends OncePerRequestFilter {
         try{Object parsed=JSON.readValue(json,Object.class);if(!(parsed instanceof Map)){send(response,400,AssistantMcpProtocol.error(null,-32600,"Single JSON-RPC object required"));return;}body=(Map<String,Object>)parsed;}
         catch(Exception e){send(response,400,AssistantMcpProtocol.error(null,-32700,"Invalid JSON"));return;}
         Map<String,Object> result;
+        RequestAttributes previous=RequestContextHolder.getRequestAttributes();
+        Object previousOwner=request.getAttribute(CommonConstants.USER_KEY);
+        request.setAttribute(CommonConstants.USER_KEY,owner);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request,response));
         try{result=protocol.handle(body,owner,request.getHeader("MCP-Protocol-Version"));}
         catch(Exception e){send(response,500,AssistantMcpProtocol.error(body.get("id"),-32603,"Internal tool error"));return;}
+        finally{if(previousOwner==null)request.removeAttribute(CommonConstants.USER_KEY);else request.setAttribute(CommonConstants.USER_KEY,previousOwner);if(previous==null)RequestContextHolder.resetRequestAttributes();else RequestContextHolder.setRequestAttributes(previous);}
         if(result==null){response.setStatus(202);return;}
         send(response,result.containsKey("error")?400:200,result);
     }
