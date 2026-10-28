@@ -74,8 +74,7 @@ evidence/                   # M5-A/B/C.md、tduck-full/ 各轮实测与截图
 - 编辑器 `/project/form/editor`（**四题型**：单选 RADIO/多选 CHECKBOX/量表 RATE/开放 INPUT+TEXTAREA，Codex 简化过，勿恢复 37 种枚举 UI）；AI 建卷 `/project/form/ai-draft`（真实 Provider 失败自动 Mock 且明确标注）。
 - 助手 `/home/assistant`（M5-C：单聊天窗，只读 MCP 查询问卷/统计/原文，关键词检索，未做向量 RAG）。
 - 管理页 `/manage/user`、`/manage/system`（router 守卫查 `userInfo.admin`；**当前登录用户无 admin 标记时会被重定向回 /home**——深色覆盖在该页未实测，样式已写）。
-- AI 配置：系统配置→AI 配置（M5-B：自定义供应商/多模型/三种协议/思考强度等，密钥加密不回显；仅管理员改系统默认模型）。
-- 个人 AI 配置 `/home/ai-settings`（M5-M：每个账号可填自己的 Base URL 与 API Key，只对本人生效；未配置时继承系统默认模型，密钥不回显）。
+- AI 配置：**唯一入口是系统配置→AI 配置**（M5-B 供应商/多模型/三协议/思考强度；M5-N 默认模型已切到用户指定的 OpenAI 兼容网关；密钥加密不回显，仅管理员可改）。
 
 ## 7. 验证脚本（scripts/tduck/，改完代码必跑相关项）
 

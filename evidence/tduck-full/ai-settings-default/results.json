@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-28T03:55:57.039Z",
+  "defaultModel": "deepseek-v4.1-flash",
+  "defaultProvider": "huanhuan666 网关",
+  "providers": [
+    {
+      "name": "本机推理网关",
+      "models": [
+        "group/group"
+      ]
+    },
+    {
+      "name": "huanhuan666 网关",
+      "models": [
+        "deepseek-v4.1-flash"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "name": "侧栏不再有独立的 AI 配置入口",
+      "passed": true
+    },
+    {
+      "name": "原来的 /home/ai-settings 地址不再存在",
+      "passed": true
+    },
+    {
+      "name": "系统配置里的 AI 配置显示系统默认模型与指定网关",
+      "passed": true
+    },
+    {
+      "name": "配置页是深色且没有浅色残留",
+      "passed": true
+    },
+    {
+      "name": "页面没有运行时错误",
+      "passed": true
+    }
+  ],
+  "total": 5,
+  "passed": 5,
+  "failed": 0,
+  "errors": []
+}

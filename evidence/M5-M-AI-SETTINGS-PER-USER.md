@@ -1,3 +1,5 @@
+> 说明：本轮的「侧栏 AI 配置」独立入口已在 M5-N 按用户要求回退，界面只保留系统配置→AI 配置；对应的个人页回归脚本 `ai-settings-personal.mjs` 与 `ai-settings-live-provider.mjs` 已随页面删除。此处保留该轮后端能力与验证记录。
+
 # M5-M AI 配置：每个账号用自己的请求地址与 API Key
 
 - 日期：2026-10-28
