@@ -113,10 +113,13 @@ public class AssistantChatService {
         try {
             Map<String,Object> dispatch=Boolean.TRUE.equals(p.get("automatic"))?AssistantPlanner.naturalRead(map("tool",name,"arguments",args),t.getQuestion()):map("tool",name,"arguments",args);
             Map<String,Object> result=tools.call((String)dispatch.get("tool"),(Map<String,Object>)dispatch.get("arguments"),owner);
-            if("search_surveys".equals(name)&&Boolean.TRUE.equals(p.get("automatic"))&&AssistantPlanner.needsData(t.getQuestion())&&((Number)p.getOrDefault("stage",0)).intValue()==0&&((Number)result.get("total")).longValue()==1) {
+            if("search_surveys".equals(name)&&Boolean.TRUE.equals(p.get("automatic"))&&((Number)p.getOrDefault("stage",0)).intValue()==0) {
                 List<Map<String,Object>> found=(List<Map<String,Object>>)result.get("surveys");
-                if(found.size()==1){String selected=(String)found.get(0).get("formKey");tools.requireOwned(selected,owner);
-                    Map<String,Object> next=AssistantPlanner.resolvedQuery(t.getQuestion(),selected,t.getScopeVersion(),(String)found.get(0).get("title"));String nextTool=(String)next.get("tool");
+                boolean catalogue=AssistantPlanner.catalogueQuery(t.getQuestion());
+                String selected=null;if(!catalogue&&AssistantPlanner.needsData(t.getQuestion()))selected=((Number)result.get("total")).longValue()==1&&found.size()==1?(String)found.get(0).get("formKey"):planner.chooseSurvey(t.getQuestion(),found);
+                Map<String,Object> target=null;for(Map<String,Object> row:found)if(Objects.equals(selected,row.get("formKey")))target=row;
+                if(target!=null){tools.requireOwned(selected,owner);
+                    Map<String,Object> next=AssistantPlanner.resolvedQuery(t.getQuestion(),selected,t.getScopeVersion(),(String)target.get("title"));String nextTool=(String)next.get("tool");
                     if(!Arrays.asList("search_surveys","none","chat","design_survey").contains(nextTool)){
                         Map<String,Object> nextArgs=(Map<String,Object>)next.get("arguments");
                         turns.update(null,Wrappers.<AssistantTurnEntity>lambdaUpdate().eq(AssistantTurnEntity::getId,turnId).set(AssistantTurnEntity::getScopeFormKey,selected).set(AssistantTurnEntity::getScopeVersion,nextArgs.get("version"))
@@ -124,6 +127,8 @@ public class AssistantChatService {
                         return result;
                     }
                 }
+                String response=catalogue?"当前账号共有 "+result.get("total")+" 份匹配的问卷。直接告诉我想了解的主题，我会检索答卷后给你分析。":found.isEmpty()?"我没有找到与这个问题匹配的问卷。告诉我问卷名称或调查主题，我会继续检索并整理结论。":"我还不能确定你指的是哪份问卷。直接告诉我问卷名称或调查主题即可，我会检索答卷后给你总结分析。";
+                result=map("kind","chat","message",response,"citations",Collections.emptyList());
             }
             if("knowledge_answer".equals(result.get("kind"))){
                 turns.update(null,Wrappers.<AssistantTurnEntity>lambdaUpdate().eq(AssistantTurnEntity::getId,turnId).set(AssistantTurnEntity::getMode,result.get("generationMode")).set(AssistantTurnEntity::getProvider,result.getOrDefault("provider","知识库检索")).set(AssistantTurnEntity::getModel,result.getOrDefault("model","检索结果·未生成分析")));

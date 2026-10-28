@@ -1,10 +1,13 @@
 import {it,expect} from 'vitest'
 import {selectedSurveyQuestion} from '../../src/td/assistant/selection'
-import {wantsInlineChart} from '../../src/td/assistant/knowledge'
+import {wantsInlineChart,knowledgeMessage} from '../../src/td/assistant/knowledge'
 it('preserves the actual question after selecting a survey',()=>{
  expect(selectedSurveyQuestion('哪个选项人数最多')).toContain('哪个选项人数最多')
  expect(selectedSurveyQuestion('哪个评分最高')).toContain('哪个评分最高')
  expect(selectedSurveyQuestion('评分分布是什么样的')).toContain('评分分布是什么样的')
+})
+it('keeps old questionnaire search snapshots from asking users to click selection cards',()=>{
+ expect(knowledgeMessage({kind:'surveys',message:'请选择一份后继续查询。',total:2,surveys:[{title:'原始列表'}]})).not.toContain('请选择')
 })
 it('does not replace a focused analysis with a generic summary',()=>{
  const question=selectedSurveyQuestion('分析低评分的人最关心什么')
