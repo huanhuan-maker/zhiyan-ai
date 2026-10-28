@@ -1,0 +1,40 @@
+{
+  "found": [
+    {
+      "question": "看一下大学生社团参与意愿调查的情况",
+      "plan": {
+        "tool": "search_surveys",
+        "stage": 0,
+        "arguments": {
+          "query": "大学生社团参与意愿调查"
+        },
+        "automatic": true
+      },
+      "result": {
+        "kind": "chat",
+        "message": "我还不能确定你指的是哪份问卷。直接告诉我问卷名称或调查主题即可，我会检索答卷后给你总结分析。",
+        "citations": []
+      },
+      "scope": null
+    }
+  ],
+  "search": {
+    "kind": "surveys",
+    "message": "在当前账号可访问的问卷中找到 1 份，展示前 1 份。请选择一份后继续查询。",
+    "total": 1,
+    "query": "大学生社团参与意愿调查",
+    "surveys": [
+      {
+        "formKey": "Kd12jgkg",
+        "title": "大学生社团参与意愿调查",
+        "status": "收集中",
+        "createdAt": "2026-10-27T22:12:11",
+        "sourceUrl": "/project/form/editor?key=Kd12jgkg"
+      }
+    ],
+    "citations": [],
+    "dateBasis": "问卷创建时间，服务端数据库日期",
+    "asOf": "2026-10-28T06:34:52.408165800Z",
+    "tool": "search_surveys"
+  }
+}

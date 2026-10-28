@@ -1,0 +1,38 @@
+{
+  "passed": 0,
+  "failed": 1,
+  "checks": [
+    {
+      "failed": "{\"kind\":\"chat\",\"message\":\"我还不能确定你指的是哪份问卷。直接告诉我问卷名称或调查主题即可，我会检索答卷后给你总结分析。\",\"citations\":[]}\n+ actual - expected\n\n+ 'chat'\n- 'knowledge_answer'\n"
+    }
+  ],
+  "pageErrors": [],
+  "conversationId": "02848066-37cf-47f1-a6d7-c0e4bf613225",
+  "turns": [
+    {
+      "id": "d727008b-d7f6-4756-b88e-fc6d23b7a114",
+      "question": "看一下大学生社团参与意愿调查的情况",
+      "formKey": null,
+      "version": null,
+      "state": "SUCCEEDED",
+      "mode": "REAL",
+      "provider": "本机推理网关",
+      "model": "group/group",
+      "warning": "",
+      "createdAt": "2026-10-28T06:38:31.290479Z",
+      "plan": {
+        "tool": "search_surveys",
+        "stage": 0,
+        "arguments": {
+          "query": "大学生社团参与意愿"
+        },
+        "automatic": true
+      },
+      "result": {
+        "kind": "chat",
+        "message": "我还不能确定你指的是哪份问卷。直接告诉我问卷名称或调查主题即可，我会检索答卷后给你总结分析。",
+        "citations": []
+      }
+    }
+  ]
+}

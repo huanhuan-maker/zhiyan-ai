@@ -1,0 +1,942 @@
+{
+  "passed": 5,
+  "failed": 0,
+  "checks": [
+    "exact unquoted screenshot request automatically retrieves club-survey evidence and generates real analysis",
+    "follow-up retains the automatically resolved club survey",
+    "an explicitly named different survey overrides the previous survey context",
+    "the same exact sentence switches back to the club survey without selection cards",
+    "reload preserves the corrected target and grounded answer"
+  ],
+  "pageErrors": [],
+  "conversationId": "0bd3dfe2-c2a7-42d5-b567-e371f5ba1673",
+  "turns": [
+    {
+      "id": "dc2eaa0c-729c-415a-ba85-e865bb3f9512",
+      "question": "看一下大学生社团参与意愿调查的情况",
+      "formKey": "Kd12jgkg",
+      "version": null,
+      "state": "SUCCEEDED",
+      "mode": "REAL",
+      "provider": "本机推理网关",
+      "model": "group/group",
+      "warning": "",
+      "createdAt": "2026-10-28T06:43:09.615121100Z",
+      "plan": {
+        "tool": "survey_knowledge",
+        "stage": 1,
+        "arguments": {
+          "formKey": "Kd12jgkg",
+          "question": "看一下大学生社团参与意愿调查的情况"
+        },
+        "automatic": true
+      },
+      "result": {
+        "asOf": "2026-10-28T06:43:15.545190800Z",
+        "kind": "knowledge_answer",
+        "tool": "survey_knowledge",
+        "model": "group/group",
+        "title": "大学生社团参与意愿调查",
+        "formKey": "Kd12jgkg",
+        "message": "本次为模拟测试结果，共回收35份答卷（版本1）。从参与现状看，有效回答35份中约四成表示正在参加，另有约四成属于“曾参加但已退出”，从未参加的约占两成，说明参与过的人不少，但留存存在波动。该差异仅基于总体统计，无法推断具体人群原因。 [S0、S1]\n\n在影响参与的因素上，有效回答35份中时间冲突和社交压力各被提及15次（约42.86%），兴趣不匹配与信息获取不便各14次（40%）。结合开放题中“时间更灵活”“新手友好”“提前公布安排和费用”等模拟反馈，建议优先优化活动时间与信息发布，并设置低门槛体验活动，以降低社交压力；开放题属有限样本，仅作方向参考。 [S2、A212361-textarea1793110330679804、A212362-textarea1793110330679804、A212363-textarea1793110330679804]",
+        "version": 1,
+        "findings": [
+          {
+            "refs": [
+              "S0",
+              "S1"
+            ],
+            "text": "本次为模拟测试结果，共回收35份答卷（版本1）。从参与现状看，有效回答35份中约四成表示正在参加，另有约四成属于“曾参加但已退出”，从未参加的约占两成，说明参与过的人不少，但留存存在波动。该差异仅基于总体统计，无法推断具体人群原因。"
+          },
+          {
+            "refs": [
+              "S2",
+              "A212361-textarea1793110330679804",
+              "A212362-textarea1793110330679804",
+              "A212363-textarea1793110330679804"
+            ],
+            "text": "在影响参与的因素上，有效回答35份中时间冲突和社交压力各被提及15次（约42.86%），兴趣不匹配与信息获取不便各14次（40%）。结合开放题中“时间更灵活”“新手友好”“提前公布安排和费用”等模拟反馈，建议优先优化活动时间与信息发布，并设置低门槛体验活动，以降低社交压力；开放题属有限样本，仅作方向参考。"
+          }
+        ],
+        "provider": "本机推理网关",
+        "citations": [
+          {
+            "id": "S0",
+            "kind": "statistics",
+            "text": "本发布版本答卷总数：35",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "answerCount": 35
+          },
+          {
+            "id": "S1",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":3,\"options\":[{\"label\":\"从未参加\",\"count\":7,\"percent\":20.0},{\"label\":\"正在参加\",\"count\":14,\"percent\":40.0},{\"label\":\"曾参加但已退出\",\"count\":14,\"percent\":40.0}]}",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "question": "你目前是否参加过社团活动？",
+            "statistics": {
+              "id": "S1",
+              "map": {
+                "从未参加": 7,
+                "正在参加": 14,
+                "曾参加但已退出": 14
+              },
+              "data": [
+                14,
+                14,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你目前是否参加过社团活动？",
+              "fieldId": "radio1793110330635881",
+              "formKey": "Kd12jgkg",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "正在参加",
+                "曾参加但已退出",
+                "从未参加"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "从未参加": 20,
+                "正在参加": 40,
+                "曾参加但已退出": 40
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "A212361-textarea1793110330679804",
+            "kind": "answer",
+            "text": "[模拟测试 02] 希望活动时间更灵活，内容更符合兴趣。",
+            "fieldId": "textarea1793110330679804",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "answerId": "212361",
+            "question": "如果愿意参加，你希望社团提供什么？"
+          },
+          {
+            "id": "S2",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":4,\"options\":[{\"label\":\"时间冲突\",\"count\":15,\"percent\":42.86},{\"label\":\"社交压力\",\"count\":15,\"percent\":42.86},{\"label\":\"兴趣不匹配\",\"count\":14,\"percent\":40.0},{\"label\":\"信息获取不便\",\"count\":14,\"percent\":40.0}]}",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "question": "影响你参加社团的主要因素有哪些？",
+            "statistics": {
+              "id": "S2",
+              "map": {
+                "时间冲突": 15,
+                "社交压力": 15,
+                "兴趣不匹配": 14,
+                "信息获取不便": 14
+              },
+              "data": [
+                14,
+                15,
+                14,
+                15
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "影响你参加社团的主要因素有哪些？",
+              "fieldId": "checkbox1793110330651555",
+              "formKey": "Kd12jgkg",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "兴趣不匹配",
+                "时间冲突",
+                "信息获取不便",
+                "社交压力"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "时间冲突": 42.86,
+                "社交压力": 42.86,
+                "兴趣不匹配": 40,
+                "信息获取不便": 40
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "A212362-textarea1793110330679804",
+            "kind": "answer",
+            "text": "[模拟测试 03] 希望提供新手友好的体验活动。",
+            "fieldId": "textarea1793110330679804",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "answerId": "212362",
+            "question": "如果愿意参加，你希望社团提供什么？"
+          },
+          {
+            "id": "A212363-textarea1793110330679804",
+            "kind": "answer",
+            "text": "[模拟测试 04] 希望提前公布活动安排和费用。",
+            "fieldId": "textarea1793110330679804",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "answerId": "212363",
+            "question": "如果愿意参加，你希望社团提供什么？"
+          }
+        ],
+        "indexedAt": "2026-10-28T05:14:53.791675100Z",
+        "simulated": true,
+        "answerCount": 35,
+        "documentCount": 39,
+        "retrievalMode": "中文词片段检索＋相似内容去重；非向量检索",
+        "generationMode": "REAL",
+        "retrievedCount": 8,
+        "totalStatisticCount": 4,
+        "excludedEvidenceCount": 0,
+        "providedStatisticCount": 4
+      }
+    },
+    {
+      "id": "966c8dd7-7a8f-4c64-90d6-86cafcb878d7",
+      "question": "这份问卷反映了哪些问题？简短一点",
+      "formKey": "Kd12jgkg",
+      "version": null,
+      "state": "SUCCEEDED",
+      "mode": "REAL",
+      "provider": "本机推理网关",
+      "model": "group/group",
+      "warning": "",
+      "createdAt": "2026-10-28T06:43:16.227595300Z",
+      "plan": {
+        "tool": "survey_knowledge",
+        "stage": 0,
+        "arguments": {
+          "formKey": "Kd12jgkg",
+          "question": "当前用户要求（保留内容与长度要求）：这份问卷反映了哪些问题？简短一点\n指代释义：大学生社团参与意愿调查这份问卷反映了哪些问题？简短一点"
+        },
+        "automatic": true
+      },
+      "result": {
+        "asOf": "2026-10-28T06:43:24.031359700Z",
+        "kind": "knowledge_answer",
+        "tool": "survey_knowledge",
+        "model": "group/group",
+        "title": "大学生社团参与意愿调查",
+        "formKey": "Kd12jgkg",
+        "message": "模拟测试结果（35份，版本1）显示主要问题是参与流失与参与门槛：40%正在参加、40%曾参加但已退出，从未参加20%。影响因素中时间冲突和社交压力各42.86%，兴趣不匹配和信息获取不便各40%。 [S0、S1、S2]\n\n满意度均值3.0且各分值人数相同，提示体验分化而非一致好评；模拟开放回答提到时间灵活、新手友好、跨专业交流及提前公布安排和费用，指向活动安排与信息透明度需改进。 [S3、A212361-textarea1793110330679804、A212362-textarea1793110330679804、A212363-textarea1793110330679804]",
+        "version": 1,
+        "findings": [
+          {
+            "refs": [
+              "S0",
+              "S1",
+              "S2"
+            ],
+            "text": "模拟测试结果（35份，版本1）显示主要问题是参与流失与参与门槛：40%正在参加、40%曾参加但已退出，从未参加20%。影响因素中时间冲突和社交压力各42.86%，兴趣不匹配和信息获取不便各40%。"
+          },
+          {
+            "refs": [
+              "S3",
+              "A212361-textarea1793110330679804",
+              "A212362-textarea1793110330679804",
+              "A212363-textarea1793110330679804"
+            ],
+            "text": "满意度均值3.0且各分值人数相同，提示体验分化而非一致好评；模拟开放回答提到时间灵活、新手友好、跨专业交流及提前公布安排和费用，指向活动安排与信息透明度需改进。"
+          }
+        ],
+        "provider": "本机推理网关",
+        "citations": [
+          {
+            "id": "S0",
+            "kind": "statistics",
+            "text": "本发布版本答卷总数：35",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "answerCount": 35
+          },
+          {
+            "id": "A212361-textarea1793110330679804",
+            "kind": "answer",
+            "text": "[模拟测试 02] 希望活动时间更灵活，内容更符合兴趣。",
+            "fieldId": "textarea1793110330679804",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "answerId": "212361",
+            "question": "如果愿意参加，你希望社团提供什么？"
+          },
+          {
+            "id": "S2",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":4,\"options\":[{\"label\":\"时间冲突\",\"count\":15,\"percent\":42.86},{\"label\":\"社交压力\",\"count\":15,\"percent\":42.86},{\"label\":\"兴趣不匹配\",\"count\":14,\"percent\":40.0},{\"label\":\"信息获取不便\",\"count\":14,\"percent\":40.0}]}",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "question": "影响你参加社团的主要因素有哪些？",
+            "statistics": {
+              "id": "S2",
+              "map": {
+                "时间冲突": 15,
+                "社交压力": 15,
+                "兴趣不匹配": 14,
+                "信息获取不便": 14
+              },
+              "data": [
+                14,
+                15,
+                14,
+                15
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "影响你参加社团的主要因素有哪些？",
+              "fieldId": "checkbox1793110330651555",
+              "formKey": "Kd12jgkg",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "兴趣不匹配",
+                "时间冲突",
+                "信息获取不便",
+                "社交压力"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "时间冲突": 42.86,
+                "社交压力": 42.86,
+                "兴趣不匹配": 40,
+                "信息获取不便": 40
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S1",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":3,\"options\":[{\"label\":\"从未参加\",\"count\":7,\"percent\":20.0},{\"label\":\"正在参加\",\"count\":14,\"percent\":40.0},{\"label\":\"曾参加但已退出\",\"count\":14,\"percent\":40.0}]}",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "question": "你目前是否参加过社团活动？",
+            "statistics": {
+              "id": "S1",
+              "map": {
+                "从未参加": 7,
+                "正在参加": 14,
+                "曾参加但已退出": 14
+              },
+              "data": [
+                14,
+                14,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你目前是否参加过社团活动？",
+              "fieldId": "radio1793110330635881",
+              "formKey": "Kd12jgkg",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "正在参加",
+                "曾参加但已退出",
+                "从未参加"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "从未参加": 20,
+                "正在参加": 40,
+                "曾参加但已退出": 40
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S3",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":3.0,\"optionCount\":5,\"options\":[{\"label\":\"1\",\"count\":7,\"percent\":20.0},{\"label\":\"2\",\"count\":7,\"percent\":20.0},{\"label\":\"3\",\"count\":7,\"percent\":20.0},{\"label\":\"4\",\"count\":7,\"percent\":20.0},{\"label\":\"5\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "question": "你对社团活动的整体满意度",
+            "statistics": {
+              "id": "S3",
+              "map": {
+                "1": 7,
+                "2": 7,
+                "3": 7,
+                "4": 7,
+                "5": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": 3,
+              "type": "评分",
+              "label": "你对社团活动的整体满意度",
+              "fieldId": "rate1793110330666214",
+              "formKey": "Kd12jgkg",
+              "typeCode": "RATE",
+              "chartType": "bar",
+              "fieldName": [
+                "3",
+                "1",
+                "4",
+                "2",
+                "5"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "1": 20,
+                "2": 20,
+                "3": 20,
+                "4": 20,
+                "5": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "A212362-textarea1793110330679804",
+            "kind": "answer",
+            "text": "[模拟测试 03] 希望提供新手友好的体验活动。",
+            "fieldId": "textarea1793110330679804",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "answerId": "212362",
+            "question": "如果愿意参加，你希望社团提供什么？"
+          },
+          {
+            "id": "A212363-textarea1793110330679804",
+            "kind": "answer",
+            "text": "[模拟测试 04] 希望提前公布活动安排和费用。",
+            "fieldId": "textarea1793110330679804",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "answerId": "212363",
+            "question": "如果愿意参加，你希望社团提供什么？"
+          }
+        ],
+        "indexedAt": "2026-10-28T05:14:53.791675100Z",
+        "simulated": true,
+        "answerCount": 35,
+        "documentCount": 39,
+        "retrievalMode": "中文词片段检索＋相似内容去重；非向量检索",
+        "generationMode": "REAL",
+        "retrievedCount": 8,
+        "totalStatisticCount": 4,
+        "excludedEvidenceCount": 0,
+        "providedStatisticCount": 4
+      }
+    },
+    {
+      "id": "87d8d799-4975-421e-a17c-536ed35030f3",
+      "question": "看一下大学生 AI Agent 使用与需求调查 V2 的情况",
+      "formKey": "cYtMpVqA",
+      "version": 2,
+      "state": "SUCCEEDED",
+      "mode": "REAL",
+      "provider": "本机推理网关",
+      "model": "group/group",
+      "warning": "",
+      "createdAt": "2026-10-28T06:43:24.234466600Z",
+      "plan": {
+        "tool": "survey_knowledge",
+        "stage": 1,
+        "arguments": {
+          "formKey": "cYtMpVqA",
+          "version": 2,
+          "question": "看一下大学生 AI Agent 使用与需求调查 V2 的情况"
+        },
+        "automatic": true
+      },
+      "result": {
+        "asOf": "2026-10-28T06:43:46.106512Z",
+        "kind": "knowledge_answer",
+        "tool": "survey_knowledge",
+        "model": "group/group",
+        "title": "大学生 AI Agent 使用与需求调查",
+        "formKey": "cYtMpVqA",
+        "message": "这份问卷目前回收了35份答卷（V2版本），需要先说明：该版本带有模拟测试标记，开放题回答均标注为“[模拟测试]”，因此数据只能作为测试性参考，不能当作真实学生群体的结论。版本题目覆盖较全，但部分题目（如最大困扰、最常用产品）只有开放题文本，后端统计未给出可分析的选项分布，相关判断只能停留在个别回答层面。 [S0、S6、S49、A212395-textarea1793098473993662]\n\n从已有统计看，问卷对需求侧的询问比较细致：在自动完成任务上，润色文字（15次）和生成学习提纲（13次）被提及相对较多，日程与提醒也有14次，说明受访样本对“减负型”和“组织型”任务兴趣较集中；选择工具时，多轮对话记忆（12次）和隐私安全（11次）是最常被勾选的因素。但需注意，这些是多选题的勾选次数，不能解读为总体偏好比例，且样本为模拟答卷，建议后续用真实样本验证方向是否稳定。 [S23、S12、S0]",
+        "version": 2,
+        "findings": [
+          {
+            "refs": [
+              "S0",
+              "S6",
+              "S49",
+              "A212395-textarea1793098473993662"
+            ],
+            "text": "这份问卷目前回收了35份答卷（V2版本），需要先说明：该版本带有模拟测试标记，开放题回答均标注为“[模拟测试]”，因此数据只能作为测试性参考，不能当作真实学生群体的结论。版本题目覆盖较全，但部分题目（如最大困扰、最常用产品）只有开放题文本，后端统计未给出可分析的选项分布，相关判断只能停留在个别回答层面。"
+          },
+          {
+            "refs": [
+              "S23",
+              "S12",
+              "S0"
+            ],
+            "text": "从已有统计看，问卷对需求侧的询问比较细致：在自动完成任务上，润色文字（15次）和生成学习提纲（13次）被提及相对较多，日程与提醒也有14次，说明受访样本对“减负型”和“组织型”任务兴趣较集中；选择工具时，多轮对话记忆（12次）和隐私安全（11次）是最常被勾选的因素。但需注意，这些是多选题的勾选次数，不能解读为总体偏好比例，且样本为模拟答卷，建议后续用真实样本验证方向是否稳定。"
+          }
+        ],
+        "provider": "本机推理网关",
+        "repaired": true,
+        "citations": [
+          {
+            "id": "S0",
+            "kind": "statistics",
+            "text": "本发布版本答卷总数：35",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerCount": 35
+          },
+          {
+            "id": "A212395-textarea1793098473993662",
+            "kind": "answer",
+            "text": "[模拟测试 01] 主要用于学习答疑，希望减少错误和幻觉。",
+            "fieldId": "textarea1793098473993662",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212395",
+            "question": "请写出你最常使用的 AI Agent 或产品名称，并简述主要用途。"
+          },
+          {
+            "id": "S49",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":0,\"options\":[]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "使用 AI Agent 时，你最大的困扰是什么？",
+            "statistics": {
+              "id": "S49",
+              "map": {},
+              "data": [],
+              "mean": null,
+              "type": "多行文本",
+              "label": "使用 AI Agent 时，你最大的困扰是什么？",
+              "fieldId": "textarea1793098475095464",
+              "formKey": "cYtMpVqA",
+              "typeCode": "TEXTAREA",
+              "chartType": "pie",
+              "fieldName": [],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {},
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S6",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":0,\"options\":[]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "请写出你最常使用的 AI Agent 或产品名称，并简述主要用途。",
+            "statistics": {
+              "id": "S6",
+              "map": {},
+              "data": [],
+              "mean": null,
+              "type": "多行文本",
+              "label": "请写出你最常使用的 AI Agent 或产品名称，并简述主要用途。",
+              "fieldId": "textarea1793098473993662",
+              "formKey": "cYtMpVqA",
+              "typeCode": "TEXTAREA",
+              "chartType": "pie",
+              "fieldName": [],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {},
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S12",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":9,\"options\":[{\"label\":\"同学推荐\",\"count\":9,\"percent\":25.71},{\"label\":\"可引用来源\",\"count\":4,\"percent\":11.43},{\"label\":\"多模态能力\",\"count\":1,\"percent\":2.86},{\"label\":\"界面易用性\",\"count\":4,\"percent\":11.43},{\"label\":\"多轮对话记忆\",\"count\":12,\"percent\":34.29},{\"label\":\"联网检索能力\",\"count\":4,\"percent\":11.43},{\"label\":\"免费额度/价格\",\"count\":9,\"percent\":25.71},{\"label\":\"长文档处理能力\",\"count\":4,\"percent\":11.43},{\"label\":\"隐私与数据安全\",\"count\":11,\"percent\":31.43}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "选择 AI Agent 时，你看重哪些因素？",
+            "statistics": {
+              "id": "S12",
+              "map": {
+                "同学推荐": 9,
+                "可引用来源": 4,
+                "多模态能力": 1,
+                "界面易用性": 4,
+                "多轮对话记忆": 12,
+                "联网检索能力": 4,
+                "免费额度/价格": 9,
+                "长文档处理能力": 4,
+                "隐私与数据安全": 11
+              },
+              "data": [
+                9,
+                9,
+                4,
+                12,
+                11,
+                4,
+                4,
+                4,
+                1
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "选择 AI Agent 时，你看重哪些因素？",
+              "fieldId": "checkbox1793098474128474",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "同学推荐",
+                "免费额度/价格",
+                "长文档处理能力",
+                "多轮对话记忆",
+                "隐私与数据安全",
+                "界面易用性",
+                "联网检索能力",
+                "可引用来源",
+                "多模态能力"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "同学推荐": 25.71,
+                "可引用来源": 11.43,
+                "多模态能力": 2.86,
+                "界面易用性": 11.43,
+                "多轮对话记忆": 34.29,
+                "联网检索能力": 11.43,
+                "免费额度/价格": 25.71,
+                "长文档处理能力": 11.43,
+                "隐私与数据安全": 31.43
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S23",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":9,\"options\":[{\"label\":\"制作图表\",\"count\":3,\"percent\":8.57},{\"label\":\"润色文字\",\"count\":15,\"percent\":42.86},{\"label\":\"生成学习提纲\",\"count\":13,\"percent\":37.14},{\"label\":\"翻译外文材料\",\"count\":3,\"percent\":8.57},{\"label\":\"批改或讲解题目\",\"count\":3,\"percent\":8.57},{\"label\":\"检索并整理资料\",\"count\":3,\"percent\":8.57},{\"label\":\"生成代码并调试\",\"count\":2,\"percent\":5.71},{\"label\":\"管理日程与提醒\",\"count\":14,\"percent\":40.0},{\"label\":\"整理课堂录音或笔记\",\"count\":2,\"percent\":5.71}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你希望 AI Agent 自动完成哪些任务？",
+            "statistics": {
+              "id": "S23",
+              "map": {
+                "制作图表": 3,
+                "润色文字": 15,
+                "生成学习提纲": 13,
+                "翻译外文材料": 3,
+                "批改或讲解题目": 3,
+                "检索并整理资料": 3,
+                "生成代码并调试": 2,
+                "管理日程与提醒": 14,
+                "整理课堂录音或笔记": 2
+              },
+              "data": [
+                15,
+                14,
+                3,
+                13,
+                3,
+                3,
+                3,
+                2,
+                2
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "你希望 AI Agent 自动完成哪些任务？",
+              "fieldId": "checkbox1793098474400319",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "润色文字",
+                "管理日程与提醒",
+                "检索并整理资料",
+                "生成学习提纲",
+                "翻译外文材料",
+                "制作图表",
+                "批改或讲解题目",
+                "生成代码并调试",
+                "整理课堂录音或笔记"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "制作图表": 8.57,
+                "润色文字": 42.86,
+                "生成学习提纲": 37.14,
+                "翻译外文材料": 8.57,
+                "批改或讲解题目": 8.57,
+                "检索并整理资料": 8.57,
+                "生成代码并调试": 5.71,
+                "管理日程与提醒": 40,
+                "整理课堂录音或笔记": 5.71
+              },
+              "missingCount": 0
+            }
+          }
+        ],
+        "indexedAt": "2026-10-28T05:14:53.881237700Z",
+        "simulated": true,
+        "answerCount": 35,
+        "documentCount": 229,
+        "retrievalMode": "中文词片段检索＋相似内容去重；非向量检索",
+        "generationMode": "REAL",
+        "retrievedCount": 12,
+        "totalStatisticCount": 54,
+        "excludedEvidenceCount": 0,
+        "providedStatisticCount": 33
+      }
+    },
+    {
+      "id": "a6a20adf-406d-4a24-bf31-5a16d22303f5",
+      "question": "看一下大学生社团参与意愿调查的情况",
+      "formKey": "Kd12jgkg",
+      "version": null,
+      "state": "SUCCEEDED",
+      "mode": "REAL",
+      "provider": "本机推理网关",
+      "model": "group/group",
+      "warning": "",
+      "createdAt": "2026-10-28T06:43:46.546685300Z",
+      "plan": {
+        "tool": "survey_knowledge",
+        "stage": 1,
+        "arguments": {
+          "formKey": "Kd12jgkg",
+          "question": "看一下大学生社团参与意愿调查的情况"
+        },
+        "automatic": true
+      },
+      "result": {
+        "asOf": "2026-10-28T06:43:57.159960Z",
+        "kind": "knowledge_answer",
+        "tool": "survey_knowledge",
+        "model": "group/group",
+        "title": "大学生社团参与意愿调查",
+        "formKey": "Kd12jgkg",
+        "message": "小样本调查（35份）显示社团参与呈两极：正在参加和曾参加后退出均约四成，从未参加约两成，持续参与比例有限。 [S0、S1]\n\n阻碍因素集中于时间冲突和社交压力，兴趣不匹配、信息获取不便也较突出，说明时间精力、信息、社交与匹配问题并存；满意度均值3.0，态度总体中性。 [S2、S3]\n\n开放题建议涉及跨专业交流、时间灵活、新手友好、提前公布安排和费用；因属少数样本中的个别声音，宜作为优化活动安排与信息发布的参考。 [A212360-textarea1793110330679804、A212361-textarea1793110330679804、A212362-textarea1793110330679804]",
+        "version": 1,
+        "findings": [
+          {
+            "refs": [
+              "S0",
+              "S1"
+            ],
+            "text": "小样本调查（35份）显示社团参与呈两极：正在参加和曾参加后退出均约四成，从未参加约两成，持续参与比例有限。"
+          },
+          {
+            "refs": [
+              "S2",
+              "S3"
+            ],
+            "text": "阻碍因素集中于时间冲突和社交压力，兴趣不匹配、信息获取不便也较突出，说明时间精力、信息、社交与匹配问题并存；满意度均值3.0，态度总体中性。"
+          },
+          {
+            "refs": [
+              "A212360-textarea1793110330679804",
+              "A212361-textarea1793110330679804",
+              "A212362-textarea1793110330679804"
+            ],
+            "text": "开放题建议涉及跨专业交流、时间灵活、新手友好、提前公布安排和费用；因属少数样本中的个别声音，宜作为优化活动安排与信息发布的参考。"
+          }
+        ],
+        "provider": "本机推理网关",
+        "citations": [
+          {
+            "id": "S0",
+            "kind": "statistics",
+            "text": "本发布版本答卷总数：35",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "answerCount": 35
+          },
+          {
+            "id": "A212360-textarea1793110330679804",
+            "kind": "answer",
+            "text": "[模拟测试 01] 希望增加跨专业交流机会。",
+            "fieldId": "textarea1793110330679804",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "answerId": "212360",
+            "question": "如果愿意参加，你希望社团提供什么？"
+          },
+          {
+            "id": "S1",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":3,\"options\":[{\"label\":\"从未参加\",\"count\":7,\"percent\":20.0},{\"label\":\"正在参加\",\"count\":14,\"percent\":40.0},{\"label\":\"曾参加但已退出\",\"count\":14,\"percent\":40.0}]}",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "question": "你目前是否参加过社团活动？",
+            "statistics": {
+              "id": "S1",
+              "map": {
+                "从未参加": 7,
+                "正在参加": 14,
+                "曾参加但已退出": 14
+              },
+              "data": [
+                14,
+                14,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你目前是否参加过社团活动？",
+              "fieldId": "radio1793110330635881",
+              "formKey": "Kd12jgkg",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "正在参加",
+                "曾参加但已退出",
+                "从未参加"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "从未参加": 20,
+                "正在参加": 40,
+                "曾参加但已退出": 40
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "A212361-textarea1793110330679804",
+            "kind": "answer",
+            "text": "[模拟测试 02] 希望活动时间更灵活，内容更符合兴趣。",
+            "fieldId": "textarea1793110330679804",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "answerId": "212361",
+            "question": "如果愿意参加，你希望社团提供什么？"
+          },
+          {
+            "id": "S2",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":4,\"options\":[{\"label\":\"时间冲突\",\"count\":15,\"percent\":42.86},{\"label\":\"社交压力\",\"count\":15,\"percent\":42.86},{\"label\":\"兴趣不匹配\",\"count\":14,\"percent\":40.0},{\"label\":\"信息获取不便\",\"count\":14,\"percent\":40.0}]}",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "question": "影响你参加社团的主要因素有哪些？",
+            "statistics": {
+              "id": "S2",
+              "map": {
+                "时间冲突": 15,
+                "社交压力": 15,
+                "兴趣不匹配": 14,
+                "信息获取不便": 14
+              },
+              "data": [
+                14,
+                15,
+                14,
+                15
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "影响你参加社团的主要因素有哪些？",
+              "fieldId": "checkbox1793110330651555",
+              "formKey": "Kd12jgkg",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "兴趣不匹配",
+                "时间冲突",
+                "信息获取不便",
+                "社交压力"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "时间冲突": 42.86,
+                "社交压力": 42.86,
+                "兴趣不匹配": 40,
+                "信息获取不便": 40
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "A212362-textarea1793110330679804",
+            "kind": "answer",
+            "text": "[模拟测试 03] 希望提供新手友好的体验活动。",
+            "fieldId": "textarea1793110330679804",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "answerId": "212362",
+            "question": "如果愿意参加，你希望社团提供什么？"
+          },
+          {
+            "id": "S3",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":3.0,\"optionCount\":5,\"options\":[{\"label\":\"1\",\"count\":7,\"percent\":20.0},{\"label\":\"2\",\"count\":7,\"percent\":20.0},{\"label\":\"3\",\"count\":7,\"percent\":20.0},{\"label\":\"4\",\"count\":7,\"percent\":20.0},{\"label\":\"5\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "Kd12jgkg",
+            "version": 1,
+            "question": "你对社团活动的整体满意度",
+            "statistics": {
+              "id": "S3",
+              "map": {
+                "1": 7,
+                "2": 7,
+                "3": 7,
+                "4": 7,
+                "5": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": 3,
+              "type": "评分",
+              "label": "你对社团活动的整体满意度",
+              "fieldId": "rate1793110330666214",
+              "formKey": "Kd12jgkg",
+              "typeCode": "RATE",
+              "chartType": "bar",
+              "fieldName": [
+                "3",
+                "1",
+                "4",
+                "2",
+                "5"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "1": 20,
+                "2": 20,
+                "3": 20,
+                "4": 20,
+                "5": 20
+              },
+              "missingCount": 0
+            }
+          }
+        ],
+        "indexedAt": "2026-10-28T05:14:53.791675100Z",
+        "simulated": true,
+        "summarized": true,
+        "answerCount": 35,
+        "documentCount": 39,
+        "retrievalMode": "中文词片段检索＋相似内容去重；非向量检索",
+        "generationMode": "REAL",
+        "retrievedCount": 8,
+        "totalStatisticCount": 4,
+        "excludedEvidenceCount": 0,
+        "providedStatisticCount": 4
+      }
+    }
+  ]
+}
