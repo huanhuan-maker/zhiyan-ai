@@ -16,6 +16,8 @@
 
 交给其他 Agent 验收或续开发，请先读 [Agent 交接文档](docs/AGENT_HANDOFF.md)，文末提供可复制的接手指令。
 
+**团队协作**：多人共同开发的分支、提交、冲突和"不要提交什么"的约定见 [docs/TEAM_GIT.md](docs/TEAM_GIT.md)。当前主干为 `main`，`master` 是旧原型归档。
+
 ## Windows 安装要求
 
 Windows 10/11、PowerShell 5.1/7、JDK 17+、Node 22.12+（或 20.19+）、MySQL 8.x。无需全局 Maven 或 Docker。首次安装依赖需要网络。
