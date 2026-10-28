@@ -1,0 +1,427 @@
+{
+  "headersAtMs": 1104,
+  "completedAtMs": 18318,
+  "events": [
+    {
+      "type": "status",
+      "data": {
+        "message": "正在理解你的问题…"
+      }
+    },
+    {
+      "type": "status",
+      "data": {
+        "message": "正在定位相关问卷…"
+      }
+    },
+    {
+      "type": "status",
+      "data": {
+        "message": "正在检索答卷、整理分析并核对来源…"
+      }
+    },
+    {
+      "type": "answer",
+      "data": {
+        "turn": "cb440c2e-e48c-4a50-8c72-2ff53198a8f6",
+        "result": {
+          "asOf": "2026-10-28T07:03:30.286451700Z",
+          "kind": "knowledge_answer",
+          "tool": "survey_knowledge",
+          "model": "group/group",
+          "title": "大学生社团参与意愿调查",
+          "formKey": "Kd12jgkg",
+          "version": 1,
+          "findings": [
+            {
+              "refs": [
+                "S0",
+                "S1",
+                "S2",
+                "S3",
+                "S4"
+              ],
+              "text": "这是模拟测试结果，本版本共35份答卷。现有统计覆盖参与状态、影响因素和满意度三题；开放题没有选项统计，但提供了几条模拟开放回答。问卷未提供直接的“是否愿意参加”统计，因此不能给出参与意愿比例，只能结合参与经历和障碍作有限分析。"
+            },
+            {
+              "refs": [
+                "S1",
+                "S3"
+              ],
+              "text": "从参与经历看，正在参加与曾参加但已退出均占40%，从未参加占20%，提示参与面不低，但退出和未参与同时存在。满意度五个选项人数相同、均值3.0，评价较分散或中性，不能据此判断整体满意或不满意。"
+            },
+            {
+              "refs": [
+                "S2",
+                "A212360-textarea1793110330679804",
+                "A212361-textarea1793110330679804",
+                "A212362-textarea1793110330679804",
+                "A212363-textarea1793110330679804"
+              ],
+              "text": "影响因素中，时间冲突和社交压力并列最高（各42.86%），兴趣不匹配和信息获取不便也各占40%，障碍较分散而非单一原因。开放回答提到跨专业交流、时间灵活、新手友好体验、提前公布安排和费用等线索，但不能当作比例；结合现有证据，优先改善时间灵活性、信息透明和社交门槛，并设计新手友好体验更贴合数据。"
+            }
+          ],
+          "provider": "本机推理网关",
+          "citations": [
+            {
+              "id": "S0",
+              "kind": "statistics",
+              "text": "本发布版本答卷总数：35",
+              "formKey": "Kd12jgkg",
+              "version": 1,
+              "answerCount": 35
+            },
+            {
+              "id": "A212360-textarea1793110330679804",
+              "kind": "answer",
+              "text": "[模拟测试 01] 希望增加跨专业交流机会。",
+              "fieldId": "textarea1793110330679804",
+              "formKey": "Kd12jgkg",
+              "version": 1,
+              "answerId": "212360",
+              "question": "如果愿意参加，你希望社团提供什么？"
+            },
+            {
+              "id": "S1",
+              "kind": "statistics",
+              "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":3,\"options\":[{\"label\":\"从未参加\",\"count\":7,\"percent\":20.0},{\"label\":\"正在参加\",\"count\":14,\"percent\":40.0},{\"label\":\"曾参加但已退出\",\"count\":14,\"percent\":40.0}]}",
+              "formKey": "Kd12jgkg",
+              "version": 1,
+              "question": "你目前是否参加过社团活动？",
+              "statistics": {
+                "id": "S1",
+                "map": {
+                  "从未参加": 7,
+                  "正在参加": 14,
+                  "曾参加但已退出": 14
+                },
+                "data": [
+                  14,
+                  14,
+                  7
+                ],
+                "mean": null,
+                "type": "单选框",
+                "label": "你目前是否参加过社团活动？",
+                "fieldId": "radio1793110330635881",
+                "formKey": "Kd12jgkg",
+                "typeCode": "RADIO",
+                "chartType": "pie",
+                "fieldName": [
+                  "正在参加",
+                  "曾参加但已退出",
+                  "从未参加"
+                ],
+                "totalCount": 35,
+                "validCount": 35,
+                "percentages": {
+                  "从未参加": 20,
+                  "正在参加": 40,
+                  "曾参加但已退出": 40
+                },
+                "missingCount": 0
+              }
+            },
+            {
+              "id": "A212361-textarea1793110330679804",
+              "kind": "answer",
+              "text": "[模拟测试 02] 希望活动时间更灵活，内容更符合兴趣。",
+              "fieldId": "textarea1793110330679804",
+              "formKey": "Kd12jgkg",
+              "version": 1,
+              "answerId": "212361",
+              "question": "如果愿意参加，你希望社团提供什么？"
+            },
+            {
+              "id": "S2",
+              "kind": "statistics",
+              "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":4,\"options\":[{\"label\":\"时间冲突\",\"count\":15,\"percent\":42.86},{\"label\":\"社交压力\",\"count\":15,\"percent\":42.86},{\"label\":\"兴趣不匹配\",\"count\":14,\"percent\":40.0},{\"label\":\"信息获取不便\",\"count\":14,\"percent\":40.0}]}",
+              "formKey": "Kd12jgkg",
+              "version": 1,
+              "question": "影响你参加社团的主要因素有哪些？",
+              "statistics": {
+                "id": "S2",
+                "map": {
+                  "时间冲突": 15,
+                  "社交压力": 15,
+                  "兴趣不匹配": 14,
+                  "信息获取不便": 14
+                },
+                "data": [
+                  14,
+                  15,
+                  14,
+                  15
+                ],
+                "mean": null,
+                "type": "多选框",
+                "label": "影响你参加社团的主要因素有哪些？",
+                "fieldId": "checkbox1793110330651555",
+                "formKey": "Kd12jgkg",
+                "typeCode": "CHECKBOX",
+                "chartType": "pie",
+                "fieldName": [
+                  "兴趣不匹配",
+                  "时间冲突",
+                  "信息获取不便",
+                  "社交压力"
+                ],
+                "totalCount": 35,
+                "validCount": 35,
+                "percentages": {
+                  "时间冲突": 42.86,
+                  "社交压力": 42.86,
+                  "兴趣不匹配": 40,
+                  "信息获取不便": 40
+                },
+                "missingCount": 0
+              }
+            },
+            {
+              "id": "A212362-textarea1793110330679804",
+              "kind": "answer",
+              "text": "[模拟测试 03] 希望提供新手友好的体验活动。",
+              "fieldId": "textarea1793110330679804",
+              "formKey": "Kd12jgkg",
+              "version": 1,
+              "answerId": "212362",
+              "question": "如果愿意参加，你希望社团提供什么？"
+            },
+            {
+              "id": "S3",
+              "kind": "statistics",
+              "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":3.0,\"optionCount\":5,\"options\":[{\"label\":\"1\",\"count\":7,\"percent\":20.0},{\"label\":\"2\",\"count\":7,\"percent\":20.0},{\"label\":\"3\",\"count\":7,\"percent\":20.0},{\"label\":\"4\",\"count\":7,\"percent\":20.0},{\"label\":\"5\",\"count\":7,\"percent\":20.0}]}",
+              "formKey": "Kd12jgkg",
+              "version": 1,
+              "question": "你对社团活动的整体满意度",
+              "statistics": {
+                "id": "S3",
+                "map": {
+                  "1": 7,
+                  "2": 7,
+                  "3": 7,
+                  "4": 7,
+                  "5": 7
+                },
+                "data": [
+                  7,
+                  7,
+                  7,
+                  7,
+                  7
+                ],
+                "mean": 3,
+                "type": "评分",
+                "label": "你对社团活动的整体满意度",
+                "fieldId": "rate1793110330666214",
+                "formKey": "Kd12jgkg",
+                "typeCode": "RATE",
+                "chartType": "bar",
+                "fieldName": [
+                  "3",
+                  "1",
+                  "4",
+                  "2",
+                  "5"
+                ],
+                "totalCount": 35,
+                "validCount": 35,
+                "percentages": {
+                  "1": 20,
+                  "2": 20,
+                  "3": 20,
+                  "4": 20,
+                  "5": 20
+                },
+                "missingCount": 0
+              }
+            },
+            {
+              "id": "A212363-textarea1793110330679804",
+              "kind": "answer",
+              "text": "[模拟测试 04] 希望提前公布活动安排和费用。",
+              "fieldId": "textarea1793110330679804",
+              "formKey": "Kd12jgkg",
+              "version": 1,
+              "answerId": "212363",
+              "question": "如果愿意参加，你希望社团提供什么？"
+            },
+            {
+              "id": "S4",
+              "kind": "statistics",
+              "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":0,\"options\":[]}",
+              "formKey": "Kd12jgkg",
+              "version": 1,
+              "question": "如果愿意参加，你希望社团提供什么？",
+              "statistics": {
+                "id": "S4",
+                "map": {},
+                "data": [],
+                "mean": null,
+                "type": "多行文本",
+                "label": "如果愿意参加，你希望社团提供什么？",
+                "fieldId": "textarea1793110330679804",
+                "formKey": "Kd12jgkg",
+                "typeCode": "TEXTAREA",
+                "chartType": "pie",
+                "fieldName": [],
+                "totalCount": 35,
+                "validCount": 35,
+                "percentages": {},
+                "missingCount": 0
+              }
+            }
+          ],
+          "indexedAt": "2026-10-28T05:14:53.791675100Z",
+          "simulated": true,
+          "answerCount": 35,
+          "documentCount": 39,
+          "retrievalMode": "中文词片段检索＋相似内容去重；非向量检索",
+          "generationMode": "REAL",
+          "retrievedCount": 8,
+          "totalStatisticCount": 4,
+          "excludedEvidenceCount": 0,
+          "providedStatisticCount": 4
+        }
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "这是模拟测试结果，本版本共35份答卷。现有统计覆"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "盖参与状态、影响因素和满意度三题；开放题没有选项"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "统计，但提供了几条模拟开放回答。问卷未提供直接的"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "“是否愿意参加”统计，因此不能给出参与意愿比例，"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "只能结合参与经历和障碍作有限分析。 [S0、S1"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "、S2、S3、S4]\n\n从参与经历看，正在参加与"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "曾参加但已退出均占40%，从未参加占20%，提示"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "参与面不低，但退出和未参与同时存在。满意度五个选"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "项人数相同、均值3.0，评价较分散或中性，不能据"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "此判断整体满意或不满意。 [S1、S3]\n\n影响"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "因素中，时间冲突和社交压力并列最高（各42.86"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "%），兴趣不匹配和信息获取不便也各占40%，障碍"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "较分散而非单一原因。开放回答提到跨专业交流、时间"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "灵活、新手友好体验、提前公布安排和费用等线索，但"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "不能当作比例；结合现有证据，优先改善时间灵活性、"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "信息透明和社交门槛，并设计新手友好体验更贴合数据"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "。 [S2、A212360-textarea17"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "93110330679804、A212361-t"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "extarea1793110330679804、"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "A212362-textarea17931103"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "30679804、A212363-textare"
+      }
+    },
+    {
+      "type": "delta",
+      "data": {
+        "text": "a1793110330679804]"
+      }
+    },
+    {
+      "type": "done",
+      "data": {
+        "id": "cb440c2e-e48c-4a50-8c72-2ff53198a8f6"
+      }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "passed": 5,
+  "failed": 0,
+  "checks": [
+    "progress status is visible while actual model work is pending",
+    "validated real survey answer renders through SSE",
+    "network delivers status before completion and multiple answer delta frames",
+    "streamed text equals persisted grounded answer without duplication",
+    "refresh restores completed answer and sources"
+  ],
+  "pageErrors": []
+}
