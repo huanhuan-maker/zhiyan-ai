@@ -23,6 +23,9 @@ export const stopFormRequest = (data) => postRequest('/user/form/stop', data)
 // 查询表单分页
 export const pageFormRequest = (params) => getRequest('/user/form/page', params)
 
+// 批量查询问卷的收集份数（我的问卷卡片，一次请求返回当前页）
+export const listFormAnswerCountRequest = (keys) => getRequest('/user/form/answer-counts', { keys: keys.join(',') })
+
 // 查询表单项内容
 export const listProjectItemRequest = (params) => getRequest('/user/form/item/list', params)
 

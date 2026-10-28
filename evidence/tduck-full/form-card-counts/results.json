@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-28T01:05:53.822Z",
+  "checks": [
+    {
+      "name": "卡片不再显示类型编号，改为收集份数",
+      "passed": true
+    },
+    {
+      "name": "每张卡片的收集份数与批量接口一致",
+      "passed": true
+    },
+    {
+      "name": "有答卷的问卷显示真实份数",
+      "passed": true
+    },
+    {
+      "name": "有答卷用强调色、0 份用次级色",
+      "passed": true
+    },
+    {
+      "name": "后端对未登录请求拒绝返回份数",
+      "passed": true
+    },
+    {
+      "name": "别人无法查询不属于自己的问卷份数",
+      "passed": true
+    },
+    {
+      "name": "移动端卡片仍显示三项信息且不横向溢出",
+      "passed": true
+    },
+    {
+      "name": "页面没有运行时错误",
+      "passed": true
+    }
+  ],
+  "total": 8,
+  "passed": 8,
+  "failed": 0,
+  "errors": [],
+  "counts": {
+    "yh5ry2od": 1,
+    "Kd12jgkg": 0,
+    "IuFjQWxa": 0,
+    "cYtMpVqA": 0,
+    "zYxKvLbi": 0,
+    "dUJev0eA": 0,
+    "k78wY4hN": 1,
+    "RCFB5MH9": 2,
+    "oM9Q4wZx": 0,
+    "E38trxNZ": 0
+  }
+}

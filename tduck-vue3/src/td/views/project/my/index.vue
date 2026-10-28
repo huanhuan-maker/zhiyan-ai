@@ -202,7 +202,8 @@
 </template>
 
 <script>
-import { createFormRequest, pageFormRequest, updateFormRequest } from '@/api/project/form'
+import { createFormRequest, listFormAnswerCountRequest, pageFormRequest, updateFormRequest } from '@/api/project/form'
+import { applyAnswerCounts } from '@/utils/answerCounts'
 import { listAiDraftSlotsRequest, removeAiDraftSlotRequest } from '@/api/project/ai'
 import dayjs from 'dayjs'
 import FormCardList from './card'
@@ -225,6 +226,7 @@ export default {
       queryParams: { current: 1, size: 12, name: '', beginDateTime: null, endDateTime: null, status: null, folderId: 0 },
       formData: { description: '', name: '未命名问卷', type: 0 },
       projectList: [],
+      answerCountToken: 0,
       projectListLoading: true,
       projectListError: false,
       savedDrafts: [],
@@ -270,6 +272,18 @@ export default {
       } catch (e) { this.savedDraftError = true }
     },
     formatSavedTime(value) { return dayjs(value).format('YYYY/MM/DD HH:mm') },
+    // 收集份数单独批量查询：失败时列表照常显示，卡片用占位符而不是假 0。
+    loadAnswerCounts(records) {
+      const keys = (records || []).map((item) => item.formKey).filter(Boolean)
+      if (!keys.length) return
+      const token = ++this.answerCountToken
+      listFormAnswerCountRequest(keys)
+        .then((res) => {
+          if (token !== this.answerCountToken) return
+          this.projectList = applyAnswerCounts(this.projectList, res.data || {})
+        })
+        .catch(() => {})
+    },
     newAiDraft() { this.$router.push({ path: '/home/ai' }) },
     async removeSavedDraft(draft) {
       try { await this.$confirm('移除后这份暂存将无法恢复，确定移除吗？已导入的问卷不受影响。', '移除暂存', { type: 'warning', confirmButtonText: '移除', cancelButtonText: '取消' }) } catch (e) { return }
@@ -341,6 +355,7 @@ export default {
         this.total = total
         this.queryParams.size = size
         this.projectListLoading = false
+        this.loadAnswerCounts(records)
       }).catch(() => {
         this.projectListError = true
         this.projectListLoading = false

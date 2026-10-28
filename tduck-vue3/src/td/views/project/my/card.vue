@@ -1,7 +1,7 @@
 <template>
   <div class="project-card-container">
     <div v-if="projectList.length" class="project-card-grid">
-      <article v-for="p in projectList" :key="p.id" class="project-card-item">
+      <article v-for="p in projectList" :key="p.id" class="project-card-item" :data-form-key="p.formKey">
         <div class="card-body">
           <div class="card-topline">
             <span class="form-type-badge" :class="'type-' + p.type">{{ getType(p.type).name || '问卷' }}</span>
@@ -14,8 +14,8 @@
               <span class="metric-label">状态</span>
             </div>
             <div class="metric-item">
-              <span class="metric-value type-value">{{ getType(p.type).code || '1' }}</span>
-              <span class="metric-label">类型编号</span>
+              <span class="metric-value count-value" :class="{ 'count-zero': !p.answerCount }">{{ answerCountLabel(p.answerCount) }}</span>
+              <span class="metric-label">收集份数</span>
             </div>
             <div class="metric-item">
               <span class="metric-value time-value">{{ formatDate(p.updateTime || p.createTime) }}</span>
@@ -49,6 +49,7 @@
 
 <script>
 import mixin from './mixin'
+import { answerCountLabel } from '@/utils/answerCounts'
 
 export default {
   name: 'FormCardList',
@@ -70,6 +71,7 @@ export default {
     }
   },
   methods: {
+    answerCountLabel,
     deleteFrom(key) {
       this.$confirm('移除后，该问卷将不再显示在“我的问卷”中，是否继续？', '移除问卷', {
         confirmButtonText: '确定',
@@ -154,7 +156,7 @@ export default {
   &.status-2 { color: var(--zy-success); }
   &.status-3 { color: var(--zy-danger); }
 }
-.type-value { color: var(--zy-purple); }
+.count-value { color: var(--zy-accent-cyan); }
 .time-value { color: var(--zy-text-regular); font-size: 12px; }
 .metric-label { color: var(--zy-text-secondary); font-size: 11px; }
 .card-actions {

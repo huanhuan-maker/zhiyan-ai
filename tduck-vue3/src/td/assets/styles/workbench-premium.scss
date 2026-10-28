@@ -216,6 +216,8 @@ h1.page-title,
 .metric-value.status-value.status-1 { color: #b45309 !important; }
 .metric-value.status-value.status-2 { color: #0f766e !important; }
 .metric-value.status-value.status-3 { color: #475569 !important; }
+.metric-value.count-value { color: var(--zy-accent-cyan) !important; }
+.metric-value.count-value.count-zero { color: var(--zy-text-secondary) !important; }
 .form-type-badge {
   background-color: var(--zy-primary-soft) !important;
   color: var(--zy-primary) !important;
@@ -426,6 +428,8 @@ h1.page-title,
   .metric-value.status-value.status-1 { color: #e5bb65 !important; }
   .metric-value.status-value.status-2 { color: #4bd6b1 !important; }
   .metric-value.status-value.status-3 { color: #9db0c6 !important; }
+.metric-value.count-value { color: var(--zy-accent-cyan) !important; }
+.metric-value.count-value.count-zero { color: var(--zy-text-secondary) !important; }
   .card-status.status-1 { color: #e5bb65 !important; }
   .card-status.status-2 { color: #4bd6b1 !important; }
   .card-status.status-3 { color: #9db0c6 !important; }
