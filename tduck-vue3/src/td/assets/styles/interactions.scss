@@ -129,3 +129,60 @@
     transition: none !important;
   }
 }
+
+/* ===== 32. 流式回答：生成中的气泡呼吸 + 草稿"未经核对"标记 + 光标 ===== */
+.assistant-page .answer-bubble {
+  transition: border-color 0.35s ease, box-shadow 0.35s ease;
+}
+.assistant-page .answer-bubble:has(.streaming-text.is-typing),
+.assistant-page .answer-bubble:has(.live-draft) {
+  border-color: rgba(56, 232, 255, 0.28);
+  box-shadow: 0 0 0 1px rgba(56, 232, 255, 0.1), 0 22px 44px -34px rgba(56, 232, 255, 0.55);
+}
+.assistant-page .answer-bubble .ai-status {
+  margin: 2px 0;
+}
+.assistant-page .live-draft {
+  padding: 10px 12px;
+  background: var(--zy-surface-subtle);
+  border: 1px dashed var(--zy-border);
+  border-radius: 10px;
+}
+.assistant-page .live-draft small {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  padding: 2px 9px;
+  font-size: 11px;
+  color: var(--zy-text-secondary);
+  background: var(--zy-surface);
+  border: 1px solid var(--zy-border-light);
+  border-radius: 999px;
+}
+.assistant-page .live-draft p::after {
+  content: '';
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.16em;
+  background: var(--zy-accent-cyan, #38e8ff);
+  border-radius: 2px;
+  animation: zy-caret-blink 1.05s steps(1, end) infinite;
+}
+@keyframes zy-caret-blink {
+  0%, 55% { opacity: 1; }
+  56%, 100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .assistant-page .answer-bubble:has(.streaming-text.is-typing),
+  .assistant-page .answer-bubble:has(.live-draft) {
+    box-shadow: none;
+  }
+  .assistant-page .live-draft p::after {
+    animation: none;
+    opacity: 0.75;
+  }
+}
+

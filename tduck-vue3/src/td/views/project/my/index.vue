@@ -18,7 +18,7 @@
       <div class="project-header">
         <div class="header-left">
           <h2 class="page-title">问卷概览</h2>
-          <p class="page-subtitle">共 <AnimatedNumber :value="total || 0" /> 份问卷<span v-if="savedDrafts.length">，另有 <AnimatedNumber :value="savedDrafts.length" /> 份 AI 暂存</span></p>
+          <p class="page-subtitle">共 <AnimatedNumber :value="total || 0" /> 份问卷<span v-if="folderList.length">，<AnimatedNumber :value="folderList.length" /> 个文件夹</span><span v-if="savedDrafts.length && !queryParams.folderId">，另有 <AnimatedNumber :value="savedDrafts.length" /> 份 AI 暂存</span></p>
         </div>
         <div class="header-right">
           <el-button class="ai-create-btn" aria-label="AI 建卷" @click="newAiDraft">
@@ -116,10 +116,36 @@
       </section>
 
       <div class="content-view">
-        <el-alert v-if="savedDraftError" class="saved-draft-error" type="warning" :closable="false" title="AI 暂存暂时无法读取，问卷列表仍可使用">
+        <nav v-if="queryParams.folderId" class="folder-breadcrumb" data-testid="folder-breadcrumb" aria-label="当前文件夹路径">
+          <button type="button" class="crumb-root" @click="goRoot">
+            <i class="el-icon-back" aria-hidden="true" />
+            根目录
+          </button>
+          <span class="crumb-separator" aria-hidden="true">/</span>
+          <span class="crumb-current" aria-current="page">{{ currentFolderTitle }}</span>
+          <el-button class="crumb-back-btn" data-testid="folder-back" @click="goRoot">返回根目录</el-button>
+        </nav>
+        <div v-if="dataShowType == 'table' && !queryParams.folderId && folderList.length" class="folder-chip-bar" aria-label="文件夹">
+          <span class="folder-chip-label">文件夹</span>
+          <button
+            v-for="folder in folderList"
+            :key="'folder-chip-' + folder.id"
+            type="button"
+            class="folder-chip"
+            :data-folder-id="folder.id"
+            :aria-label="folderAriaLabel(folder, folderCounts[folder.id])"
+            @click="enterFolder(folder)"
+          >
+            <i class="el-icon-folder" aria-hidden="true" />
+            <span class="folder-chip-name">{{ folderDisplayName(folder) }}</span>
+            <span class="folder-chip-meta">{{ folderMetaLabel(folderCounts[folder.id]) }}</span>
+          </button>
+        </div>
+        <el-alert v-if="savedDraftError && !queryParams.folderId" class="saved-draft-error" type="warning" :closable="false" title="AI 暂存暂时无法读取，问卷列表仍可使用">
           <el-button size="small" @click="loadSavedDraft">重试</el-button>
         </el-alert>
-        <article v-for="draft in visibleSavedDrafts" :key="draft.id" class="saved-draft-card" data-testid="saved-ai-draft">
+        <!-- AI 暂存是全局草稿，不属于任何文件夹，进入文件夹后不展示 -->
+        <article v-for="draft in visibleDraftCards" :key="draft.id" class="saved-draft-card" data-testid="saved-ai-draft">
           <div class="saved-draft-content">
             <div class="saved-draft-meta"><span class="saved-draft-badge">AI 暂存</span><span>未发布 · {{ draft.snapshot?.result?.questions?.length || 0 }} 题</span></div>
             <h3>{{ draft.snapshot?.result?.title || 'AI 建卷暂存' }}</h3>
@@ -139,9 +165,15 @@
           </template>
         </el-alert>
         <form-card-list
-          v-if="dataShowType == 'card' && (projectList.length || !visibleSavedDrafts.length)"
+          v-if="dataShowType == 'card' && (projectList.length || folderList.length || queryParams.folderId || !visibleSavedDrafts.length)"
           v-loading="projectListLoading"
           v-model:project-list="projectList"
+          :folders="folderList"
+          :folder-counts="folderCounts"
+          :inside-folder="queryParams.folderId > 0"
+          :folder-name="currentFolderTitle"
+          :filters-active="filtersActive"
+          @open-folder="enterFolder"
           @refresh="queryProjectPage"
         />
         <my-form-table
@@ -204,6 +236,7 @@
 <script>
 import { createFormRequest, listFormAnswerCountRequest, pageFormRequest, updateFormRequest } from '@/api/project/form'
 import { applyAnswerCounts } from '@/utils/answerCounts'
+import { folderAriaLabel, folderDisplayName, folderMetaLabel } from '@/utils/formGroups'
 import { listAiDraftSlotsRequest, removeAiDraftSlotRequest } from '@/api/project/ai'
 import dayjs from 'dayjs'
 import FormCardList from './card'
@@ -226,7 +259,13 @@ export default {
       queryParams: { current: 1, size: 12, name: '', beginDateTime: null, endDateTime: null, status: null, folderId: 0 },
       formData: { description: '', name: '未命名问卷', type: 0 },
       projectList: [],
+      // 文件夹行单独请求（folder=1），与问卷列表分开渲染，不计入「共 N 份问卷」。
+      folderList: [],
+      folderCounts: {},
+      activeFolderName: '',
       answerCountToken: 0,
+      folderCountToken: 0,
+      projectRequestToken: 0,
       projectListLoading: true,
       projectListError: false,
       savedDrafts: [],
@@ -238,6 +277,22 @@ export default {
   computed: {
     paginationLayout() {
       return this.isMobile ? 'prev, pager, next' : 'total, sizes, prev, pager, next, jumper'
+    },
+    currentFolderTitle() {
+      return this.activeFolderName || '文件夹'
+    },
+    // 文件夹内如果没有筛选条件却一条问卷都没有，就是真正的空文件夹。
+    filtersActive() {
+      return Boolean(
+        (this.queryParams.name || '').trim() ||
+          this.queryParams.status ||
+          this.queryParams.beginDateTime ||
+          this.queryParams.endDateTime
+      )
+    },
+    // AI 暂存是全局草稿，不属于任何文件夹，进入文件夹后不展示。
+    visibleDraftCards() {
+      return this.queryParams.folderId ? [] : this.visibleSavedDrafts
     },
     visibleSavedDrafts() {
       if (this.queryParams.status && Number(this.queryParams.status) !== 1) return []
@@ -254,6 +309,23 @@ export default {
   created() {
     this.isMobile = window.innerWidth < 768
     this.queryParams.current = 1
+    // 支持刷新/分享带 folderId 的地址，直接落在对应文件夹。
+    const routeFolderId = Number(this.$route.query.folderId)
+    if (Number.isFinite(routeFolderId) && routeFolderId > 0) {
+      this.queryParams.folderId = routeFolderId
+      this.activeFolderName = String(this.$route.query.folderName || '')
+    }
+  },
+  watch: {
+    // 浏览器前进/后退时同步文件夹状态。
+    '$route.query.folderId'(value) {
+      const id = Number(value) || 0
+      if (id === this.queryParams.folderId) return
+      this.queryParams.folderId = id
+      this.queryParams.current = 1
+      this.activeFolderName = id ? String(this.$route.query.folderName || '') : ''
+      this.queryProjectPage()
+    }
   },
   mounted() {
     this.loadSavedDraft()
@@ -264,6 +336,9 @@ export default {
     if (this.resizeHandler) window.removeEventListener('resize', this.resizeHandler)
   },
   methods: {
+    folderAriaLabel,
+    folderDisplayName,
+    folderMetaLabel,
     async loadSavedDraft() {
       try {
         const res = await listAiDraftSlotsRequest()
@@ -349,17 +424,93 @@ export default {
     },
     queryProjectPage() {
       this.projectListError = false
-      pageFormRequest(this.queryParams).then((res) => {
-        let { records, total, size } = res.data
-        this.projectList = records
-        this.total = total
-        this.queryParams.size = size
-        this.projectListLoading = false
-        this.loadAnswerCounts(records)
-      }).catch(() => {
-        this.projectListError = true
-        this.projectListLoading = false
+      this.projectListLoading = true
+      const requestToken = ++this.projectRequestToken
+      const insideFolder = this.queryParams.folderId > 0
+      // 问卷列表排除文件夹行（folder=0），「共 N 份问卷」只统计问卷本身。
+      const surveyRequest = pageFormRequest({ ...this.queryParams, folder: 0 })
+      // 文件夹只在根目录展示；单独请求，size 取 50 足够覆盖当前账号的文件夹。
+      const folderRequest = insideFolder
+        ? Promise.resolve(null)
+        : pageFormRequest({ current: 1, size: 50, folder: 1, folderId: 0, name: this.queryParams.name || undefined })
+      Promise.all([surveyRequest, folderRequest])
+        .then(([res, folderRes]) => {
+          if (requestToken !== this.projectRequestToken) return
+          const data = (res && res.data) || {}
+          const records = Array.isArray(data.records) ? data.records : []
+          this.projectList = records
+          this.total = Number(data.total) || 0
+          if (data.size) this.queryParams.size = data.size
+          if (folderRes) {
+            const folderRecords = folderRes.data && Array.isArray(folderRes.data.records) ? folderRes.data.records : []
+            this.folderList = folderRecords
+            this.loadFolderCounts(folderRecords)
+          } else {
+            this.folderList = []
+          }
+          this.projectListLoading = false
+          this.loadAnswerCounts(records)
+        })
+        .catch(() => {
+          if (requestToken !== this.projectRequestToken) return
+          this.projectListError = true
+          this.projectListLoading = false
+        })
+    },
+    // 文件夹内部问卷数：逐个用 folderId 查询 total；失败或数量过多时保持未知（显示「文件夹」而不是假 0）。
+    loadFolderCounts(folders) {
+      const list = (folders || []).filter((folder) => folder && folder.id !== null && folder.id !== undefined).slice(0, 12)
+      const token = ++this.folderCountToken
+      if (!list.length) {
+        this.folderCounts = {}
+        return
+      }
+      Promise.all(
+        list.map((folder) =>
+          pageFormRequest({ current: 1, size: 1, folder: 0, folderId: folder.id })
+            .then((res) => [folder.id, res && res.data ? res.data.total : null])
+            .catch(() => [folder.id, null])
+        )
+      ).then((pairs) => {
+        if (token !== this.folderCountToken) return
+        const counts = {}
+        pairs.forEach(([id, total]) => {
+          if (total === null || total === undefined) return
+          counts[id] = Number(total)
+        })
+        this.folderCounts = counts
       })
+    },
+    enterFolder(folder) {
+      const id = Number(folder && folder.id)
+      if (!Number.isFinite(id) || id <= 0) return
+      this.activeFolderName = folderDisplayName(folder)
+      this.queryParams.folderId = id
+      this.queryParams.current = 1
+      this.syncFolderQuery()
+      this.queryProjectPage()
+    },
+    goRoot() {
+      if (!this.queryParams.folderId) return
+      this.queryParams.folderId = 0
+      this.queryParams.current = 1
+      this.activeFolderName = ''
+      this.syncFolderQuery()
+      this.queryProjectPage()
+    },
+    syncFolderQuery() {
+      const query = { ...this.$route.query }
+      if (this.queryParams.folderId) {
+        query.folderId = String(this.queryParams.folderId)
+        query.folderName = this.activeFolderName
+      } else {
+        delete query.folderId
+        delete query.folderName
+      }
+      const nextFolderId = query.folderId || ''
+      const nextFolderName = query.folderName || ''
+      if (String(this.$route.query.folderId || '') === nextFolderId && String(this.$route.query.folderName || '') === nextFolderName) return
+      this.$router.replace({ path: this.$route.path, query }).catch(() => {})
     },
     handleStatusChange(statusCode) {
       this.queryParams.status = statusCode
@@ -508,6 +659,80 @@ export default {
   &.active { color: var(--zy-primary); background: var(--zy-primary-soft); }
 }
 .content-view { min-height: 240px; margin-top: 16px; }
+.folder-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  background: var(--zy-surface);
+  border: 1px solid var(--zy-border);
+  border-left: 3px solid var(--zy-primary);
+  border-radius: var(--zy-radius-md);
+}
+.crumb-root {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 8px;
+  color: var(--zy-text-regular);
+  font-size: 12px;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: var(--zy-radius-sm);
+  &:hover { color: var(--zy-primary); background: var(--zy-primary-soft); }
+}
+.crumb-separator { color: var(--zy-text-placeholder); font-size: 12px; }
+.crumb-current {
+  overflow: hidden;
+  color: var(--zy-text);
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: break-word;
+}
+.crumb-back-btn {
+  height: 30px;
+  margin: 0 0 0 auto;
+  color: var(--zy-text-regular);
+  font-size: 12px;
+  background: var(--zy-surface-subtle);
+  border-color: var(--zy-border);
+  border-radius: var(--zy-radius-sm);
+}
+.crumb-back-btn:hover { color: var(--zy-primary); border-color: var(--zy-primary); }
+.folder-chip-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  background: var(--zy-surface);
+  border: 1px solid var(--zy-border);
+  border-radius: var(--zy-radius-md);
+}
+.folder-chip-label { color: var(--zy-text-secondary); font-size: 12px; }
+.folder-chip {
+  display: inline-flex;
+  gap: 7px;
+  align-items: center;
+  max-width: 100%;
+  padding: 6px 10px;
+  color: var(--zy-text-regular);
+  font-size: 12px;
+  cursor: pointer;
+  background: var(--zy-surface-subtle);
+  border: 1px solid var(--zy-border);
+  border-radius: 999px;
+  i { color: var(--zy-accent-cyan); }
+  &:hover { color: var(--zy-primary); border-color: var(--zy-primary); }
+}
+.folder-chip-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.folder-chip-meta { color: var(--zy-text-secondary); font-size: 11px; }
 .saved-draft-error { margin-bottom: 12px; }
 .saved-draft-card { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 18px 20px; margin-bottom: 16px; background: var(--zy-surface); border: 1px solid var(--zy-border); border-left: 3px solid var(--zy-purple); border-radius: var(--zy-radius-md); }
 .saved-draft-content { min-width: 0; }
@@ -542,6 +767,9 @@ export default {
   .view-switch { gap: 0; padding-left: 7px; }
   .switch-btn { width: 30px; }
   .content-view { margin-top: 12px; }
+  .folder-breadcrumb { padding: 8px 10px; gap: 6px; }
+  .crumb-back-btn { margin-left: 0; }
+  .folder-chip-bar { gap: 6px; padding: 8px 10px; }
   .saved-draft-card { align-items: flex-start; flex-direction: column; padding: 16px; }
   .project-page-view { justify-content: flex-start; overflow-x: auto; }
 }

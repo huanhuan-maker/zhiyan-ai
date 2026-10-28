@@ -1,0 +1,179 @@
+{
+  "date": "2026-10-28T08:19:05.850Z",
+  "base": "http://127.0.0.1:5180",
+  "apiBase": "http://127.0.0.1:8997",
+  "checks": [
+    {
+      "name": "API 预检：文件夹行来自 folder=1，而不是问卷列表",
+      "passed": true
+    },
+    {
+      "name": "文件夹卡片显示真实文件夹名与内部问卷数",
+      "passed": true
+    },
+    {
+      "name": "文件夹卡片不再按问卷卡片渲染",
+      "passed": true
+    },
+    {
+      "name": "「共 N 份问卷」只统计问卷，不含文件夹",
+      "passed": true
+    },
+    {
+      "name": "桌面文件夹/问卷卡片均为深色主题，无白底面板",
+      "passed": true
+    },
+    {
+      "name": "列表视图保留文件夹入口并可进入",
+      "passed": true
+    },
+    {
+      "name": "点击文件夹先播打开动效再进入",
+      "passed": true
+    },
+    {
+      "name": "面包屑显示「根目录 / 文件夹名」",
+      "passed": true
+    },
+    {
+      "name": "文件夹内能看到子问卷",
+      "passed": true
+    },
+    {
+      "name": "文件夹内新建问卷自动落在当前 folderId",
+      "passed": true
+    },
+    {
+      "name": "点击返回根目录回到 folderId=0",
+      "passed": true
+    },
+    {
+      "name": "空文件夹显示空状态且不是白底",
+      "passed": true
+    },
+    {
+      "name": "删除改为卡片内按住确认，按钮可聚焦且文案为中文",
+      "passed": true
+    },
+    {
+      "name": "计时中松开不删除",
+      "passed": true
+    },
+    {
+      "name": "ESC 取消按住删除且不删除问卷",
+      "passed": true
+    },
+    {
+      "name": "按住满 1 秒后问卷从列表消失",
+      "passed": true
+    },
+    {
+      "name": "键盘按住 Space 1 秒同样删除",
+      "passed": true
+    },
+    {
+      "name": "删除失败时卡片内显示错误提示，问卷保留且可重试",
+      "passed": true
+    },
+    {
+      "name": "移动端文件夹卡片可见且不横向溢出",
+      "passed": true
+    },
+    {
+      "name": "reduced-motion 跳过打开动效，仍可进入文件夹",
+      "passed": true
+    },
+    {
+      "name": "reduced-motion 下按住删除不做动画但仍删除",
+      "passed": true
+    },
+    {
+      "name": "页面没有运行时错误",
+      "passed": true
+    }
+  ],
+  "total": 22,
+  "passed": 22,
+  "failed": 0,
+  "runtimeErrors": [],
+  "deleteRequests": [
+    {
+      "url": "http://127.0.0.1:5180/tduck-api/user/form/logic/delete?timestamp=1793175532852&sign=75d7129c927c68d4c264325afa971966",
+      "body": "{\"formKey\":\"osiAlmvQ\"}"
+    },
+    {
+      "url": "http://127.0.0.1:5180/tduck-api/user/form/logic/delete?timestamp=1793175534759&sign=24803d6db25cc599e97f3e996ed2e2a4",
+      "body": "{\"formKey\":\"aGcK76x4\"}"
+    },
+    {
+      "url": "http://127.0.0.1:5180/tduck-api/user/form/logic/delete?timestamp=1793175537116&sign=449f213ef5af49c5b86827bf42af00d3",
+      "body": "{\"formKey\":\"txXA0WpQ\"}"
+    },
+    {
+      "url": "http://127.0.0.1:5180/tduck-api/user/form/logic/delete?timestamp=1793175538723&sign=14564717d50260d1233547459a17d1ed",
+      "body": "{\"formKey\":\"txXA0WpQ\"}"
+    },
+    {
+      "url": "http://127.0.0.1:5180/tduck-api/user/form/logic/delete?timestamp=1793175545207&sign=bfe368e01cb7b4f17843dbffb6ec7d1e",
+      "body": "{\"formKey\":\"XDjNBHSz\"}"
+    }
+  ],
+  "fixtures": {
+    "note": "文件夹夹具在更早的验收探测中通过 /user/form/create 创建，本脚本直接复用；临时问卷使用逻辑删除，留在回收站。",
+    "initialFolderCount": 2,
+    "target": {
+      "id": 9154,
+      "name": "Archive - acceptance",
+      "total": 1
+    },
+    "empty": {
+      "id": 9156,
+      "name": "空归档 - acceptance",
+      "total": 0
+    },
+    "child": {
+      "formKey": "osUGeLMY",
+      "textName": "Nested survey - acceptance"
+    },
+    "created": []
+  },
+  "tempSurveys": [
+    {
+      "key": "osiAlmvQ",
+      "name": "按住删除临时问卷 A 1793175528797",
+      "deletedBy": "按住 1 秒删除",
+      "status": "逻辑删除，留在回收站"
+    },
+    {
+      "key": "aGcK76x4",
+      "name": "按住删除临时问卷 B（键盘） 1793175528841",
+      "deletedBy": "键盘 Space 按住 1 秒删除（已验证）",
+      "status": "逻辑删除，留在回收站"
+    },
+    {
+      "key": "txXA0WpQ",
+      "name": "按住删除失败注入问卷 1793175534919",
+      "deletedBy": "失败注入后重试按住 1 秒删除（已验证）",
+      "status": "逻辑删除，留在回收站"
+    },
+    {
+      "key": "XDjNBHSz",
+      "name": "按住删除临时问卷 C（减少动效） 1793175542431",
+      "deletedBy": "reduced-motion 按住 1 秒删除",
+      "status": "逻辑删除，留在回收站"
+    }
+  ],
+  "screenshots": [
+    "evidence/tduck-full/folder-card-ux/01-desktop-folder-cards.png",
+    "evidence/tduck-full/folder-card-ux/02-folder-opening.png",
+    "evidence/tduck-full/folder-card-ux/03-inside-folder.png",
+    "evidence/tduck-full/folder-card-ux/04-empty-folder.png",
+    "evidence/tduck-full/folder-card-ux/05-hold-progress.png",
+    "evidence/tduck-full/folder-card-ux/06-mobile-folder.png"
+  ],
+  "notes": [
+    "登录账号：2913620982@qq.com（管理员）",
+    "/user/form/page?folder=1 预检到文件夹 2 个；folder=0 问卷总数 7",
+    "本次运行复用了已存在的文件夹夹具（folder=1 预检到 2 个），未新建文件夹行"
+  ]
+}

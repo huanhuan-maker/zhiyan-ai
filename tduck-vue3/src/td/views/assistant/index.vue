@@ -27,8 +27,9 @@
           <div class="turn-avatar turn-avatar--ai" aria-hidden="true"><i class="el-icon-chat-dot-round" /></div>
           <div class="turn-body"><div class="answer-bubble"><div class="answer-meta"><strong>问卷助手</strong><span v-if="turn.mode === 'REAL'">{{ turn.model }}</span><span v-else-if="turn.mode === 'DEGRADED'">本地降级</span><span class="readonly-chip">只读查询</span></div>
           <p v-if="turn.warning" class="turn-warning">{{ turn.warning }}</p>
-          <p v-if="turn.result" class="assistant-answer-text">{{ knowledgeMessage(turn.result) }}</p>
+          <StreamingAnswer v-if="turn.result" class="assistant-answer-text" :text="knowledgeMessage(turn.result)" :streaming="turn.id === liveTurnId" :pace="!turn.draft" @done="finishTyping(turn.id)" />
           <div v-else-if="turn.draft" class="live-draft"><small>模型正在生成 · 草稿尚未核对，完成后以正式回答为准</small><p class="assistant-answer-text">{{ turn.draft }}</p></div>
+          <AiStatus v-else-if="busy && !turn.result" :message="turn.streamStatus || (turn.plan?.tool==='survey_knowledge' ? '正在检索知识库并请模型整理分析…' : '正在回复…')" />
           <p v-else class="assistant-hint">{{ turn.streamStatus || (turn.state === 'FAILED' ? '本次没能完成，可以重新发送。' : turn.state === 'READY' && !busy ? '查询已准备好，点击下方继续。' : turn.plan?.tool==='survey_knowledge' ? '正在检索知识库并请模型整理分析…' : '正在回复…') }}</p>
           <p v-if="turn.result?.generationWarning" class="turn-warning">{{ turn.result.generationWarning }}</p>
           <el-button v-if="turn.state === 'READY' && !busy" @click="resume(turn)">继续查询</el-button>
@@ -69,7 +70,7 @@
 </template>
 
 <script setup>
-import {ref,onMounted,onBeforeUnmount,nextTick} from 'vue'
+import {ref,onMounted,onBeforeUnmount,nextTick,watch} from 'vue'
 import {useRouter,useRoute} from 'vue-router'
 import store from '@/store'
 import {readAssistantEvents} from '@/assistant/stream'
@@ -80,9 +81,20 @@ import SurveyAnalysis from '@/assistant/SurveyAnalysis.vue'
 import {downloadAnswers} from '@/assistant/download'
 import {createSurveyMcpClient} from '@/assistant/mcp-client'
 import {knowledgeMessage,wantsInlineChart} from '@/assistant/knowledge'
+import AiStatus from '@/components/AiStatus/index.vue'
+import StreamingAnswer from '@/assistant/StreamingAnswer.vue'
 const route=useRoute(),router=useRouter(),connected=ref(false),loading=ref(false),busy=ref(false),error=ref(''),provider=ref({}),question=ref(''),conversations=ref([]),conversationId=ref(''),turns=ref([]),timeline=ref(null)
 const formKey=ref(''),version=ref(null),selectedTitle=ref(''),historyVisible=ref(false),citationVisible=ref(false),citation=ref(null),citationContext=ref({}),allVisible=ref(false),allCitations=ref([])
 const copyStatus=ref('')
+// 本次刚发出的对话轮次：只有它走"逐字铺开"，历史轮次直接显示，避免刷新后重播。
+const liveTurnId=ref('')
+watch(turns,(list)=>{
+  const fresh=(list||[]).find((turn)=>turn&&!turn.result&&turn.state!=='SUCCEEDED'&&!turn.plan)
+  if(fresh)liveTurnId.value=fresh.id
+},{deep:true,flush:'sync'})
+function finishTyping(id){if(liveTurnId.value===id)liveTurnId.value=''}
+// 请求结束后释放"逐字展示"标记：有积压时由组件按自己的节奏排完，不会突然跳字。
+watch(busy,(now)=>{if(!now&&liveTurnId.value)liveTurnId.value=''})
 let client,disposed=false,streamController
 const date=v=>v?new Date(v).toLocaleString('zh-CN',{hour12:false}):''
 const message=e=>e?.msg||e?.message||'连接中断，请重试。'
@@ -90,7 +102,7 @@ onBeforeUnmount(()=>{disposed=true;streamController?.abort();client?.close()})
 async function scrollBottom(){await nextTick();if(timeline.value)timeline.value.scrollTop=timeline.value.scrollHeight}
 function clearContext(){formKey.value='';version.value=null;selectedTitle.value=''}
 async function init(){loading.value=true;error.value='';connected.value=false;client?.close();client=createSurveyMcpClient();try{const [s,list]=await Promise.all([assistantStatus(),assistantConversations(),client.connect()]);if(disposed)return;provider.value=s.data;conversations.value=list.data;const saved=sessionStorage.getItem('assistant-conversation');conversationId.value=list.data.some(c=>c.id===saved)?saved:list.data[0]?.id||'';if(conversationId.value)await loadHistory(true);if(/^[A-Za-z0-9_-]{1,64}$/.test(String(route.query.formKey||''))){formKey.value=String(route.query.formKey);version.value=Number(route.query.version)||null;selectedTitle.value=String(route.query.title||route.query.formKey);question.value=String(route.query.question||'总结这份问卷的答卷').slice(0,1000)}connected.value=true}catch(e){if(!disposed)error.value=message(e)}finally{if(!disposed)loading.value=false}}
-async function loadHistory(restore=false){if(!conversationId.value)return;const id=conversationId.value,r=await assistantHistory(id);if(disposed||id!==conversationId.value)return;turns.value=r.data.turns;sessionStorage.setItem('assistant-conversation',id);const last=turns.value[turns.value.length-1];if(last?.result?.kind==='action_result'){if(last.result.action==='ARCHIVE')clearContext();else useResultContext(last.result)}else if(last?.formKey&&(last.result?.kind!=='notice'||last.result?.reason==='UNPUBLISHED')){formKey.value=last.formKey;version.value=last.version||null;selectedTitle.value=last.result?.title||last.formKey}else if(restore)clearContext();await scrollBottom()}
+async function loadHistory(restore=false){if(!conversationId.value)return;const id=conversationId.value,r=await assistantHistory(id);if(disposed||id!==conversationId.value)return;turns.value=r.data.turns;if(liveTurnId.value&&!turns.value.some((turn)=>turn.id===liveTurnId.value))liveTurnId.value='';sessionStorage.setItem('assistant-conversation',id);const last=turns.value[turns.value.length-1];if(last?.result?.kind==='action_result'){if(last.result.action==='ARCHIVE')clearContext();else useResultContext(last.result)}else if(last?.formKey&&(last.result?.kind!=='notice'||last.result?.reason==='UNPUBLISHED')){formKey.value=last.formKey;version.value=last.version||null;selectedTitle.value=last.result?.title||last.formKey}else if(restore)clearContext();await scrollBottom()}
 async function newConversation(){if(busy.value)return;busy.value=true;error.value='';try{const r=await createAssistantConversation();if(disposed)return;conversationId.value=r.data.id;sessionStorage.setItem('assistant-conversation',r.data.id);conversations.value=[r.data,...conversations.value].slice(0,20);turns.value=[];clearContext()}catch(e){error.value=message(e)}finally{if(!disposed)busy.value=false}}
 async function changeConversation(id){if(busy.value)return;busy.value=true;conversationId.value=id;historyVisible.value=false;try{await loadHistory(true)}catch(e){error.value=message(e)}finally{if(!disposed)busy.value=false}}
 const shortDate=v=>{if(!v)return '';const d=new Date(v);return isNaN(d.getTime())?'':d.toLocaleString('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false})}

@@ -1,10 +1,10 @@
 <template>
-  <div class="analysis-container">
+  <div class="analysis-container" :class="{ 'has-rail': railItems.length > 0 }">
     <el-alert v-if="loadError" class="analysis-error" title="题目统计加载失败，已保留上次结果" type="error" :closable="false"><el-button text @click="getData">重试</el-button></el-alert>
     <p v-if="list.length" class="analysis-scope">V{{ currentVersion }} · 本版本答卷 {{ list[0].totalCount }} 份 · 图表数值由后端计算。缺失包含未答、无效或条件未展示，不能直接外推总体。</p>
     <div v-if="list && list.length > 0">
       <el-row :gutter="24">
-        <el-col :span="24" v-for="(item, index) in list" :key="index" style="margin-bottom: 24px">
+        <el-col :span="24" v-for="(item, index) in list" :key="index" :id="questionAnchorId(item, index)" style="margin-bottom: 24px">
           <el-card shadow="hover" class="analysis-card">
             <template #header><div  class="card-header">
               <span class="title">
@@ -85,17 +85,36 @@
         <i class="el-icon-data-board empty-icon"></i>
       </template>
     </el-empty>
+    <RailToc
+      v-if="railItems.length"
+      :items="railItems"
+      container=".statistics-workspace"
+      anchor-selector=".analysis-card"
+    />
   </div>
 </template>
 
 <script>
 import TChart from '@/views/components/TChart'
+import RailToc from '@/components/RailToc/index.vue'
+import { buildRailItems, railAnchorId } from '@/components/RailToc/rail'
 import { getFormAnalysisRequest } from '@/api/project/report'
 
 export default {
   props: { versionNo: { type: Number, required: true } },
   components: {
-    TChart
+    TChart,
+    RailToc
+  },
+  computed: {
+    // 右侧题目导航轨：序号与题卡顺序一致，锚点 id 与题卡上的 id 同源。
+    railItems() {
+      return buildRailItems(this.list, {
+        anchorPrefix: 'question',
+        labelOf: (item) => item.label || item.title || '题目分析',
+        idOf: (item) => item.fieldId
+      })
+    }
   },
   data() {
     return {
@@ -127,6 +146,9 @@ export default {
     this.getData()
   },
   methods: {
+    questionAnchorId(item, index) {
+      return railAnchorId('question', item && item.fieldId, index)
+    },
     getData() {
       this.loading = true
       this.loadError = false
@@ -332,6 +354,13 @@ export default {
   padding: 0;
   min-height: 180px;
   overflow-x: hidden !important;
+
+  // 右侧题目导航轨占位：只在 rail 显示的桌面宽度留出通道，避免圆点压住题卡。
+  &.has-rail {
+    @media (min-width: 1100px) {
+      padding-right: 56px;
+    }
+  }
 
   .analysis-card {
     border-radius: 12px;

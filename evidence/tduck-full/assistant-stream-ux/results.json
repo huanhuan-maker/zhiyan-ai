@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-28T08:03:38.743Z",
+  "source": "真实 Edge 浏览器 + 8997 后端 + 真实知识库问卷流式回答",
+  "checks": [
+    {
+      "name": "等待模型时显示微光状态行与已用秒数，而不是干等",
+      "passed": true
+    },
+    {
+      "name": "模型逐字输出时显示草稿流：文字增长、光标闪烁、气泡进入流式样式",
+      "passed": true,
+      "detail": {
+        "mode": "live-draft",
+        "first": 204,
+        "second": 259
+      }
+    },
+    {
+      "name": "回答完成后草稿收起、光标消失，正文与后端保存的历史一致",
+      "passed": true,
+      "detail": {
+        "chars": 257
+      }
+    },
+    {
+      "name": "没有草稿流的回答（本地规划）按节奏逐字铺开并显示光标",
+      "passed": true,
+      "detail": {
+        "first": 2,
+        "second": 40
+      }
+    },
+    {
+      "name": "减少动态偏好下直接显示完整回答，不出现光标",
+      "passed": true
+    },
+    {
+      "name": "没有未捕获的前端异常",
+      "passed": true
+    }
+  ],
+  "passed": 6,
+  "failed": 0
+}

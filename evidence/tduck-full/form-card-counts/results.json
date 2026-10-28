@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-28T01:05:53.822Z",
+  "date": "2026-10-28T08:18:06.073Z",
   "checks": [
     {
       "name": "卡片不再显示类型编号，改为收集份数",
@@ -39,15 +39,14 @@
   "failed": 0,
   "errors": [],
   "counts": {
-    "yh5ry2od": 1,
-    "Kd12jgkg": 0,
-    "IuFjQWxa": 0,
-    "cYtMpVqA": 0,
-    "zYxKvLbi": 0,
-    "dUJev0eA": 0,
-    "k78wY4hN": 1,
-    "RCFB5MH9": 2,
-    "oM9Q4wZx": 0,
-    "E38trxNZ": 0
+    "9lNihr4E": 0,
+    "mWYZZ3TU": 0,
+    "kzHNBQPG": 0,
+    "SMZEG1GW": 0,
+    "yh5ry2od": 35,
+    "hshkvZbD": 0,
+    "Kd12jgkg": 35,
+    "cYtMpVqA": 35,
+    "dUJev0eA": 35
   }
 }

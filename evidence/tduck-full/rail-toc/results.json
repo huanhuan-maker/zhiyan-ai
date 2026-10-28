@@ -1,0 +1,101 @@
+{
+  "date": "2026-10-28T08:18:39.415Z",
+  "survey": {
+    "name": "大学生 AI Agent 使用与需求调查",
+    "formKey": "cYtMpVqA",
+    "versionNo": 2,
+    "answers": 35,
+    "questions": 54
+  },
+  "urls": {
+    "statistics": "http://127.0.0.1:5180/project/form/statistics?key=cYtMpVqA&version=2",
+    "editor": "http://127.0.0.1:5180/project/form/editor?key=cYtMpVqA"
+  },
+  "checks": [
+    {
+      "name": "统计页使用真实后端数据：题卡数 = 该版本题目数",
+      "passed": true
+    },
+    {
+      "name": "右侧导航轨显示，圆点数量 = 题卡数量",
+      "passed": true
+    },
+    {
+      "name": "导航轨在题卡右侧，不遮挡题卡、不产生横向溢出",
+      "passed": true
+    },
+    {
+      "name": "当前题高亮并显示深色题目标签（不是白底）",
+      "passed": true
+    },
+    {
+      "name": "点击第 23 项：题卡滚入视口并高亮该项",
+      "passed": true
+    },
+    {
+      "name": "滚动到中部与底部时高亮跟随",
+      "passed": true
+    },
+    {
+      "name": "悬停任一圆点浮出对应题干（深色浮层）",
+      "passed": true
+    },
+    {
+      "name": "键盘可达：Tab 进入轨道、方向键移动、Enter 定位",
+      "passed": true
+    },
+    {
+      "name": "切到「主题与报告」「访问与收集概览」时导航轨隐藏，切回恢复",
+      "passed": true
+    },
+    {
+      "name": "原有统计内容未变：图表、口径文案、tab 都在",
+      "passed": true
+    },
+    {
+      "name": "prefers-reduced-motion 下取消平滑滚动与动画",
+      "passed": true
+    },
+    {
+      "name": "移动端 390 宽：导航轨隐藏且无横向溢出",
+      "passed": true
+    },
+    {
+      "name": "编辑器：导航轨显示，圆点数量 = 题目卡片数量",
+      "passed": true
+    },
+    {
+      "name": "编辑器：导航轨不遮挡右侧设置面板与题卡，无横向溢出",
+      "passed": true
+    },
+    {
+      "name": "编辑器：点击导航项滚动到题卡并选中该题",
+      "passed": true
+    },
+    {
+      "name": "编辑器移动端 390 宽：导航轨隐藏，不遮挡设置面板",
+      "passed": true
+    },
+    {
+      "name": "页面没有未捕获异常",
+      "passed": true
+    }
+  ],
+  "total": 17,
+  "passed": 17,
+  "failed": 0,
+  "pageErrors": [],
+  "consoleErrors": [],
+  "screenshots": [
+    "01-statistics-desktop.png",
+    "01b-statistics-desktop-rail.png",
+    "02-statistics-hover.png",
+    "03-statistics-clicked.png",
+    "04-statistics-research-tab.png",
+    "05-statistics-reduced-motion.png",
+    "06-statistics-mobile-390.png",
+    "07-editor-desktop.png",
+    "08-editor-clicked.png",
+    "09-editor-mobile-390.png"
+  ]
+}
