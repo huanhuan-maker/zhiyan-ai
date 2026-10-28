@@ -1644,3 +1644,11 @@ h1.page-title,
   background-color: var(--zy-surface) !important;
 }
 
+/* ================= 29. 系统配置：开关文案标签（element-custom 里写死了浅色文字） ================= */
+.zy-dark.zy-dark .el-switch__label {
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark.zy-dark .el-switch__label.is-active {
+  color: var(--zy-primary) !important;
+  font-weight: 500;
+}

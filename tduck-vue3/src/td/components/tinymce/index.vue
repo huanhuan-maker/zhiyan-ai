@@ -89,7 +89,7 @@ export default {
       extended_valid_elements: 'formvariable[*]',
       custom_elements: 'formvariable[*]',
       content_css: ['/tinymce/skins/editor.css', '/tinymce/skins/content/dark/content.min.css'],
-      content_style: 'body{background:#142235;color:#b8c4d4;} a{color:#88b0ff;} code,pre{background:#111e30;color:#d7e2f0;}',
+      content_style: 'body{background:#142235;color:#b8c4d4;} a{color:#88b0ff;} code,pre{background:#111e30;color:#d7e2f0;} .mce-content-body[data-mce-placeholder]:not(.mce-visualblocks)::before{color:#8496ab !important;}',
       fontsize_formats: '11px 12px 14px 16px 18px 24px 36px 48px',
       branding: false,
       object_resizing: false,

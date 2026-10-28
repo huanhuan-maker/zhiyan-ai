@@ -117,19 +117,19 @@ export default {
 .modern-alert {
   margin-bottom: 24px;
   border-radius: 8px;
-  border: 1px solid #fbd38d;
-  background-color: #fffaf0;
+  border: 1px solid rgba(229, 187, 101, 0.38);
+  background-color: rgba(229, 187, 101, 0.12);
 
   ::v-deep .el-alert__title {
     font-size: 14px;
     font-weight: 500;
-    color: #c05621;
+    color: var(--zy-warning);
   }
 
   .alert-link {
     display: inline-block;
     margin-top: 8px;
-    color: #dd6b20;
+    color: #f0cd85;
     font-weight: 500;
     text-decoration: none;
 
@@ -145,7 +145,7 @@ export default {
 
     .el-form-item__label {
       font-weight: 600;
-      color: #1e293b;
+      color: var(--zy-text);
       padding-bottom: 8px;
       line-height: 1.4;
     }
@@ -153,7 +153,7 @@ export default {
 
   .form-hint {
     font-size: 13px;
-    color: #94a3b8;
+    color: var(--zy-text-secondary);
     margin-top: 6px;
     line-height: 1.5;
   }
@@ -161,28 +161,28 @@ export default {
   .form-action {
     margin-top: 40px;
     padding-top: 24px;
-    border-top: 1px solid #f1f5f9;
+    border-top: 1px solid var(--zy-border-light);
   }
 }
 
 .modern-input {
   ::v-deep .el-input__inner {
     border-radius: 8px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid var(--zy-border);
     padding: 0 16px;
     height: 42px;
     line-height: 42px;
     transition: all 0.2s ease;
     font-size: 14px;
-    color: #334155;
+    color: var(--zy-text);
 
     &:focus {
-      border-color: #3b82f6;
+      border-color: var(--zy-primary);
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
     }
 
     &::placeholder {
-      color: #94a3b8;
+      color: var(--zy-text-secondary);
     }
   }
 }
@@ -196,12 +196,12 @@ export default {
   border: none;
 
   &.el-button--primary {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, var(--zy-primary) 0%, var(--zy-primary-solid) 100%);
     color: white;
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 
     &:hover {
-      background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+      background: linear-gradient(135deg, var(--zy-primary-hover) 0%, var(--zy-primary) 100%);
       transform: translateY(-1px);
       box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
     }
