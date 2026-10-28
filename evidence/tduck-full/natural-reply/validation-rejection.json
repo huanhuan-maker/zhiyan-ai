@@ -1,0 +1,12 @@
+{
+  "passed": 0,
+  "failed": 1,
+  "checks": [
+    {
+      "failed": "模型分析未通过来源或数值校验\n\n'DEGRADED' !== 'REAL'\n"
+    }
+  ],
+  "pageErrors": [],
+  "conversationId": "fa412e30-3d44-4beb-ba37-dd02f06a31b5",
+  "answers": []
+}

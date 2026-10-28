@@ -1,0 +1,2266 @@
+{
+  "passed": 3,
+  "failed": 1,
+  "checks": [
+    "catalogue count is a concise reply without questionnaire cards",
+    "an ambiguous request asks one conversational clarification without dumping choices",
+    "without manually choosing a survey, the real model analyses the named questionnaire from 35 responses",
+    {
+      "failed": "回答过长，请压缩为最多两段，每段不超过120字，只保留核心结论和必要说明\n\n'DEGRADED' !== 'REAL'\n"
+    }
+  ],
+  "pageErrors": [],
+  "conversationId": "2272bb8d-fbe1-4e4d-96f2-75a3db62a8be",
+  "turns": [
+    {
+      "id": "845a213a-6b5e-4dfb-8788-3051c20dddd4",
+      "question": "我现在有多少份问卷",
+      "formKey": null,
+      "version": null,
+      "state": "SUCCEEDED",
+      "mode": "LOCAL",
+      "provider": "本地目录查询",
+      "model": "query-rules-v2",
+      "warning": "",
+      "createdAt": "2026-10-28T06:21:57.910440300Z",
+      "plan": {
+        "tool": "search_surveys",
+        "stage": 0,
+        "arguments": {
+          "limit": 10,
+          "query": ""
+        },
+        "automatic": true
+      },
+      "result": {
+        "kind": "chat",
+        "message": "当前账号共有 4 份匹配的问卷。直接告诉我想了解的主题，我会检索答卷后给你分析。",
+        "citations": []
+      }
+    },
+    {
+      "id": "a2b64116-5831-4fb7-8cc6-6cb17e663fda",
+      "question": "帮我分析一下问卷",
+      "formKey": null,
+      "version": null,
+      "state": "SUCCEEDED",
+      "mode": "REAL",
+      "provider": "本机推理网关",
+      "model": "group/group",
+      "warning": "",
+      "createdAt": "2026-10-28T06:21:58.936411100Z",
+      "plan": {
+        "tool": "search_surveys",
+        "stage": 0,
+        "arguments": {},
+        "automatic": true
+      },
+      "result": {
+        "kind": "chat",
+        "message": "我还不能确定你指的是哪份问卷。直接告诉我问卷名称或调查主题即可，我会检索答卷后给你总结分析。",
+        "citations": []
+      }
+    },
+    {
+      "id": "f5045627-c3fd-4916-9cde-d98c2e1a45e4",
+      "question": "总结“大学生 AI Agent 使用与需求调查”的答卷，重点分析用户的需求，给我结论和建议，不用图表",
+      "formKey": "cYtMpVqA",
+      "version": null,
+      "state": "SUCCEEDED",
+      "mode": "REAL",
+      "provider": "本机推理网关",
+      "model": "group/group",
+      "warning": "",
+      "createdAt": "2026-10-28T06:22:03.667006700Z",
+      "plan": {
+        "tool": "survey_knowledge",
+        "stage": 1,
+        "arguments": {
+          "formKey": "cYtMpVqA",
+          "question": "总结“”的答卷，重点分析用户的需求，给我结论和建议，不用图表"
+        },
+        "automatic": true
+      },
+      "result": {
+        "asOf": "2026-10-28T06:22:17.712070200Z",
+        "kind": "knowledge_answer",
+        "tool": "survey_knowledge",
+        "model": "group/group",
+        "title": "大学生 AI Agent 使用与需求调查",
+        "formKey": "cYtMpVqA",
+        "message": "本次为模拟测试结果，共35份答卷；当前 AI Agent 满足学习需求的均值为3.0（有效回答35），处于中间水平。可检索的模拟开放回答多次提到希望辅助整理资料和制作图表且结果可核查、减少错误和幻觉、回答有可靠来源并在任务执行前确认；这些需求更偏向“可信与可控”，而非单纯增加功能。由于量表选项分布均匀、开放样本有限，不能据此判断总体需求排序或普遍态度。 [S0、S9、A212397-textarea1793098475128954、A212395-textarea1793098475128954、A212398-textarea1793098475128954]\n\n在需求侧，选择因素中多轮对话记忆占34.29%、隐私与数据安全占31.43%、免费额度/价格占25.71%（有效回答35）；未来能力中更长上下文、个性化学习计划、更好隐私保护、自动执行多步骤任务各占20%。这提示可优先围绕可核查引用、执行前确认、隐私与长文档处理设计，并保留免费或低门槛方案。上述比例来自模拟答卷，且未提供交叉统计，不能推断年级或专业差异。 [S12、S46、S10、S11]\n\n建议先在学习资料整理、图表生成、长文档阅读等场景做小范围试点，提供来源标注与核对入口、任务执行前确认、隐私控制及基础免费额度，再用任务完成率和付费意愿验证优先级。当前仅覆盖部分题目统计和有限模拟开放回答，结论应视为方向性参考，不宜外推为总体结论。 [S46、S12、S0]",
+        "version": 2,
+        "findings": [
+          {
+            "refs": [
+              "S0",
+              "S9",
+              "A212397-textarea1793098475128954",
+              "A212395-textarea1793098475128954",
+              "A212398-textarea1793098475128954"
+            ],
+            "text": "本次为模拟测试结果，共35份答卷；当前 AI Agent 满足学习需求的均值为3.0（有效回答35），处于中间水平。可检索的模拟开放回答多次提到希望辅助整理资料和制作图表且结果可核查、减少错误和幻觉、回答有可靠来源并在任务执行前确认；这些需求更偏向“可信与可控”，而非单纯增加功能。由于量表选项分布均匀、开放样本有限，不能据此判断总体需求排序或普遍态度。"
+          },
+          {
+            "refs": [
+              "S12",
+              "S46",
+              "S10",
+              "S11"
+            ],
+            "text": "在需求侧，选择因素中多轮对话记忆占34.29%、隐私与数据安全占31.43%、免费额度/价格占25.71%（有效回答35）；未来能力中更长上下文、个性化学习计划、更好隐私保护、自动执行多步骤任务各占20%。这提示可优先围绕可核查引用、执行前确认、隐私与长文档处理设计，并保留免费或低门槛方案。上述比例来自模拟答卷，且未提供交叉统计，不能推断年级或专业差异。"
+          },
+          {
+            "refs": [
+              "S46",
+              "S12",
+              "S0"
+            ],
+            "text": "建议先在学习资料整理、图表生成、长文档阅读等场景做小范围试点，提供来源标注与核对入口、任务执行前确认、隐私控制及基础免费额度，再用任务完成率和付费意愿验证优先级。当前仅覆盖部分题目统计和有限模拟开放回答，结论应视为方向性参考，不宜外推为总体结论。"
+          }
+        ],
+        "provider": "本机推理网关",
+        "citations": [
+          {
+            "id": "S0",
+            "kind": "statistics",
+            "text": "本发布版本答卷总数：35",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerCount": 35
+          },
+          {
+            "id": "A212397-textarea1793098475128954",
+            "kind": "answer",
+            "text": "[模拟测试 03] 希望辅助整理资料和制作图表，结果可以核查。",
+            "fieldId": "textarea1793098475128954",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212397",
+            "question": "你还有其他建议或期望吗？（选填）"
+          },
+          {
+            "id": "S9",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":3.0,\"optionCount\":5,\"options\":[{\"label\":\"1\",\"count\":7,\"percent\":20.0},{\"label\":\"2\",\"count\":7,\"percent\":20.0},{\"label\":\"3\",\"count\":7,\"percent\":20.0},{\"label\":\"4\",\"count\":7,\"percent\":20.0},{\"label\":\"5\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "当前 AI Agent 满足你学习需求的程度如何（1=很低，5=很高）",
+            "statistics": {
+              "id": "S9",
+              "map": {
+                "1": 7,
+                "2": 7,
+                "3": 7,
+                "4": 7,
+                "5": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": 3,
+              "type": "评分",
+              "label": "当前 AI Agent 满足你学习需求的程度如何（1=很低，5=很高）",
+              "fieldId": "rate1793098474060915",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RATE",
+              "chartType": "bar",
+              "fieldName": [
+                "4",
+                "2",
+                "5",
+                "3",
+                "1"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "1": 20,
+                "2": 20,
+                "3": 20,
+                "4": 20,
+                "5": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "A212395-textarea1793098475128954",
+            "kind": "answer",
+            "text": "[模拟测试 01] 主要用于学习答疑，希望减少错误和幻觉。",
+            "fieldId": "textarea1793098475128954",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212395",
+            "question": "你还有其他建议或期望吗？（选填）"
+          },
+          {
+            "id": "S10",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":5,\"options\":[{\"label\":\"偶尔付费\",\"count\":7,\"percent\":20.0},{\"label\":\"长期订阅付费\",\"count\":7,\"percent\":20.0},{\"label\":\"目前未付费但考虑付费\",\"count\":7,\"percent\":20.0},{\"label\":\"目前未付费且不打算付费\",\"count\":7,\"percent\":20.0},{\"label\":\"使用学校或他人提供的付费账号\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你目前是否为 AI 工具付费？",
+            "statistics": {
+              "id": "S10",
+              "map": {
+                "偶尔付费": 7,
+                "长期订阅付费": 7,
+                "目前未付费但考虑付费": 7,
+                "目前未付费且不打算付费": 7,
+                "使用学校或他人提供的付费账号": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你目前是否为 AI 工具付费？",
+              "fieldId": "radio1793098474081517",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "偶尔付费",
+                "使用学校或他人提供的付费账号",
+                "目前未付费但考虑付费",
+                "长期订阅付费",
+                "目前未付费且不打算付费"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "偶尔付费": 20,
+                "长期订阅付费": 20,
+                "目前未付费但考虑付费": 20,
+                "目前未付费且不打算付费": 20,
+                "使用学校或他人提供的付费账号": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "A212398-textarea1793098475128954",
+            "kind": "answer",
+            "text": "[模拟测试 04] 希望回答有可靠来源，任务执行前能确认。",
+            "fieldId": "textarea1793098475128954",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212398",
+            "question": "你还有其他建议或期望吗？（选填）"
+          },
+          {
+            "id": "S46",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":10,\"options\":[{\"label\":\"更便宜\",\"count\":4,\"percent\":11.43},{\"label\":\"小组协作\",\"count\":5,\"percent\":14.29},{\"label\":\"离线可用\",\"count\":6,\"percent\":17.14},{\"label\":\"多模态理解\",\"count\":5,\"percent\":14.29},{\"label\":\"更长上下文\",\"count\":7,\"percent\":20.0},{\"label\":\"个性化学习计划\",\"count\":7,\"percent\":20.0},{\"label\":\"更好的隐私保护\",\"count\":7,\"percent\":20.0},{\"label\":\"更准确的引用来源\",\"count\":5,\"percent\":14.29},{\"label\":\"更强的专业领域能力\",\"count\":5,\"percent\":14.29},{\"label\":\"自动执行多步骤任务\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "未来你希望 AI Agent 增加哪些能力？",
+            "statistics": {
+              "id": "S46",
+              "map": {
+                "更便宜": 4,
+                "小组协作": 5,
+                "离线可用": 6,
+                "多模态理解": 5,
+                "更长上下文": 7,
+                "个性化学习计划": 7,
+                "更好的隐私保护": 7,
+                "更准确的引用来源": 5,
+                "更强的专业领域能力": 5,
+                "自动执行多步骤任务": 7
+              },
+              "data": [
+                7,
+                7,
+                5,
+                7,
+                7,
+                6,
+                5,
+                5,
+                5,
+                4
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "未来你希望 AI Agent 增加哪些能力？",
+              "fieldId": "checkbox1793098475019938",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "个性化学习计划",
+                "更好的隐私保护",
+                "更准确的引用来源",
+                "更长上下文",
+                "自动执行多步骤任务",
+                "离线可用",
+                "更强的专业领域能力",
+                "小组协作",
+                "多模态理解",
+                "更便宜"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "更便宜": 11.43,
+                "小组协作": 14.29,
+                "离线可用": 17.14,
+                "多模态理解": 14.29,
+                "更长上下文": 20,
+                "个性化学习计划": 20,
+                "更好的隐私保护": 20,
+                "更准确的引用来源": 14.29,
+                "更强的专业领域能力": 14.29,
+                "自动执行多步骤任务": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S11",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":7,\"options\":[{\"label\":\"0元\",\"count\":5,\"percent\":14.29},{\"label\":\"1-20元\",\"count\":5,\"percent\":14.29},{\"label\":\"21-50元\",\"count\":5,\"percent\":14.29},{\"label\":\"51-100元\",\"count\":5,\"percent\":14.29},{\"label\":\"不确定\",\"count\":5,\"percent\":14.29},{\"label\":\"101-200元\",\"count\":5,\"percent\":14.29},{\"label\":\"200元以上\",\"count\":5,\"percent\":14.29}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你每月可接受的 AI 工具花费大约是？",
+            "statistics": {
+              "id": "S11",
+              "map": {
+                "0元": 5,
+                "1-20元": 5,
+                "21-50元": 5,
+                "51-100元": 5,
+                "不确定": 5,
+                "101-200元": 5,
+                "200元以上": 5
+              },
+              "data": [
+                5,
+                5,
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你每月可接受的 AI 工具花费大约是？",
+              "fieldId": "radio1793098474100763",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "21-50元",
+                "51-100元",
+                "101-200元",
+                "200元以上",
+                "不确定",
+                "0元",
+                "1-20元"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "0元": 14.29,
+                "1-20元": 14.29,
+                "21-50元": 14.29,
+                "51-100元": 14.29,
+                "不确定": 14.29,
+                "101-200元": 14.29,
+                "200元以上": 14.29
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S12",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":9,\"options\":[{\"label\":\"同学推荐\",\"count\":9,\"percent\":25.71},{\"label\":\"可引用来源\",\"count\":4,\"percent\":11.43},{\"label\":\"多模态能力\",\"count\":1,\"percent\":2.86},{\"label\":\"界面易用性\",\"count\":4,\"percent\":11.43},{\"label\":\"多轮对话记忆\",\"count\":12,\"percent\":34.29},{\"label\":\"联网检索能力\",\"count\":4,\"percent\":11.43},{\"label\":\"免费额度/价格\",\"count\":9,\"percent\":25.71},{\"label\":\"长文档处理能力\",\"count\":4,\"percent\":11.43},{\"label\":\"隐私与数据安全\",\"count\":11,\"percent\":31.43}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "选择 AI Agent 时，你看重哪些因素？",
+            "statistics": {
+              "id": "S12",
+              "map": {
+                "同学推荐": 9,
+                "可引用来源": 4,
+                "多模态能力": 1,
+                "界面易用性": 4,
+                "多轮对话记忆": 12,
+                "联网检索能力": 4,
+                "免费额度/价格": 9,
+                "长文档处理能力": 4,
+                "隐私与数据安全": 11
+              },
+              "data": [
+                9,
+                9,
+                4,
+                12,
+                11,
+                4,
+                4,
+                4,
+                1
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "选择 AI Agent 时，你看重哪些因素？",
+              "fieldId": "checkbox1793098474128474",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "同学推荐",
+                "免费额度/价格",
+                "长文档处理能力",
+                "多轮对话记忆",
+                "隐私与数据安全",
+                "界面易用性",
+                "联网检索能力",
+                "可引用来源",
+                "多模态能力"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "同学推荐": 25.71,
+                "可引用来源": 11.43,
+                "多模态能力": 2.86,
+                "界面易用性": 11.43,
+                "多轮对话记忆": 34.29,
+                "联网检索能力": 11.43,
+                "免费额度/价格": 25.71,
+                "长文档处理能力": 11.43,
+                "隐私与数据安全": 31.43
+              },
+              "missingCount": 0
+            }
+          }
+        ],
+        "indexedAt": "2026-10-28T05:14:53.881237700Z",
+        "simulated": true,
+        "answerCount": 35,
+        "documentCount": 229,
+        "retrievalMode": "中文词片段检索＋相似内容去重；非向量检索",
+        "generationMode": "REAL",
+        "retrievedCount": 12,
+        "totalStatisticCount": 54,
+        "excludedEvidenceCount": 0,
+        "providedStatisticCount": 34
+      }
+    },
+    {
+      "id": "d0a67549-91ec-4182-aaeb-9a5cac58e99f",
+      "question": "那最值得优先改进什么？简短一些",
+      "formKey": "cYtMpVqA",
+      "version": null,
+      "state": "SUCCEEDED",
+      "mode": "DEGRADED",
+      "provider": "知识库检索",
+      "model": "检索结果·未生成分析",
+      "warning": "",
+      "createdAt": "2026-10-28T06:22:18.658059900Z",
+      "plan": {
+        "tool": "survey_knowledge",
+        "stage": 0,
+        "arguments": {
+          "formKey": "cYtMpVqA",
+          "question": "当前用户要求（保留内容与长度要求）：那最值得优先改进什么？简短一些\n指代释义：在“大学生 AI Agent 使用与需求调查”中，最值得优先改进的是什么？请给出简短结论"
+        },
+        "automatic": true
+      },
+      "result": {
+        "asOf": "2026-10-28T06:22:32.765566800Z",
+        "kind": "knowledge_answer",
+        "tool": "survey_knowledge",
+        "title": "大学生 AI Agent 使用与需求调查",
+        "formKey": "cYtMpVqA",
+        "message": "已完成知识库检索，但模型未完成分析或输出未通过来源校验。请重试；下方仍保留真实来源，本次不展示未经校验的结论。",
+        "version": 2,
+        "citations": [
+          {
+            "id": "S0",
+            "kind": "statistics",
+            "text": "本发布版本答卷总数：35",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerCount": 35
+          },
+          {
+            "id": "A212395-textarea1793098475095464",
+            "kind": "answer",
+            "text": "[模拟测试 01] 希望回答有可靠来源，任务执行前能确认。",
+            "fieldId": "textarea1793098475095464",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212395",
+            "question": "使用 AI Agent 时，你最大的困扰是什么？"
+          },
+          {
+            "id": "S7",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":10,\"options\":[{\"label\":\"准备考试\",\"count\":5,\"percent\":14.29},{\"label\":\"创意设计\",\"count\":5,\"percent\":14.29},{\"label\":\"娱乐聊天\",\"count\":7,\"percent\":20.0},{\"label\":\"整理笔记\",\"count\":7,\"percent\":20.0},{\"label\":\"查找资料\",\"count\":7,\"percent\":20.0},{\"label\":\"编程实践\",\"count\":5,\"percent\":14.29},{\"label\":\"语言学习\",\"count\":5,\"percent\":14.29},{\"label\":\"写论文/报告\",\"count\":7,\"percent\":20.0},{\"label\":\"完成课程作业\",\"count\":4,\"percent\":11.43},{\"label\":\"日常事务管理\",\"count\":6,\"percent\":17.14}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你使用 AI Agent 的主要目的是什么？",
+            "statistics": {
+              "id": "S7",
+              "map": {
+                "准备考试": 5,
+                "创意设计": 5,
+                "娱乐聊天": 7,
+                "整理笔记": 7,
+                "查找资料": 7,
+                "编程实践": 5,
+                "语言学习": 5,
+                "写论文/报告": 7,
+                "完成课程作业": 4,
+                "日常事务管理": 6
+              },
+              "data": [
+                7,
+                7,
+                5,
+                7,
+                7,
+                6,
+                5,
+                5,
+                5,
+                4
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "你使用 AI Agent 的主要目的是什么？",
+              "fieldId": "checkbox1793098474019612",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "整理笔记",
+                "娱乐聊天",
+                "准备考试",
+                "写论文/报告",
+                "查找资料",
+                "日常事务管理",
+                "编程实践",
+                "创意设计",
+                "语言学习",
+                "完成课程作业"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "准备考试": 14.29,
+                "创意设计": 14.29,
+                "娱乐聊天": 20,
+                "整理笔记": 20,
+                "查找资料": 20,
+                "编程实践": 14.29,
+                "语言学习": 14.29,
+                "写论文/报告": 20,
+                "完成课程作业": 11.43,
+                "日常事务管理": 17.14
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "A212395-textarea1793098473993662",
+            "kind": "answer",
+            "text": "[模拟测试 01] 主要用于学习答疑，希望减少错误和幻觉。",
+            "fieldId": "textarea1793098473993662",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212395",
+            "question": "请写出你最常使用的 AI Agent 或产品名称，并简述主要用途。"
+          },
+          {
+            "id": "S49",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":0,\"options\":[]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "使用 AI Agent 时，你最大的困扰是什么？",
+            "statistics": {
+              "id": "S49",
+              "map": {},
+              "data": [],
+              "mean": null,
+              "type": "多行文本",
+              "label": "使用 AI Agent 时，你最大的困扰是什么？",
+              "fieldId": "textarea1793098475095464",
+              "formKey": "cYtMpVqA",
+              "typeCode": "TEXTAREA",
+              "chartType": "pie",
+              "fieldName": [],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {},
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "A212395-textarea1793098475058844",
+            "kind": "answer",
+            "text": "[模拟测试 01] 希望辅助整理资料和制作图表，结果可以核查。",
+            "fieldId": "textarea1793098475058844",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212395",
+            "question": "你对大型语言模型最迫切的一项要求是什么？"
+          },
+          {
+            "id": "S9",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":3.0,\"optionCount\":5,\"options\":[{\"label\":\"1\",\"count\":7,\"percent\":20.0},{\"label\":\"2\",\"count\":7,\"percent\":20.0},{\"label\":\"3\",\"count\":7,\"percent\":20.0},{\"label\":\"4\",\"count\":7,\"percent\":20.0},{\"label\":\"5\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "当前 AI Agent 满足你学习需求的程度如何（1=很低，5=很高）",
+            "statistics": {
+              "id": "S9",
+              "map": {
+                "1": 7,
+                "2": 7,
+                "3": 7,
+                "4": 7,
+                "5": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": 3,
+              "type": "评分",
+              "label": "当前 AI Agent 满足你学习需求的程度如何（1=很低，5=很高）",
+              "fieldId": "rate1793098474060915",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RATE",
+              "chartType": "bar",
+              "fieldName": [
+                "4",
+                "2",
+                "5",
+                "3",
+                "1"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "1": 20,
+                "2": 20,
+                "3": 20,
+                "4": 20,
+                "5": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "A212395-textarea1793098475128954",
+            "kind": "answer",
+            "text": "[模拟测试 01] 主要用于学习答疑，希望减少错误和幻觉。",
+            "fieldId": "textarea1793098475128954",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212395",
+            "question": "你还有其他建议或期望吗？（选填）"
+          },
+          {
+            "id": "S4",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":10,\"options\":[{\"label\":\"通用对话助手\",\"count\":5,\"percent\":14.29},{\"label\":\"图像/设计生成\",\"count\":7,\"percent\":20.0},{\"label\":\"编程/代码辅助\",\"count\":5,\"percent\":14.29},{\"label\":\"写作润色与改写\",\"count\":7,\"percent\":20.0},{\"label\":\"数据分析与图表\",\"count\":5,\"percent\":14.29},{\"label\":\"文献检索与阅读\",\"count\":7,\"percent\":20.0},{\"label\":\"翻译与语言学习\",\"count\":5,\"percent\":14.29},{\"label\":\"音视频生成与剪辑\",\"count\":4,\"percent\":11.43},{\"label\":\"日程/任务/项目管理\",\"count\":7,\"percent\":20.0},{\"label\":\"学习答疑与题目讲解\",\"count\":6,\"percent\":17.14}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你使用过以下哪些类型的 AI Agent 或 AI 工具？",
+            "statistics": {
+              "id": "S4",
+              "map": {
+                "通用对话助手": 5,
+                "图像/设计生成": 7,
+                "编程/代码辅助": 5,
+                "写作润色与改写": 7,
+                "数据分析与图表": 5,
+                "文献检索与阅读": 7,
+                "翻译与语言学习": 5,
+                "音视频生成与剪辑": 4,
+                "日程/任务/项目管理": 7,
+                "学习答疑与题目讲解": 6
+              },
+              "data": [
+                7,
+                7,
+                5,
+                7,
+                7,
+                6,
+                5,
+                5,
+                5,
+                4
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "你使用过以下哪些类型的 AI Agent 或 AI 工具？",
+              "fieldId": "checkbox1793098473952978",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "写作润色与改写",
+                "图像/设计生成",
+                "数据分析与图表",
+                "日程/任务/项目管理",
+                "文献检索与阅读",
+                "学习答疑与题目讲解",
+                "通用对话助手",
+                "翻译与语言学习",
+                "编程/代码辅助",
+                "音视频生成与剪辑"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "通用对话助手": 14.29,
+                "图像/设计生成": 20,
+                "编程/代码辅助": 14.29,
+                "写作润色与改写": 20,
+                "数据分析与图表": 14.29,
+                "文献检索与阅读": 20,
+                "翻译与语言学习": 14.29,
+                "音视频生成与剪辑": 11.43,
+                "日程/任务/项目管理": 20,
+                "学习答疑与题目讲解": 17.14
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "A212395-textarea179310530100326",
+            "kind": "answer",
+            "text": "[模拟测试 01] 主要用于学习答疑，希望减少错误和幻觉。",
+            "fieldId": "textarea179310530100326",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212395",
+            "question": "开放题"
+          },
+          {
+            "id": "S6",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":0,\"options\":[]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "请写出你最常使用的 AI Agent 或产品名称，并简述主要用途。",
+            "statistics": {
+              "id": "S6",
+              "map": {},
+              "data": [],
+              "mean": null,
+              "type": "多行文本",
+              "label": "请写出你最常使用的 AI Agent 或产品名称，并简述主要用途。",
+              "fieldId": "textarea1793098473993662",
+              "formKey": "cYtMpVqA",
+              "typeCode": "TEXTAREA",
+              "chartType": "pie",
+              "fieldName": [],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {},
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "Q7",
+            "kind": "question",
+            "text": "你使用 AI Agent 的主要目的是什么？",
+            "fieldId": "checkbox1793098474019612",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你使用 AI Agent 的主要目的是什么？"
+          },
+          {
+            "id": "S8",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":3.0,\"optionCount\":5,\"options\":[{\"label\":\"1\",\"count\":7,\"percent\":20.0},{\"label\":\"2\",\"count\":7,\"percent\":20.0},{\"label\":\"3\",\"count\":7,\"percent\":20.0},{\"label\":\"4\",\"count\":7,\"percent\":20.0},{\"label\":\"5\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "请评价你对当前常用 AI Agent 的总体满意程度（1=很不满意，5=很满意）",
+            "statistics": {
+              "id": "S8",
+              "map": {
+                "1": 7,
+                "2": 7,
+                "3": 7,
+                "4": 7,
+                "5": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": 3,
+              "type": "评分",
+              "label": "请评价你对当前常用 AI Agent 的总体满意程度（1=很不满意，5=很满意）",
+              "fieldId": "rate1793098474037826",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RATE",
+              "chartType": "bar",
+              "fieldName": [
+                "3",
+                "1",
+                "4",
+                "2",
+                "5"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "1": 20,
+                "2": 20,
+                "3": 20,
+                "4": 20,
+                "5": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "A212396-textarea1793098475095464",
+            "kind": "answer",
+            "text": "[模拟测试 02] 主要用于学习答疑，希望减少错误和幻觉。",
+            "fieldId": "textarea1793098475095464",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212396",
+            "question": "使用 AI Agent 时，你最大的困扰是什么？"
+          },
+          {
+            "id": "S38",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":5,\"options\":[{\"label\":\"从不\",\"count\":7,\"percent\":20.0},{\"label\":\"很少\",\"count\":7,\"percent\":20.0},{\"label\":\"有时\",\"count\":7,\"percent\":20.0},{\"label\":\"经常\",\"count\":7,\"percent\":20.0},{\"label\":\"不适用\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你是否使用 AI Agent 完成作业或论文相关任务？",
+            "statistics": {
+              "id": "S38",
+              "map": {
+                "从不": 7,
+                "很少": 7,
+                "有时": 7,
+                "经常": 7,
+                "不适用": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你是否使用 AI Agent 完成作业或论文相关任务？",
+              "fieldId": "radio179309847481736",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "有时",
+                "从不",
+                "经常",
+                "很少",
+                "不适用"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "从不": 20,
+                "很少": 20,
+                "有时": 20,
+                "经常": 20,
+                "不适用": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "A212397-textarea1793098475095464",
+            "kind": "answer",
+            "text": "[模拟测试 03] 希望更好地处理长文档，并保护个人数据。",
+            "fieldId": "textarea1793098475095464",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212397",
+            "question": "使用 AI Agent 时，你最大的困扰是什么？"
+          },
+          {
+            "id": "S22",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":5,\"options\":[{\"label\":\"不确定\",\"count\":7,\"percent\":20.0},{\"label\":\"完全接受\",\"count\":7,\"percent\":20.0},{\"label\":\"完全不接受\",\"count\":7,\"percent\":20.0},{\"label\":\"仅在可监督时接受\",\"count\":7,\"percent\":20.0},{\"label\":\"接受但需事后检查\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你对 AI Agent 自主执行任务（如自动查资料、写初稿、提交表单）的接受度是？",
+            "statistics": {
+              "id": "S22",
+              "map": {
+                "不确定": 7,
+                "完全接受": 7,
+                "完全不接受": 7,
+                "仅在可监督时接受": 7,
+                "接受但需事后检查": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你对 AI Agent 自主执行任务（如自动查资料、写初稿、提交表单）的接受度是？",
+              "fieldId": "radio1793098474377914",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "完全接受",
+                "完全不接受",
+                "接受但需事后检查",
+                "不确定",
+                "仅在可监督时接受"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "不确定": 20,
+                "完全接受": 20,
+                "完全不接受": 20,
+                "仅在可监督时接受": 20,
+                "接受但需事后检查": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "A212398-textarea1793098475095464",
+            "kind": "answer",
+            "text": "[模拟测试 04] 希望辅助整理资料和制作图表，结果可以核查。",
+            "fieldId": "textarea1793098475095464",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212398",
+            "question": "使用 AI Agent 时，你最大的困扰是什么？"
+          },
+          {
+            "id": "S46",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":10,\"options\":[{\"label\":\"更便宜\",\"count\":4,\"percent\":11.43},{\"label\":\"小组协作\",\"count\":5,\"percent\":14.29},{\"label\":\"离线可用\",\"count\":6,\"percent\":17.14},{\"label\":\"多模态理解\",\"count\":5,\"percent\":14.29},{\"label\":\"更长上下文\",\"count\":7,\"percent\":20.0},{\"label\":\"个性化学习计划\",\"count\":7,\"percent\":20.0},{\"label\":\"更好的隐私保护\",\"count\":7,\"percent\":20.0},{\"label\":\"更准确的引用来源\",\"count\":5,\"percent\":14.29},{\"label\":\"更强的专业领域能力\",\"count\":5,\"percent\":14.29},{\"label\":\"自动执行多步骤任务\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "未来你希望 AI Agent 增加哪些能力？",
+            "statistics": {
+              "id": "S46",
+              "map": {
+                "更便宜": 4,
+                "小组协作": 5,
+                "离线可用": 6,
+                "多模态理解": 5,
+                "更长上下文": 7,
+                "个性化学习计划": 7,
+                "更好的隐私保护": 7,
+                "更准确的引用来源": 5,
+                "更强的专业领域能力": 5,
+                "自动执行多步骤任务": 7
+              },
+              "data": [
+                7,
+                7,
+                5,
+                7,
+                7,
+                6,
+                5,
+                5,
+                5,
+                4
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "未来你希望 AI Agent 增加哪些能力？",
+              "fieldId": "checkbox1793098475019938",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "个性化学习计划",
+                "更好的隐私保护",
+                "更准确的引用来源",
+                "更长上下文",
+                "自动执行多步骤任务",
+                "离线可用",
+                "更强的专业领域能力",
+                "小组协作",
+                "多模态理解",
+                "更便宜"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "更便宜": 11.43,
+                "小组协作": 14.29,
+                "离线可用": 17.14,
+                "多模态理解": 14.29,
+                "更长上下文": 20,
+                "个性化学习计划": 20,
+                "更好的隐私保护": 20,
+                "更准确的引用来源": 14.29,
+                "更强的专业领域能力": 14.29,
+                "自动执行多步骤任务": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "Q49",
+            "kind": "question",
+            "text": "使用 AI Agent 时，你最大的困扰是什么？",
+            "fieldId": "textarea1793098475095464",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "使用 AI Agent 时，你最大的困扰是什么？"
+          },
+          {
+            "id": "S5",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":5,\"options\":[{\"label\":\"日程/任务管理\",\"count\":7,\"percent\":20.0},{\"label\":\"编程/代码辅助\",\"count\":7,\"percent\":20.0},{\"label\":\"写作润色与改写\",\"count\":7,\"percent\":20.0},{\"label\":\"翻译与语言学习\",\"count\":7,\"percent\":20.0},{\"label\":\"图像/音视频生成\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你最常用的一类 AI Agent 是？",
+            "statistics": {
+              "id": "S5",
+              "map": {
+                "日程/任务管理": 7,
+                "编程/代码辅助": 7,
+                "写作润色与改写": 7,
+                "翻译与语言学习": 7,
+                "图像/音视频生成": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你最常用的一类 AI Agent 是？",
+              "fieldId": "radio1793098473973248",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "写作润色与改写",
+                "编程/代码辅助",
+                "日程/任务管理",
+                "图像/音视频生成",
+                "翻译与语言学习"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "日程/任务管理": 20,
+                "编程/代码辅助": 20,
+                "写作润色与改写": 20,
+                "翻译与语言学习": 20,
+                "图像/音视频生成": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "Q9",
+            "kind": "question",
+            "text": "当前 AI Agent 满足你学习需求的程度如何（1=很低，5=很高）",
+            "fieldId": "rate1793098474060915",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "当前 AI Agent 满足你学习需求的程度如何（1=很低，5=很高）"
+          },
+          {
+            "id": "S12",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":9,\"options\":[{\"label\":\"同学推荐\",\"count\":9,\"percent\":25.71},{\"label\":\"可引用来源\",\"count\":4,\"percent\":11.43},{\"label\":\"多模态能力\",\"count\":1,\"percent\":2.86},{\"label\":\"界面易用性\",\"count\":4,\"percent\":11.43},{\"label\":\"多轮对话记忆\",\"count\":12,\"percent\":34.29},{\"label\":\"联网检索能力\",\"count\":4,\"percent\":11.43},{\"label\":\"免费额度/价格\",\"count\":9,\"percent\":25.71},{\"label\":\"长文档处理能力\",\"count\":4,\"percent\":11.43},{\"label\":\"隐私与数据安全\",\"count\":11,\"percent\":31.43}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "选择 AI Agent 时，你看重哪些因素？",
+            "statistics": {
+              "id": "S12",
+              "map": {
+                "同学推荐": 9,
+                "可引用来源": 4,
+                "多模态能力": 1,
+                "界面易用性": 4,
+                "多轮对话记忆": 12,
+                "联网检索能力": 4,
+                "免费额度/价格": 9,
+                "长文档处理能力": 4,
+                "隐私与数据安全": 11
+              },
+              "data": [
+                9,
+                9,
+                4,
+                12,
+                11,
+                4,
+                4,
+                4,
+                1
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "选择 AI Agent 时，你看重哪些因素？",
+              "fieldId": "checkbox1793098474128474",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "同学推荐",
+                "免费额度/价格",
+                "长文档处理能力",
+                "多轮对话记忆",
+                "隐私与数据安全",
+                "界面易用性",
+                "联网检索能力",
+                "可引用来源",
+                "多模态能力"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "同学推荐": 25.71,
+                "可引用来源": 11.43,
+                "多模态能力": 2.86,
+                "界面易用性": 11.43,
+                "多轮对话记忆": 34.29,
+                "联网检索能力": 11.43,
+                "免费额度/价格": 25.71,
+                "长文档处理能力": 11.43,
+                "隐私与数据安全": 31.43
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "A212396-textarea1793098473993662",
+            "kind": "answer",
+            "text": "[模拟测试 02] 希望更好地处理长文档，并保护个人数据。",
+            "fieldId": "textarea1793098473993662",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212396",
+            "question": "请写出你最常使用的 AI Agent 或产品名称，并简述主要用途。"
+          },
+          {
+            "id": "S21",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":4,\"options\":[{\"label\":\"不确定\",\"count\":7,\"percent\":20.0},{\"label\":\"两者结合\",\"count\":7,\"percent\":20.0},{\"label\":\"通用型 Agent\",\"count\":14,\"percent\":40.0},{\"label\":\"面向具体任务的专用 Agent\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你更偏好哪一类 AI Agent？",
+            "statistics": {
+              "id": "S21",
+              "map": {
+                "不确定": 7,
+                "两者结合": 7,
+                "通用型 Agent": 14,
+                "面向具体任务的专用 Agent": 7
+              },
+              "data": [
+                14,
+                7,
+                7,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你更偏好哪一类 AI Agent？",
+              "fieldId": "radio1793098474356825",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "通用型 Agent",
+                "不确定",
+                "两者结合",
+                "面向具体任务的专用 Agent"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "不确定": 20,
+                "两者结合": 20,
+                "通用型 Agent": 40,
+                "面向具体任务的专用 Agent": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S23",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":9,\"options\":[{\"label\":\"制作图表\",\"count\":3,\"percent\":8.57},{\"label\":\"润色文字\",\"count\":15,\"percent\":42.86},{\"label\":\"生成学习提纲\",\"count\":13,\"percent\":37.14},{\"label\":\"翻译外文材料\",\"count\":3,\"percent\":8.57},{\"label\":\"批改或讲解题目\",\"count\":3,\"percent\":8.57},{\"label\":\"检索并整理资料\",\"count\":3,\"percent\":8.57},{\"label\":\"生成代码并调试\",\"count\":2,\"percent\":5.71},{\"label\":\"管理日程与提醒\",\"count\":14,\"percent\":40.0},{\"label\":\"整理课堂录音或笔记\",\"count\":2,\"percent\":5.71}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你希望 AI Agent 自动完成哪些任务？",
+            "statistics": {
+              "id": "S23",
+              "map": {
+                "制作图表": 3,
+                "润色文字": 15,
+                "生成学习提纲": 13,
+                "翻译外文材料": 3,
+                "批改或讲解题目": 3,
+                "检索并整理资料": 3,
+                "生成代码并调试": 2,
+                "管理日程与提醒": 14,
+                "整理课堂录音或笔记": 2
+              },
+              "data": [
+                15,
+                14,
+                3,
+                13,
+                3,
+                3,
+                3,
+                2,
+                2
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "你希望 AI Agent 自动完成哪些任务？",
+              "fieldId": "checkbox1793098474400319",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "润色文字",
+                "管理日程与提醒",
+                "检索并整理资料",
+                "生成学习提纲",
+                "翻译外文材料",
+                "制作图表",
+                "批改或讲解题目",
+                "生成代码并调试",
+                "整理课堂录音或笔记"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "制作图表": 8.57,
+                "润色文字": 42.86,
+                "生成学习提纲": 37.14,
+                "翻译外文材料": 8.57,
+                "批改或讲解题目": 8.57,
+                "检索并整理资料": 8.57,
+                "生成代码并调试": 5.71,
+                "管理日程与提醒": 40,
+                "整理课堂录音或笔记": 5.71
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S24",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":5,\"options\":[{\"label\":\"不确定\",\"count\":7,\"percent\":20.0},{\"label\":\"完全不能接受\",\"count\":7,\"percent\":20.0},{\"label\":\"可以接受但需明确提示\",\"count\":7,\"percent\":20.0},{\"label\":\"可以接受但需可追溯来源\",\"count\":7,\"percent\":20.0},{\"label\":\"可以接受，自行复核即可\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你对 AI Agent 出错的态度是？",
+            "statistics": {
+              "id": "S24",
+              "map": {
+                "不确定": 7,
+                "完全不能接受": 7,
+                "可以接受但需明确提示": 7,
+                "可以接受但需可追溯来源": 7,
+                "可以接受，自行复核即可": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你对 AI Agent 出错的态度是？",
+              "fieldId": "radio1793098474420247",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "不确定",
+                "可以接受但需明确提示",
+                "可以接受，自行复核即可",
+                "完全不能接受",
+                "可以接受但需可追溯来源"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "不确定": 20,
+                "完全不能接受": 20,
+                "可以接受但需明确提示": 20,
+                "可以接受但需可追溯来源": 20,
+                "可以接受，自行复核即可": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S41",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":5,\"options\":[{\"label\":\"不愿意\",\"count\":7,\"percent\":20.0},{\"label\":\"不确定\",\"count\":7,\"percent\":20.0},{\"label\":\"视任务而定\",\"count\":7,\"percent\":20.0},{\"label\":\"愿意，且不担心\",\"count\":7,\"percent\":20.0},{\"label\":\"愿意，但有条件\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你是否愿意让 AI Agent 访问你的个人资料（如课表、笔记、文件）？",
+            "statistics": {
+              "id": "S41",
+              "map": {
+                "不愿意": 7,
+                "不确定": 7,
+                "视任务而定": 7,
+                "愿意，且不担心": 7,
+                "愿意，但有条件": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你是否愿意让 AI Agent 访问你的个人资料（如课表、笔记、文件）？",
+              "fieldId": "radio1793098474915522",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "愿意，且不担心",
+                "不愿意",
+                "不确定",
+                "愿意，但有条件",
+                "视任务而定"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "不愿意": 20,
+                "不确定": 20,
+                "视任务而定": 20,
+                "愿意，且不担心": 20,
+                "愿意，但有条件": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S42",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":8,\"options\":[{\"label\":\"支付信息\",\"count\":9,\"percent\":25.71},{\"label\":\"聊天记录\",\"count\":6,\"percent\":17.14},{\"label\":\"联系方式\",\"count\":7,\"percent\":20.0},{\"label\":\"身份信息\",\"count\":6,\"percent\":17.14},{\"label\":\"成绩与学籍\",\"count\":8,\"percent\":22.86},{\"label\":\"日程与位置\",\"count\":8,\"percent\":22.86},{\"label\":\"照片或音视频\",\"count\":8,\"percent\":22.86},{\"label\":\"个人笔记或作业\",\"count\":6,\"percent\":17.14}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你不愿授权给 AI Agent 的信息有哪些？",
+            "statistics": {
+              "id": "S42",
+              "map": {
+                "支付信息": 9,
+                "聊天记录": 6,
+                "联系方式": 7,
+                "身份信息": 6,
+                "成绩与学籍": 8,
+                "日程与位置": 8,
+                "照片或音视频": 8,
+                "个人笔记或作业": 6
+              },
+              "data": [
+                7,
+                8,
+                9,
+                8,
+                8,
+                6,
+                6,
+                6
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "你不愿授权给 AI Agent 的信息有哪些？",
+              "fieldId": "checkbox1793098474935489",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "联系方式",
+                "日程与位置",
+                "支付信息",
+                "照片或音视频",
+                "成绩与学籍",
+                "聊天记录",
+                "身份信息",
+                "个人笔记或作业"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "支付信息": 25.71,
+                "聊天记录": 17.14,
+                "联系方式": 20,
+                "身份信息": 17.14,
+                "成绩与学籍": 22.86,
+                "日程与位置": 22.86,
+                "照片或音视频": 22.86,
+                "个人笔记或作业": 17.14
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S47",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":3.0,\"optionCount\":5,\"options\":[{\"label\":\"1\",\"count\":7,\"percent\":20.0},{\"label\":\"2\",\"count\":7,\"percent\":20.0},{\"label\":\"3\",\"count\":7,\"percent\":20.0},{\"label\":\"4\",\"count\":7,\"percent\":20.0},{\"label\":\"5\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你对 AI Agent 替代部分学习环节的接受程度如何（1=完全不接受，5=完全接受）",
+            "statistics": {
+              "id": "S47",
+              "map": {
+                "1": 7,
+                "2": 7,
+                "3": 7,
+                "4": 7,
+                "5": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": 3,
+              "type": "评分",
+              "label": "你对 AI Agent 替代部分学习环节的接受程度如何（1=完全不接受，5=完全接受）",
+              "fieldId": "rate1793098475042710",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RATE",
+              "chartType": "bar",
+              "fieldName": [
+                "2",
+                "5",
+                "3",
+                "1",
+                "4"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "1": 20,
+                "2": 20,
+                "3": 20,
+                "4": 20,
+                "5": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S48",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":0,\"options\":[]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你对大型语言模型最迫切的一项要求是什么？",
+            "statistics": {
+              "id": "S48",
+              "map": {},
+              "data": [],
+              "mean": null,
+              "type": "多行文本",
+              "label": "你对大型语言模型最迫切的一项要求是什么？",
+              "fieldId": "textarea1793098475058844",
+              "formKey": "cYtMpVqA",
+              "typeCode": "TEXTAREA",
+              "chartType": "pie",
+              "fieldName": [],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {},
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S25",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":5,\"options\":[{\"label\":\"从不检查\",\"count\":7,\"percent\":20.0},{\"label\":\"偶尔检查\",\"count\":7,\"percent\":20.0},{\"label\":\"很少检查\",\"count\":7,\"percent\":20.0},{\"label\":\"经常检查\",\"count\":7,\"percent\":20.0},{\"label\":\"每次都会检查\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你是否会检查 AI 输出内容的准确性？",
+            "statistics": {
+              "id": "S25",
+              "map": {
+                "从不检查": 7,
+                "偶尔检查": 7,
+                "很少检查": 7,
+                "经常检查": 7,
+                "每次都会检查": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你是否会检查 AI 输出内容的准确性？",
+              "fieldId": "radio1793098474439674",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "偶尔检查",
+                "从不检查",
+                "经常检查",
+                "很少检查",
+                "每次都会检查"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "从不检查": 20,
+                "偶尔检查": 20,
+                "很少检查": 20,
+                "经常检查": 20,
+                "每次都会检查": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S31",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":5,\"options\":[{\"label\":\"不确定\",\"count\":7,\"percent\":20.0},{\"label\":\"一般即可\",\"count\":7,\"percent\":20.0},{\"label\":\"不太在意\",\"count\":7,\"percent\":20.0},{\"label\":\"必须非常好\",\"count\":7,\"percent\":20.0},{\"label\":\"比较好即可\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你对 AI 中文能力的要求是？",
+            "statistics": {
+              "id": "S31",
+              "map": {
+                "不确定": 7,
+                "一般即可": 7,
+                "不太在意": 7,
+                "必须非常好": 7,
+                "比较好即可": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你对 AI 中文能力的要求是？",
+              "fieldId": "radio1793098474588926",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "必须非常好",
+                "一般即可",
+                "不确定",
+                "比较好即可",
+                "不太在意"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "不确定": 20,
+                "一般即可": 20,
+                "不太在意": 20,
+                "必须非常好": 20,
+                "比较好即可": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S40",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":6,\"options\":[{\"label\":\"不清楚\",\"count\":4,\"percent\":11.43},{\"label\":\"明确禁止\",\"count\":20,\"percent\":57.14},{\"label\":\"鼓励使用\",\"count\":20,\"percent\":57.14},{\"label\":\"允许但有限制\",\"count\":6,\"percent\":17.14},{\"label\":\"允许但需注明\",\"count\":4,\"percent\":11.43},{\"label\":\"没有明确规定\",\"count\":4,\"percent\":11.43}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你所在学校或课程对 AI 使用的规定是？",
+            "statistics": {
+              "id": "S40",
+              "map": {
+                "不清楚": 4,
+                "明确禁止": 20,
+                "鼓励使用": 20,
+                "允许但有限制": 6,
+                "允许但需注明": 4,
+                "没有明确规定": 4
+              },
+              "data": [
+                20,
+                20,
+                6,
+                4,
+                4,
+                4
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "你所在学校或课程对 AI 使用的规定是？",
+              "fieldId": "checkbox1793098474895778",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "鼓励使用",
+                "明确禁止",
+                "允许但有限制",
+                "允许但需注明",
+                "没有明确规定",
+                "不清楚"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "不清楚": 11.43,
+                "明确禁止": 57.14,
+                "鼓励使用": 57.14,
+                "允许但有限制": 17.14,
+                "允许但需注明": 11.43,
+                "没有明确规定": 11.43
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S3",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":5,\"options\":[{\"label\":\"从未使用\",\"count\":7,\"percent\":20.0},{\"label\":\"几乎每天\",\"count\":7,\"percent\":20.0},{\"label\":\"很少使用\",\"count\":7,\"percent\":20.0},{\"label\":\"每周数次\",\"count\":7,\"percent\":20.0},{\"label\":\"每月数次\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "过去一个月，你使用 AI 工具的频率是？",
+            "statistics": {
+              "id": "S3",
+              "map": {
+                "从未使用": 7,
+                "几乎每天": 7,
+                "很少使用": 7,
+                "每周数次": 7,
+                "每月数次": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "过去一个月，你使用 AI 工具的频率是？",
+              "fieldId": "radio179309847393392",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "每周数次",
+                "很少使用",
+                "几乎每天",
+                "每月数次",
+                "从未使用"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "从未使用": 20,
+                "几乎每天": 20,
+                "很少使用": 20,
+                "每周数次": 20,
+                "每月数次": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S29",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":5,\"options\":[{\"label\":\"从不要求\",\"count\":7,\"percent\":20.0},{\"label\":\"偶尔要求\",\"count\":7,\"percent\":20.0},{\"label\":\"很少要求\",\"count\":7,\"percent\":20.0},{\"label\":\"总是要求\",\"count\":7,\"percent\":20.0},{\"label\":\"经常要求\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你是否要求 AI 在回答中提供引用来源？",
+            "statistics": {
+              "id": "S29",
+              "map": {
+                "从不要求": 7,
+                "偶尔要求": 7,
+                "很少要求": 7,
+                "总是要求": 7,
+                "经常要求": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你是否要求 AI 在回答中提供引用来源？",
+              "fieldId": "radio1793098474530200",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "总是要求",
+                "经常要求",
+                "偶尔要求",
+                "很少要求",
+                "从不要求"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "从不要求": 20,
+                "偶尔要求": 20,
+                "很少要求": 20,
+                "总是要求": 20,
+                "经常要求": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S32",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":5,\"options\":[{\"label\":\"不确定\",\"count\":7,\"percent\":20.0},{\"label\":\"一般即可\",\"count\":7,\"percent\":20.0},{\"label\":\"不太在意\",\"count\":7,\"percent\":20.0},{\"label\":\"必须非常好\",\"count\":7,\"percent\":20.0},{\"label\":\"比较好即可\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你对 AI 英文能力的要求是？",
+            "statistics": {
+              "id": "S32",
+              "map": {
+                "不确定": 7,
+                "一般即可": 7,
+                "不太在意": 7,
+                "必须非常好": 7,
+                "比较好即可": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你对 AI 英文能力的要求是？",
+              "fieldId": "radio1793098474665733",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "不太在意",
+                "必须非常好",
+                "一般即可",
+                "不确定",
+                "比较好即可"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "不确定": 20,
+                "一般即可": 20,
+                "不太在意": 20,
+                "必须非常好": 20,
+                "比较好即可": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S39",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":5,\"options\":[{\"label\":\"一般\",\"count\":7,\"percent\":20.0},{\"label\":\"不太了解\",\"count\":7,\"percent\":20.0},{\"label\":\"比较了解\",\"count\":7,\"percent\":20.0},{\"label\":\"非常了解\",\"count\":7,\"percent\":20.0},{\"label\":\"完全不了解\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你对使用 AI 完成学业任务的学术诚信边界了解程度如何？",
+            "statistics": {
+              "id": "S39",
+              "map": {
+                "一般": 7,
+                "不太了解": 7,
+                "比较了解": 7,
+                "非常了解": 7,
+                "完全不了解": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你对使用 AI 完成学业任务的学术诚信边界了解程度如何？",
+              "fieldId": "radio179309847484437",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "完全不了解",
+                "比较了解",
+                "不太了解",
+                "非常了解",
+                "一般"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "一般": 20,
+                "不太了解": 20,
+                "比较了解": 20,
+                "非常了解": 20,
+                "完全不了解": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S10",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":5,\"options\":[{\"label\":\"偶尔付费\",\"count\":7,\"percent\":20.0},{\"label\":\"长期订阅付费\",\"count\":7,\"percent\":20.0},{\"label\":\"目前未付费但考虑付费\",\"count\":7,\"percent\":20.0},{\"label\":\"目前未付费且不打算付费\",\"count\":7,\"percent\":20.0},{\"label\":\"使用学校或他人提供的付费账号\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你目前是否为 AI 工具付费？",
+            "statistics": {
+              "id": "S10",
+              "map": {
+                "偶尔付费": 7,
+                "长期订阅付费": 7,
+                "目前未付费但考虑付费": 7,
+                "目前未付费且不打算付费": 7,
+                "使用学校或他人提供的付费账号": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你目前是否为 AI 工具付费？",
+              "fieldId": "radio1793098474081517",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "偶尔付费",
+                "使用学校或他人提供的付费账号",
+                "目前未付费但考虑付费",
+                "长期订阅付费",
+                "目前未付费且不打算付费"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "偶尔付费": 20,
+                "长期订阅付费": 20,
+                "目前未付费但考虑付费": 20,
+                "目前未付费且不打算付费": 20,
+                "使用学校或他人提供的付费账号": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S28",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":3.0,\"optionCount\":5,\"options\":[{\"label\":\"1\",\"count\":7,\"percent\":20.0},{\"label\":\"2\",\"count\":7,\"percent\":20.0},{\"label\":\"3\",\"count\":7,\"percent\":20.0},{\"label\":\"4\",\"count\":7,\"percent\":20.0},{\"label\":\"5\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你对 AI 提供引用来源的重视程度如何（1=很不重要，5=非常重要）",
+            "statistics": {
+              "id": "S28",
+              "map": {
+                "1": 7,
+                "2": 7,
+                "3": 7,
+                "4": 7,
+                "5": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": 3,
+              "type": "评分",
+              "label": "你对 AI 提供引用来源的重视程度如何（1=很不重要，5=非常重要）",
+              "fieldId": "rate179309847450914",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RATE",
+              "chartType": "bar",
+              "fieldName": [
+                "3",
+                "1",
+                "4",
+                "2",
+                "5"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "1": 20,
+                "2": 20,
+                "3": 20,
+                "4": 20,
+                "5": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S34",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":3.0,\"optionCount\":5,\"options\":[{\"label\":\"1\",\"count\":7,\"percent\":20.0},{\"label\":\"2\",\"count\":7,\"percent\":20.0},{\"label\":\"3\",\"count\":7,\"percent\":20.0},{\"label\":\"4\",\"count\":7,\"percent\":20.0},{\"label\":\"5\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你遇到 AI 编造或歪曲事实的频率如何（1=从不，5=经常）",
+            "statistics": {
+              "id": "S34",
+              "map": {
+                "1": 7,
+                "2": 7,
+                "3": 7,
+                "4": 7,
+                "5": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": 3,
+              "type": "评分",
+              "label": "你遇到 AI 编造或歪曲事实的频率如何（1=从不，5=经常）",
+              "fieldId": "rate1793098474720375",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RATE",
+              "chartType": "bar",
+              "fieldName": [
+                "4",
+                "2",
+                "5",
+                "3",
+                "1"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "1": 20,
+                "2": 20,
+                "3": 20,
+                "4": 20,
+                "5": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S37",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":3.0,\"optionCount\":5,\"options\":[{\"label\":\"1\",\"count\":7,\"percent\":20.0},{\"label\":\"2\",\"count\":7,\"percent\":20.0},{\"label\":\"3\",\"count\":7,\"percent\":20.0},{\"label\":\"4\",\"count\":7,\"percent\":20.0},{\"label\":\"5\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你对 AI 图像、音频等多模态处理效果的满意程度如何（1=很不满意，5=很满意）",
+            "statistics": {
+              "id": "S37",
+              "map": {
+                "1": 7,
+                "2": 7,
+                "3": 7,
+                "4": 7,
+                "5": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": 3,
+              "type": "评分",
+              "label": "你对 AI 图像、音频等多模态处理效果的满意程度如何（1=很不满意，5=很满意）",
+              "fieldId": "rate1793098474785793",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RATE",
+              "chartType": "bar",
+              "fieldName": [
+                "2",
+                "5",
+                "3",
+                "1",
+                "4"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "1": 20,
+                "2": 20,
+                "3": 20,
+                "4": 20,
+                "5": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S43",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":3.0,\"optionCount\":5,\"options\":[{\"label\":\"1\",\"count\":7,\"percent\":20.0},{\"label\":\"2\",\"count\":7,\"percent\":20.0},{\"label\":\"3\",\"count\":7,\"percent\":20.0},{\"label\":\"4\",\"count\":7,\"percent\":20.0},{\"label\":\"5\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你对 AI 工具数据隐私的担忧程度如何（1=完全不担忧，5=非常担忧）",
+            "statistics": {
+              "id": "S43",
+              "map": {
+                "1": 7,
+                "2": 7,
+                "3": 7,
+                "4": 7,
+                "5": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": 3,
+              "type": "评分",
+              "label": "你对 AI 工具数据隐私的担忧程度如何（1=完全不担忧，5=非常担忧）",
+              "fieldId": "rate1793098474959436",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RATE",
+              "chartType": "bar",
+              "fieldName": [
+                "3",
+                "1",
+                "4",
+                "2",
+                "5"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "1": 20,
+                "2": 20,
+                "3": 20,
+                "4": 20,
+                "5": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S11",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":7,\"options\":[{\"label\":\"0元\",\"count\":5,\"percent\":14.29},{\"label\":\"1-20元\",\"count\":5,\"percent\":14.29},{\"label\":\"21-50元\",\"count\":5,\"percent\":14.29},{\"label\":\"51-100元\",\"count\":5,\"percent\":14.29},{\"label\":\"不确定\",\"count\":5,\"percent\":14.29},{\"label\":\"101-200元\",\"count\":5,\"percent\":14.29},{\"label\":\"200元以上\",\"count\":5,\"percent\":14.29}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你每月可接受的 AI 工具花费大约是？",
+            "statistics": {
+              "id": "S11",
+              "map": {
+                "0元": 5,
+                "1-20元": 5,
+                "21-50元": 5,
+                "51-100元": 5,
+                "不确定": 5,
+                "101-200元": 5,
+                "200元以上": 5
+              },
+              "data": [
+                5,
+                5,
+                5,
+                5,
+                5,
+                5,
+                5
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你每月可接受的 AI 工具花费大约是？",
+              "fieldId": "radio1793098474100763",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "21-50元",
+                "51-100元",
+                "101-200元",
+                "200元以上",
+                "不确定",
+                "0元",
+                "1-20元"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "0元": 14.29,
+                "1-20元": 14.29,
+                "21-50元": 14.29,
+                "51-100元": 14.29,
+                "不确定": 14.29,
+                "101-200元": 14.29,
+                "200元以上": 14.29
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S26",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":5,\"options\":[{\"label\":\"搜索网络\",\"count\":12,\"percent\":34.29},{\"label\":\"凭经验判断\",\"count\":11,\"percent\":31.43},{\"label\":\"核对原始资料\",\"count\":13,\"percent\":37.14},{\"label\":\"询问老师或同学\",\"count\":11,\"percent\":31.43},{\"label\":\"用其他 AI 交叉验证\",\"count\":11,\"percent\":31.43}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你通常如何检查 AI 输出？",
+            "statistics": {
+              "id": "S26",
+              "map": {
+                "搜索网络": 12,
+                "凭经验判断": 11,
+                "核对原始资料": 13,
+                "询问老师或同学": 11,
+                "用其他 AI 交叉验证": 11
+              },
+              "data": [
+                13,
+                11,
+                11,
+                11,
+                12
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "你通常如何检查 AI 输出？",
+              "fieldId": "checkbox1793098474461669",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "核对原始资料",
+                "询问老师或同学",
+                "用其他 AI 交叉验证",
+                "凭经验判断",
+                "搜索网络"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "搜索网络": 34.29,
+                "凭经验判断": 31.43,
+                "核对原始资料": 37.14,
+                "询问老师或同学": 31.43,
+                "用其他 AI 交叉验证": 31.43
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S50",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":0,\"options\":[]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你还有其他建议或期望吗？（选填）",
+            "statistics": {
+              "id": "S50",
+              "map": {},
+              "data": [],
+              "mean": null,
+              "type": "多行文本",
+              "label": "你还有其他建议或期望吗？（选填）",
+              "fieldId": "textarea1793098475128954",
+              "formKey": "cYtMpVqA",
+              "typeCode": "TEXTAREA",
+              "chartType": "pie",
+              "fieldName": [],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {},
+              "missingCount": 0
+            }
+          }
+        ],
+        "indexedAt": "2026-10-28T05:14:53.881237700Z",
+        "simulated": true,
+        "answerCount": 35,
+        "documentCount": 229,
+        "retrievalMode": "中文词片段检索＋相似内容去重；非向量检索",
+        "generationMode": "DEGRADED",
+        "retrievedCount": 12,
+        "generationWarning": "回答过长，请压缩为最多两段，每段不超过120字，只保留核心结论和必要说明",
+        "totalStatisticCount": 54,
+        "excludedEvidenceCount": 0,
+        "providedStatisticCount": 33
+      }
+    }
+  ]
+}

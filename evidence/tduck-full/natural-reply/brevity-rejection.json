@@ -1,0 +1,812 @@
+{
+  "passed": 3,
+  "failed": 1,
+  "checks": [
+    "catalogue count is a concise reply without questionnaire cards",
+    "an ambiguous request asks one conversational clarification without dumping choices",
+    "without manually choosing a survey, the real model analyses the named questionnaire from 35 responses",
+    {
+      "failed": "the request for a short answer is preserved"
+    }
+  ],
+  "pageErrors": [],
+  "conversationId": "01bfb4c8-a2ee-404a-9027-0d33599c0b31",
+  "turns": [
+    {
+      "id": "cd147c38-8c3b-439f-9080-4abea66a36b6",
+      "question": "我现在有多少份问卷",
+      "formKey": null,
+      "version": null,
+      "state": "SUCCEEDED",
+      "mode": "LOCAL",
+      "provider": "本地目录查询",
+      "model": "query-rules-v2",
+      "warning": "",
+      "createdAt": "2026-10-28T06:08:19.011639300Z",
+      "plan": {
+        "tool": "search_surveys",
+        "stage": 0,
+        "arguments": {
+          "limit": 10,
+          "query": ""
+        },
+        "automatic": true
+      },
+      "result": {
+        "kind": "chat",
+        "message": "当前账号共有 4 份匹配的问卷。直接告诉我想了解的主题，我会检索答卷后给你分析。",
+        "citations": []
+      }
+    },
+    {
+      "id": "18764845-5729-4f99-bf6a-ba7e8f13f624",
+      "question": "帮我分析一下问卷",
+      "formKey": null,
+      "version": null,
+      "state": "SUCCEEDED",
+      "mode": "REAL",
+      "provider": "本机推理网关",
+      "model": "group/group",
+      "warning": "",
+      "createdAt": "2026-10-28T06:08:19.997503100Z",
+      "plan": {
+        "tool": "search_surveys",
+        "stage": 0,
+        "arguments": {},
+        "automatic": true
+      },
+      "result": {
+        "kind": "chat",
+        "message": "我还不能确定你指的是哪份问卷。直接告诉我问卷名称或调查主题即可，我会检索答卷后给你总结分析。",
+        "citations": []
+      }
+    },
+    {
+      "id": "37c03453-e3f7-4529-9248-7df72fd611e6",
+      "question": "总结“大学生 AI Agent 使用与需求调查”的答卷，重点分析用户的需求，给我结论和建议，不用图表",
+      "formKey": "cYtMpVqA",
+      "version": null,
+      "state": "SUCCEEDED",
+      "mode": "REAL",
+      "provider": "本机推理网关",
+      "model": "group/group",
+      "warning": "",
+      "createdAt": "2026-10-28T06:08:28.110854800Z",
+      "plan": {
+        "tool": "survey_knowledge",
+        "stage": 1,
+        "arguments": {
+          "formKey": "cYtMpVqA",
+          "question": "总结“”的答卷，重点分析用户的需求，给我结论和建议，不用图表"
+        },
+        "automatic": true
+      },
+      "result": {
+        "asOf": "2026-10-28T06:08:55.509757600Z",
+        "kind": "knowledge_answer",
+        "tool": "survey_knowledge",
+        "model": "group/group",
+        "title": "大学生 AI Agent 使用与需求调查",
+        "formKey": "cYtMpVqA",
+        "message": "先说明数据性质：本版本共35份答卷（S0），且为模拟测试结果，下列结论只适用于本次模拟，不能外推到真实大学生群体。从可用的多选题统计看，需求主要落在写作与日常任务辅助：希望AI自动“润色文字”15人（42.86%）、生成学习提纲13人（37.14%）、管理日程与提醒14人（40.0%）（S23）；选择工具时看重多轮对话记忆12人（34.29%）、隐私与数据安全11人（31.43%）、同学推荐与免费额度/价格各9人（25.71%）（S12），说明需求既有功能面也有信任与成本面。 [S0、S23、S12]\n\n质量与可信是另一条主线。开放回答里多次出现希望“结果可以核查”“希望回答有可靠来源，任务执行前能确认”“减少错误和幻觉”“保护个人数据”（A212397-textarea1793098475128954、A212398-textarea1793098475128954、A212395-textarea1793098475128954、A212396-textarea1793098475128954），这些是模拟样本中的自发性表述，不能当作总体比例。与之呼应，自主执行任务的接受度选项中“仅在可监督时接受”“接受但需事后检查”等各7人（各20.0%）（S22），提示人工确认环节是需求的一部分。 [A212397-textarea1793098475128954、A212398-textarea1793098475128954、A212395-textarea1793098475128954、A212396-textarea1793098475128954、S22]\n\n需要提醒的是，本问卷大量量表题与单选/多选题在35份答卷中呈现完全均匀的分布（如学习需求满足度各档均7人、各5点量表均值3.0）（S9、S13、S14），这更像模拟数据构造的结果，而非真实态度差异。因此不建议据此对“满意度”“重要性排序”下结论，只能把多选题与开放题视为需求方向的线索。 [S9、S13、S14]\n\n建议：产品侧优先补齐“可核查”能力，包括引用来源、执行前确认、错误提示，并重视长文档处理与数据隐私（对应开放题诉求及S12中隐私31.43%）(S12)；运营侧可围绕写作润色、学习提纲、日程管理三类高频需求设计模板和引导（S23）；同时保留免费额度以降低使用门槛（S12）。以上均为针对本次模拟答卷的推断性建议，落地前需用真实样本复核。 [S12、S23、A212396-textarea1793098475128954]",
+        "version": 2,
+        "findings": [
+          {
+            "refs": [
+              "S0",
+              "S23",
+              "S12"
+            ],
+            "text": "先说明数据性质：本版本共35份答卷（S0），且为模拟测试结果，下列结论只适用于本次模拟，不能外推到真实大学生群体。从可用的多选题统计看，需求主要落在写作与日常任务辅助：希望AI自动“润色文字”15人（42.86%）、生成学习提纲13人（37.14%）、管理日程与提醒14人（40.0%）（S23）；选择工具时看重多轮对话记忆12人（34.29%）、隐私与数据安全11人（31.43%）、同学推荐与免费额度/价格各9人（25.71%）（S12），说明需求既有功能面也有信任与成本面。"
+          },
+          {
+            "refs": [
+              "A212397-textarea1793098475128954",
+              "A212398-textarea1793098475128954",
+              "A212395-textarea1793098475128954",
+              "A212396-textarea1793098475128954",
+              "S22"
+            ],
+            "text": "质量与可信是另一条主线。开放回答里多次出现希望“结果可以核查”“希望回答有可靠来源，任务执行前能确认”“减少错误和幻觉”“保护个人数据”（A212397-textarea1793098475128954、A212398-textarea1793098475128954、A212395-textarea1793098475128954、A212396-textarea1793098475128954），这些是模拟样本中的自发性表述，不能当作总体比例。与之呼应，自主执行任务的接受度选项中“仅在可监督时接受”“接受但需事后检查”等各7人（各20.0%）（S22），提示人工确认环节是需求的一部分。"
+          },
+          {
+            "refs": [
+              "S9",
+              "S13",
+              "S14"
+            ],
+            "text": "需要提醒的是，本问卷大量量表题与单选/多选题在35份答卷中呈现完全均匀的分布（如学习需求满足度各档均7人、各5点量表均值3.0）（S9、S13、S14），这更像模拟数据构造的结果，而非真实态度差异。因此不建议据此对“满意度”“重要性排序”下结论，只能把多选题与开放题视为需求方向的线索。"
+          },
+          {
+            "refs": [
+              "S12",
+              "S23",
+              "A212396-textarea1793098475128954"
+            ],
+            "text": "建议：产品侧优先补齐“可核查”能力，包括引用来源、执行前确认、错误提示，并重视长文档处理与数据隐私（对应开放题诉求及S12中隐私31.43%）(S12)；运营侧可围绕写作润色、学习提纲、日程管理三类高频需求设计模板和引导（S23）；同时保留免费额度以降低使用门槛（S12）。以上均为针对本次模拟答卷的推断性建议，落地前需用真实样本复核。"
+          }
+        ],
+        "provider": "本机推理网关",
+        "repaired": true,
+        "citations": [
+          {
+            "id": "S0",
+            "kind": "statistics",
+            "text": "本发布版本答卷总数：35",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerCount": 35
+          },
+          {
+            "id": "A212397-textarea1793098475128954",
+            "kind": "answer",
+            "text": "[模拟测试 03] 希望辅助整理资料和制作图表，结果可以核查。",
+            "fieldId": "textarea1793098475128954",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212397",
+            "question": "你还有其他建议或期望吗？（选填）"
+          },
+          {
+            "id": "S9",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":3.0,\"options\":[{\"label\":\"1\",\"count\":7,\"percent\":20.0},{\"label\":\"2\",\"count\":7,\"percent\":20.0},{\"label\":\"3\",\"count\":7,\"percent\":20.0},{\"label\":\"4\",\"count\":7,\"percent\":20.0},{\"label\":\"5\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "当前 AI Agent 满足你学习需求的程度如何（1=很低，5=很高）",
+            "statistics": {
+              "id": "S9",
+              "map": {
+                "1": 7,
+                "2": 7,
+                "3": 7,
+                "4": 7,
+                "5": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": 3,
+              "type": "评分",
+              "label": "当前 AI Agent 满足你学习需求的程度如何（1=很低，5=很高）",
+              "fieldId": "rate1793098474060915",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RATE",
+              "chartType": "bar",
+              "fieldName": [
+                "4",
+                "2",
+                "5",
+                "3",
+                "1"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "1": 20,
+                "2": 20,
+                "3": 20,
+                "4": 20,
+                "5": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "A212395-textarea1793098475128954",
+            "kind": "answer",
+            "text": "[模拟测试 01] 主要用于学习答疑，希望减少错误和幻觉。",
+            "fieldId": "textarea1793098475128954",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212395",
+            "question": "你还有其他建议或期望吗？（选填）"
+          },
+          {
+            "id": "A212396-textarea1793098475128954",
+            "kind": "answer",
+            "text": "[模拟测试 02] 希望更好地处理长文档，并保护个人数据。",
+            "fieldId": "textarea1793098475128954",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212396",
+            "question": "你还有其他建议或期望吗？（选填）"
+          },
+          {
+            "id": "S13",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":3.0,\"options\":[{\"label\":\"1\",\"count\":7,\"percent\":20.0},{\"label\":\"2\",\"count\":7,\"percent\":20.0},{\"label\":\"3\",\"count\":7,\"percent\":20.0},{\"label\":\"4\",\"count\":7,\"percent\":20.0},{\"label\":\"5\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "响应速度对你的重要程度如何（1=很不重要，5=非常重要）",
+            "statistics": {
+              "id": "S13",
+              "map": {
+                "1": 7,
+                "2": 7,
+                "3": 7,
+                "4": 7,
+                "5": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": 3,
+              "type": "评分",
+              "label": "响应速度对你的重要程度如何（1=很不重要，5=非常重要）",
+              "fieldId": "rate1793098474148915",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RATE",
+              "chartType": "bar",
+              "fieldName": [
+                "3",
+                "1",
+                "4",
+                "2",
+                "5"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "1": 20,
+                "2": 20,
+                "3": 20,
+                "4": 20,
+                "5": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "A212398-textarea1793098475128954",
+            "kind": "answer",
+            "text": "[模拟测试 04] 希望回答有可靠来源，任务执行前能确认。",
+            "fieldId": "textarea1793098475128954",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212398",
+            "question": "你还有其他建议或期望吗？（选填）"
+          },
+          {
+            "id": "S22",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"options\":[{\"label\":\"不确定\",\"count\":7,\"percent\":20.0},{\"label\":\"完全接受\",\"count\":7,\"percent\":20.0},{\"label\":\"完全不接受\",\"count\":7,\"percent\":20.0},{\"label\":\"仅在可监督时接受\",\"count\":7,\"percent\":20.0},{\"label\":\"接受但需事后检查\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你对 AI Agent 自主执行任务（如自动查资料、写初稿、提交表单）的接受度是？",
+            "statistics": {
+              "id": "S22",
+              "map": {
+                "不确定": 7,
+                "完全接受": 7,
+                "完全不接受": 7,
+                "仅在可监督时接受": 7,
+                "接受但需事后检查": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你对 AI Agent 自主执行任务（如自动查资料、写初稿、提交表单）的接受度是？",
+              "fieldId": "radio1793098474377914",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "完全接受",
+                "完全不接受",
+                "接受但需事后检查",
+                "不确定",
+                "仅在可监督时接受"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "不确定": 20,
+                "完全接受": 20,
+                "完全不接受": 20,
+                "仅在可监督时接受": 20,
+                "接受但需事后检查": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S12",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"options\":[{\"label\":\"同学推荐\",\"count\":9,\"percent\":25.71},{\"label\":\"可引用来源\",\"count\":4,\"percent\":11.43},{\"label\":\"多模态能力\",\"count\":1,\"percent\":2.86},{\"label\":\"界面易用性\",\"count\":4,\"percent\":11.43},{\"label\":\"多轮对话记忆\",\"count\":12,\"percent\":34.29},{\"label\":\"联网检索能力\",\"count\":4,\"percent\":11.43},{\"label\":\"免费额度/价格\",\"count\":9,\"percent\":25.71},{\"label\":\"长文档处理能力\",\"count\":4,\"percent\":11.43},{\"label\":\"隐私与数据安全\",\"count\":11,\"percent\":31.43}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "选择 AI Agent 时，你看重哪些因素？",
+            "statistics": {
+              "id": "S12",
+              "map": {
+                "同学推荐": 9,
+                "可引用来源": 4,
+                "多模态能力": 1,
+                "界面易用性": 4,
+                "多轮对话记忆": 12,
+                "联网检索能力": 4,
+                "免费额度/价格": 9,
+                "长文档处理能力": 4,
+                "隐私与数据安全": 11
+              },
+              "data": [
+                9,
+                9,
+                4,
+                12,
+                11,
+                4,
+                4,
+                4,
+                1
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "选择 AI Agent 时，你看重哪些因素？",
+              "fieldId": "checkbox1793098474128474",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "同学推荐",
+                "免费额度/价格",
+                "长文档处理能力",
+                "多轮对话记忆",
+                "隐私与数据安全",
+                "界面易用性",
+                "联网检索能力",
+                "可引用来源",
+                "多模态能力"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "同学推荐": 25.71,
+                "可引用来源": 11.43,
+                "多模态能力": 2.86,
+                "界面易用性": 11.43,
+                "多轮对话记忆": 34.29,
+                "联网检索能力": 11.43,
+                "免费额度/价格": 25.71,
+                "长文档处理能力": 11.43,
+                "隐私与数据安全": 31.43
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S14",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":3.0,\"options\":[{\"label\":\"1\",\"count\":7,\"percent\":20.0},{\"label\":\"2\",\"count\":7,\"percent\":20.0},{\"label\":\"3\",\"count\":7,\"percent\":20.0},{\"label\":\"4\",\"count\":7,\"percent\":20.0},{\"label\":\"5\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "回答准确性对你的重要程度如何（1=很不重要，5=非常重要）",
+            "statistics": {
+              "id": "S14",
+              "map": {
+                "1": 7,
+                "2": 7,
+                "3": 7,
+                "4": 7,
+                "5": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": 3,
+              "type": "评分",
+              "label": "回答准确性对你的重要程度如何（1=很不重要，5=非常重要）",
+              "fieldId": "rate1793098474172896",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RATE",
+              "chartType": "bar",
+              "fieldName": [
+                "4",
+                "2",
+                "5",
+                "3",
+                "1"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "1": 20,
+                "2": 20,
+                "3": 20,
+                "4": 20,
+                "5": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S23",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"options\":[{\"label\":\"制作图表\",\"count\":3,\"percent\":8.57},{\"label\":\"润色文字\",\"count\":15,\"percent\":42.86},{\"label\":\"生成学习提纲\",\"count\":13,\"percent\":37.14},{\"label\":\"翻译外文材料\",\"count\":3,\"percent\":8.57},{\"label\":\"批改或讲解题目\",\"count\":3,\"percent\":8.57},{\"label\":\"检索并整理资料\",\"count\":3,\"percent\":8.57},{\"label\":\"生成代码并调试\",\"count\":2,\"percent\":5.71},{\"label\":\"管理日程与提醒\",\"count\":14,\"percent\":40.0},{\"label\":\"整理课堂录音或笔记\",\"count\":2,\"percent\":5.71}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你希望 AI Agent 自动完成哪些任务？",
+            "statistics": {
+              "id": "S23",
+              "map": {
+                "制作图表": 3,
+                "润色文字": 15,
+                "生成学习提纲": 13,
+                "翻译外文材料": 3,
+                "批改或讲解题目": 3,
+                "检索并整理资料": 3,
+                "生成代码并调试": 2,
+                "管理日程与提醒": 14,
+                "整理课堂录音或笔记": 2
+              },
+              "data": [
+                15,
+                14,
+                3,
+                13,
+                3,
+                3,
+                3,
+                2,
+                2
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "你希望 AI Agent 自动完成哪些任务？",
+              "fieldId": "checkbox1793098474400319",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "润色文字",
+                "管理日程与提醒",
+                "检索并整理资料",
+                "生成学习提纲",
+                "翻译外文材料",
+                "制作图表",
+                "批改或讲解题目",
+                "生成代码并调试",
+                "整理课堂录音或笔记"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "制作图表": 8.57,
+                "润色文字": 42.86,
+                "生成学习提纲": 37.14,
+                "翻译外文材料": 8.57,
+                "批改或讲解题目": 8.57,
+                "检索并整理资料": 8.57,
+                "生成代码并调试": 5.71,
+                "管理日程与提醒": 40,
+                "整理课堂录音或笔记": 5.71
+              },
+              "missingCount": 0
+            }
+          }
+        ],
+        "indexedAt": "2026-10-28T05:14:53.881237700Z",
+        "simulated": true,
+        "answerCount": 35,
+        "documentCount": 229,
+        "retrievalMode": "中文词片段检索＋相似内容去重；非向量检索",
+        "generationMode": "REAL",
+        "retrievedCount": 12,
+        "totalStatisticCount": 54,
+        "excludedEvidenceCount": 0,
+        "providedStatisticCount": 37
+      }
+    },
+    {
+      "id": "1f5730e3-7bcd-45ce-8789-4f6e2c2c5377",
+      "question": "那最值得优先改进什么？简短一些",
+      "formKey": "cYtMpVqA",
+      "version": null,
+      "state": "SUCCEEDED",
+      "mode": "REAL",
+      "provider": "本机推理网关",
+      "model": "group/group",
+      "warning": "",
+      "createdAt": "2026-10-28T06:08:56.181698200Z",
+      "plan": {
+        "tool": "survey_knowledge",
+        "stage": 0,
+        "arguments": {
+          "formKey": "cYtMpVqA",
+          "question": "当前用户要求（保留内容与长度要求）：那最值得优先改进什么？简短一些\n指代释义：基于“大学生 AI Agent 使用与需求调查”的答卷，最值得优先改进的一点是什么？简短回答"
+        },
+        "automatic": true
+      },
+      "result": {
+        "asOf": "2026-10-28T06:09:01.719341800Z",
+        "kind": "knowledge_answer",
+        "tool": "survey_knowledge",
+        "model": "group/group",
+        "title": "大学生 AI Agent 使用与需求调查",
+        "formKey": "cYtMpVqA",
+        "message": "最值得优先改进的是回答的准确性与来源可信度，并让任务执行前可确认。模拟测试的开放回答中，多位模拟答卷者反复提到“希望回答有可靠来源，任务执行前能确认”，另有模拟答卷者提到“希望减少错误和幻觉”；这与有限的开放题片段一致（S0，A212395-textarea1793098475095464，A212396-textarea1793098475058844）。不过这些是模拟测试的样本性开放回答，出现次数不能作为总体观点比例。 [S0、A212395-textarea1793098475095464、A212396-textarea1793098475058844]\n\n从评价数据看，学习需求满足度与总体满意度均为1—5分档各7人、均值3.0（有效样本35），说明当前体验处在中间水平，存在提升空间（S9，S8）。但需说明：这是全版本后端统计，且本回答未引用年级或人群交叉统计，不能推断不同群体的差异。 [S9、S8]\n\n改进建议应与既有使用习惯衔接：要求AI提供引用来源的选项各档均为7人，而检查输出时常见做法是核对原始资料（13人）、搜索网络（12人），对应“可追溯来源+执行前确认”的方向较符合当前习惯（S29，S26）。这属于基于选项分布的审慎建议，不代表已证实的因果效果。 [S29、S26]",
+        "version": 2,
+        "findings": [
+          {
+            "refs": [
+              "S0",
+              "A212395-textarea1793098475095464",
+              "A212396-textarea1793098475058844"
+            ],
+            "text": "最值得优先改进的是回答的准确性与来源可信度，并让任务执行前可确认。模拟测试的开放回答中，多位模拟答卷者反复提到“希望回答有可靠来源，任务执行前能确认”，另有模拟答卷者提到“希望减少错误和幻觉”；这与有限的开放题片段一致（S0，A212395-textarea1793098475095464，A212396-textarea1793098475058844）。不过这些是模拟测试的样本性开放回答，出现次数不能作为总体观点比例。"
+          },
+          {
+            "refs": [
+              "S9",
+              "S8"
+            ],
+            "text": "从评价数据看，学习需求满足度与总体满意度均为1—5分档各7人、均值3.0（有效样本35），说明当前体验处在中间水平，存在提升空间（S9，S8）。但需说明：这是全版本后端统计，且本回答未引用年级或人群交叉统计，不能推断不同群体的差异。"
+          },
+          {
+            "refs": [
+              "S29",
+              "S26"
+            ],
+            "text": "改进建议应与既有使用习惯衔接：要求AI提供引用来源的选项各档均为7人，而检查输出时常见做法是核对原始资料（13人）、搜索网络（12人），对应“可追溯来源+执行前确认”的方向较符合当前习惯（S29，S26）。这属于基于选项分布的审慎建议，不代表已证实的因果效果。"
+          }
+        ],
+        "provider": "本机推理网关",
+        "citations": [
+          {
+            "id": "S0",
+            "kind": "statistics",
+            "text": "本发布版本答卷总数：35",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerCount": 35
+          },
+          {
+            "id": "A212395-textarea1793098475095464",
+            "kind": "answer",
+            "text": "[模拟测试 01] 希望回答有可靠来源，任务执行前能确认。",
+            "fieldId": "textarea1793098475095464",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212395",
+            "question": "使用 AI Agent 时，你最大的困扰是什么？"
+          },
+          {
+            "id": "A212396-textarea1793098475058844",
+            "kind": "answer",
+            "text": "[模拟测试 02] 希望回答有可靠来源，任务执行前能确认。",
+            "fieldId": "textarea1793098475058844",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212396",
+            "question": "你对大型语言模型最迫切的一项要求是什么？"
+          },
+          {
+            "id": "S9",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":3.0,\"options\":[{\"label\":\"1\",\"count\":7,\"percent\":20.0},{\"label\":\"2\",\"count\":7,\"percent\":20.0},{\"label\":\"3\",\"count\":7,\"percent\":20.0},{\"label\":\"4\",\"count\":7,\"percent\":20.0},{\"label\":\"5\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "当前 AI Agent 满足你学习需求的程度如何（1=很低，5=很高）",
+            "statistics": {
+              "id": "S9",
+              "map": {
+                "1": 7,
+                "2": 7,
+                "3": 7,
+                "4": 7,
+                "5": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": 3,
+              "type": "评分",
+              "label": "当前 AI Agent 满足你学习需求的程度如何（1=很低，5=很高）",
+              "fieldId": "rate1793098474060915",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RATE",
+              "chartType": "bar",
+              "fieldName": [
+                "4",
+                "2",
+                "5",
+                "3",
+                "1"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "1": 20,
+                "2": 20,
+                "3": 20,
+                "4": 20,
+                "5": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S8",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":3.0,\"options\":[{\"label\":\"1\",\"count\":7,\"percent\":20.0},{\"label\":\"2\",\"count\":7,\"percent\":20.0},{\"label\":\"3\",\"count\":7,\"percent\":20.0},{\"label\":\"4\",\"count\":7,\"percent\":20.0},{\"label\":\"5\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "请评价你对当前常用 AI Agent 的总体满意程度（1=很不满意，5=很满意）",
+            "statistics": {
+              "id": "S8",
+              "map": {
+                "1": 7,
+                "2": 7,
+                "3": 7,
+                "4": 7,
+                "5": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": 3,
+              "type": "评分",
+              "label": "请评价你对当前常用 AI Agent 的总体满意程度（1=很不满意，5=很满意）",
+              "fieldId": "rate1793098474037826",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RATE",
+              "chartType": "bar",
+              "fieldName": [
+                "3",
+                "1",
+                "4",
+                "2",
+                "5"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "1": 20,
+                "2": 20,
+                "3": 20,
+                "4": 20,
+                "5": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S29",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"options\":[{\"label\":\"从不要求\",\"count\":7,\"percent\":20.0},{\"label\":\"偶尔要求\",\"count\":7,\"percent\":20.0},{\"label\":\"很少要求\",\"count\":7,\"percent\":20.0},{\"label\":\"总是要求\",\"count\":7,\"percent\":20.0},{\"label\":\"经常要求\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你是否要求 AI 在回答中提供引用来源？",
+            "statistics": {
+              "id": "S29",
+              "map": {
+                "从不要求": 7,
+                "偶尔要求": 7,
+                "很少要求": 7,
+                "总是要求": 7,
+                "经常要求": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": null,
+              "type": "单选框",
+              "label": "你是否要求 AI 在回答中提供引用来源？",
+              "fieldId": "radio1793098474530200",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RADIO",
+              "chartType": "pie",
+              "fieldName": [
+                "总是要求",
+                "经常要求",
+                "偶尔要求",
+                "很少要求",
+                "从不要求"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "从不要求": 20,
+                "偶尔要求": 20,
+                "很少要求": 20,
+                "总是要求": 20,
+                "经常要求": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S26",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"options\":[{\"label\":\"搜索网络\",\"count\":12,\"percent\":34.29},{\"label\":\"凭经验判断\",\"count\":11,\"percent\":31.43},{\"label\":\"核对原始资料\",\"count\":13,\"percent\":37.14},{\"label\":\"询问老师或同学\",\"count\":11,\"percent\":31.43},{\"label\":\"用其他 AI 交叉验证\",\"count\":11,\"percent\":31.43}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你通常如何检查 AI 输出？",
+            "statistics": {
+              "id": "S26",
+              "map": {
+                "搜索网络": 12,
+                "凭经验判断": 11,
+                "核对原始资料": 13,
+                "询问老师或同学": 11,
+                "用其他 AI 交叉验证": 11
+              },
+              "data": [
+                13,
+                11,
+                11,
+                11,
+                12
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "你通常如何检查 AI 输出？",
+              "fieldId": "checkbox1793098474461669",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "核对原始资料",
+                "询问老师或同学",
+                "用其他 AI 交叉验证",
+                "凭经验判断",
+                "搜索网络"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "搜索网络": 34.29,
+                "凭经验判断": 31.43,
+                "核对原始资料": 37.14,
+                "询问老师或同学": 31.43,
+                "用其他 AI 交叉验证": 31.43
+              },
+              "missingCount": 0
+            }
+          }
+        ],
+        "indexedAt": "2026-10-28T05:14:53.881237700Z",
+        "simulated": true,
+        "answerCount": 35,
+        "documentCount": 229,
+        "retrievalMode": "中文词片段检索＋相似内容去重；非向量检索",
+        "generationMode": "REAL",
+        "retrievedCount": 12,
+        "totalStatisticCount": 54,
+        "excludedEvidenceCount": 0,
+        "providedStatisticCount": 35
+      }
+    }
+  ]
+}

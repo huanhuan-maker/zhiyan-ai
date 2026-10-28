@@ -1,0 +1,108 @@
+{
+  "java": [
+    {
+      "name": "com.tduck.cloud.api.ai.AiSettingsPerUserTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AiSettingsTest",
+      "tests": 25,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AnalysisReportTest",
+      "tests": 19,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AssistantAutomaticSearchTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AssistantHistoryDeleteTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AssistantNaturalReplyTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AssistantQueryTest",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AssistantSelectionTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AssistantSimpleTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AssistantWorkspaceTest",
+      "tests": 15,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.KnowledgeMcpContextTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.SurveyKnowledgeTest",
+      "tests": 17,
+      "failures": 0,
+      "errors": 0
+    }
+  ],
+  "frontend": {
+    "files": 12,
+    "failed": 0,
+    "passed": 72
+  },
+  "frontendBuild": "passed",
+  "regressionBefore": {
+    "ordinaryJava": {
+      "tests": 5,
+      "failed": 4
+    },
+    "selectionJava": {
+      "tests": 2,
+      "failed": 2
+    },
+    "optionCountJava": {
+      "tests": 14,
+      "errors": 1
+    },
+    "ordinaryFrontend": {
+      "tests": 3,
+      "failed": 3
+    },
+    "selectionFrontend": {
+      "tests": 5,
+      "failed": 1
+    },
+    "focusJava": {
+      "tests": 21,
+      "failed": 2
+    }
+  }
+}

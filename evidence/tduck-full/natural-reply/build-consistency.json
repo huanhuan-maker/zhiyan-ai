@@ -1,0 +1,14 @@
+{
+  "matchedPackagedClasses": [
+    "com/tduck/cloud/form/assistant/AssistantPlanner.class",
+    "com/tduck/cloud/form/assistant/AssistantChatService.class",
+    "com/tduck/cloud/form/assistant/SurveyKnowledgeService.class"
+  ],
+  "installedJarMatchesTestedBuild": true,
+  "sha256": "e9b95e8b0f08c1522376a4b18c03863a24243b21a6c586d37fc0ef679b2e64ef",
+  "javaTests": {
+    "tests": 140,
+    "failures": 0,
+    "errors": 0
+  }
+}

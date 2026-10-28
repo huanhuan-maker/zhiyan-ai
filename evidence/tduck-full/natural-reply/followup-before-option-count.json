@@ -1,0 +1,189 @@
+{
+  "passed": 2,
+  "failed": 1,
+  "checks": [
+    "exact reported recovery query uses the real LLM, reports 35, and does not expand a dashboard",
+    "a different focused question receives a different grounded answer without a chart",
+    {
+      "failed": "模型分析未通过来源或数值校验\n\n'DEGRADED' !== 'REAL'\n"
+    }
+  ],
+  "pageErrors": [],
+  "conversationId": "5b99205f-09dd-406c-b3ca-588cd51c423a",
+  "answers": [
+    {
+      "question": "查一下这份问卷的回收统计",
+      "result": {
+        "asOf": "2026-10-28T06:08:25.795977100Z",
+        "kind": "knowledge_answer",
+        "tool": "survey_knowledge",
+        "model": "group/group",
+        "title": "大学生 AI Agent 使用与需求调查",
+        "formKey": "cYtMpVqA",
+        "message": "本次为模拟测试结果，发布版本2共回收答卷35份；该数量为后端统计，仅反映当前版本回收量。 [S0]",
+        "version": 2,
+        "findings": [
+          {
+            "refs": [
+              "S0"
+            ],
+            "text": "本次为模拟测试结果，发布版本2共回收答卷35份；该数量为后端统计，仅反映当前版本回收量。"
+          }
+        ],
+        "provider": "本机推理网关",
+        "citations": [
+          {
+            "id": "S0",
+            "kind": "statistics",
+            "text": "本发布版本答卷总数：35",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerCount": 35
+          }
+        ],
+        "indexedAt": "2026-10-28T05:14:53.881237700Z",
+        "simulated": true,
+        "answerCount": 35,
+        "documentCount": 229,
+        "retrievalMode": "中文词片段检索＋相似内容去重；非向量检索",
+        "generationMode": "REAL",
+        "retrievedCount": 0,
+        "totalStatisticCount": 54,
+        "excludedEvidenceCount": 0,
+        "providedStatisticCount": 0
+      },
+      "plan": {
+        "tool": "survey_knowledge",
+        "stage": 0,
+        "arguments": {
+          "formKey": "cYtMpVqA",
+          "version": 2,
+          "question": "查一下这份问卷的回收统计"
+        },
+        "automatic": true
+      }
+    },
+    {
+      "question": "哪个用途选择的人最多？请只回答这个问题。",
+      "result": {
+        "asOf": "2026-10-28T06:08:28.880157600Z",
+        "kind": "knowledge_answer",
+        "tool": "survey_knowledge",
+        "model": "group/group",
+        "title": "大学生 AI Agent 使用与需求调查",
+        "formKey": "cYtMpVqA",
+        "message": "按“使用 AI Agent 的主要目的”一题，35 份有效回答中并列最高的是娱乐聊天、整理笔记、查找资料和写论文/报告，各 7 人（20.0%）；其次是日常事务管理 6 人（17.14%）。因此没有唯一“最多”的用途，而是四项并列第一。需注意该数据来自模拟测试版本（答卷总数 35），并非真实调研结果。 [S7、S0]",
+        "version": 2,
+        "findings": [
+          {
+            "refs": [
+              "S7",
+              "S0"
+            ],
+            "text": "按“使用 AI Agent 的主要目的”一题，35 份有效回答中并列最高的是娱乐聊天、整理笔记、查找资料和写论文/报告，各 7 人（20.0%）；其次是日常事务管理 6 人（17.14%）。因此没有唯一“最多”的用途，而是四项并列第一。需注意该数据来自模拟测试版本（答卷总数 35），并非真实调研结果。"
+          }
+        ],
+        "provider": "本机推理网关",
+        "citations": [
+          {
+            "id": "S0",
+            "kind": "statistics",
+            "text": "本发布版本答卷总数：35",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerCount": 35
+          },
+          {
+            "id": "S7",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"options\":[{\"label\":\"准备考试\",\"count\":5,\"percent\":14.29},{\"label\":\"创意设计\",\"count\":5,\"percent\":14.29},{\"label\":\"娱乐聊天\",\"count\":7,\"percent\":20.0},{\"label\":\"整理笔记\",\"count\":7,\"percent\":20.0},{\"label\":\"查找资料\",\"count\":7,\"percent\":20.0},{\"label\":\"编程实践\",\"count\":5,\"percent\":14.29},{\"label\":\"语言学习\",\"count\":5,\"percent\":14.29},{\"label\":\"写论文/报告\",\"count\":7,\"percent\":20.0},{\"label\":\"完成课程作业\",\"count\":4,\"percent\":11.43},{\"label\":\"日常事务管理\",\"count\":6,\"percent\":17.14}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你使用 AI Agent 的主要目的是什么？",
+            "statistics": {
+              "id": "S7",
+              "map": {
+                "准备考试": 5,
+                "创意设计": 5,
+                "娱乐聊天": 7,
+                "整理笔记": 7,
+                "查找资料": 7,
+                "编程实践": 5,
+                "语言学习": 5,
+                "写论文/报告": 7,
+                "完成课程作业": 4,
+                "日常事务管理": 6
+              },
+              "data": [
+                7,
+                7,
+                5,
+                7,
+                7,
+                6,
+                5,
+                5,
+                5,
+                4
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "你使用 AI Agent 的主要目的是什么？",
+              "fieldId": "checkbox1793098474019612",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "整理笔记",
+                "娱乐聊天",
+                "准备考试",
+                "写论文/报告",
+                "查找资料",
+                "日常事务管理",
+                "编程实践",
+                "创意设计",
+                "语言学习",
+                "完成课程作业"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "准备考试": 14.29,
+                "创意设计": 14.29,
+                "娱乐聊天": 20,
+                "整理笔记": 20,
+                "查找资料": 20,
+                "编程实践": 14.29,
+                "语言学习": 14.29,
+                "写论文/报告": 20,
+                "完成课程作业": 11.43,
+                "日常事务管理": 17.14
+              },
+              "missingCount": 0
+            }
+          }
+        ],
+        "indexedAt": "2026-10-28T05:14:53.881237700Z",
+        "simulated": true,
+        "answerCount": 35,
+        "documentCount": 229,
+        "retrievalMode": "中文词片段检索＋相似内容去重；非向量检索",
+        "generationMode": "REAL",
+        "retrievedCount": 12,
+        "totalStatisticCount": 54,
+        "excludedEvidenceCount": 0,
+        "providedStatisticCount": 36
+      },
+      "plan": {
+        "tool": "survey_knowledge",
+        "stage": 0,
+        "arguments": {
+          "formKey": "cYtMpVqA",
+          "version": 2,
+          "question": "哪个用途选择的人最多？请只回答这个问题。"
+        },
+        "automatic": true
+      }
+    }
+  ]
+}

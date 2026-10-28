@@ -1,0 +1,657 @@
+{
+  "passed": 5,
+  "failed": 0,
+  "checks": [
+    "catalogue count is a concise reply without questionnaire cards",
+    "an ambiguous request asks one conversational clarification without dumping choices",
+    "without manually choosing a survey, the real model analyses the named questionnaire from 35 responses",
+    "follow-up continues analysing the automatically resolved survey",
+    "reload preserves natural analysis without reintroducing questionnaire selection"
+  ],
+  "pageErrors": [],
+  "conversationId": "40f9c490-4870-447a-adc3-9c0d155185cf",
+  "turns": [
+    {
+      "id": "69c85d92-1c43-4681-afb9-c8350fc2a876",
+      "question": "我现在有多少份问卷",
+      "formKey": null,
+      "version": null,
+      "state": "SUCCEEDED",
+      "mode": "LOCAL",
+      "provider": "本地目录查询",
+      "model": "query-rules-v2",
+      "warning": "",
+      "createdAt": "2026-10-28T06:16:55.668320300Z",
+      "plan": {
+        "tool": "search_surveys",
+        "stage": 0,
+        "arguments": {
+          "limit": 10,
+          "query": ""
+        },
+        "automatic": true
+      },
+      "result": {
+        "kind": "chat",
+        "message": "当前账号共有 4 份匹配的问卷。直接告诉我想了解的主题，我会检索答卷后给你分析。",
+        "citations": []
+      }
+    },
+    {
+      "id": "1e25c998-2621-4bb1-9cd0-8bbfc7a797ff",
+      "question": "帮我分析一下问卷",
+      "formKey": null,
+      "version": null,
+      "state": "SUCCEEDED",
+      "mode": "REAL",
+      "provider": "本机推理网关",
+      "model": "group/group",
+      "warning": "",
+      "createdAt": "2026-10-28T06:16:56.732836800Z",
+      "plan": {
+        "tool": "search_surveys",
+        "stage": 0,
+        "arguments": {},
+        "automatic": true
+      },
+      "result": {
+        "kind": "chat",
+        "message": "我还不能确定你指的是哪份问卷。直接告诉我问卷名称或调查主题即可，我会检索答卷后给你总结分析。",
+        "citations": []
+      }
+    },
+    {
+      "id": "e65819de-2718-4337-9730-1ac21f48e26f",
+      "question": "总结“大学生 AI Agent 使用与需求调查”的答卷，重点分析用户的需求，给我结论和建议，不用图表",
+      "formKey": "cYtMpVqA",
+      "version": null,
+      "state": "SUCCEEDED",
+      "mode": "REAL",
+      "provider": "本机推理网关",
+      "model": "group/group",
+      "warning": "",
+      "createdAt": "2026-10-28T06:17:02.390537600Z",
+      "plan": {
+        "tool": "survey_knowledge",
+        "stage": 1,
+        "arguments": {
+          "formKey": "cYtMpVqA",
+          "question": "总结“”的答卷，重点分析用户的需求，给我结论和建议，不用图表"
+        },
+        "automatic": true
+      },
+      "result": {
+        "asOf": "2026-10-28T06:17:19.085066800Z",
+        "kind": "knowledge_answer",
+        "tool": "survey_knowledge",
+        "model": "group/group",
+        "title": "大学生 AI Agent 使用与需求调查",
+        "formKey": "cYtMpVqA",
+        "message": "本次是v2模拟测试，共35份答卷，以下结论仅指该模拟样本。需求重点不是单一功能，而是“可控的可靠性”：在已提供的需求题中，更长上下文、个性化学习计划、更好隐私保护、自动执行多步骤任务均为7/35（20.0%）并列较高；选择因素中多轮对话记忆12/35（34.29%）、隐私与数据安全11/35（31.43%）更突出，免费额度/价格和同学推荐各9/35（25.71%）。 [S0、S46、S12]\n\n自动化任务偏好集中在学习流程：润色文字15/35（42.86%）、管理日程14/35（40.0%）、生成学习提纲13/35（37.14%）；检索并整理资料、制作图表、翻译、批改或讲解题目各3/35（8.57%），生成代码并调试、整理课堂录音或笔记各2/35（5.71%）。开放题模拟文本也提到整理资料和图表、结果可核查、减少错误和幻觉、长文档处理、保护数据、可靠来源及执行前确认，显示需求更偏向可核查的资料整理与写作/规划辅助，而非完全放手自动执行。 [S23、A212397-textarea1793098475128954、A212395-textarea1793098475128954、A212396-textarea1793098475128954、A212398-textarea1793098475128954]\n\n建议优先提供可核查的引用来源、执行前确认和事后检查机制，并加强长文档处理、多轮记忆与隐私控制；同时围绕个性化学习计划、日程管理和学习提纲做模板化能力。当前满意度均值3.0，且1—5各7/35（20.0%），模拟样本对现状评价中性，改进应重点验证可靠性和可控性；价格方面有免费额度/价格9/35（25.71%）的选择，可保留基础免费额度。 [S9、S12、S46]",
+        "version": 2,
+        "findings": [
+          {
+            "refs": [
+              "S0",
+              "S46",
+              "S12"
+            ],
+            "text": "本次是v2模拟测试，共35份答卷，以下结论仅指该模拟样本。需求重点不是单一功能，而是“可控的可靠性”：在已提供的需求题中，更长上下文、个性化学习计划、更好隐私保护、自动执行多步骤任务均为7/35（20.0%）并列较高；选择因素中多轮对话记忆12/35（34.29%）、隐私与数据安全11/35（31.43%）更突出，免费额度/价格和同学推荐各9/35（25.71%）。"
+          },
+          {
+            "refs": [
+              "S23",
+              "A212397-textarea1793098475128954",
+              "A212395-textarea1793098475128954",
+              "A212396-textarea1793098475128954",
+              "A212398-textarea1793098475128954"
+            ],
+            "text": "自动化任务偏好集中在学习流程：润色文字15/35（42.86%）、管理日程14/35（40.0%）、生成学习提纲13/35（37.14%）；检索并整理资料、制作图表、翻译、批改或讲解题目各3/35（8.57%），生成代码并调试、整理课堂录音或笔记各2/35（5.71%）。开放题模拟文本也提到整理资料和图表、结果可核查、减少错误和幻觉、长文档处理、保护数据、可靠来源及执行前确认，显示需求更偏向可核查的资料整理与写作/规划辅助，而非完全放手自动执行。"
+          },
+          {
+            "refs": [
+              "S9",
+              "S12",
+              "S46"
+            ],
+            "text": "建议优先提供可核查的引用来源、执行前确认和事后检查机制，并加强长文档处理、多轮记忆与隐私控制；同时围绕个性化学习计划、日程管理和学习提纲做模板化能力。当前满意度均值3.0，且1—5各7/35（20.0%），模拟样本对现状评价中性，改进应重点验证可靠性和可控性；价格方面有免费额度/价格9/35（25.71%）的选择，可保留基础免费额度。"
+          }
+        ],
+        "provider": "本机推理网关",
+        "citations": [
+          {
+            "id": "S0",
+            "kind": "statistics",
+            "text": "本发布版本答卷总数：35",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerCount": 35
+          },
+          {
+            "id": "A212397-textarea1793098475128954",
+            "kind": "answer",
+            "text": "[模拟测试 03] 希望辅助整理资料和制作图表，结果可以核查。",
+            "fieldId": "textarea1793098475128954",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212397",
+            "question": "你还有其他建议或期望吗？（选填）"
+          },
+          {
+            "id": "S9",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":3.0,\"optionCount\":5,\"options\":[{\"label\":\"1\",\"count\":7,\"percent\":20.0},{\"label\":\"2\",\"count\":7,\"percent\":20.0},{\"label\":\"3\",\"count\":7,\"percent\":20.0},{\"label\":\"4\",\"count\":7,\"percent\":20.0},{\"label\":\"5\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "当前 AI Agent 满足你学习需求的程度如何（1=很低，5=很高）",
+            "statistics": {
+              "id": "S9",
+              "map": {
+                "1": 7,
+                "2": 7,
+                "3": 7,
+                "4": 7,
+                "5": 7
+              },
+              "data": [
+                7,
+                7,
+                7,
+                7,
+                7
+              ],
+              "mean": 3,
+              "type": "评分",
+              "label": "当前 AI Agent 满足你学习需求的程度如何（1=很低，5=很高）",
+              "fieldId": "rate1793098474060915",
+              "formKey": "cYtMpVqA",
+              "typeCode": "RATE",
+              "chartType": "bar",
+              "fieldName": [
+                "4",
+                "2",
+                "5",
+                "3",
+                "1"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "1": 20,
+                "2": 20,
+                "3": 20,
+                "4": 20,
+                "5": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "A212395-textarea1793098475128954",
+            "kind": "answer",
+            "text": "[模拟测试 01] 主要用于学习答疑，希望减少错误和幻觉。",
+            "fieldId": "textarea1793098475128954",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212395",
+            "question": "你还有其他建议或期望吗？（选填）"
+          },
+          {
+            "id": "A212396-textarea1793098475128954",
+            "kind": "answer",
+            "text": "[模拟测试 02] 希望更好地处理长文档，并保护个人数据。",
+            "fieldId": "textarea1793098475128954",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212396",
+            "question": "你还有其他建议或期望吗？（选填）"
+          },
+          {
+            "id": "A212398-textarea1793098475128954",
+            "kind": "answer",
+            "text": "[模拟测试 04] 希望回答有可靠来源，任务执行前能确认。",
+            "fieldId": "textarea1793098475128954",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212398",
+            "question": "你还有其他建议或期望吗？（选填）"
+          },
+          {
+            "id": "S46",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":10,\"options\":[{\"label\":\"更便宜\",\"count\":4,\"percent\":11.43},{\"label\":\"小组协作\",\"count\":5,\"percent\":14.29},{\"label\":\"离线可用\",\"count\":6,\"percent\":17.14},{\"label\":\"多模态理解\",\"count\":5,\"percent\":14.29},{\"label\":\"更长上下文\",\"count\":7,\"percent\":20.0},{\"label\":\"个性化学习计划\",\"count\":7,\"percent\":20.0},{\"label\":\"更好的隐私保护\",\"count\":7,\"percent\":20.0},{\"label\":\"更准确的引用来源\",\"count\":5,\"percent\":14.29},{\"label\":\"更强的专业领域能力\",\"count\":5,\"percent\":14.29},{\"label\":\"自动执行多步骤任务\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "未来你希望 AI Agent 增加哪些能力？",
+            "statistics": {
+              "id": "S46",
+              "map": {
+                "更便宜": 4,
+                "小组协作": 5,
+                "离线可用": 6,
+                "多模态理解": 5,
+                "更长上下文": 7,
+                "个性化学习计划": 7,
+                "更好的隐私保护": 7,
+                "更准确的引用来源": 5,
+                "更强的专业领域能力": 5,
+                "自动执行多步骤任务": 7
+              },
+              "data": [
+                7,
+                7,
+                5,
+                7,
+                7,
+                6,
+                5,
+                5,
+                5,
+                4
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "未来你希望 AI Agent 增加哪些能力？",
+              "fieldId": "checkbox1793098475019938",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "个性化学习计划",
+                "更好的隐私保护",
+                "更准确的引用来源",
+                "更长上下文",
+                "自动执行多步骤任务",
+                "离线可用",
+                "更强的专业领域能力",
+                "小组协作",
+                "多模态理解",
+                "更便宜"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "更便宜": 11.43,
+                "小组协作": 14.29,
+                "离线可用": 17.14,
+                "多模态理解": 14.29,
+                "更长上下文": 20,
+                "个性化学习计划": 20,
+                "更好的隐私保护": 20,
+                "更准确的引用来源": 14.29,
+                "更强的专业领域能力": 14.29,
+                "自动执行多步骤任务": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S12",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":9,\"options\":[{\"label\":\"同学推荐\",\"count\":9,\"percent\":25.71},{\"label\":\"可引用来源\",\"count\":4,\"percent\":11.43},{\"label\":\"多模态能力\",\"count\":1,\"percent\":2.86},{\"label\":\"界面易用性\",\"count\":4,\"percent\":11.43},{\"label\":\"多轮对话记忆\",\"count\":12,\"percent\":34.29},{\"label\":\"联网检索能力\",\"count\":4,\"percent\":11.43},{\"label\":\"免费额度/价格\",\"count\":9,\"percent\":25.71},{\"label\":\"长文档处理能力\",\"count\":4,\"percent\":11.43},{\"label\":\"隐私与数据安全\",\"count\":11,\"percent\":31.43}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "选择 AI Agent 时，你看重哪些因素？",
+            "statistics": {
+              "id": "S12",
+              "map": {
+                "同学推荐": 9,
+                "可引用来源": 4,
+                "多模态能力": 1,
+                "界面易用性": 4,
+                "多轮对话记忆": 12,
+                "联网检索能力": 4,
+                "免费额度/价格": 9,
+                "长文档处理能力": 4,
+                "隐私与数据安全": 11
+              },
+              "data": [
+                9,
+                9,
+                4,
+                12,
+                11,
+                4,
+                4,
+                4,
+                1
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "选择 AI Agent 时，你看重哪些因素？",
+              "fieldId": "checkbox1793098474128474",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "同学推荐",
+                "免费额度/价格",
+                "长文档处理能力",
+                "多轮对话记忆",
+                "隐私与数据安全",
+                "界面易用性",
+                "联网检索能力",
+                "可引用来源",
+                "多模态能力"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "同学推荐": 25.71,
+                "可引用来源": 11.43,
+                "多模态能力": 2.86,
+                "界面易用性": 11.43,
+                "多轮对话记忆": 34.29,
+                "联网检索能力": 11.43,
+                "免费额度/价格": 25.71,
+                "长文档处理能力": 11.43,
+                "隐私与数据安全": 31.43
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S23",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":9,\"options\":[{\"label\":\"制作图表\",\"count\":3,\"percent\":8.57},{\"label\":\"润色文字\",\"count\":15,\"percent\":42.86},{\"label\":\"生成学习提纲\",\"count\":13,\"percent\":37.14},{\"label\":\"翻译外文材料\",\"count\":3,\"percent\":8.57},{\"label\":\"批改或讲解题目\",\"count\":3,\"percent\":8.57},{\"label\":\"检索并整理资料\",\"count\":3,\"percent\":8.57},{\"label\":\"生成代码并调试\",\"count\":2,\"percent\":5.71},{\"label\":\"管理日程与提醒\",\"count\":14,\"percent\":40.0},{\"label\":\"整理课堂录音或笔记\",\"count\":2,\"percent\":5.71}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "你希望 AI Agent 自动完成哪些任务？",
+            "statistics": {
+              "id": "S23",
+              "map": {
+                "制作图表": 3,
+                "润色文字": 15,
+                "生成学习提纲": 13,
+                "翻译外文材料": 3,
+                "批改或讲解题目": 3,
+                "检索并整理资料": 3,
+                "生成代码并调试": 2,
+                "管理日程与提醒": 14,
+                "整理课堂录音或笔记": 2
+              },
+              "data": [
+                15,
+                14,
+                3,
+                13,
+                3,
+                3,
+                3,
+                2,
+                2
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "你希望 AI Agent 自动完成哪些任务？",
+              "fieldId": "checkbox1793098474400319",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "润色文字",
+                "管理日程与提醒",
+                "检索并整理资料",
+                "生成学习提纲",
+                "翻译外文材料",
+                "制作图表",
+                "批改或讲解题目",
+                "生成代码并调试",
+                "整理课堂录音或笔记"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "制作图表": 8.57,
+                "润色文字": 42.86,
+                "生成学习提纲": 37.14,
+                "翻译外文材料": 8.57,
+                "批改或讲解题目": 8.57,
+                "检索并整理资料": 8.57,
+                "生成代码并调试": 5.71,
+                "管理日程与提醒": 40,
+                "整理课堂录音或笔记": 5.71
+              },
+              "missingCount": 0
+            }
+          }
+        ],
+        "indexedAt": "2026-10-28T05:14:53.881237700Z",
+        "simulated": true,
+        "answerCount": 35,
+        "documentCount": 229,
+        "retrievalMode": "中文词片段检索＋相似内容去重；非向量检索",
+        "generationMode": "REAL",
+        "retrievedCount": 12,
+        "totalStatisticCount": 54,
+        "excludedEvidenceCount": 0,
+        "providedStatisticCount": 34
+      }
+    },
+    {
+      "id": "bfbc88d7-058f-4346-a19c-f8e7b3fa337e",
+      "question": "那最值得优先改进什么？简短一些",
+      "formKey": "cYtMpVqA",
+      "version": null,
+      "state": "SUCCEEDED",
+      "mode": "REAL",
+      "provider": "本机推理网关",
+      "model": "group/group",
+      "warning": "",
+      "createdAt": "2026-10-28T06:17:20.401083400Z",
+      "plan": {
+        "tool": "survey_knowledge",
+        "stage": 0,
+        "arguments": {
+          "formKey": "cYtMpVqA",
+          "question": "当前用户要求（保留内容与长度要求）：那最值得优先改进什么？简短一些\n指代释义：基于“大学生 AI Agent 使用与需求调查”，最值得优先改进什么？请简短给出优先改进项。"
+        },
+        "automatic": true
+      },
+      "result": {
+        "asOf": "2026-10-28T06:17:28.949302700Z",
+        "kind": "knowledge_answer",
+        "tool": "survey_knowledge",
+        "model": "group/group",
+        "title": "大学生 AI Agent 使用与需求调查",
+        "formKey": "cYtMpVqA",
+        "message": "建议优先改进答案可靠性与可核查性：模拟开放题中多条反馈提到希望减少错误和幻觉、提供可靠来源并在任务执行前确认。这比单纯增加功能更贴近当前困扰；但开放题仅为模拟样本，不能据此推断总体比例。 [A212395-textarea1793098475095464、A212395-textarea1793098473993662、A212398-textarea1793098475095464]\n\n第二优先可补强长文档处理与隐私授权控制。模拟统计中，希望增加“更长上下文”和“更好的隐私保护”各占20%（35份有效回答），选择工具时看重隐私与数据安全占31.43%；这些是模拟数据，宜作为改进方向而非总体结论。 [S46、S12]",
+        "version": 2,
+        "findings": [
+          {
+            "refs": [
+              "A212395-textarea1793098475095464",
+              "A212395-textarea1793098473993662",
+              "A212398-textarea1793098475095464"
+            ],
+            "text": "建议优先改进答案可靠性与可核查性：模拟开放题中多条反馈提到希望减少错误和幻觉、提供可靠来源并在任务执行前确认。这比单纯增加功能更贴近当前困扰；但开放题仅为模拟样本，不能据此推断总体比例。"
+          },
+          {
+            "refs": [
+              "S46",
+              "S12"
+            ],
+            "text": "第二优先可补强长文档处理与隐私授权控制。模拟统计中，希望增加“更长上下文”和“更好的隐私保护”各占20%（35份有效回答），选择工具时看重隐私与数据安全占31.43%；这些是模拟数据，宜作为改进方向而非总体结论。"
+          }
+        ],
+        "provider": "本机推理网关",
+        "citations": [
+          {
+            "id": "A212395-textarea1793098475095464",
+            "kind": "answer",
+            "text": "[模拟测试 01] 希望回答有可靠来源，任务执行前能确认。",
+            "fieldId": "textarea1793098475095464",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212395",
+            "question": "使用 AI Agent 时，你最大的困扰是什么？"
+          },
+          {
+            "id": "A212395-textarea1793098473993662",
+            "kind": "answer",
+            "text": "[模拟测试 01] 主要用于学习答疑，希望减少错误和幻觉。",
+            "fieldId": "textarea1793098473993662",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212395",
+            "question": "请写出你最常使用的 AI Agent 或产品名称，并简述主要用途。"
+          },
+          {
+            "id": "A212398-textarea1793098475095464",
+            "kind": "answer",
+            "text": "[模拟测试 04] 希望辅助整理资料和制作图表，结果可以核查。",
+            "fieldId": "textarea1793098475095464",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "answerId": "212398",
+            "question": "使用 AI Agent 时，你最大的困扰是什么？"
+          },
+          {
+            "id": "S46",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":10,\"options\":[{\"label\":\"更便宜\",\"count\":4,\"percent\":11.43},{\"label\":\"小组协作\",\"count\":5,\"percent\":14.29},{\"label\":\"离线可用\",\"count\":6,\"percent\":17.14},{\"label\":\"多模态理解\",\"count\":5,\"percent\":14.29},{\"label\":\"更长上下文\",\"count\":7,\"percent\":20.0},{\"label\":\"个性化学习计划\",\"count\":7,\"percent\":20.0},{\"label\":\"更好的隐私保护\",\"count\":7,\"percent\":20.0},{\"label\":\"更准确的引用来源\",\"count\":5,\"percent\":14.29},{\"label\":\"更强的专业领域能力\",\"count\":5,\"percent\":14.29},{\"label\":\"自动执行多步骤任务\",\"count\":7,\"percent\":20.0}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "未来你希望 AI Agent 增加哪些能力？",
+            "statistics": {
+              "id": "S46",
+              "map": {
+                "更便宜": 4,
+                "小组协作": 5,
+                "离线可用": 6,
+                "多模态理解": 5,
+                "更长上下文": 7,
+                "个性化学习计划": 7,
+                "更好的隐私保护": 7,
+                "更准确的引用来源": 5,
+                "更强的专业领域能力": 5,
+                "自动执行多步骤任务": 7
+              },
+              "data": [
+                7,
+                7,
+                5,
+                7,
+                7,
+                6,
+                5,
+                5,
+                5,
+                4
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "未来你希望 AI Agent 增加哪些能力？",
+              "fieldId": "checkbox1793098475019938",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "个性化学习计划",
+                "更好的隐私保护",
+                "更准确的引用来源",
+                "更长上下文",
+                "自动执行多步骤任务",
+                "离线可用",
+                "更强的专业领域能力",
+                "小组协作",
+                "多模态理解",
+                "更便宜"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "更便宜": 11.43,
+                "小组协作": 14.29,
+                "离线可用": 17.14,
+                "多模态理解": 14.29,
+                "更长上下文": 20,
+                "个性化学习计划": 20,
+                "更好的隐私保护": 20,
+                "更准确的引用来源": 14.29,
+                "更强的专业领域能力": 14.29,
+                "自动执行多步骤任务": 20
+              },
+              "missingCount": 0
+            }
+          },
+          {
+            "id": "S12",
+            "kind": "statistics",
+            "text": "{\"total\":35,\"valid\":35,\"missing\":0,\"mean\":null,\"optionCount\":9,\"options\":[{\"label\":\"同学推荐\",\"count\":9,\"percent\":25.71},{\"label\":\"可引用来源\",\"count\":4,\"percent\":11.43},{\"label\":\"多模态能力\",\"count\":1,\"percent\":2.86},{\"label\":\"界面易用性\",\"count\":4,\"percent\":11.43},{\"label\":\"多轮对话记忆\",\"count\":12,\"percent\":34.29},{\"label\":\"联网检索能力\",\"count\":4,\"percent\":11.43},{\"label\":\"免费额度/价格\",\"count\":9,\"percent\":25.71},{\"label\":\"长文档处理能力\",\"count\":4,\"percent\":11.43},{\"label\":\"隐私与数据安全\",\"count\":11,\"percent\":31.43}]}",
+            "formKey": "cYtMpVqA",
+            "version": 2,
+            "question": "选择 AI Agent 时，你看重哪些因素？",
+            "statistics": {
+              "id": "S12",
+              "map": {
+                "同学推荐": 9,
+                "可引用来源": 4,
+                "多模态能力": 1,
+                "界面易用性": 4,
+                "多轮对话记忆": 12,
+                "联网检索能力": 4,
+                "免费额度/价格": 9,
+                "长文档处理能力": 4,
+                "隐私与数据安全": 11
+              },
+              "data": [
+                9,
+                9,
+                4,
+                12,
+                11,
+                4,
+                4,
+                4,
+                1
+              ],
+              "mean": null,
+              "type": "多选框",
+              "label": "选择 AI Agent 时，你看重哪些因素？",
+              "fieldId": "checkbox1793098474128474",
+              "formKey": "cYtMpVqA",
+              "typeCode": "CHECKBOX",
+              "chartType": "pie",
+              "fieldName": [
+                "同学推荐",
+                "免费额度/价格",
+                "长文档处理能力",
+                "多轮对话记忆",
+                "隐私与数据安全",
+                "界面易用性",
+                "联网检索能力",
+                "可引用来源",
+                "多模态能力"
+              ],
+              "totalCount": 35,
+              "validCount": 35,
+              "percentages": {
+                "同学推荐": 25.71,
+                "可引用来源": 11.43,
+                "多模态能力": 2.86,
+                "界面易用性": 11.43,
+                "多轮对话记忆": 34.29,
+                "联网检索能力": 11.43,
+                "免费额度/价格": 25.71,
+                "长文档处理能力": 11.43,
+                "隐私与数据安全": 31.43
+              },
+              "missingCount": 0
+            }
+          }
+        ],
+        "indexedAt": "2026-10-28T05:14:53.881237700Z",
+        "simulated": true,
+        "answerCount": 35,
+        "documentCount": 229,
+        "retrievalMode": "中文词片段检索＋相似内容去重；非向量检索",
+        "generationMode": "REAL",
+        "retrievedCount": 12,
+        "totalStatisticCount": 54,
+        "excludedEvidenceCount": 0,
+        "providedStatisticCount": 33
+      }
+    }
+  ]
+}
