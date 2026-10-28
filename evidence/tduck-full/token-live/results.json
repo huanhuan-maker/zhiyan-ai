@@ -1,0 +1,47 @@
+{
+  "passed": 6,
+  "failed": 0,
+  "checks": [
+    "chat displays growing model text before request completion",
+    "chat finishes with a persisted answer after a visible incremental draft",
+    "knowledge_answer displays growing model text before request completion",
+    "knowledge_answer finishes with a persisted answer after a visible incremental draft",
+    "colloquial takeaway survey reference resolves without asking for an exact title",
+    "refresh restores only the verified final answer"
+  ],
+  "errors": [],
+  "samples": [
+    {
+      "question": "用约四百字解释机器学习，给一个生活中的例子",
+      "kind": "chat",
+      "plan": {
+        "tool": "chat",
+        "stage": 0,
+        "arguments": {
+          "message": "机器学习简单说，就是让计算机从数据中自己总结规律，而不是靠程序员把每条规则都写死。传统编程是“人定规则、机器执行”；机器学习则是“人给数据和目标，机器从大量样本中找模式，再用学到的模式判断新情况”。\n\n过程通常分几步：先收集并整理数据，比如带标签的样本；再选一个模型，用数据反复训练，让模型的预测误差逐渐变小；训练好后用没见过的数据做测试，看它能否举一反三；最后把模型用到实际场景中，并持续用新数据改进。常见类型有监督学习（如分类、预测数值）、无监督学习（如聚类分组）和强化学习（如通过试错学策略）。\n\n生活例子：手机相册的“人物分类”。你拍了很多照片，系统并不会提前知道谁是谁，但它会分析人脸特征，把相似的脸聚在一起。你给它标注几次“这是小明”，它就能逐渐学会在小明出现的其他照片里认出他。再比如垃圾邮件过滤：你标记过一些邮件为垃圾邮件，系统从这些例子里学习关键词、发件行为等模式，之后自动把类似邮件拦下来。它并非百分百准确，会随更多反馈不断调整，这正是机器学习的典型特点：用数据驱动、靠反馈改进、能泛化到新样本。"
+        },
+        "automatic": true
+      },
+      "model": "group/group",
+      "firstVisibleMs": 3987,
+      "completedMs": 6479
+    },
+    {
+      "question": "帮我查看大学生点外卖那份问卷的情况",
+      "kind": "knowledge_answer",
+      "formKey": "dUJev0eA",
+      "plan": {
+        "tool": "survey_knowledge",
+        "stage": 1,
+        "arguments": {
+          "formKey": "dUJev0eA",
+          "question": "帮我查看大学生点外卖那份问卷的情况"
+        },
+        "automatic": true
+      },
+      "model": "group/group",
+      "firstVisibleMs": 21881,
+      "completedMs": 26379
+    }
+  ]
+}

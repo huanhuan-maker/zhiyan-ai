@@ -1,0 +1,12 @@
+{
+  "passed": 1,
+  "failed": 1,
+  "checks": [
+    "chat displays growing model text before request completion",
+    {
+      "failed": "Cannot read properties of null (reading 'kind')"
+    }
+  ],
+  "errors": [],
+  "samples": []
+}

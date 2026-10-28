@@ -1,0 +1,109 @@
+{
+  "java": [
+    {
+      "name": "com.tduck.cloud.api.ai.AiSettingsPerUserTest",
+      "tests": 6,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AiSettingsStreamingTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AiSettingsTest",
+      "tests": 25,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AnalysisReportTest",
+      "tests": 19,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AssistantAutomaticSearchTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AssistantHistoryDeleteTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AssistantNamedOverviewTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AssistantNaturalReplyTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AssistantQueryTest",
+      "tests": 24,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AssistantSelectionTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AssistantSemanticFallbackTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AssistantSimpleTest",
+      "tests": 14,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.AssistantWorkspaceTest",
+      "tests": 15,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.KnowledgeMcpContextTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "name": "com.tduck.cloud.api.ai.SurveyKnowledgeTest",
+      "tests": 17,
+      "failures": 0,
+      "errors": 0
+    }
+  ],
+  "frontend": {
+    "failed": 0,
+    "productionBuild": "passed",
+    "passed": 75,
+    "files": 13
+  },
+  "semanticBaseline": {
+    "failed": 1,
+    "tests": 2,
+    "passed": 1
+  },
+  "browser": {
+    "failed": 0,
+    "passed": 6
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "matchedPackagedClasses": [
+    "com/tduck/cloud/form/aiconfig/AiTransport.class",
+    "com/tduck/cloud/form/aiconfig/LiveAnswer.class",
+    "com/tduck/cloud/form/aiconfig/LiveAnswer$Projection.class",
+    "com/tduck/cloud/form/ai/OpenAiCompatibleProvider.class",
+    "com/tduck/cloud/form/assistant/AssistantPlanner.class",
+    "com/tduck/cloud/form/assistant/AssistantTools.class",
+    "com/tduck/cloud/form/assistant/AssistantChatService.class",
+    "com/tduck/cloud/form/assistant/SurveyKnowledgeService.class",
+    "com/tduck/cloud/api/web/controller/AssistantController.class"
+  ],
+  "installedJarMatchesTestedBuild": true,
+  "sha256": "a69fc2b4c26c3fa7784b96d7af839ff2c580524044e7fece1597951b059524c1"
+}

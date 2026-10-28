@@ -1,0 +1,3449 @@
+{
+  "passed": 6,
+  "failed": 0,
+  "checks": [
+    "chat displays growing model text before request completion",
+    "chat finishes with a persisted answer after real upstream draft events",
+    "knowledge_answer displays growing model text before request completion",
+    "knowledge_answer finishes with a persisted answer after real upstream draft events",
+    "colloquial takeaway survey reference resolves without asking for an exact title",
+    "refresh restores only the verified final answer"
+  ],
+  "errors": [],
+  "samples": [
+    {
+      "question": "用约四百字解释机器学习，给一个生活中的例子",
+      "kind": "chat",
+      "plan": {
+        "tool": "chat",
+        "stage": 0,
+        "arguments": {
+          "message": "机器学习是让计算机从数据中自动发现规律、并据此做出判断或预测的方法。传统编程需要人把规则写清楚，例如“如果温度低于10℃就提醒穿厚衣服”；机器学习则不同，它先给算法大量样例，让模型自己总结输入与结果之间的关系。训练时，模型不断调整内部参数，使预测结果尽量接近正确答案；训练完成后，再用没见过的数据检验它能否举一反三。机器学习的常见类型有监督学习、无监督学习和强化学习：监督学习用带标签的数据学习分类或回归，无监督学习重在发现数据中的分组与结构，强化学习则通过奖励和惩罚让智能体学会策略。它的关键不在于“记住”数据，而在于从数据中提取可迁移的规律，因此数据质量、特征选择和评估方法都很重要。\n\n生活中的例子是手机相册的人脸识别。你拍了很多照片，系统先学习人脸的眼睛、鼻子、轮廓等特征；之后新照片进来，它就能判断画面里是不是同一个人，并自动归类。再比如输入法根据你平时的用词预测下一个词，短视频平台根据观看行为推荐内容，都是机器学习在起作用。它像一位通过大量练习积累经验的学生，而不是被逐条写死规则的机器。当然，机器学习也会出错，结果受训练数据影响，所以实际应用中还需要人工校验、隐私保护和持续优化。"
+        },
+        "automatic": true
+      },
+      "model": "group/group",
+      "firstDraftMs": 3743,
+      "finalAnswerMs": 6430,
+      "deltaCount": 498,
+      "events": [
+        {
+          "type": "status",
+          "time": 1793172269396
+        },
+        {
+          "type": "draft_reset",
+          "time": 1793172269409
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272627
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272627
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272633
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272633
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272633
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272633
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272633
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272633
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272633
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272639
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272639
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272639
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272655
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272658
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272659
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272659
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272659
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272659
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272659
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272659
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272671
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272671
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272671
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272671
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272673
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272673
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272673
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272673
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272725
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272727
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272727
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272727
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272727
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272727
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272757
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272759
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272759
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272759
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272759
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272759
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272759
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272759
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272759
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272759
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272759
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272770
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272770
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272770
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272770
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272770
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272775
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272775
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272775
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272793
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272794
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272810
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272810
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272831
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272831
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272846
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272861
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272862
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272862
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272881
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272896
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272924
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272925
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272931
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272932
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272932
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272932
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272932
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272932
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272932
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272932
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272932
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272950
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272950
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272966
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172272991
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273001
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273002
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273041
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273041
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273043
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273043
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273043
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273049
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273049
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273049
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273051
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273051
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273071
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273072
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273083
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273084
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273096
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273097
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273097
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273131
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273133
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273133
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273133
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273133
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273133
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273133
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273133
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273151
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273163
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273163
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273163
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273163
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273163
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273175
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273175
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273193
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273193
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273215
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273217
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273217
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273217
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273230
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273231
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273238
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273238
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273239
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273239
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273596
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273596
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273597
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273597
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273597
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273597
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273597
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273606
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273607
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273607
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273607
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273607
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273607
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273607
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273609
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273617
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273626
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273655
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273655
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273658
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273658
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273658
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273658
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273658
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273658
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273658
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273658
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273658
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273658
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273658
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273658
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273658
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273658
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273676
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273678
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273683
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273684
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273684
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273699
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273699
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273715
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273716
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273716
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273730
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273730
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273750
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273750
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273750
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273769
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273792
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273794
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273794
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273799
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273799
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273813
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273813
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273813
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273813
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273813
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273829
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273831
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273843
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273844
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273844
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273844
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273861
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273861
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273862
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273862
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273862
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273876
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273877
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273877
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273895
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273895
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273913
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273913
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273914
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273951
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273951
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273953
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273953
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273953
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273953
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273953
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273968
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273968
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273968
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273968
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273986
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273986
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273986
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273988
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273989
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273989
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273989
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273989
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172273989
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274000
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274000
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274001
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274018
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274018
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274018
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274038
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274039
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274039
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274059
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274060
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274060
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274060
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274060
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274076
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274094
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274095
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274095
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274113
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274113
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274114
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274114
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274114
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274130
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274149
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274150
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274176
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274176
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274196
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274197
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274197
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274200
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274200
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274200
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274212
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274212
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274212
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274630
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274678
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274678
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274678
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274678
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274678
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274678
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274678
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274678
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274678
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274678
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274678
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274682
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274708
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274708
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274708
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274710
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274710
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274710
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274712
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274712
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274721
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274721
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274721
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274721
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274721
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274750
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274750
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274750
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274750
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274760
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274777
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274805
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274805
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274805
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274805
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274805
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274805
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274808
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274808
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274830
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274830
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274830
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274855
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274856
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274856
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274856
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274856
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274856
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274856
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274856
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274856
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274863
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274863
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274863
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274877
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274894
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274896
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274916
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274916
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274916
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274918
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274918
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274924
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274924
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274949
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274949
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274960
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274960
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274960
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274960
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274960
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274960
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274977
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274977
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274999
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172274999
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172275000
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172275015
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172275015
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172275016
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172275016
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172275016
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172275023
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172275023
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172275043
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172275043
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172275056
+        },
+        {
+          "type": "answer",
+          "time": 1793172275314
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "delta",
+          "time": 1793172275315
+        },
+        {
+          "type": "done",
+          "time": 1793172275315
+        }
+      ]
+    },
+    {
+      "question": "帮我查看大学生点外卖那份问卷的情况",
+      "kind": "knowledge_answer",
+      "formKey": "dUJev0eA",
+      "plan": {
+        "tool": "survey_knowledge",
+        "stage": 1,
+        "arguments": {
+          "formKey": "dUJev0eA",
+          "question": "帮我查看大学生点外卖那份问卷的情况"
+        },
+        "automatic": true
+      },
+      "model": "group/group",
+      "firstDraftMs": 5499,
+      "finalAnswerMs": 6999,
+      "deltaCount": 302,
+      "events": [
+        {
+          "type": "status",
+          "time": 1793172275839
+        },
+        {
+          "type": "draft_reset",
+          "time": 1793172275852
+        },
+        {
+          "type": "status",
+          "time": 1793172277410
+        },
+        {
+          "type": "status",
+          "time": 1793172279664
+        },
+        {
+          "type": "draft_reset",
+          "time": 1793172279731
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281295
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281295
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281310
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281323
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281323
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281323
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281348
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281348
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281350
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281350
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281353
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281353
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281358
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281358
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281358
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281358
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281358
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281366
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281370
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281370
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281379
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281379
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281390
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281390
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281391
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281391
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281391
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281391
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281391
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281391
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281400
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281400
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281400
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281400
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281400
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281417
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281417
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281417
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281419
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281433
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281433
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281586
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281586
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281586
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281586
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281588
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281593
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281614
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281614
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281614
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281614
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281631
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281638
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281638
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281642
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281642
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281652
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281654
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281654
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281677
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281678
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281678
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281687
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281687
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281688
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281710
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281710
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281710
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281718
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281718
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281718
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281739
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281749
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281749
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281749
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281749
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281749
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281749
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281749
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281766
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281767
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281767
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281793
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281794
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281794
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281794
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281831
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281832
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281832
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281843
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281843
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281845
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281845
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281858
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281858
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281873
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281873
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281873
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281889
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281889
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281903
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281903
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281903
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281905
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281920
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281920
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281920
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281936
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281936
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281936
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281936
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281936
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281936
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281953
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281953
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281953
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281985
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281985
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281985
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281985
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281987
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281987
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281987
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281987
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281987
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281988
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281988
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281988
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281988
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172281988
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282000
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282000
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282016
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282031
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282031
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282031
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282031
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282047
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282047
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282047
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282047
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282064
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282064
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282081
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282081
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282081
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282096
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282096
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282111
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282111
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282112
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282112
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282133
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282133
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282133
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282133
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282133
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282140
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282140
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282140
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282140
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282140
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282155
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282155
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282155
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282157
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282157
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282179
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282179
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282190
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282190
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282191
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282191
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282191
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282205
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282206
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282207
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282207
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282209
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282219
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282219
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282220
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282220
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282220
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282235
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282235
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282235
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282236
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282236
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282253
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282253
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282253
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282253
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282255
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282255
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282255
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282255
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282255
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282270
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282270
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282284
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282284
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282284
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282284
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282303
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282303
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282303
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282303
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282315
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282315
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282315
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282331
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282331
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282370
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282370
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282370
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282370
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282370
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282370
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282370
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282378
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282378
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282434
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282438
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282438
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282438
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282438
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282438
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282438
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282438
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282438
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282449
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282449
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282461
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282461
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282466
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282466
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282466
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282466
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282475
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282475
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282478
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282478
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282478
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282489
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282489
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282489
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282489
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282489
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282513
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282523
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282523
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282523
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282523
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282523
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282523
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282537
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282539
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282539
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282539
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282553
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282553
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282555
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282555
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282555
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282555
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282577
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282579
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282579
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282591
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282591
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282600
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282600
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282616
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282616
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282616
+        },
+        {
+          "type": "draft_delta",
+          "time": 1793172282616
+        },
+        {
+          "type": "answer",
+          "time": 1793172282795
+        },
+        {
+          "type": "delta",
+          "time": 1793172282795
+        },
+        {
+          "type": "delta",
+          "time": 1793172282795
+        },
+        {
+          "type": "delta",
+          "time": 1793172282795
+        },
+        {
+          "type": "delta",
+          "time": 1793172282795
+        },
+        {
+          "type": "delta",
+          "time": 1793172282795
+        },
+        {
+          "type": "delta",
+          "time": 1793172282814
+        },
+        {
+          "type": "delta",
+          "time": 1793172282814
+        },
+        {
+          "type": "delta",
+          "time": 1793172282814
+        },
+        {
+          "type": "delta",
+          "time": 1793172282814
+        },
+        {
+          "type": "delta",
+          "time": 1793172282814
+        },
+        {
+          "type": "delta",
+          "time": 1793172282814
+        },
+        {
+          "type": "delta",
+          "time": 1793172282814
+        },
+        {
+          "type": "delta",
+          "time": 1793172282814
+        },
+        {
+          "type": "delta",
+          "time": 1793172282814
+        },
+        {
+          "type": "delta",
+          "time": 1793172282814
+        },
+        {
+          "type": "delta",
+          "time": 1793172282814
+        },
+        {
+          "type": "delta",
+          "time": 1793172282814
+        },
+        {
+          "type": "done",
+          "time": 1793172282814
+        }
+      ]
+    }
+  ]
+}

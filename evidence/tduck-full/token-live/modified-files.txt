@@ -1,0 +1,15 @@
+backend-extensions/ai-config/tduck-form/src/main/java/com/tduck/cloud/form/ai/OpenAiCompatibleProvider.java
+backend-extensions/ai-config/tduck-form/src/main/java/com/tduck/cloud/form/aiconfig/AiTransport.java
+backend-extensions/ai-config/tduck-form/src/main/java/com/tduck/cloud/form/aiconfig/LiveAnswer.java
+backend-extensions/assistant/tduck-api/src/main/java/com/tduck/cloud/api/web/controller/AssistantController.java
+backend-extensions/assistant/tduck-form/src/main/java/com/tduck/cloud/form/assistant/AssistantPlanner.java
+backend-extensions/assistant/tduck-form/src/main/java/com/tduck/cloud/form/assistant/AssistantChatService.java
+backend-extensions/assistant/tduck-form/src/main/java/com/tduck/cloud/form/assistant/AssistantTools.java
+backend-extensions/assistant/tduck-form/src/main/java/com/tduck/cloud/form/assistant/SurveyKnowledgeService.java
+backend-extensions/assistant/tduck-api/src/test/java/com/tduck/cloud/api/ai/AiSettingsStreamingTest.java
+backend-extensions/assistant/tduck-api/src/test/java/com/tduck/cloud/api/ai/AssistantSemanticFallbackTest.java
+tduck-vue3/src/td/views/assistant/index.vue
+scripts/tduck/assistant-token-live-ui.mjs
+docs/DEVELOPMENT_PLAN.md
+docs/ACCEPTANCE_GUIDE.md
+evidence/M5-E-LIVE.md
