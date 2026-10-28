@@ -72,3 +72,18 @@
 - `scripts/tduck/ai-settings-api.mjs` 仍依赖旧 fixture 里的问卷 key，换成可用账号后仍有 4 项与其历史问卷数据相关而失败（9/16）；全局配置的读写已由 `ai-settings-ui.mjs` 覆盖，该脚本按历史遗留处理，不再作为门禁。
 - 个人配置目前没有「恢复为系统默认」按钮（删掉 `fm_ai_settings_user` 对应行即可），后续可加一个清除入口。
 - 后台异步任务（非请求线程）没有登录上下文，会回退到系统默认模型。
+
+## 8. 用用户提供的真实第三方网关验证（2026-10-28）
+
+用户提供一个 OpenAI 兼容网关（`https://huanhuan666.cc.cd`，模型 `deepseek-v4.1-flash`），按「我的模型配置」实测：
+
+| 步骤 | 结果 |
+| --- | --- |
+| 直连 `GET /v1/models` | 200，账号可用模型列表正常返回 |
+| 直连 `POST /v1/chat/completions` | 200，约 2.0s，回复 `OK` |
+| 应用内保存个人配置（admin 账号） | 200，`inherited` 从 true 变 false，Base URL = `https://huanhuan666.cc.cd/v1` |
+| 应用内「测试连接」 | 成功：`deepseek-v4.1-flash · 3292 ms`（另一次 8078 ms） |
+| 真实 AI 建卷 | `kind=draft`，`provider=huanhuan666 网关`，5 题，7144ms，标题《大学生图书馆使用情况与满意度调查》 |
+
+说明：密钥只以 AES-256-GCM 密文存入 `fm_ai_settings_user`，任何读取接口与截图都不回显；仓库与证据文件不含明文 Key。
+截图：`evidence/tduck-full/ai-settings-personal/04-live-provider.png`、`05-live-test-success.png`；机器可读结果 `live-provider.json`。

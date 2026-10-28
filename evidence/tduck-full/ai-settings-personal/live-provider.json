@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-28T02:18:52.835Z",
+  "checked": "actual provider configured by the user; key never returned",
+  "uiTestResult": "连接成功 · 3292 ms",
+  "provider": [
+    {
+      "name": "huanhuan666 网关",
+      "baseUrl": "https://huanhuan666.cc.cd/v1",
+      "protocol": "OPENAI_CHAT",
+      "hasApiKey": true,
+      "models": [
+        "deepseek-v4.1-flash"
+      ]
+    }
+  ],
+  "inherited": false,
+  "errors": []
+}
