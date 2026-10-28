@@ -38,6 +38,7 @@ public class AssistantController {
         response.setCharacterEncoding("UTF-8");response.setContentType("text/event-stream;charset=UTF-8");
         java.io.PrintWriter writer=response.getWriter();
         try{
+            com.tduck.cloud.form.aiconfig.LiveAnswer.bind((type,text)->{try{event(writer,type,com.tduck.cloud.form.analysis.AnalysisJson.map("text",text));}catch(java.io.IOException ex){throw new java.io.UncheckedIOException(ex);}});
             event(writer,"status",com.tduck.cloud.form.analysis.AnalysisJson.map("message","正在理解你的问题…"));
             java.util.Map<String,Object> turn=chat.autoPlan(userId,input.conversationId,input.id,input.question,input.formKey,input.version);
             for(int stage=0;stage<3&&"READY".equals(turn.get("state"));stage++){
@@ -53,7 +54,7 @@ public class AssistantController {
             event(writer,"answer",com.tduck.cloud.form.analysis.AnalysisJson.map("turn",turn.get("id"),"result",metadata));
             for(int offset=0;offset<message.length();){int end=message.offsetByCodePoints(offset,Math.min(24,message.codePointCount(offset,message.length())));event(writer,"delta",com.tduck.cloud.form.analysis.AnalysisJson.map("text",message.substring(offset,end)));offset=end;}
             event(writer,"done",com.tduck.cloud.form.analysis.AnalysisJson.map("id",input.id));
-        }catch(Exception ex){event(writer,"error",com.tduck.cloud.form.analysis.AnalysisJson.map("message",ex instanceof BaseException?ex.getMessage():"回复中断，请重试或刷新历史"));}
+        }catch(Exception ex){event(writer,"error",com.tduck.cloud.form.analysis.AnalysisJson.map("message",ex instanceof BaseException?ex.getMessage():"回复中断，请重试或刷新历史"));}finally{com.tduck.cloud.form.aiconfig.LiveAnswer.clear();}
     }
     private static void event(java.io.PrintWriter writer,String type,Object data) throws java.io.IOException {
         writer.write("event: "+type+"\ndata: "+com.tduck.cloud.form.analysis.AnalysisJson.write(data)+"\n\n");writer.flush();if(writer.checkError())throw new java.io.IOException("Client disconnected");

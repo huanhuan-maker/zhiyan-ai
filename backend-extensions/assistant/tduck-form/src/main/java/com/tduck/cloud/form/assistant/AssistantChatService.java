@@ -116,6 +116,7 @@ public class AssistantChatService {
             if("search_surveys".equals(name)&&Boolean.TRUE.equals(p.get("automatic"))&&((Number)p.getOrDefault("stage",0)).intValue()==0) {
                 List<Map<String,Object>> found=(List<Map<String,Object>>)result.get("surveys");
                 boolean catalogue=AssistantPlanner.catalogueQuery(t.getQuestion());
+                if(!catalogue&&found.isEmpty()&&!args.containsKey("status")&&!args.containsKey("fromDate")&&!args.containsKey("untilDate"))found=tools.relatedSurveys(t.getQuestion(),owner);
                 String selected=null;if(!catalogue)selected=((Number)result.get("total")).longValue()==1&&found.size()==1?(String)found.get(0).get("formKey"):planner.chooseSurvey(t.getQuestion(),found);
                 Map<String,Object> target=null;for(Map<String,Object> row:found)if(Objects.equals(selected,row.get("formKey")))target=row;
                 if(target!=null){tools.requireOwned(selected,owner);

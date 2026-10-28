@@ -26,5 +26,5 @@ public class OpenAiCompatibleProvider implements AiProvider {
     @Override public String model(){Selection s=current();return s==null?"未选择":s.model.getModelId();}
     public int historyTurns(){Selection s=current();return s==null?0:s.model.getHistoryTurns();}
     public int inputBudget(){Selection s=current();return s==null?0:Math.max(0,s.model.getContextWindow()-s.model.getMaxOutputTokens()-1024);}
-    @Override public String complete(String systemPrompt,String inputJson){return transport.complete(current(),systemPrompt,inputJson);}
+    @Override public String complete(String systemPrompt,String inputJson){return LiveAnswer.active()?transport.stream(current(),systemPrompt,inputJson,LiveAnswer.projector()):transport.complete(current(),systemPrompt,inputJson);}
 }

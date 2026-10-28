@@ -130,6 +130,18 @@ public class AssistantTools {
         return map("kind","statistics","message","V"+v.getVersionNo()+" 共收到 "+snap.get("answerCount")+" 份答卷。下方有效数、缺失、比例及均值由后端计算，分母按每题有效回答人数。",
             "title",snap.get("title"),"answerCount",snap.get("answerCount"),"statistics",data,"daily",snap.get("daily"),"openResponseCount",snap.get("openResponseCount"),"citations",Collections.singletonList(map("id","S1","kind","statistics","formKey",key,"version",v.getVersionNo(),"text","发布版本V"+v.getVersionNo()+"的全量后端统计","answerCount",snap.get("answerCount"))));
     }
+    public List<Map<String,Object>> relatedSurveys(String question,Long owner){
+        List<UserFormEntity> own=forms.selectList(Wrappers.<UserFormEntity>lambdaQuery().eq(UserFormEntity::getUserId,owner).eq(UserFormEntity::getDeleted,false).eq(UserFormEntity::getFolder,false).last("limit 1001"));
+        if(own.size()>1000)throw new BaseException("当前问卷数量超过本轮主题检索范围，请补充名称关键词");
+        List<Map<String,Object>> titles=own.stream().map(f->map("formKey",f.getFormKey(),"title",f.getTextName(),"status",f.getStatus()==null?null:f.getStatus().getDesc())).collect(Collectors.toList());
+        return rankTitles(question,titles,30);
+    }
+    private static Set<String> titleTerms(String text){String s=text.toLowerCase(Locale.ROOT).replaceAll("[\\s\\p{P}]","");Set<String> terms=new HashSet<>();for(int i=0;i+1<s.length();i++)terms.add(s.substring(i,i+2));return terms;}
+    public static List<Map<String,Object>> rankTitles(String question,List<Map<String,Object>> candidates,int limit){
+        Set<String> query=titleTerms(question);Map<String,Integer> frequency=new HashMap<>();for(Map<String,Object> row:candidates)for(String term:titleTerms(String.valueOf(row.get("title"))))frequency.merge(term,1,Integer::sum);
+        List<Map<String,Object>> ranked=new ArrayList<>(candidates);ranked.sort(Comparator.comparingDouble((Map<String,Object> row)->{double score=0;for(String term:titleTerms(String.valueOf(row.get("title"))))if(query.contains(term))score+=Math.log(1.0+(candidates.size()+1.0)/(frequency.get(term)+1.0));return score;}).reversed());
+        return new ArrayList<>(ranked.subList(0,Math.min(limit,ranked.size())));
+    }
     private Map<String,Object> evidence(String key,UserFormVersionEntity v,Map<String,Object> args) {
         List<String> keywords=((List<?>)args.get("keywords")).stream().map(x->((String)x).trim()).distinct().collect(Collectors.toList());
         List<UserFormDataEntity> rows=answers.selectList(Wrappers.<UserFormDataEntity>lambdaQuery().eq(UserFormDataEntity::getFormKey,key).eq(UserFormDataEntity::getVersionNo,v.getVersionNo()).orderByAsc(UserFormDataEntity::getId).last("limit 5001"));

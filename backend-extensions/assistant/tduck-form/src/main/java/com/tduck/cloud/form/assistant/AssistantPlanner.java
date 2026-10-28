@@ -94,9 +94,10 @@ public class AssistantPlanner {
         if(question.matches("(?s).*(列出|多少份|几份|有哪些|所有|全部).*(问卷|调查).*" )&&!wantsChart(question)&&!question.matches("(?s).*(删除|发布|修改).*")){
             Map<String,Object> p=map("tool","search_surveys","arguments",map("query","","limit",10));p.put("mode","LOCAL");p.put("provider","本地目录查询");p.put("model","query-rules-v2");p.put("warning","");return p;
         }
+        final Integer liveVersion=version;
         if(provider.available())try {
             int keep=Math.min(history.size(),Math.max(0,provider.historyTurns()));
-            String raw=provider.complete(CHAT_PROMPT,write(map("today",LocalDate.now().toString(),"selectedFormKey",key,"selectedVersion",version,"tools",AssistantTools.definitions(),"history",history.subList(history.size()-keep,history.size()),"question",question)));
+            String raw=com.tduck.cloud.form.aiconfig.LiveAnswer.generate("message",()->provider.complete(CHAT_PROMPT,write(map("today",LocalDate.now().toString(),"selectedFormKey",key,"selectedVersion",liveVersion,"tools",AssistantTools.definitions(),"history",history.subList(history.size()-keep,history.size()),"question",question))));
             Map<String,Object> p=parseAutomatic(raw,key,version);
             if(key!=null&&wantsKnowledge(question)&&!followsPrevious(question)&&!reference.matches("(?s).*(问卷|调查|找|搜索|切换|另一|刚才|上面|这些|它们|继续|展开|再具体).*"))p=local(question,key,version);
             if(version==null&&p.get("arguments") instanceof Map)((Map<?,?>)p.get("arguments")).remove("version");

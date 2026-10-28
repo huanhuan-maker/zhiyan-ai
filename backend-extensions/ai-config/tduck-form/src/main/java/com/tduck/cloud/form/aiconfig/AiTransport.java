@@ -55,6 +55,29 @@ public class AiTransport {
         finally{if(c!=null)c.disconnect();}
     }
 
+    public String stream(Selection s,String system,String input,java.util.function.Consumer<String> sink){
+        if(s==null||s.key==null||s.key.isEmpty())throw new AiProviderException("真实模型尚未配置");HttpURLConnection c=null;
+        try{
+            Map<String,Object> body=payload(s,system,input);body.put("stream",true);byte[] request=JSON.writeValueAsBytes(body);
+            String base=s.provider.getBaseUrl().replaceAll("/+$","");endpoint(base);c=(HttpURLConnection)new URL(base+path(s.provider.getProtocol())).openConnection();c.setInstanceFollowRedirects(false);c.setRequestMethod("POST");c.setConnectTimeout(s.provider.getTimeoutMs());c.setReadTimeout(s.provider.getTimeoutMs());c.setDoOutput(true);c.setRequestProperty("Content-Type","application/json");c.setRequestProperty("Accept","text/event-stream");
+            if("ANTHROPIC".equals(s.provider.getProtocol())){c.setRequestProperty("x-api-key",s.key);c.setRequestProperty("anthropic-version","2023-06-01");}else c.setRequestProperty("Authorization","Bearer "+s.key);
+            c.setFixedLengthStreamingMode(request.length);try(OutputStream out=c.getOutputStream()){out.write(request);}if(c.getResponseCode()!=200)throw new AiProviderException("模型流式服务HTTP "+c.getResponseCode());
+            return readStream(s.provider.getProtocol(),new InputStreamReader(c.getInputStream(),StandardCharsets.UTF_8),sink);
+        }catch(AiProviderException e){throw e;}catch(Exception e){throw new AiProviderException("模型流式请求中断或格式异常；没有将未完成草稿保存为正式回答");}finally{if(c!=null)c.disconnect();}
+    }
+    public static String readStream(String protocol,Reader source,java.util.function.Consumer<String> sink)throws IOException{
+        StringBuilder text=new StringBuilder(),data=new StringBuilder();boolean finished=false;String reason="";int bytes=0;
+        try(BufferedReader reader=new BufferedReader(source)){String line;while((line=reader.readLine())!=null){bytes+=line.getBytes(StandardCharsets.UTF_8).length;if(bytes>2097152)throw new AiProviderException("模型流式响应超过2MB");
+            if(!line.isEmpty()){if(line.startsWith("data:"))data.append(line.substring(5).trim());continue;}if(data.length()==0)continue;String payload=data.toString();data.setLength(0);if("[DONE]".equals(payload)){finished=true;continue;}
+            JsonNode event=JSON.readTree(payload);if(event.has("error")||"error".equals(event.path("type").asText()))throw new AiProviderException("模型流返回错误，正文已省略");String delta="",type=event.path("type").asText();
+            if("OPENAI_RESPONSES".equals(protocol)){if("response.output_text.delta".equals(type))delta=event.path("delta").asText();if("response.completed".equals(type)){reason=event.path("response").path("status").asText();finished=true;}if("response.failed".equals(type)||"response.incomplete".equals(type))throw new AiProviderException("模型流未完整结束");}
+            else if("ANTHROPIC".equals(protocol)){if("content_block_delta".equals(type)&&"text_delta".equals(event.path("delta").path("type").asText()))delta=event.path("delta").path("text").asText();if("message_delta".equals(type))reason=event.path("delta").path("stop_reason").asText();if("message_stop".equals(type))finished=true;}
+            else{JsonNode choice=event.path("choices").path(0);delta=choice.path("delta").path("content").asText("");if(!choice.path("finish_reason").isNull()&&!choice.path("finish_reason").isMissingNode())reason=choice.path("finish_reason").asText();}
+            if(!delta.isEmpty()){text.append(delta);sink.accept(delta);}
+        }}
+        if(!finished||text.length()==0||!("OPENAI_RESPONSES".equals(protocol)?"completed".equals(reason):"ANTHROPIC".equals(protocol)?Arrays.asList("end_turn","stop_sequence").contains(reason):"stop".equals(reason)))throw new AiProviderException("模型流未完整结束，请重试");return text.toString();
+    }
+
     public static String parse(String protocol,JsonNode body) {
         StringBuilder text=new StringBuilder();
         if(body.has("error"))throw new AiProviderException("模型服务返回错误，详细正文已省略");
