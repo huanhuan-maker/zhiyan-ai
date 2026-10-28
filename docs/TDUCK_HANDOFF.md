@@ -19,7 +19,7 @@
 | 端口 | 服务 | 说明 |
 |---|---|---|
 | 5180 | `tduck-vue3` Vite dev server | `cd tduck-vue3 && npm.cmd run dev`（vite.config 已 `--host 127.0.0.1 --port 5180 --strictPort`） |
-| 8997 | **当前开发后端**（补丁 JAR） | `.local/tduck-dev/tduck-api.jar`，连库 `tduck_vue3_dev`(3306, root/123456)；含版本快照/AI 草稿/公开提交校验等补丁 |
+| 8997 | **当前开发后端**（补丁 JAR） | `.local/tduck-dev/tduck-api.jar`，连库 `tduck_vue3_dev`(3306, root/<本地口令>)；含版本快照/AI 草稿/公开提交校验等补丁 |
 | 8999 | 原版 TDuck 后端（D:\tduck-survey-form-master） | **勿动**，仅对照用 |
 | 3425 | 本机推理网关 `/v1`（OpenAI 兼容，key 在 `.local/tduck-dev/application-local.yml` 的 ai: 段） | 展示名一律写"本机推理网关"，key 不得进 UI/证据/跟踪文件 |
 

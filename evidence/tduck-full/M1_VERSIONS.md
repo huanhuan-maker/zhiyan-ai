@@ -113,7 +113,7 @@ cd .. ; powershell -ExecutionPolicy Bypass -File scripts\tduck\Verify-HTTP.ps1
 
 ### 8.1 缺陷1：明文凭证（跟踪文件含真实账号/口令）
 
-- **根因**：`scripts/tduck/version-flows.mjs` 硬编码管理员邮箱/密码（登录）与 `-p123456`（MySQL root，命令行）。
+- **根因**：`scripts/tduck/version-flows.mjs` 硬编码管理员邮箱/密码（登录）与 `-p<本地root口令>`（MySQL root，命令行）。
 - **回归测试**：`scripts/tduck/credential-scan.mjs`（无需后端）——从 `.local/tduck-credentials.json`（gitignored）读取当前真实凭据，扫描全部 Git 跟踪文本文件（441 个）不得出现这些值或长 Bearer 令牌；同时校验 `.local/` 已被忽略。修复前：3 处命中（version-flows.mjs:12/25）→ FAIL。
 - **修复**：version-flows.mjs 改用 `.local/tduck-dev/acceptance.json` fixture 账号登录、数据库口令改读凭据清单；其余脚本本就从 `.local` 读取（核实无需改动）；新约定：凭据只存放于 `.local/`。复验：扫描 3/3 PASS，命中 0。
 - 结果文件：`evidence/tduck-full/credential-scan.json`（仅文件/行号/规则名，不含凭据值）。
