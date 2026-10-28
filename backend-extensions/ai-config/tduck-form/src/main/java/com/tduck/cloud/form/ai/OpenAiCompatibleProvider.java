@@ -19,7 +19,7 @@ public class OpenAiCompatibleProvider implements AiProvider {
         AiSettings.Provider p=new AiSettings.Provider();p.setName(name);p.setBaseUrl(base);p.setTimeoutMs(timeout);p.setOutputTokenParameter("max_tokens");
         AiSettings.Model m=new AiSettings.Model();m.setModelId(model);legacy=new Selection(p,m,key);
     }
-    private Selection resolve(){return settings==null?legacy:settings.selected();}
+    private Selection resolve(){return settings==null?legacy:settings.selected(com.tduck.cloud.common.util.SecurityUtils.getUserId());}
     private Selection current(){Selection s=invocation.get();return s==null?resolve():s;}
     @Override public boolean available(){Selection s=resolve();invocation.remove();if(s!=null)invocation.set(s);return s!=null&&s.key!=null&&!s.key.isEmpty()&&s.provider.getBaseUrl()!=null&&!s.provider.getBaseUrl().isEmpty()&&s.model.getModelId()!=null&&!s.model.getModelId().isEmpty();}
     @Override public String providerName(){Selection s=current();return s==null?"未启用真实模型":s.provider.getName();}

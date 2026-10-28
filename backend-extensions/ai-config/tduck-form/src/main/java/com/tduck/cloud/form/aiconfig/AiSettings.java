@@ -1,11 +1,13 @@
 package com.tduck.cloud.form.aiconfig;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import java.util.*;
 
 /** Private persistence DTO. Never return this object directly from an API. */
 @Getter @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AiSettings {
     private int revision;
     private boolean enabled;
@@ -13,6 +15,7 @@ public class AiSettings {
     private List<Provider> providers = new ArrayList<>();
 
     @Getter @Setter
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Provider {
         private String id;
         private String name;
@@ -27,6 +30,7 @@ public class AiSettings {
     }
 
     @Getter @Setter
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Model {
         private String id;
         private String name;

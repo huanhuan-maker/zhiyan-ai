@@ -1,7 +1,18 @@
 <template>
   <section v-loading="loading" class="ai-settings">
-    <header class="settings-heading"><div><h2>模型供应商</h2><p>统一管理问卷助手、AI 建卷与报告使用的模型。保存后立即生效。</p></div><el-switch v-model="form.enabled" active-text="启用真实 AI" :disabled="loading" /></header>
-    <el-alert v-if="error" :title="error" type="error" :closable="false" show-icon />
+    <header class="settings-heading"><div><h2>{{ isGlobal ? '系统默认模型' : '我的模型配置' }}</h2><p>{{ headingText }}</p></div><el-switch v-model="form.enabled" active-text="启用真实 AI" :disabled="loading" /></header>
+    <el-alert v-if="error" :title="error" type="error" :closable="false" show-icon class="settings-error" />
+    <el-alert
+      v-if="!isGlobal && inherited"
+      class="inherited-alert"
+      type="info"
+      :closable="false"
+      show-icon
+      title="当前显示的是系统默认模型"
+    >
+      <p>你的账号还没有自己的模型配置，AI 功能正在使用系统默认配置。填好下面任意一项（或直接保存）后，就会为你的账号创建独立配置，不影响其他账号。</p>
+      <p>如果要换成自己的网关，把 Base URL 和 API Key 改成你自己的再保存即可。</p>
+    </el-alert>
     <div class="settings-toolbar"><el-button type="primary" plain @click="addProvider">添加供应商</el-button><el-button :disabled="loading || saving" @click="reload">重新加载</el-button><span>{{ dirty ? '有未保存的更改' : '已与服务端同步' }} · {{ modelCount }} 个模型</span></div>
     <el-empty v-if="!form.providers.length" description="添加你的模型供应商，支持自定义网关与模型 ID" />
     <article v-for="p in form.providers" :key="p.id" class="provider-card" data-testid="provider-card">
@@ -39,21 +50,61 @@
 import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 import { getAiSettings, saveAiSettings, testAiModel } from '@/api/ai-settings'
+const props = defineProps({ scope: { type: String, default: 'mine' } })
+const isGlobal = computed(() => props.scope === 'global')
+const headingText = computed(() => isGlobal.value
+  ? '统一管理问卷助手、AI 建卷与报告使用的模型。保存后立即生效。'
+  : '用自己的请求地址和 API Key 驱动 AI；保存后只对当前账号生效，其他账号不受影响。')
 const form = ref({ enabled: false, revision: 0, defaultModelId: '', providers: [] })
 const loading = ref(true), saving = ref(false), dirty = ref(false), error = ref(''), testing = ref(''), testResults = ref({})
+const inherited = ref(false)
 let applying = false
 watch(form, () => { if (!applying) dirty.value = true }, { deep: true })
 const modelCount = computed(() => form.value.providers.reduce((sum, p) => sum + p.models.length, 0))
 const efforts = [{value:'auto',label:'跟随模型默认'}, {value:'none',label:'关闭 / 无 · none'}, {value:'minimal',label:'极低 · minimal'}, {value:'low',label:'低 · low'}, {value:'medium',label:'中 · medium'}, {value:'high',label:'高 · high'}, {value:'xhigh',label:'很高 · xhigh'}, {value:'max',label:'最高 · max'}]
 function effortOptions(protocol) { return efforts.filter(e => protocol !== 'ANTHROPIC' || e.value !== 'minimal') }
-async function apply(data) { applying = true; form.value = data; for (const p of data.providers) { p.apiKey = ''; p.timeoutSeconds = p.timeoutMs / 1000 } await nextTick(); applying = false; dirty.value = false; testResults.value = {} }
-async function reload() { loading.value = true; error.value = ''; try { const r = await getAiSettings(); await apply(r.data) } catch (e) { error.value = e?.msg || e?.message || '模型配置加载失败，请重新加载' } finally { loading.value = false } }
+async function apply(data) { applying = true; form.value = data; inherited.value = !!data.inherited; for (const p of data.providers) { p.apiKey = ''; p.timeoutSeconds = (p.timeoutMs || 60000) / 1000 } await nextTick(); applying = false; dirty.value = false; testResults.value = {} }
+async function reload() { loading.value = true; error.value = ''; try { const r = await getAiSettings(props.scope); await apply(r.data) } catch (e) { error.value = e?.msg || e?.message || '模型配置加载失败，请重新加载' } finally { loading.value = false } }
 function addProvider() { if (form.value.providers.length >= 20) return ElMessage.warning('最多20个供应商'); const p = { id: crypto.randomUUID(), name: '', protocol: 'OPENAI_CHAT', baseUrl: '', apiKey: '', hasApiKey: false, timeoutSeconds: 60, timeoutMs: 60000, outputTokenParameter: 'max_completion_tokens', models: [] }; form.value.providers.push(p); addModel(p) }
 function addModel(p) { if (p.models.length >= 30) return ElMessage.warning('每个供应商最多30个模型'); const m = { id: crypto.randomUUID(), name: '', modelId: '', reasoningEffort: 'auto', contextWindow: 32768, maxOutputTokens: 8192, historyTurns: 6 }; p.models.push(m); if (!form.value.defaultModelId) form.value.defaultModelId = m.id }
 function removeModel(p,m) { p.models = p.models.filter(x => x.id !== m.id); if (form.value.defaultModelId === m.id) form.value.defaultModelId = '' }
 function removeProvider(p) { if (p.models.some(m => m.id === form.value.defaultModelId)) form.value.defaultModelId = ''; form.value.providers = form.value.providers.filter(x => x.id !== p.id) }
-async function save() { saving.value = true; error.value = ''; try { const payload = JSON.parse(JSON.stringify(form.value)); for (const p of payload.providers) { p.timeoutMs = p.timeoutSeconds * 1000; delete p.timeoutSeconds; delete p.hasApiKey } const r = await saveAiSettings(payload); await apply(r.data); ElMessage.success('模型配置已保存') } catch (e) { error.value = e?.msg || e?.message || '模型配置保存失败' } finally { saving.value = false } }
-async function testModel(m) { testing.value = m.id; testResults.value[m.id] = ''; try { const r = await testAiModel(m.id); testResults.value[m.id] = `连接成功 · ${r.data.elapsedMs} ms` } catch (e) { testResults.value[m.id] = e?.msg || e?.message || '连接失败' } finally { testing.value = '' } }
+// 先把最容易踩的必填项在本地拦下来，给出可读提示，而不是等后端返回一句校验错误。
+function firstProblem() {
+  for (const [i, p] of form.value.providers.entries()) {
+    if (!String(p.name || '').trim()) return '第 ' + (i + 1) + ' 个供应商还没有填写名称'
+    if (!String(p.baseUrl || '').trim()) return '供应商「' + p.name + '」还没有填写 Base URL'
+    if (!(p.timeoutSeconds >= 1 && p.timeoutSeconds <= 120)) return '供应商「' + p.name + '」的请求超时需要在 1–120 秒之间'
+    for (const [j, m] of p.models.entries()) {
+      if (!String(m.name || '').trim()) return '供应商「' + p.name + '」的第 ' + (j + 1) + ' 个模型还没有填写显示名称'
+      if (!String(m.modelId || '').trim()) return '供应商「' + p.name + '」的第 ' + (j + 1) + ' 个模型还没有填写模型 ID'
+      if (!(m.maxOutputTokens < m.contextWindow)) return '模型「' + m.name + '」的最大输出 Token 必须小于上下文窗口'
+    }
+  }
+  if (form.value.enabled && !form.value.defaultModelId) return '启用真实 AI 前请先选择一个默认模型'
+  return ''
+}
+async function save() {
+  error.value = ''
+  const problem = firstProblem()
+  if (problem) { error.value = problem; ElMessage.warning(problem); await scrollToTop(); return }
+  saving.value = true
+  try {
+    const payload = JSON.parse(JSON.stringify(form.value))
+    for (const p of payload.providers) { p.timeoutMs = Math.round(p.timeoutSeconds * 1000); delete p.timeoutSeconds; delete p.hasApiKey }
+    delete payload.inherited
+    const r = await saveAiSettings(payload, props.scope)
+    await apply(r.data)
+    ElMessage.success(isGlobal.value ? '系统默认模型配置已保存' : '已保存你自己的模型配置，仅对当前账号生效')
+    await scrollToTop()
+  } catch (e) {
+    error.value = e?.msg || e?.message || '模型配置保存失败，请检查后重试'
+    ElMessage.error(error.value)
+    await scrollToTop()
+  } finally { saving.value = false }
+}
+async function scrollToTop() { await nextTick(); document.querySelector('.ai-settings')?.closest('.router-view-wrapper, .el-tabs__content, .app-container')?.scrollTo?.({ top: 0, behavior: 'smooth' }) }
+async function testModel(m) { testing.value = m.id; testResults.value[m.id] = ''; try { const r = await testAiModel(m.id, props.scope); testResults.value[m.id] = `连接成功 · ${r.data.elapsedMs} ms` } catch (e) { testResults.value[m.id] = e?.msg || e?.message || '连接失败' } finally { testing.value = '' } }
 onMounted(reload)
 </script>
 
@@ -117,6 +168,8 @@ onMounted(reload)
 .model-fields { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .model-actions .el-button { margin: 0; }
 .test-result { display: inline-block; margin-left: 12px; overflow-wrap: anywhere; }
+.settings-error, .inherited-alert { margin: 12px 0; }
+.inherited-alert p { margin: 4px 0; font-size: 12px; line-height: 1.75; }
 .settings-notes { margin: 16px 0; }
 .save-bar { padding: 20px 0; background: transparent; border-top: 1px solid var(--zy-border); }
 .ai-settings :deep(.el-alert) { margin-top: 16px; }

@@ -6,7 +6,7 @@ import {randomUUID,createHash} from 'node:crypto'
 import {execFileSync} from 'node:child_process'
 const base='http://127.0.0.1:8997',root='/user/ai-settings',out='evidence/tduck-full/ai-settings',checks=[]
 fs.mkdirSync(out,{recursive:true});fs.mkdirSync('.local/ai-settings-review',{recursive:true})
-const credentials=JSON.parse(fs.readFileSync('.local/tduck-credentials.json','utf8').replace(/^\uFEFF/,'')),f=JSON.parse(fs.readFileSync('.local/tduck-dev/acceptance.json','utf8').replace(/^\uFEFF/,''))
+const credentials=JSON.parse(fs.readFileSync('.local/tduck-credentials.json','utf8').replace(/^\uFEFF/,'')),f=JSON.parse(fs.readFileSync('.local/assistant-simple/acceptance.json','utf8').replace(/^\uFEFF/,''))
 let admin,owner,original,saved,fixtureServer;const requests=[]
 async function raw(path,data,token=admin,retry=0){const r=await fetch(base+path,{method:data===undefined?'GET':'POST',headers:{'Content-Type':'application/json',...(token?{token}:{})},...(data===undefined?{}:{body:JSON.stringify(data)})}).then(r=>r.json());if(String(r.msg).includes('频繁')&&retry<2){console.log('WAIT respecting configured minute rate limit');await new Promise(resolve=>setTimeout(resolve,Math.min(59000,60200-Date.now()%60000)));return raw(path,data,token,retry+1)}return r}
 async function api(path,data,token=admin){const r=await raw(path,data,token);assert.equal(r.code,200,r.msg);return r.data}

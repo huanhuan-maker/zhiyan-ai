@@ -4,8 +4,11 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tduck.cloud.common.exception.BaseException;
 import com.tduck.cloud.form.entity.AiSettingsEntity;
+import com.tduck.cloud.form.entity.AiSettingsUserEntity;
 import com.tduck.cloud.form.mapper.AiSettingsMapper;
+import com.tduck.cloud.form.mapper.AiSettingsUserMapper;
 import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import java.net.URI;
@@ -16,9 +19,17 @@ import java.util.*;
 public class AiSettingsService {
     public static final ObjectMapper JSON = new ObjectMapper();
     private final AiSettingsMapper mapper;
+    private final AiSettingsUserMapper userMapper;
     private final AiKeyCipher cipher;
     private final Environment env;
-    public AiSettingsService(AiSettingsMapper mapper, AiKeyCipher cipher, Environment env) { this.mapper=mapper; this.cipher=cipher; this.env=env; }
+
+    @Autowired
+    public AiSettingsService(AiSettingsMapper mapper, AiSettingsUserMapper userMapper, AiKeyCipher cipher, Environment env) {
+        this.mapper = mapper; this.userMapper = userMapper; this.cipher = cipher; this.env = env;
+    }
+
+    /** 兼容既有单测：没有用户级存储时只操作系统默认配置。 */
+    public AiSettingsService(AiSettingsMapper mapper, AiKeyCipher cipher, Environment env) { this(mapper, null, cipher, env); }
 
     public synchronized AiSettings load() {
         AiSettingsEntity row=mapper.selectById(1L);
@@ -42,6 +53,7 @@ public class AiSettingsService {
     public Map<String,Object> view() { return safe(load()); }
     @SuppressWarnings("unchecked")
     public static Map<String,Object> safe(AiSettings value) {
+        if(value==null)return new LinkedHashMap<>();
         Map<String,Object> result=JSON.convertValue(value,Map.class);
         for(Map<String,Object> p:(List<Map<String,Object>>)result.get("providers")) {
             p.put("hasApiKey",p.get("encryptedKey")!=null&&!String.valueOf(p.get("encryptedKey")).isEmpty());
@@ -72,6 +84,84 @@ public class AiSettingsService {
         return view();
     }
 
+    // ===== 用户自己的配置：每个账号可以填自己的请求地址与 API Key =====
+
+    private AiSettings loadOwn(Long userId) {
+        if (userId == null || userMapper == null) return null;
+        AiSettingsUserEntity row = userMapper.selectById(userId);
+        if (row == null || row.getConfigJson() == null) return null;
+        AiSettings value = read(row.getConfigJson());
+        value.setRevision(row.getRevision() == null ? 0 : row.getRevision());
+        return value;
+    }
+
+    /** 个人配置页：未配置过时展示系统默认配置，并标记 inherited 让前端说明来源。 */
+    public Map<String,Object> viewOwn(Long userId) {
+        requireUser(userId);
+        AiSettings own = loadOwn(userId);
+        if (own != null) {
+            Map<String,Object> view = safe(own);
+            view.put("inherited", false);
+            return view;
+        }
+        AiSettings global = load();
+        Map<String,Object> view = safe(global);
+        view.put("inherited", true);
+        view.put("revision", 0);
+        return view;
+    }
+
+    public synchronized Map<String,Object> saveOwn(AiSettings input, Long userId) {
+        requireUser(userId);
+        if (input == null) throw new BaseException("配置内容不能为空");
+        AiSettings own = loadOwn(userId);
+        if (own != null && input.getRevision() != own.getRevision()) throw new BaseException("配置已被更新，请重新加载后修改，未覆盖设置");
+        if (input.getProviders() == null || input.getProviders().size() > 20) throw new BaseException("最多配置20个供应商");
+        // 首次保存时用户的配置来自系统默认：按供应商 ID 复用已保存的密文密钥，避免"只改地址就丢钥匙"。
+        AiSettings inherited = load();
+        Map<String,AiSettings.Provider> previous = new HashMap<>();
+        for (AiSettings.Provider p : inherited.getProviders()) previous.put(p.getId(), p);
+        if (own != null) for (AiSettings.Provider p : own.getProviders()) previous.put(p.getId(), p);
+        for (AiSettings.Provider p : input.getProviders()) {
+            if (p == null) throw new BaseException("供应商不能为空");
+            AiSettings.Provider before = previous.get(p.getId());
+            String typed = p.getApiKey();
+            p.setEncryptedKey(before == null ? null : before.getEncryptedKey());
+            if (typed != null && !typed.trim().isEmpty()) {
+                if (typed.length() > 4096 || typed.matches("(?s).*[\r\n].*")) throw new BaseException("API Key格式不正确");
+                p.setEncryptedKey(cipher.encrypt(typed.trim()));
+            } else if (p.isClearApiKey()) p.setEncryptedKey(null);
+            else if (before != null && (!Objects.equals(before.getBaseUrl(), p.getBaseUrl()) || !Objects.equals(before.getProtocol(), p.getProtocol())))
+                throw new BaseException("修改供应商地址或协议后，请重新填写API Key以确认目标");
+            p.setApiKey(null); p.setClearApiKey(false);
+        }
+        validate(input);
+        String json = write(input);
+        AiSettingsUserEntity row = new AiSettingsUserEntity();
+        row.setUserId(userId);
+        row.setConfigJson(json);
+        row.setUpdatedAt(Instant.now().toString());
+        if (own == null) {
+            row.setRevision(0);
+            try { userMapper.insert(row); }
+            catch (DuplicateKeyException e) { throw new BaseException("配置发生并发更新，请重新加载"); }
+        } else {
+            row.setRevision(own.getRevision() + 1);
+            int n = userMapper.update(row, Wrappers.<AiSettingsUserEntity>lambdaUpdate()
+                    .eq(AiSettingsUserEntity::getUserId, userId)
+                    .eq(AiSettingsUserEntity::getRevision, own.getRevision()));
+            if (n != 1) throw new BaseException("配置发生并发更新，请重新加载");
+        }
+        AiSettings saved = loadOwn(userId);
+        Map<String,Object> view = safe(saved != null ? saved : input);
+        view.put("inherited", false);
+        return view;
+    }
+
+    private static void requireUser(Long userId) {
+        if (userId == null) throw new BaseException("请先登录后再配置模型");
+    }
+
     public static void validate(AiSettings value) {
         Set<String> ids=new HashSet<>();boolean found=false;
         for(AiSettings.Provider p:value.getProviders()) {
@@ -97,13 +187,26 @@ public class AiSettingsService {
         catch(Exception e){throw new BaseException("Base URL需为不含凭据、查询参数或片段的HTTP(S)地址");}
     }
 
-    public Selection selected() {
-        AiSettings s=load();if(!s.isEnabled())return null;
+    public Selection selected() { return selected(null); }
+
+    /** 用户自己的配置优先；未配置个人模型时回退到系统默认配置。 */
+    public Selection selected(Long userId) {
+        AiSettings own=loadOwn(userId);
+        return pick(own!=null?own:load());
+    }
+    private Selection pick(AiSettings s) {
+        if(s==null||!s.isEnabled())return null;
         for(AiSettings.Provider p:s.getProviders())for(AiSettings.Model m:p.getModels())if(m.getId().equals(s.getDefaultModelId())&&p.getEncryptedKey()!=null)return selection(p,m);
         return null;
     }
-    public Selection byId(String id) {
-        for(AiSettings.Provider p:load().getProviders())for(AiSettings.Model m:p.getModels())if(m.getId().equals(id))return selection(p,m);
+    public Selection byId(String id) { return byId(id,null); }
+
+    /** 测试连接：先在自己生效的配置里找模型，找不到再看系统默认配置。 */
+    public Selection byId(String id, Long userId) {
+        List<AiSettings> candidates=new ArrayList<>();
+        AiSettings own=loadOwn(userId);if(own!=null)candidates.add(own);
+        candidates.add(load());
+        for(AiSettings s:candidates)for(AiSettings.Provider p:s.getProviders())for(AiSettings.Model m:p.getModels())if(m.getId().equals(id))return selection(p,m);
         throw new BaseException("模型不存在，请先保存配置");
     }
     private Selection selection(AiSettings.Provider p,AiSettings.Model m){return new Selection(p,m,cipher.decrypt(p.getEncryptedKey()));}

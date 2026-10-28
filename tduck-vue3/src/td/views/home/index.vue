@@ -94,6 +94,7 @@ export default {
         { route: '/home/ai', name: 'AI 建卷', icon: 'el-icon-magic-stick' },
         { route: '/home', name: '我的问卷', icon: 'fa-pencil-square' },
         { route: '/home/assistant', name: '问卷助手', icon: 'el-icon-chat-dot-round' },
+        { route: '/home/ai-settings', name: 'AI 配置', icon: 'el-icon-cpu' },
         { route: '/manage/user', name: '用户管理', icon: 'fa-user', admin: true },
         { route: '/manage/system', name: '系统配置', icon: 'el-icon-s-tools', admin: true }
       ]
@@ -122,6 +123,7 @@ export default {
       if (this.defaultActiveMenu === '/home/ai') return '描述研究目标，生成可编辑问卷，再逐题精修导入。'
       if (this.defaultActiveMenu === '/home') return '管理、发布并持续收集你的调查问卷。'
       if (this.defaultActiveMenu === '/home/assistant') return '用自然语言查询自己的问卷、统计和原文证据。'
+      if (this.defaultActiveMenu === '/home/ai-settings') return '配置你自己的模型请求地址与 API Key，只对当前账号生效。'
       return '知研 AI 学术调查工作台。'
     }
   },

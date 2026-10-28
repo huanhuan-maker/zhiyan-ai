@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-28T02:12:27.615Z",
+  "owner": "vue3-owner-506c862a9a@example.test",
+  "checks": [
+    {
+      "name": "普通用户可以读取自己的模型配置（默认继承系统配置）",
+      "passed": true
+    },
+    {
+      "name": "未登录不能读取个人配置",
+      "passed": true
+    },
+    {
+      "name": "普通用户不能用全局接口修改系统默认配置",
+      "passed": true
+    },
+    {
+      "name": "填写自己的请求地址和 API Key 可以保存，且不改动系统默认配置",
+      "passed": true
+    },
+    {
+      "name": "重新读取时只看到自己的配置",
+      "passed": true
+    },
+    {
+      "name": "改了 Base URL 却没重新填写 API Key 会被拒绝",
+      "passed": true
+    },
+    {
+      "name": "个人配置真的用于 AI 生成（真实网关）",
+      "passed": true
+    },
+    {
+      "name": "浏览器：普通用户侧栏有 AI 配置并能打开自己的配置页",
+      "passed": true
+    },
+    {
+      "name": "浏览器：页面是深色且没有浅色残留",
+      "passed": true
+    },
+    {
+      "name": "浏览器：改地址和 Key 后点保存能成功",
+      "passed": true
+    },
+    {
+      "name": "浏览器：管理员系统配置里仍是系统默认模型",
+      "passed": true
+    },
+    {
+      "name": "浏览器没有运行时错误",
+      "passed": true
+    }
+  ],
+  "total": 12,
+  "passed": 12,
+  "failed": 0,
+  "errors": []
+}

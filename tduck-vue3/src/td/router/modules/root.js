@@ -48,6 +48,11 @@ export default [
         path: 'assistant',
         meta: { requireLogin: true, title: '问卷助手' },
         component: () => import('@/views/assistant/index.vue')
+      },
+      {
+        path: 'ai-settings',
+        meta: { requireLogin: true, title: 'AI 配置' },
+        component: () => import('@/views/ai-settings/index.vue')
       }
     ]
   },

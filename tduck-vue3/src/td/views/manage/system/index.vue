@@ -162,7 +162,7 @@
           </div>
         </el-tab-pane>
         <el-tab-pane label="AI 配置" name="deepSeekEnvConfig">
-          <deep-seek-config v-if="activeName === 'deepSeekEnvConfig'" />
+          <deep-seek-config v-if="activeName === 'deepSeekEnvConfig'" scope="global" />
         </el-tab-pane>
       </el-tabs>
     </div>

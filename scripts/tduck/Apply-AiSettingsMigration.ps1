@@ -23,10 +23,12 @@ try{
  $env:MYSQL_PWD=Read-Setting 'password'
  $mysql=Join-Path $MysqlBin 'mysql.exe'
  $mysqlArgs=@('--host=127.0.0.1',"--port=$port",('--user='+(Read-Setting 'username')),'--default-character-set=utf8mb4',$manifest.database)
- $sql=(Join-Path $root 'db\tduck\008_ai_settings.sql').Replace('\','/')
- & $mysql @mysqlArgs ('--execute=source '+$sql)
- if($LASTEXITCODE -ne 0){throw 'AI settings migration failed'}
- $tables=& $mysql @mysqlArgs '-N' '-B' "--execute=SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='tduck_vue3_dev' AND table_name='fm_ai_settings'"
- if($LASTEXITCODE -ne 0 -or [int]$tables -ne 1){throw 'AI settings table missing'}
- Write-Output 'AI settings table ready (1); private encryption key preserved. Existing questionnaires unchanged.'
+ foreach($migration in @('008_ai_settings.sql','012_ai_settings_per_user.sql')){
+  $sql=(Join-Path $root (Join-Path 'db\tduck' $migration)).Replace('\','/')
+  & $mysql @mysqlArgs ('--execute=source '+$sql)
+  if($LASTEXITCODE -ne 0){throw "AI settings migration failed: $migration"}
+ }
+ $tables=& $mysql @mysqlArgs '-N' '-B' "--execute=SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='tduck_vue3_dev' AND table_name IN ('fm_ai_settings','fm_ai_settings_user')"
+ if($LASTEXITCODE -ne 0 -or [int]$tables -ne 2){throw 'AI settings tables missing'}
+ Write-Output 'AI settings tables ready (global + per-user); private encryption key preserved. Existing questionnaires unchanged.'
 }finally{$env:MYSQL_PWD=$priorPassword}
