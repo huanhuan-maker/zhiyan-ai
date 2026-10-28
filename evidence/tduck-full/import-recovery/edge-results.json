@@ -1,13 +1,13 @@
 {
-  "date": "2026-10-25T05:56:38.553Z",
+  "date": "2026-10-25T13:10:33.335Z",
   "source": "Explicit synthetic response and failure injection; real isolated backend persistence",
   "checks": [
     {
       "name": "regeneration with same title/labels but new options imports the new content",
       "passed": true,
       "detail": {
-        "originalKey": "kEfbgVvf",
-        "importedKey": "cn4xsYGL",
+        "originalKey": "qwURn5j1",
+        "importedKey": "jiySDJkO",
         "creates": 2,
         "description": "Introduction B",
         "containsNewOption": true,
@@ -19,8 +19,8 @@
       "passed": true,
       "detail": {
         "creates": 1,
-        "originalKey": "1G3I7Zrt",
-        "currentKey": "1G3I7Zrt",
+        "originalKey": "37qPpSrq",
+        "currentKey": "37qPpSrq",
         "originalQuestionCount": 1
       }
     },

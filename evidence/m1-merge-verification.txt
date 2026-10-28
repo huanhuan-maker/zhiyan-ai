@@ -1,0 +1,80 @@
+M1 post-merge verification, Asia/Shanghai, 2026-10-24
+Merge commit: 
+533e0dff13135f22258b3628f653aa68b0f3e53b
+Command: powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/Start-Backend.ps1 -JavaHome D:\jdk\jdk17 -Test
+-------------------------------------------------------------------------------
+Test set: cn.zhiyan.M0IntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 12.48 s -- in cn.zhiyan.M0IntegrationTest
+-------------------------------------------------------------------------------
+Test set: cn.zhiyan.M1ConcurrencyTest
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.533 s -- in cn.zhiyan.M1ConcurrencyTest
+-------------------------------------------------------------------------------
+Test set: cn.zhiyan.M1IntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.273 s -- in cn.zhiyan.M1IntegrationTest
+-------------------------------------------------------------------------------
+Test set: cn.zhiyan.M1LifecycleMigrationTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.906 s -- in cn.zhiyan.M1LifecycleMigrationTest
+-------------------------------------------------------------------------------
+Test set: cn.zhiyan.M1PublicationLifecycleTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.664 s -- in cn.zhiyan.M1PublicationLifecycleTest
+-------------------------------------------------------------------------------
+Test set: cn.zhiyan.RequestRateFilterTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 s -- in cn.zhiyan.RequestRateFilterTest
+[INFO] Tests run: 39, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+[INFO] Total time:  42.796 s
+[INFO] Finished at: 2026-10-24T13:19:00+08:00
+Command: npm.cmd run build (frontend), exit 0
+
+> zhiyan-ai-frontend@0.0.1 build
+> vue-tsc -b && vite build
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 632 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                  0.46 kB │ gzip:   0.32 kB
+dist/assets/index-hSv9CsQ8.css                  12.29 kB │ gzip:   3.48 kB
+dist/assets/StatisticsPage-A8NQz58c.js           4.19 kB │ gzip:   2.31 kB
+dist/assets/ResultsPage-DY3t4mcp.js              6.17 kB │ gzip:   3.18 kB
+dist/assets/SurveyEditorPage-DudX-ffD.js        15.82 kB │ gzip:   6.12 kB
+dist/assets/index-JecOVwl1.js                  116.72 kB │ gzip:  45.80 kB
+dist/assets/installCanvasRenderer-WKbLso7m.js  490.50 kB │ gzip: 167.10 kB
+✓ built in 7.09s
+Command: npm.cmd audit --json, exit 0
+{
+  "info": 0,
+  "low": 0,
+  "moderate": 0,
+  "high": 0,
+  "critical": 0,
+  "total": 0
+}
+Commands: scripts/Verify-M1Publication.ps1 in PowerShell7 and Windows PowerShell5.1, exits0; actual loopback HTTP; discarded response simulated after successful commit, not packet loss.
+{
+    "realHttp":  "PASS",
+    "repeatRotationRejected":  "PASS",
+    "discardedResponseReplay":  "PASS",
+    "oldTokenRejected":  "PASS",
+    "inFlightSessionPreserved":  "PASS",
+    "closedVersionNotReopened":  "PASS",
+    "closedRotationStaysClosed":  "PASS",
+    "versionIsolation":  "PASS",
+    "surveyId":  6,
+    "version1":  8,
+    "version2":  9,
+    "oldCompleted":  1,
+    "newCompleted":  0,
+    "browser":  "NOT_EXECUTED"
+}
+Regression BEFORE fixes: expected409 but actual200 on repeated rotation; 1 failure, 0 errors. Windows jar lock was resolved by stopping verified application process. Intermediate concurrent-test rollback bookkeeping was fixed before final run.
+[ERROR]   M1PublicationLifecycleTest.rotationRetryAfterLostResponseDoesNotInvalidateCommittedLink:77->rotate:70->call:41 Response status expected:<409> but was:<200>
+[ERROR] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0
+Browser on merged build: NOT EXECUTED; QR feature: NOT IMPLEMENTED; M2: NOT STARTED.

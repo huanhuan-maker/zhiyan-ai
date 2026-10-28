@@ -1,0 +1,135 @@
+{
+  "asOf": "2026-10-26T04:21:59.617163300Z",
+  "kind": "statistics",
+  "tool": "survey_stats",
+  "daily": {
+    "2026-10-25": 4
+  },
+  "title": "Synthetic assistant 1792975524788 campus",
+  "formKey": "pSQ6Zet3",
+  "message": "V1 共收到 4 份答卷。下方有效数、缺失、比例及均值由后端计算，分母按每题有效回答人数。",
+  "version": 1,
+  "citations": [
+    {
+      "id": "S1",
+      "kind": "statistics",
+      "text": "发布版本V1的全量后端统计",
+      "formKey": "pSQ6Zet3",
+      "version": 1,
+      "answerCount": 4
+    }
+  ],
+  "sourceUrl": "/project/form/statistics?key=pSQ6Zet3&version=1",
+  "statistics": [
+    {
+      "map": {
+        "A": 2,
+        "B": 1
+      },
+      "data": [
+        2,
+        1
+      ],
+      "mean": null,
+      "type": "单选框",
+      "label": "RADIO体验",
+      "fieldId": "assistant17929755247880",
+      "formKey": "pSQ6Zet3",
+      "typeCode": "RADIO",
+      "chartType": "pie",
+      "fieldName": [
+        "A",
+        "B"
+      ],
+      "totalCount": 4,
+      "validCount": 3,
+      "percentages": {
+        "A": 66.67,
+        "B": 33.33
+      },
+      "missingCount": 1
+    },
+    {
+      "map": {
+        "A": 2,
+        "B": 3
+      },
+      "data": [
+        2,
+        3
+      ],
+      "mean": null,
+      "type": "多选框",
+      "label": "CHECKBOX体验",
+      "fieldId": "assistant17929755247881",
+      "formKey": "pSQ6Zet3",
+      "typeCode": "CHECKBOX",
+      "chartType": "pie",
+      "fieldName": [
+        "A",
+        "B"
+      ],
+      "totalCount": 4,
+      "validCount": 3,
+      "percentages": {
+        "A": 66.67,
+        "B": 100
+      },
+      "missingCount": 1
+    },
+    {
+      "map": {
+        "2": 1,
+        "4": 1,
+        "5": 1
+      },
+      "data": [
+        1,
+        1,
+        1
+      ],
+      "mean": 3.67,
+      "type": "评分",
+      "label": "校园体验评分",
+      "fieldId": "assistant17929755247882",
+      "formKey": "pSQ6Zet3",
+      "typeCode": "RATE",
+      "chartType": "bar",
+      "fieldName": [
+        "4",
+        "2",
+        "5"
+      ],
+      "totalCount": 4,
+      "validCount": 3,
+      "percentages": {
+        "2": 33.33,
+        "4": 33.33,
+        "5": 33.33
+      },
+      "missingCount": 1
+    },
+    {
+      "map": {},
+      "data": [],
+      "mean": null,
+      "type": "多行文本",
+      "label": "校园设施有哪些体验和建议？",
+      "fieldId": "assistant17929755247883",
+      "formKey": "pSQ6Zet3",
+      "typeCode": "TEXTAREA",
+      "chartType": "pie",
+      "fieldName": [],
+      "totalCount": 4,
+      "validCount": 3,
+      "percentages": {},
+      "missingCount": 1
+    }
+  ],
+  "answerCount": 4,
+  "chartRequest": {
+    "chartType": "donut",
+    "fieldQuery": "RADIO体验"
+  },
+  "openResponseCount": 3
+}

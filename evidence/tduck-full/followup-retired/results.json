@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-25T06:55:44.153Z",
+  "date": "2026-10-25T12:14:33.171Z",
   "source": "Real 5180/8997 and MySQL; synthetic ordinary submission; no followup/model evaluation performed",
   "checks": [
     "backend reports feature disabled even for previously enabled surveys",

@@ -1,5 +1,5 @@
 {
- "date": "2026-10-25T03:57:36.132Z",
+ "date": "2026-10-25T05:10:57.670Z",
  "total": 21,
  "failed": 0,
  "checks": [
@@ -89,16 +89,16 @@
   }
  ],
  "realSample": {
-  "title": "大学生社团参与意愿调查",
+  "title": "大学生社团参与意愿调查问卷",
   "provider": "本机推理网关",
   "model": "group/group",
-  "elapsedMs": 4564,
+  "elapsedMs": 18985,
   "types": [
    "RADIO",
    "CHECKBOX",
    "RATE",
    "RADIO",
-   "RADIO",
+   "CHECKBOX",
    "TEXTAREA"
   ]
  }

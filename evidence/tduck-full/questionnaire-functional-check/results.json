@@ -1,0 +1,41 @@
+{
+  "purpose": "Synthetic end-to-end questionnaire completeness check. All forms and responses are in the isolated acceptance account.",
+  "account": "vue3-owner-506c862a9a@example.test",
+  "surveys": [
+    {
+      "name": "功能体验测试·大学生AI使用情况",
+      "formKey": "8wg6b96j",
+      "responses": 3,
+      "questions": 4,
+      "sharePath": "/s/8wg6b96j",
+      "answersPath": "/project/form/data?key=8wg6b96j",
+      "statisticsPath": "/project/form/statistics?key=8wg6b96j"
+    },
+    {
+      "name": "功能体验测试·校园食堂满意度",
+      "formKey": "AyMSKknx",
+      "responses": 3,
+      "questions": 4,
+      "sharePath": "/s/AyMSKknx",
+      "answersPath": "/project/form/data?key=AyMSKknx",
+      "statisticsPath": "/project/form/statistics?key=AyMSKknx"
+    },
+    {
+      "name": "功能体验测试·校园活动报名",
+      "formKey": "Ew5obCTL",
+      "responses": 3,
+      "questions": 4,
+      "sharePath": "/s/Ew5obCTL",
+      "answersPath": "/project/form/data?key=Ew5obCTL",
+      "statisticsPath": "/project/form/statistics?key=Ew5obCTL"
+    }
+  ],
+  "totalSyntheticResponsesPersisted": 9,
+  "checks": [
+    "required fields block an empty submission without creating an answer row",
+    "大学生AI使用情况: 3 backend answer rows, 4 questionnaire fields, data table and statistics pages rendered",
+    "校园食堂满意度: 3 backend answer rows, 4 questionnaire fields, data table and statistics pages rendered",
+    "校园活动报名: 3 backend answer rows, 4 questionnaire fields, data table and statistics pages rendered"
+  ],
+  "pageErrors": []
+}

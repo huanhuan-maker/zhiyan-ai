@@ -1,0 +1,16 @@
+﻿{
+    "realHttp":  "PASS",
+    "repeatRotationRejected":  "PASS",
+    "discardedResponseReplay":  "PASS",
+    "oldTokenRejected":  "PASS",
+    "inFlightSessionPreserved":  "PASS",
+    "closedVersionNotReopened":  "PASS",
+    "closedRotationStaysClosed":  "PASS",
+    "versionIsolation":  "PASS",
+    "surveyId":  6,
+    "version1":  8,
+    "version2":  9,
+    "oldCompleted":  1,
+    "newCompleted":  0,
+    "browser":  "NOT_EXECUTED"
+}
