@@ -64,7 +64,8 @@ public class AssistantPlanner {
             if(choice.size()!=1)return null;Object key=choice.get("formKey");for(Map<String,Object> row:candidates)if(key instanceof String&&key.equals(row.get("formKey")))return (String)key;
         }}catch(Exception ignored){}return null;
     }
-    public static boolean needsData(String question) {return question!=null&&!question.matches("(?s).*(什么是|什么叫|如何设计|怎么设计).*")&&(wantsKnowledge(question)||wantsChart(question)||question.matches("(?is).*(回收|几份|多少.*(问卷|答卷|人)|均值|评分|统计|分布|有效回答|原文|提到|包含.*回答|已审核|查看.*报告|查询.*报告|分析这份|总结这份|分析.*问卷|出图|图表|分享|链接|导出|版本列表|版本历史|查看.*题目|查看.*内容|发布.*问卷|停止.*收集|停收|复制.*问卷|删除.*问卷|回收站|改名|修改.*标题|改.*标题|标题.*改|改.*简介|简介.*改|第\\s*[0-9]+\\s*题|新增.*题).*"));}
+    private static boolean wantsOverview(String question){return question.matches("(?s).*((看一下|看看|看下|查看|了解一下|了解下|说说|查一下|查询).*(问卷|调查|答卷).*(情况|概况|现状|怎么样|进展|结果)|(这份|这个|该)(问卷|调查|答卷).*(情况|怎么样|概况)).*");}
+    public static boolean needsData(String question) {return question!=null&&!question.matches("(?s).*(什么是|什么叫|如何设计|怎么设计).*")&&(wantsOverview(question)||wantsKnowledge(question)||wantsChart(question)||question.matches("(?is).*(回收|几份|多少.*(问卷|答卷|人)|均值|评分|统计|分布|有效回答|原文|提到|包含.*回答|已审核|查看.*报告|查询.*报告|分析这份|总结这份|分析.*问卷|出图|图表|分享|链接|导出|版本列表|版本历史|查看.*题目|查看.*内容|发布.*问卷|停止.*收集|停收|复制.*问卷|删除.*问卷|回收站|改名|修改.*标题|改.*标题|标题.*改|改.*简介|简介.*改|第\\s*[0-9]+\\s*题|新增.*题).*"));}
     private static Map<String,Object> chartArguments(String q,String key,Integer version){
         q=positiveChartQuestion(q);Map<String,Object> args=map("formKey",key);if(version!=null)args.put("version",version);
         args.put("chartType",q.matches("(?s).*(饼图|环形图).*" )?"donut":q.matches("(?s).*(折线图|趋势图).*" )?"line":q.matches("(?s).*(柱状图|条形图).*" )?"bar":"all");
@@ -77,6 +78,7 @@ public class AssistantPlanner {
         Integer explicit=versionHint(question);if(explicit!=null)version=explicit;else if(question.contains("最新"))version=null;
         String q=title==null?question:question.replace(title,"");q=q.replace("问卷","调查");
         Map<String,Object> p=naturalRead(local(q,key,version),question);
+        if("survey_knowledge".equals(p.get("tool")))((Map<String,Object>)p.get("arguments")).put("question",question);
         p.put("mode","LOCAL");p.put("provider","后端只读查询");p.put("model","query-rules-v1");p.put("warning","");return p;
     }
     public Map<String,Object> automatic(String question,String key,Integer version,List<Map<String,Object>> history) {
@@ -87,8 +89,8 @@ public class AssistantPlanner {
         if(!wantsChart(question)&&question.matches("(?s).*(生成|设计|新建|创建).*(问卷|调查).*" )&&!question.matches("(?s).*(如何|怎么|什么).*")){
             Map<String,Object> request=local(question,key,version);if(Arrays.asList("design_survey","manage_survey").contains(request.get("tool"))){request.put("mode","LOCAL");request.put("provider","服务端操作规划");request.put("model","management-v2");request.put("warning","");return request;}
         }
-        String reference=question.replaceAll("这份问卷|该问卷|当前问卷|所选问卷|这个问卷|本问卷","");
-        if(key!=null&&needsData(question)&&!followsPrevious(question)&&!reference.matches("(?s).*(问卷|找|搜索|切换|另一|新增|添加|选项|必填|刚才|上面|这些|它们|继续|展开|再具体).*"))return resolvedQuery(question,key,version,null);
+        String reference=question.replaceAll("这份问卷|该问卷|当前问卷|所选问卷|这个问卷|本问卷|这份调查|该调查|当前调查|所选调查|这个调查|本调查","");
+        if(key!=null&&needsData(question)&&!followsPrevious(question)&&!reference.matches("(?s).*(问卷|调查|找|搜索|切换|另一|新增|添加|选项|必填|刚才|上面|这些|它们|继续|展开|再具体).*"))return resolvedQuery(question,key,version,null);
         if(question.matches("(?s).*(列出|多少份|几份|有哪些|所有|全部).*(问卷|调查).*" )&&!wantsChart(question)&&!question.matches("(?s).*(删除|发布|修改).*")){
             Map<String,Object> p=map("tool","search_surveys","arguments",map("query","","limit",10));p.put("mode","LOCAL");p.put("provider","本地目录查询");p.put("model","query-rules-v2");p.put("warning","");return p;
         }

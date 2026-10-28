@@ -116,10 +116,11 @@ public class AssistantChatService {
             if("search_surveys".equals(name)&&Boolean.TRUE.equals(p.get("automatic"))&&((Number)p.getOrDefault("stage",0)).intValue()==0) {
                 List<Map<String,Object>> found=(List<Map<String,Object>>)result.get("surveys");
                 boolean catalogue=AssistantPlanner.catalogueQuery(t.getQuestion());
-                String selected=null;if(!catalogue&&AssistantPlanner.needsData(t.getQuestion()))selected=((Number)result.get("total")).longValue()==1&&found.size()==1?(String)found.get(0).get("formKey"):planner.chooseSurvey(t.getQuestion(),found);
+                String selected=null;if(!catalogue)selected=((Number)result.get("total")).longValue()==1&&found.size()==1?(String)found.get(0).get("formKey"):planner.chooseSurvey(t.getQuestion(),found);
                 Map<String,Object> target=null;for(Map<String,Object> row:found)if(Objects.equals(selected,row.get("formKey")))target=row;
                 if(target!=null){tools.requireOwned(selected,owner);
-                    Map<String,Object> next=AssistantPlanner.resolvedQuery(t.getQuestion(),selected,t.getScopeVersion(),(String)target.get("title"));String nextTool=(String)next.get("tool");
+                    Integer targetVersion=Objects.equals(selected,t.getScopeFormKey())?t.getScopeVersion():AssistantPlanner.versionHint(t.getQuestion());
+                    Map<String,Object> next=AssistantPlanner.resolvedQuery(t.getQuestion(),selected,targetVersion,(String)target.get("title"));String nextTool=(String)next.get("tool");
                     if(!Arrays.asList("search_surveys","none","chat","design_survey").contains(nextTool)){
                         Map<String,Object> nextArgs=(Map<String,Object>)next.get("arguments");
                         turns.update(null,Wrappers.<AssistantTurnEntity>lambdaUpdate().eq(AssistantTurnEntity::getId,turnId).set(AssistantTurnEntity::getScopeFormKey,selected).set(AssistantTurnEntity::getScopeVersion,nextArgs.get("version"))
