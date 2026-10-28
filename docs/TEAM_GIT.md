@@ -21,6 +21,19 @@ Copy-Item .env.example .env    # 然后按 README 初始化数据库
 
 `.env` 里是**你自己的**数据库口令和管理员初始密码，每台机器一份，永远不提交。仓库里只保留 `.env.example` 模板。
 
+## 仓库里没有、但跑起来需要的东西
+
+这几样因为体积或敏感性不进 Git，向项目负责人索取：
+
+| 东西 | 用途 | 说明 |
+|---|---|---|
+| `D:\tduck-survey-form-master`（约 180 MB） | 上游 TDuck 后端源码，`Build-FullBackend.ps1` 的输入 | 只有改后端 Java 才需要；构建要 JDK 17 + Maven |
+| `.local/tduck-dev/tduck-api.jar`（约 166 MB） | 已打好补丁的 8997 后端 | 不改后端时直接用它，不必自己构建 |
+| `.local/tduck-dev/ai-config.key` | AI 密钥加密主密钥 | **每台机器各生成一份**，不要互相拷贝，也不要提交 |
+| 数据库备份 / 迁移脚本 | 初始数据 | 迁移脚本在 `db/`；数据 dump 走网盘 |
+
+`.local/` 整个目录被 Git 忽略，里面的东西只属于本机。
+
 ## 日常流程
 
 ```powershell
