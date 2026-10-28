@@ -66,6 +66,30 @@ Remove-Variable localRoot
 
 ## 启动命令
 
+**当前开发版是 `tduck-vue3`，地址 <http://127.0.0.1:5180>，后端 8997。** 下面的 5173 端口是归档的 M0/M1 旧原型，还能跑，但功能停在 M1，不要用它验收。
+
+### 当前开发版（TDuck Vue 3，5180 → 8997）
+
+终端 A（仓库根目录，启动 8997 后端）：
+
+```powershell
+.\scripts\tduck\Start-FullBackend.ps1
+```
+
+终端 B（`tduck-vue3` 目录，启动 5180 前端）：
+
+```powershell
+Set-Location .\tduck-vue3
+npm.cmd ci
+npm.cmd run dev
+```
+
+浏览器打开 <http://127.0.0.1:5180>。后端依赖 `.local/tduck-closure-build/tduck-api/target/duck-api.jar`，该 JAR 不在仓库里（166 MB），新机器先向项目负责人索取，或用 `scripts/tduck/Build-FullBackend.ps1` 自行构建（需要上游源码和 Maven），见 [docs/TEAM_GIT.md](docs/TEAM_GIT.md)。
+
+### 旧原型（M0/M1，已归档）
+
+以下命令启动的是归档的 `frontend/` 原型（5173 → 8080），仅作对照。
+
 终端 A（根目录）：
 
 ```powershell
@@ -84,7 +108,7 @@ npm.cmd run dev
 
 Java 已在 PATH 且 JAVA_HOME 正确时可以省略 `-JavaHome`；路径可换成自己的安装目录。
 
-前端：<http://127.0.0.1:5173>，后端健康：<http://127.0.0.1:8080/actuator/health>。
+旧原型前端：<http://127.0.0.1:5173>，后端健康：<http://127.0.0.1:8080/actuator/health>。
 
 页面：`/` 我的调查、`/login` 登录/注册/会话、`/surveys/new` 手工建卷、`/surveys/{id}/edit` 编辑/预览/发布/关闭、`/surveys/{id}/results` 指定版本统计、`/public/{token}` 公开答题。发布会生成独立随机链接，请自行保存；编辑页”分享已发布版本”面板可配置电脑局域网 IPv4 并生成手机可扫的本地二维码（详见 [局域网指南](docs/LAN_SHARING_GUIDE.md)）。匿名填写不要求发起者登录。点击”保存进度”后同标签刷新可从数据库恢复，最终提交后计入回收统计。
 
@@ -103,6 +127,8 @@ Set-Location .\backend
 ```
 
 ## 真实测试和构建
+
+本节针对归档的 `backend/` + `frontend/` 原型。当前 `tduck-vue3` 的测试是 `Set-Location .\tduck-vue3; npm.cmd run test`（Vitest）和 `npm.cmd run test:e2e`（Playwright），接口与验收脚本在 `scripts/tduck/*.mjs`。
 
 先启动 MySQL 并初始化两个库。测试使用 DB_TEST_NAME，必须以 `_test` 结尾；不要配置有业务数据的库。MySQL 不可用时测试明确失败，不自动换用 H2 或 Mock。
 
