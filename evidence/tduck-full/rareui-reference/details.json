@@ -1,0 +1,107 @@
+{
+  "aistatus": {
+    "heads": [
+      "Inline AI Status",
+      "Dependencies",
+      "Interaction Type",
+      "Props",
+      "Installation",
+      "How to use",
+      "Source Code",
+      "Keep in mind",
+      "Contact",
+      "License & Usage"
+    ],
+    "text": "Rare UI / Components DISPLAY Folder component Code Block Gravity Letters GitHub activity Step player Animated counter Voice note FAQ AI KIT Fluid Orb Grid Reveal Matrix orb Web Search Inline AI Status NAVIGATION Bounce sidebar Hook Sidebar Proximity Sidebar Scroll Progress Rail TOC Gooey nav INPUTS Duration Picker OTP Input Password input Theme selector Delete button Task list FEEDBACK Emoji reaction Notification bell Automatic backups, patching, replication, and failover. Focus on your app, not your database. ads via Carbon Install INLINE AI STATUS An inline status that shows what an AI is doing, from thinking and researching to writing and done. DEPENDENCIES motion react-use-measure INTERA"
+  },
+  "animatedcounter": {
+    "heads": [
+      "Animated counter",
+      "Dependencies",
+      "Interaction Type",
+      "Props",
+      "Installation",
+      "How to use",
+      "Source Code",
+      "Keep in mind",
+      "Contact",
+      "License & Usage"
+    ],
+    "text": "Rare UI / Components DISPLAY Folder component Code Block Gravity Letters GitHub activity Step player Animated counter Voice note FAQ AI KIT Fluid Orb Grid Reveal Matrix orb Web Search Inline AI Status NAVIGATION Bounce sidebar Hook Sidebar Proximity Sidebar Scroll Progress Rail TOC Gooey nav INPUTS Duration Picker OTP Input Password input Theme selector Delete button Task list FEEDBACK Emoji reaction Notification bell $300 Free Credits to Build on Google Cloud Build VMs, containers, AI, databases, storage—all in one place. ads via Carbon Install ANIMATED COUNTER A number that counts to its new value on a wheel of digits, like an odometer. DEPENDENCIES motion INTERACTION TYPE Digits roll up a"
+  },
+  "bouncesidebar": {
+    "heads": [
+      "Bounce sidebar",
+      "Dependencies",
+      "Interaction Type",
+      "Props",
+      "Installation",
+      "How to use",
+      "Source Code",
+      "Keep in mind",
+      "Contact",
+      "License & Usage"
+    ],
+    "text": "Rare UI / Components DISPLAY Folder component Code Block Gravity Letters GitHub activity Step player Animated counter Voice note FAQ AI KIT Fluid Orb Grid Reveal Matrix orb Web Search Inline AI Status NAVIGATION Bounce sidebar Hook Sidebar Proximity Sidebar Scroll Progress Rail TOC Gooey nav INPUTS Duration Picker OTP Input Password input Theme selector Delete button Task list FEEDBACK Emoji reaction Notification bell Build VMs, containers, AI, databases, storage—all in one place. ads via Carbon Install BOUNCE SIDEBAR A vertical navigation list with a bouncy, spring-animated active indicator. DEPENDENCIES motion INTERACTION TYPE Click any item to spring the bouncing marker over to it. PROPS "
+  },
+  "gridreveal": {
+    "heads": [
+      "Grid Reveal",
+      "Dependencies",
+      "Interaction Type",
+      "Props",
+      "Installation",
+      "How to use",
+      "Source Code",
+      "Keep in mind",
+      "Contact",
+      "License & Usage"
+    ],
+    "text": "Rare UI / Components DISPLAY Folder component Code Block Gravity Letters GitHub activity Step player Animated counter Voice note FAQ AI KIT Fluid Orb Grid Reveal Matrix orb Web Search Inline AI Status NAVIGATION Bounce sidebar Hook Sidebar Proximity Sidebar Scroll Progress Rail TOC Gooey nav INPUTS Duration Picker OTP Input Password input Theme selector Delete button Task list FEEDBACK Emoji reaction Notification bell Now With $300 in Credit Start solving your business challenges with a Google Cloud $300 credit. ads via Carbon Install GRID REVEAL A loading state for AI images that turns into the real picture when it arrives. DEPENDENCIES motion INTERACTION TYPE Press Generate and the frame o"
+  },
+  "scrollprogressindicator": {
+    "heads": [
+      "Scroll Progress",
+      "Dependencies",
+      "Interaction Type",
+      "Props",
+      "Installation",
+      "How to use",
+      "Source Code",
+      "Keep in mind",
+      "Contact",
+      "License & Usage"
+    ],
+    "text": "Rare UI / Components DISPLAY Folder component Code Block Gravity Letters GitHub activity Step player Animated counter Voice note FAQ AI KIT Fluid Orb Grid Reveal Matrix orb Web Search Inline AI Status NAVIGATION Bounce sidebar Hook Sidebar Proximity Sidebar Scroll Progress Rail TOC Gooey nav INPUTS Duration Picker OTP Input Password input Theme selector Delete button Task list FEEDBACK Emoji reaction Notification bell Start solving your business challenges with a Google Cloud $300 credit. ads via Carbon Install SCROLL PROGRESS A scroll progress pill that tracks reading position and expands into a squircle menu of sections you can jump to. DEPENDENCIES motion INTERACTION TYPE Scroll to fill t"
+  },
+  "stepplayer": {
+    "heads": [
+      "Step player",
+      "Dependencies",
+      "Interaction Type",
+      "Props",
+      "Installation",
+      "How to use",
+      "Source Code",
+      "Keep in mind",
+      "Contact",
+      "License & Usage"
+    ],
+    "text": "Rare UI / Components DISPLAY Folder component Code Block Gravity Letters GitHub activity Step player Animated counter Voice note FAQ AI KIT Fluid Orb Grid Reveal Matrix orb Web Search Inline AI Status NAVIGATION Bounce sidebar Hook Sidebar Proximity Sidebar Scroll Progress Rail TOC Gooey nav INPUTS Duration Picker OTP Input Password input Theme selector Delete button Task list FEEDBACK Emoji reaction Notification bell Start your AI journey with free access to leading cloud products and services. ads via Carbon Install STEP PLAYER An iOS-style stepped progress track with a play, pause and replay control. The active step stretches into a bar that fills as it plays. DEPENDENCIES motion flubber "
+  },
+  "foldercomponent": {
+    "heads": [
+      "Folder component",
+      "Dependencies",
+      "Interaction Type",
+      "Props",
+      "Installation",
+      "How to use",
+      "Source Code",
+      "Keep in mind",
+      "Contact",
+      "License & Usage"
+    ],
+    "text": "Rare UI / Components DISPLAY Folder component Code Block Gravity Letters GitHub activity Step player Animated counter Voice note FAQ AI KIT Fluid Orb Grid Reveal Matrix orb Web Search Inline AI Status NAVIGATION Bounce sidebar Hook Sidebar Proximity Sidebar Scroll Progress Rail TOC Gooey nav INPUTS Duration Picker OTP Input Password input Theme selector Delete button Task list FEEDBACK Emoji reaction Notification bell Start free with 30 GB storage, 1 GB of outbound data transfers per month and more. ads via Carbon Install FOLDER COMPONENT An animated folder whose cards fan out on hover and lift open on click, with a 3D-tilted flap. Supports color and size (sm/md/lg) props. DEPENDENCIES motio"
+  }
+}

@@ -1,0 +1,131 @@
+/* ================= 30. 交互层：聚光、错峰进场、侧栏触感、阅读进度、数字滚动 =================
+   参考 Rare UI 的微交互节奏；不引入动画库，全部 CSS + 原生事件，遵守 prefers-reduced-motion。 */
+:root {
+  --zy-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --zy-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --zy-spotlight: rgba(56, 189, 248, 0.16);
+}
+
+/* 键盘可达性：只在键盘导航时显示焦点环 */
+.zy-dark :focus-visible {
+  outline: 2px solid var(--zy-primary);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* 按钮按下反馈 */
+.el-button {
+  transition: transform 0.14s var(--zy-ease-out), background-color 0.16s ease, border-color 0.16s ease,
+    color 0.16s ease, box-shadow 0.16s ease;
+}
+.el-button:not(.is-disabled):not(.is-text):active {
+  transform: translateY(1px) scale(0.985);
+}
+
+/* 侧栏：选中指示条 + 图标触感 */
+.menu-item {
+  position: relative;
+  overflow: hidden;
+}
+.menu-item::before {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 3px;
+  height: 0;
+  content: '';
+  background: var(--zy-accent-line);
+  border-radius: 0 3px 3px 0;
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: height 0.22s var(--zy-ease-out), opacity 0.22s var(--zy-ease-out);
+}
+.menu-item.menu-item-active::before {
+  height: 18px;
+  opacity: 1;
+}
+.menu-item .menu-icon {
+  transition: transform 0.24s var(--zy-ease-spring);
+}
+.menu-item:hover .menu-icon {
+  transform: translateX(2px) scale(1.07);
+}
+.menu-item:active .menu-icon {
+  transform: scale(0.92);
+}
+
+/* 卡片聚光：跟随指针的柔和光斑，放在内容下层 */
+[data-spotlight] {
+  position: relative;
+  isolation: isolate;
+}
+[data-spotlight]::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  content: '';
+  pointer-events: none;
+  opacity: 0;
+  border-radius: inherit;
+  background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), var(--zy-spotlight), transparent 62%);
+  transition: opacity 0.28s var(--zy-ease-out);
+}
+[data-spotlight]:hover::before {
+  opacity: 1;
+}
+
+/* 错峰进场 */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.52s var(--zy-ease-out), transform 0.52s var(--zy-ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+[data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* 顶部阅读进度 */
+.header-container {
+  position: relative;
+}
+.zy-scroll-progress {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  overflow: hidden;
+  pointer-events: none;
+}
+.zy-scroll-progress i {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--zy-accent-line);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+  transition: width 0.12s linear;
+}
+
+/* 数字滚动 */
+.zy-count {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  [data-spotlight]::before {
+    display: none;
+  }
+  .menu-item::before,
+  .menu-item .menu-icon,
+  .el-button,
+  .zy-scroll-progress i {
+    transition: none !important;
+  }
+}

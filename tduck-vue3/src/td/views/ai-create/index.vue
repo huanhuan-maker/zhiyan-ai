@@ -115,6 +115,8 @@
         <article
           v-for="(variant, i) in variants"
           :key="variant.id"
+          v-spotlight
+          v-reveal="i * 60"
           class="variant-card"
           :class="{ selected: selectedIndex === i }"
           data-testid="studio-variant"
@@ -174,7 +176,7 @@
     </section>
 
     <section v-else-if="!generating" class="studio-guide" aria-label="使用方式">
-      <div v-for="(step, i) in guideSteps" :key="i" class="guide-step">
+      <div v-for="(step, i) in guideSteps" :key="i" v-reveal="i * 70" class="guide-step">
         <span class="guide-index">0{{ i + 1 }}</span>
         <h3>{{ step.title }}</h3>
         <p>{{ step.text }}</p>
@@ -191,7 +193,7 @@
         <el-button size="small" @click="loadDrafts">重试</el-button>
       </div>
       <div v-else-if="drafts.length" class="draft-grid">
-        <article v-for="draft in drafts" :key="draft.id" class="draft-card" data-testid="studio-draft">
+        <article v-for="(draft, i) in drafts" :key="draft.id" v-spotlight v-reveal="i * 50" class="draft-card" data-testid="studio-draft">
           <div class="draft-meta">
             <span class="draft-badge">AI 草稿</span>
             <span>未发布 · {{ draft.snapshot?.result?.questions?.length || 0 }} 题</span>

@@ -71,6 +71,7 @@
               </template>
             </el-popover>
           </div>
+          <ScrollProgress />
         </header>
         <div class="router-view-wrapper">
           <router-view />

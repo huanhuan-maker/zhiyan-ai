@@ -1,0 +1,141 @@
+{
+  "hrefs": [
+    "/components/themeselector",
+    "/components/websearch",
+    "/components/faq",
+    "/components/foldercomponent",
+    "/components/codeblock",
+    "/components/gravityletters",
+    "/components/githubactivity",
+    "/components/stepplayer",
+    "/components/animatedcounter",
+    "/components/voicenote",
+    "/components/fluidorb",
+    "/components/gridreveal",
+    "/components/matrixorb",
+    "/components/aistatus",
+    "/components/bouncesidebar",
+    "/components/hooksidebar",
+    "/components/proximitysidebar",
+    "/components/scrollprogressindicator",
+    "/components/railtoc",
+    "/components/gooeynav",
+    "/components/durationpicker",
+    "/components/otpinput",
+    "/components/passwordinput",
+    "/components/deletebutton",
+    "/components/tasklist",
+    "/components/emojireaction",
+    "/components/notificationbell"
+  ],
+  "samples": [
+    {
+      "href": "/components/themeselector",
+      "text": "Theme selector NEW"
+    },
+    {
+      "href": "/components/websearch",
+      "text": "Web Search NEW"
+    },
+    {
+      "href": "/components/faq",
+      "text": "FAQ NEW"
+    },
+    {
+      "href": "/components/foldercomponent",
+      "text": "Folder component"
+    },
+    {
+      "href": "/components/codeblock",
+      "text": "Code Block"
+    },
+    {
+      "href": "/components/gravityletters",
+      "text": "Gravity Letters"
+    },
+    {
+      "href": "/components/githubactivity",
+      "text": "GitHub activity"
+    },
+    {
+      "href": "/components/stepplayer",
+      "text": "Step player"
+    },
+    {
+      "href": "/components/animatedcounter",
+      "text": "Animated counter"
+    },
+    {
+      "href": "/components/voicenote",
+      "text": "Voice note"
+    },
+    {
+      "href": "/components/fluidorb",
+      "text": "Fluid Orb"
+    },
+    {
+      "href": "/components/gridreveal",
+      "text": "Grid Reveal"
+    },
+    {
+      "href": "/components/matrixorb",
+      "text": "Matrix orb"
+    },
+    {
+      "href": "/components/aistatus",
+      "text": "Inline AI Status"
+    },
+    {
+      "href": "/components/bouncesidebar",
+      "text": "Bounce sidebar"
+    },
+    {
+      "href": "/components/hooksidebar",
+      "text": "Hook Sidebar"
+    },
+    {
+      "href": "/components/proximitysidebar",
+      "text": "Proximity Sidebar"
+    },
+    {
+      "href": "/components/scrollprogressindicator",
+      "text": "Scroll Progress"
+    },
+    {
+      "href": "/components/railtoc",
+      "text": "Rail TOC"
+    },
+    {
+      "href": "/components/gooeynav",
+      "text": "Gooey nav"
+    },
+    {
+      "href": "/components/durationpicker",
+      "text": "Duration Picker"
+    },
+    {
+      "href": "/components/otpinput",
+      "text": "OTP Input"
+    },
+    {
+      "href": "/components/passwordinput",
+      "text": "Password input"
+    },
+    {
+      "href": "/components/deletebutton",
+      "text": "Delete button"
+    },
+    {
+      "href": "/components/tasklist",
+      "text": "Task list"
+    },
+    {
+      "href": "/components/emojireaction",
+      "text": "Emoji reaction"
+    },
+    {
+      "href": "/components/notificationbell",
+      "text": "Notification bell"
+    }
+  ]
+}

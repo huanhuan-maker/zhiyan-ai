@@ -18,7 +18,7 @@
       <div class="project-header">
         <div class="header-left">
           <h2 class="page-title">问卷概览</h2>
-          <p class="page-subtitle">共 {{ total || 0 }} 份问卷<span v-if="savedDrafts.length">，另有 {{ savedDrafts.length }} 份 AI 暂存</span></p>
+          <p class="page-subtitle">共 <AnimatedNumber :value="total || 0" /> 份问卷<span v-if="savedDrafts.length">，另有 <AnimatedNumber :value="savedDrafts.length" /> 份 AI 暂存</span></p>
         </div>
         <div class="header-right">
           <el-button class="ai-create-btn" aria-label="AI 建卷" @click="newAiDraft">

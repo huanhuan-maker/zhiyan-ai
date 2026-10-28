@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-28T06:59:58.323Z",
+  "checks": [
+    {
+      "name": "问卷卡片带聚光与进场指令，首屏自动展开",
+      "passed": true
+    },
+    {
+      "name": "悬停时聚光跟随指针",
+      "passed": true
+    },
+    {
+      "name": "侧栏选中项有指示条，图标有过渡",
+      "passed": true
+    },
+    {
+      "name": "长页面出现顶部阅读进度",
+      "passed": true
+    },
+    {
+      "name": "数字滚动到最终值并不影响读屏",
+      "passed": true
+    },
+    {
+      "name": "AI 建卷的三步说明与候选卡有进场",
+      "passed": true
+    },
+    {
+      "name": "减少动态偏好下内容直接显示、聚光关闭",
+      "passed": true
+    },
+    {
+      "name": "没有运行时错误",
+      "passed": true
+    }
+  ],
+  "total": 8,
+  "passed": 8,
+  "failed": 0,
+  "errors": []
+}

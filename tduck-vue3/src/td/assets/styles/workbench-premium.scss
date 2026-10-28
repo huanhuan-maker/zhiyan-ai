@@ -1656,3 +1656,53 @@ h1.page-title,
   color: var(--zy-primary) !important;
   font-weight: 500;
 }
+
+/* ================= 31. 已发布版本状态下的深色补齐（发布分享卡、编辑器选项输入、统计数字） ================= */
+.zy-dark .share-card {
+  background: var(--zy-surface) !important;
+  border-color: var(--zy-border) !important;
+  box-shadow: var(--zy-shadow-card) !important;
+}
+.zy-dark .success-icon-wrapper {
+  color: var(--zy-success) !important;
+  background: rgba(75, 214, 177, 0.16) !important;
+  border-color: rgba(75, 214, 177, 0.32) !important;
+}
+.zy-dark .header-icon {
+  color: var(--zy-primary) !important;
+  background: var(--zy-primary-soft) !important;
+}
+.zy-dark .link-box {
+  color: var(--zy-text-regular) !important;
+  background: var(--zy-surface-subtle) !important;
+  border-color: var(--zy-border) !important;
+}
+.zy-dark .qr-border {
+  background: var(--zy-surface-subtle) !important;
+  border-color: var(--zy-border) !important;
+}
+.zy-dark .el-input__inner {
+  color: var(--zy-text) !important;
+  background-color: transparent !important;
+}
+.zy-dark .el-textarea__inner {
+  color: var(--zy-text) !important;
+  background-color: var(--zy-surface-subtle) !important;
+}
+.zy-dark .data-num {
+  color: var(--zy-text) !important;
+}
+.zy-dark .link-text {
+  color: var(--zy-accent-cyan) !important;
+}
+.zy-dark .result-footer span {
+  color: var(--zy-text-regular) !important;
+}
+.zy-dark .result-footer .el-button.is-text,
+.zy-dark .result-footer .el-button.is-text > span,
+.zy-dark .result-footer .el-button.is-text:hover,
+.zy-dark .result-footer .el-button.is-text:hover > span {
+  color: var(--zy-text) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}

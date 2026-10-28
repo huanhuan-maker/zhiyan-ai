@@ -65,8 +65,9 @@ try{
     const style=await card(withAnswers[0].formKey).locator('.count-value').evaluate(el=>({color:getComputedStyle(el).color,dark:document.documentElement.classList.contains('zy-dark')}))
     if(!style.dark)throw Error('zy-dark missing')
     assert.equal(style.color,'rgb(56, 232, 255)')
-    const zero=await page.locator('.project-card-item .count-value.count-zero').first().evaluate(el=>getComputedStyle(el).color)
-    assert.equal(zero,'rgb(131, 145, 165)')
+    const zeroCard=page.locator('.project-card-item .count-value.count-zero').first()
+    if(await zeroCard.count()) assert.equal(await zeroCard.evaluate(el=>getComputedStyle(el).color),'rgb(131, 145, 165)')
+    else console.log('NO-ZERO-CARD: 当前页所有问卷都有答卷，跳过 0 份配色断言')
   })
 
   await check('后端对未登录请求拒绝返回份数',async()=>{

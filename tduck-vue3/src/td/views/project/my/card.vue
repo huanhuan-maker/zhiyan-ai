@@ -1,7 +1,14 @@
 <template>
   <div class="project-card-container">
     <div v-if="projectList.length" class="project-card-grid">
-      <article v-for="p in projectList" :key="p.id" class="project-card-item" :data-form-key="p.formKey">
+      <article
+        v-for="(p, index) in projectList"
+        :key="p.id"
+        v-spotlight
+        v-reveal="(index % 9) * 45"
+        class="project-card-item"
+        :data-form-key="p.formKey"
+      >
         <div class="card-body">
           <div class="card-topline">
             <span class="form-type-badge" :class="'type-' + p.type">{{ getType(p.type).name || '问卷' }}</span>
