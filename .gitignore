@@ -3,8 +3,14 @@
 !.env.example
 .local/
 backend/target/
-frontend/node_modules/
-frontend/dist/
+node_modules/
+dist/
+test-results/
+playwright-report/
+coverage/
+artifacts/
 *.log
+*.zip
+*.jar
 .idea/
 .vscode/
