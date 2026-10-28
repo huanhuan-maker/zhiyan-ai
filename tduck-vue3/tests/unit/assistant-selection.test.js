@@ -8,6 +8,6 @@ describe('selecting a questionnaire from chat results',()=>{
   it('preserves the report intent',()=>expect(selectedSurveyQuestion('找一下校园问卷的已审核报告')).toBe('查看这份问卷的已审核报告'))
   it('uses the quoted answer keyword rather than a quoted questionnaire name',()=>expect(selectedSurveyQuestion('查找“食堂调查”问卷里提到“排队”的回答')).toBe('查看这份问卷中提到“排队”的回答'))
   it('supports an unquoted answer keyword',()=>expect(selectedSurveyQuestion('查找提到排队的回答')).toBe('查看这份问卷中提到“排队”的回答'))
-  it('preserves an explicitly requested historical version',()=>expect(selectedSurveyQuestion('查V1版本的评分')).toBe('查看这份问卷 V1的评分均值'))
+  it('preserves an explicitly requested historical version and rating intent',()=>expect(selectedSurveyQuestion('查V1版本的评分')).toBe('关于这份问卷 V1，查V1版本的评分'))
   it('preserves a latest-version request',()=>expect(selectedSurveyQuestion('最新版本的统计')).toBe('查一下这份问卷最新版本的回收统计'))
 })

@@ -1,10 +1,12 @@
 // A result-card click targets one survey, rather than repeating the catalogue request.
-export function selectedSurveyQuestion(previous = '') {
+import {positiveChartQuestion,wantsInlineChart} from './knowledge'
+export function selectedSurveyQuestion(previous = '', selectedTitle = '') {
   const text = String(previous).trim()
   const version = /(?:v\s*|版本\s*)([1-9][0-9]{0,4})/i.exec(text)
   const scope = '这份问卷' + (text.includes('最新') ? '最新版本' : version ? ` V${Number(version[1])}` : '')
-  if (/数据图|统计图|可视化|图表|出图|画.*图|生成.*图|柱状图|条形图|饼图|环形图|折线图|趋势图/.test(text)) {
-    const type=/饼图|环形图/.test(text)?'饼图':/柱状图|条形图/.test(text)?'柱状图':/折线图|趋势图/.test(text)?'回收趋势图':'数据图'
+  if (wantsInlineChart(text)) {
+    const chartText=positiveChartQuestion(text)
+    const type=/饼图|环形图/.test(chartText)?'饼图':/柱状图|条形图/.test(chartText)?'柱状图':/折线图|趋势图/.test(chartText)?'回收趋势图':'数据图'
     const quoted=[...text.matchAll(/[“"‘']([^”"’']{1,100})[”"’']/g)]
     const field=quoted.length>1?`中“${quoted.at(-1)[1]}”的`:''
     return `基于${scope}${field}生成${type}`
@@ -19,7 +21,10 @@ export function selectedSurveyQuestion(previous = '') {
   if (/导出/.test(text)) return `导出${scope}的答卷`
   if (/分享|链接/.test(text)) return `获取${scope}的分享链接`
   if (/版本历史|版本列表|所有版本/.test(text)) return '查看这份问卷的版本列表'
-  if (/总结|归纳|分析|为什么|主要发现|主要反馈|知识库/.test(text)) return `基于知识库总结${scope}的答卷，归纳主要发现并引用来源`
+  let actual=text
+  if(selectedTitle)actual=actual.replaceAll(`“${selectedTitle}”`,scope).replaceAll(`"${selectedTitle}"`,scope).replaceAll(selectedTitle,scope)
+  const scoped=()=>`关于${scope}，${actual.replace(/^(?:请|帮我)?(?:查找|找到|搜索|找一下|找)(?:一下)?/,'')}`
+  if (/总结|归纳|分析|为什么|主要发现|主要反馈|知识库/.test(text)) return scoped()
   if (/题目|问卷内容/.test(text)) return `查看${scope}的题目`
   if (/原文|提到|关键词|包含.*回答/.test(text)) {
     const quoted = [...text.matchAll(/[“"‘']([^”"’']{1,30})[”"’']/g)]
@@ -28,7 +33,8 @@ export function selectedSurveyQuestion(previous = '') {
     term = term.replace(/[？?。！!]+$/, '').replace(/的(?:回答|原文|意见|建议|内容)$/, '').trim()
     if (term && term.length <= 30) return `查看${scope}中提到“${term}”的回答`
   }
-  if (/报告|结论/.test(text)) return `查看${scope}的已审核报告`
-  if (/均值|评分|平均/.test(text)) return `查看${scope}的评分均值`
-  return `查一下${scope}的回收统计`
+  if (/(?:已审核|审核通过).*报告/.test(text)) return `查看${scope}的已审核报告`
+  if (/均值|平均/.test(text)&&!/(哪个|最高|最低|为什么|原因|比较|对比|低评分|高评分|反馈)/.test(text)) return `查看${scope}的评分均值`
+  if(!text||/(?:多少|几)份问卷|(?:全部|所有|列出|问卷列表|哪些|有哪些).*问卷/.test(text)||/^(?:查看|查询|查一下)?最新版本(?:的)?统计[？?。]?$/.test(text))return `查一下${scope}的回收统计`
+  return scoped()
 }

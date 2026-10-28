@@ -111,7 +111,8 @@ public class AssistantChatService {
         int changed=turns.update(null,Wrappers.<AssistantTurnEntity>lambdaUpdate().eq(AssistantTurnEntity::getId,turnId).eq(AssistantTurnEntity::getOwnerId,owner).eq(AssistantTurnEntity::getState,"READY").set(AssistantTurnEntity::getState,"RUNNING"));
         if(changed!=1)throw new BaseException("查询正在处理或已失败，请刷新历史或重新提问");
         try {
-            Map<String,Object> result=tools.call(name,args,owner);
+            Map<String,Object> dispatch=Boolean.TRUE.equals(p.get("automatic"))?AssistantPlanner.naturalRead(map("tool",name,"arguments",args),t.getQuestion()):map("tool",name,"arguments",args);
+            Map<String,Object> result=tools.call((String)dispatch.get("tool"),(Map<String,Object>)dispatch.get("arguments"),owner);
             if("search_surveys".equals(name)&&Boolean.TRUE.equals(p.get("automatic"))&&AssistantPlanner.needsData(t.getQuestion())&&((Number)p.getOrDefault("stage",0)).intValue()==0&&((Number)result.get("total")).longValue()==1) {
                 List<Map<String,Object>> found=(List<Map<String,Object>>)result.get("surveys");
                 if(found.size()==1){String selected=(String)found.get(0).get("formKey");tools.requireOwned(selected,owner);

@@ -14,7 +14,7 @@ describe('answer export treats formulas as data',()=>{
 })
 describe('choosing a survey preserves the intended operation',()=>{
   it('routes summaries to the knowledge answer rather than replacing them with a count query',()=>{
-    expect(selectedSurveyQuestion('总结这个问卷')).toBe('基于知识库总结这份问卷的答卷，归纳主要发现并引用来源')
+    expect(selectedSurveyQuestion('总结这个问卷')).toBe('关于这份问卷，总结这个问卷')
   })
   it('preserves an explicit publication version for knowledge analysis',()=>{
     expect(selectedSurveyQuestion('分析这份问卷V2的反馈')).toContain('这份问卷 V2')
